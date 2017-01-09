@@ -31,42 +31,44 @@ import io.protostuff.runtime.RuntimeSchema;
 
 public final class DattySchemas {
 
-  private DattySchemas() {
-    
-  }
-  
-  public final static ObjectMapper JSON_MAPPER = new ObjectMapper();
-  
-  public final static IdStrategy JSON_STRATEGY = 
-      new DefaultIdStrategy(IdStrategy.DEFAULT_FLAGS | IdStrategy.ENUMS_BY_NAME, null, 0);
+	private DattySchemas() {
 
-  
-  public static final Schema<DattyPayload> PAYLOAD_SCHEMA = RuntimeSchema.getSchema(DattyPayload.class);
+	}
 
-  public static final Schema<DattyPayload> PAYLOAD_JSON_SCHEMA = RuntimeSchema.getSchema(DattyPayload.class, JSON_STRATEGY);
+	public final static ObjectMapper JSON_MAPPER = new ObjectMapper();
 
-  public static final int DEFAULT_LINKED_BUFFER_SIZE = 4096;
-  
-  private static int linkedBufferSize = DEFAULT_LINKED_BUFFER_SIZE;
-  
-  private static final ThreadLocal<LinkedBuffer> localLinkedBuffer = new ThreadLocal<LinkedBuffer>() {
+	public final static IdStrategy JSON_STRATEGY = new DefaultIdStrategy(
+			IdStrategy.DEFAULT_FLAGS | IdStrategy.ENUMS_BY_NAME, null, 0);
 
-    @Override
-    protected LinkedBuffer initialValue() {
-      return LinkedBuffer.allocate(linkedBufferSize);
-    }
+	public static final Schema<DattyPayload> PAYLOAD_SCHEMA = RuntimeSchema
+			.getSchema(DattyPayload.class);
 
-  };
+	public static final Schema<DattyPayload> PAYLOAD_JSON_SCHEMA = RuntimeSchema
+			.getSchema(DattyPayload.class, JSON_STRATEGY);
 
-  public static LinkedBuffer getLocalLinkedBuffer() {
-    return localLinkedBuffer.get().clear();
-  }
+	public static final int DEFAULT_LINKED_BUFFER_SIZE = 4096;
 
-  public static void setLinkedBufferSize(int newSize) {
-    if (newSize < 1 || newSize > 0xFFFFFF) {
-      throw new IllegalArgumentException("invalid new size for linked buffer");
-    }
-    linkedBufferSize = newSize;
-  }
-  
+	private static int linkedBufferSize = DEFAULT_LINKED_BUFFER_SIZE;
+
+	private static final ThreadLocal<LinkedBuffer> localLinkedBuffer = new ThreadLocal<LinkedBuffer>() {
+
+		@Override
+		protected LinkedBuffer initialValue() {
+			return LinkedBuffer.allocate(linkedBufferSize);
+		}
+
+	};
+
+	public static LinkedBuffer getLocalLinkedBuffer() {
+		return localLinkedBuffer.get().clear();
+	}
+
+	public static void setLinkedBufferSize(int newSize) {
+		if (newSize < 1 || newSize > 0xFFFFFF) {
+			throw new IllegalArgumentException(
+					"invalid new size for linked buffer");
+		}
+		linkedBufferSize = newSize;
+	}
+
 }

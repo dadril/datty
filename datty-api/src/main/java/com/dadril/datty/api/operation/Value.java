@@ -15,36 +15,36 @@ package com.dadril.datty.api.operation;
 
 public interface Value {
 
-  /**
-   * Gets byte array copy of the value
-   * 
-   * @return value or null
-   */
-  
-  byte[] toByteArray();
-  
-  /**
-   * Gets backing value (unsafe)
-   * 
-   * @return backing array or null
-   */
-  
-  byte[] getBackingValue();
-  
-  /**
-   * Gets digest of the value for version control
-   * 
-   * @return digest or null
-   */
-  
-  byte[] getDigest();
-  
-  /**
-   * Gets version of the value
-   * 
-   * @return version or 0
-   */
-  
-  long getVersion();
-  
+	/**
+	 * Gets byte array copy of the value
+	 * 
+	 * @return value or null
+	 */
+
+	byte[] toByteArray();
+
+	/**
+	 * Gets backing value (unsafe)
+	 * 
+	 * @return backing array or null
+	 */
+
+	byte[] getBackingValue();
+
+	/**
+	 * Gets digest of the value for version control
+	 * 
+	 * @return digest or null
+	 */
+
+	byte[] getDigest();
+
+	/**
+	 * Gets version of the value
+	 * 
+	 * @return version or 0
+	 */
+
+	long getVersion();
+
 }

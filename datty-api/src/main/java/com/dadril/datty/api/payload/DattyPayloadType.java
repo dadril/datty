@@ -15,10 +15,9 @@ package com.dadril.datty.api.payload;
 
 public enum DattyPayloadType {
 
-  SO,   /* single operation */
-  BO,   /* batch operation */
-  SR,   /* single result */
-  BR;   /* batch result */
+	SO, /* single operation */
+	BO, /* batch operation */
+	SR, /* single result */
+	BR; /* batch result */
 
-  
 }

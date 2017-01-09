@@ -25,37 +25,37 @@ import com.dadril.datty.api.payload.SingleOperationType;
 
 public class GetOperation extends AbstractOperation<GetOperation, ValueResult> {
 
-  public GetOperation(String storeName) {
-    super(storeName);
-  }
+	public GetOperation(String storeName) {
+		super(storeName);
+	}
 
-  public GetOperation(String storeName, String majorKey) {
-    super(storeName);
-    setMajorKey(majorKey);
-  }
+	public GetOperation(String storeName, String majorKey) {
+		super(storeName);
+		setMajorKey(majorKey);
+	}
 
-  @Override
-  public void writeTo(SingleOperationPayload op) {
-    op.setType(SingleOperationType.GET);
-    writeAbstractFields(op);
-  }
+	@Override
+	public void writeTo(SingleOperationPayload op) {
+		op.setType(SingleOperationType.GET);
+		writeAbstractFields(op);
+	}
 
-  public enum Instantiator implements SingleInstantiator {
-    
-    INSTANCE;
+	public enum Instantiator implements SingleInstantiator {
 
-    @Override
-    public GetOperation parseFrom(SingleOperationPayload payload) {
+		INSTANCE;
 
-      GetOperation op = new GetOperation(payload.getStoreName());
+		@Override
+		public GetOperation parseFrom(SingleOperationPayload payload) {
 
-      op.setSuperKey(payload.getSuperKey());
-      op.setMajorKey(payload.getMajorKey());
-      op.setMinorKey(payload.getMinorKey());
-      
-      return op;
-    }
-    
-  }
-  
+			GetOperation op = new GetOperation(payload.getStoreName());
+
+			op.setSuperKey(payload.getSuperKey());
+			op.setMajorKey(payload.getMajorKey());
+			op.setMinorKey(payload.getMinorKey());
+
+			return op;
+		}
+
+	}
+
 }

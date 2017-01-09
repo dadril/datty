@@ -27,59 +27,59 @@ import com.dadril.datty.api.operation.Value;
 
 public final class VersionedValue implements Value {
 
-  private final byte[] value;
-  private final byte[] digest;
-  private final long version;
-  
-  private VersionedValue(byte[] value, long version) {
-    this.value = value;
-    this.digest = null;
-    this.version = version;
-  }
-  
-  private VersionedValue(byte[] value, byte[] digest) {
-    this.value = value;
-    this.digest = digest;
-    this.version = DattyConstants.UNSET_VERSION;
-  }
+	private final byte[] value;
+	private final byte[] digest;
+	private final long version;
 
-  public static VersionedValue wrap(byte[] value, long version) {
-    return new VersionedValue(value, version);
-  }
-  
-  public static VersionedValue wrap(byte[] value, byte[] digest) {
-    return new VersionedValue(value, digest);
-  }
-  
-  @Override
-  public byte[] toByteArray() {
-    if (value != null) {
-      return Arrays.copyOf(value, value.length);
-    }
-    return null;
-  }
+	private VersionedValue(byte[] value, long version) {
+		this.value = value;
+		this.digest = null;
+		this.version = version;
+	}
 
-  @Override
-  public byte[] getBackingValue() {
-    return value;
-  }
-  
-  @Override
-  public byte[] getDigest() {
-    return digest;
-  }
+	private VersionedValue(byte[] value, byte[] digest) {
+		this.value = value;
+		this.digest = digest;
+		this.version = DattyConstants.UNSET_VERSION;
+	}
 
-  public boolean hasDigest() {
-    return digest != null;
-  }
-  
-  @Override
-  public long getVersion() {
-    return version;
-  }
+	public static VersionedValue wrap(byte[] value, long version) {
+		return new VersionedValue(value, version);
+	}
 
-  public boolean hasVersion() {
-    return version != DattyConstants.UNSET_VERSION;
-  }
-  
+	public static VersionedValue wrap(byte[] value, byte[] digest) {
+		return new VersionedValue(value, digest);
+	}
+
+	@Override
+	public byte[] toByteArray() {
+		if (value != null) {
+			return Arrays.copyOf(value, value.length);
+		}
+		return null;
+	}
+
+	@Override
+	public byte[] getBackingValue() {
+		return value;
+	}
+
+	@Override
+	public byte[] getDigest() {
+		return digest;
+	}
+
+	public boolean hasDigest() {
+		return digest != null;
+	}
+
+	@Override
+	public long getVersion() {
+		return version;
+	}
+
+	public boolean hasVersion() {
+		return version != DattyConstants.UNSET_VERSION;
+	}
+
 }

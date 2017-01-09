@@ -28,154 +28,154 @@ import io.protostuff.Tag;
 @JsonInclude(Include.NON_DEFAULT)
 public class DattyPayload {
 
-  @Tag(1)
-  private DattyPayloadType type;
-  
-  @Tag(2)
-  private List<SingleOperationPayload> operationList;
+	@Tag(1)
+	private DattyPayloadType type;
 
-  @Tag(3)
-  private List<SingleResultPayload> resultList;
+	@Tag(2)
+	private List<SingleOperationPayload> operationList;
 
-  public void reset() {
-    this.type = null;
-    this.operationList = null;
-    this.resultList = null;
-  }
-  
-  public SingleOperationPayload addOperation() {
-    if (operationList == null) {
-      operationList = new ArrayList<>();
-    }
-    SingleOperationPayload op = new SingleOperationPayload();
-    operationList.add(op);
-    return op;
-  }
-  
-  public SingleResultPayload addResult() {
-    if (resultList == null) {
-      resultList = new ArrayList<>();
-    }
-    SingleResultPayload r = new SingleResultPayload();
-    resultList.add(r);
-    return r;
-  }
-  
-  public DattyPayloadType getType() {
-    return type;
-  }
+	@Tag(3)
+	private List<SingleResultPayload> resultList;
 
-  public void setType(DattyPayloadType type) {
-    this.type = type;
-  }
+	public void reset() {
+		this.type = null;
+		this.operationList = null;
+		this.resultList = null;
+	}
 
-  public List<SingleOperationPayload> getOperationList() {
-    return operationList;
-  }
+	public SingleOperationPayload addOperation() {
+		if (operationList == null) {
+			operationList = new ArrayList<>();
+		}
+		SingleOperationPayload op = new SingleOperationPayload();
+		operationList.add(op);
+		return op;
+	}
 
-  public void setOperationList(List<SingleOperationPayload> operationList) {
-    this.operationList = operationList;
-  }
+	public SingleResultPayload addResult() {
+		if (resultList == null) {
+			resultList = new ArrayList<>();
+		}
+		SingleResultPayload r = new SingleResultPayload();
+		resultList.add(r);
+		return r;
+	}
 
-  public List<SingleResultPayload> getResultList() {
-    return resultList;
-  }
+	public DattyPayloadType getType() {
+		return type;
+	}
 
-  public void setResultList(List<SingleResultPayload> resultList) {
-    this.resultList = resultList;
-  }
-  
-  public void copyFrom(DattyPayload other) {
-    this.type = other.type;
-    this.operationList = other.operationList;
-    this.resultList = other.resultList;
-  }
-  
-  /**
-   * MessagePack
-   */
-  
-  public void pack(MessagePacker packer) throws IOException {
-    
-    int size = 0;
-    if (type != null) {
-      size++;
-    }
-    if (operationList != null) {
-      size++;
-    }
-    if (resultList != null) {
-      size++;
-    }
-    
-    packer.packMapHeader(size);
-    
-    if (type != null) {
-      packer.packInt(1);
-      packer.packString(type.name());
-    }
-   
-    if (operationList != null) {
-      packer.packInt(2);
-      packer.packArrayHeader(operationList.size());
-      for (SingleOperationPayload op : operationList) {
-        op.pack(packer);
-      }
-    }
-    
-    if (resultList != null) {
-      packer.packInt(3);
-      packer.packArrayHeader(resultList.size());
-      for (SingleResultPayload r : resultList) {
-        r.pack(packer);
-      }
-    }
-    
-  }
+	public void setType(DattyPayloadType type) {
+		this.type = type;
+	}
 
-  public void unpack(MessageUnpacker unpacker) throws IOException {
-    
-    int size = unpacker.unpackMapHeader();
-    
-    for (int k = 0; k != size; ++k) {
-      
-      int tag = unpacker.unpackInt();
-      int length = 0;
-      
-      switch(tag) {
-       
-        case 1:
-          this.type = DattyPayloadType.valueOf(unpacker.unpackString());
-          break;
-        
-        case 2:
-          length = unpacker.unpackArrayHeader();
-          this.operationList = new ArrayList<>(length);
-          for (int i = 0; i != length; ++i) {
-            SingleOperationPayload op = new SingleOperationPayload();
-            op.unpack(unpacker);
-            this.operationList.add(op);
-          }
-          break;
+	public List<SingleOperationPayload> getOperationList() {
+		return operationList;
+	}
 
-        case 3:
-          length = unpacker.unpackArrayHeader();
-          this.resultList = new ArrayList<>(length);
-          for (int i = 0; i != length; ++i) {
-            SingleResultPayload r = new SingleResultPayload();
-            r.unpack(unpacker);
-            this.resultList.add(r);
-          }
-          break;
+	public void setOperationList(List<SingleOperationPayload> operationList) {
+		this.operationList = operationList;
+	}
 
-        default:
-          unpacker.skipValue();
-          break;          
-          
-      }
-      
-    }
-    
-  }
-  
+	public List<SingleResultPayload> getResultList() {
+		return resultList;
+	}
+
+	public void setResultList(List<SingleResultPayload> resultList) {
+		this.resultList = resultList;
+	}
+
+	public void copyFrom(DattyPayload other) {
+		this.type = other.type;
+		this.operationList = other.operationList;
+		this.resultList = other.resultList;
+	}
+
+	/**
+	 * MessagePack
+	 */
+
+	public void pack(MessagePacker packer) throws IOException {
+
+		int size = 0;
+		if (type != null) {
+			size++;
+		}
+		if (operationList != null) {
+			size++;
+		}
+		if (resultList != null) {
+			size++;
+		}
+
+		packer.packMapHeader(size);
+
+		if (type != null) {
+			packer.packInt(1);
+			packer.packString(type.name());
+		}
+
+		if (operationList != null) {
+			packer.packInt(2);
+			packer.packArrayHeader(operationList.size());
+			for (SingleOperationPayload op : operationList) {
+				op.pack(packer);
+			}
+		}
+
+		if (resultList != null) {
+			packer.packInt(3);
+			packer.packArrayHeader(resultList.size());
+			for (SingleResultPayload r : resultList) {
+				r.pack(packer);
+			}
+		}
+
+	}
+
+	public void unpack(MessageUnpacker unpacker) throws IOException {
+
+		int size = unpacker.unpackMapHeader();
+
+		for (int k = 0; k != size; ++k) {
+
+			int tag = unpacker.unpackInt();
+			int length = 0;
+
+			switch (tag) {
+
+			case 1:
+				this.type = DattyPayloadType.valueOf(unpacker.unpackString());
+				break;
+
+			case 2:
+				length = unpacker.unpackArrayHeader();
+				this.operationList = new ArrayList<>(length);
+				for (int i = 0; i != length; ++i) {
+					SingleOperationPayload op = new SingleOperationPayload();
+					op.unpack(unpacker);
+					this.operationList.add(op);
+				}
+				break;
+
+			case 3:
+				length = unpacker.unpackArrayHeader();
+				this.resultList = new ArrayList<>(length);
+				for (int i = 0; i != length; ++i) {
+					SingleResultPayload r = new SingleResultPayload();
+					r.unpack(unpacker);
+					this.resultList.add(r);
+				}
+				break;
+
+			default:
+				unpacker.skipValue();
+				break;
+
+			}
+
+		}
+
+	}
+
 }

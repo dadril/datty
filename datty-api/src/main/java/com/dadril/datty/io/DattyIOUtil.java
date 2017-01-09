@@ -35,73 +35,81 @@ import com.dadril.datty.support.DattyResults;
 
 public final class DattyIOUtil {
 
-  private DattyIOUtil() {
-    
-  }
-  
-  public static byte[] toByteArray(DattyOperation operation, DattySerializer serializer) throws IOException {
-    
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	private DattyIOUtil() {
 
-    write(operation, serializer, outputStream);
-    
-    return outputStream.toByteArray();
-  }
-  
-  public static void write(DattyOperation operation, DattySerializer serializer, OutputStream out) throws IOException {
-    
-    DattyPayload payload = DattyOperations.toPayload(operation);
-        
-    serializer.serialize(payload, out);
-    
-  }
-  
-  public static DattyOperation parseOperation(byte[] binary, DattySerializer serializer) throws IOException {
+	}
 
-    return parseOperation(new ByteArrayInputStream(binary), serializer);
-    
-  }
-  
-  public static DattyOperation parseOperation(InputStream in, DattySerializer serializer) throws IOException {
+	public static byte[] toByteArray(DattyOperation operation,
+			DattySerializer serializer) throws IOException {
 
-    DattyPayload payload = new DattyPayload();
-    
-    serializer.deserialize(in, payload);
-    
-    return DattyOperations.parseFrom(payload);
-    
-  }
-  
-  public static byte[] toByteArray(DattyResult result, DattySerializer serializer) throws IOException {
-    
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-    write(result, serializer, outputStream);
-    
-    return outputStream.toByteArray();
-  }
-  
-  public static void write(DattyResult result, DattySerializer serializer, OutputStream out) throws IOException {
-    
-    DattyPayload payload = DattyResults.toPayload(result);
-    
-    serializer.serialize(payload, out);
-    
-  }
-  
-  public static DattyResult parseResult(byte[] binary, DattySerializer serializer) throws IOException {
+		write(operation, serializer, outputStream);
 
-    return parseResult(new ByteArrayInputStream(binary), serializer);
-    
-  }
-  
-  public static DattyResult parseResult(InputStream in, DattySerializer serializer) throws IOException {
+		return outputStream.toByteArray();
+	}
 
-    DattyPayload payload = new DattyPayload();
-    
-    serializer.deserialize(in, payload);
-    
-    return DattyResults.parseFrom(payload);
-    
-  }
+	public static void write(DattyOperation operation,
+			DattySerializer serializer, OutputStream out) throws IOException {
+
+		DattyPayload payload = DattyOperations.toPayload(operation);
+
+		serializer.serialize(payload, out);
+
+	}
+
+	public static DattyOperation parseOperation(byte[] binary,
+			DattySerializer serializer) throws IOException {
+
+		return parseOperation(new ByteArrayInputStream(binary), serializer);
+
+	}
+
+	public static DattyOperation parseOperation(InputStream in,
+			DattySerializer serializer) throws IOException {
+
+		DattyPayload payload = new DattyPayload();
+
+		serializer.deserialize(in, payload);
+
+		return DattyOperations.parseFrom(payload);
+
+	}
+
+	public static byte[] toByteArray(DattyResult result,
+			DattySerializer serializer) throws IOException {
+
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+		write(result, serializer, outputStream);
+
+		return outputStream.toByteArray();
+	}
+
+	public static void write(DattyResult result, DattySerializer serializer,
+			OutputStream out) throws IOException {
+
+		DattyPayload payload = DattyResults.toPayload(result);
+
+		serializer.serialize(payload, out);
+
+	}
+
+	public static DattyResult parseResult(byte[] binary,
+			DattySerializer serializer) throws IOException {
+
+		return parseResult(new ByteArrayInputStream(binary), serializer);
+
+	}
+
+	public static DattyResult parseResult(InputStream in,
+			DattySerializer serializer) throws IOException {
+
+		DattyPayload payload = new DattyPayload();
+
+		serializer.deserialize(in, payload);
+
+		return DattyResults.parseFrom(payload);
+
+	}
 }

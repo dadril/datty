@@ -28,25 +28,25 @@ public final class DattyConstants {
 	/**
 	 * Default/unset parameter for TimeToLive in seconds
 	 */
-	
+
 	public static final int UNSET_TTL = 0;
-	
+
 	/**
 	 * Default/unset parameter for SLA timeout in milliseconds
 	 */
-	
+
 	public static final int UNSET_TIMEOUT = 0;
-	
+
 	/**
 	 * Default/unset parameter for version of the value
 	 */
-	
+
 	public static final long UNSET_VERSION = 0L;
-	
-	 /**
-   * Default/unset error code
-   */
-  
-  public static final int UNSET_ERROR = 0;
-	
+
+	/**
+	 * Default/unset error code
+	 */
+
+	public static final int UNSET_ERROR = 0;
+
 }

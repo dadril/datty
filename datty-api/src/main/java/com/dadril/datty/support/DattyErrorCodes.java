@@ -22,11 +22,9 @@ package com.dadril.datty.support;
 
 public final class DattyErrorCodes {
 
-  private DattyErrorCodes() {
-  }
+	private DattyErrorCodes() {
+	}
 
-  public static final int UNKNOWN_ERROR = 0;
-  
-  
-  
+	public static final int UNKNOWN_ERROR = 0;
+
 }

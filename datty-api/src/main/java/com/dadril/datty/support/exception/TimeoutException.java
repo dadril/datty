@@ -27,7 +27,7 @@ public class TimeoutException extends DattyException {
 	public TimeoutException(String msg) {
 		super(msg);
 	}
-	
+
 	public TimeoutException(String msg, Throwable t) {
 		super(msg, t);
 	}
@@ -35,5 +35,5 @@ public class TimeoutException extends DattyException {
 	public TimeoutException(Throwable t) {
 		super(t);
 	}
-	
+
 }

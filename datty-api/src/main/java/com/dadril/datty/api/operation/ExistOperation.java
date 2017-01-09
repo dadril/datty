@@ -23,37 +23,39 @@ import com.dadril.datty.api.payload.SingleOperationType;
  *
  */
 
-public class ExistOperation extends AbstractOperation<ExistOperation, BooleanResult> {
+public class ExistOperation extends
+		AbstractOperation<ExistOperation, BooleanResult> {
 
 	public ExistOperation(String storeName) {
 		super(storeName);
 	}
-  public ExistOperation(String storeName, String majorKey) {
-    super(storeName);
-    setMajorKey(majorKey);
-  }
-  
-  @Override
-  public void writeTo(SingleOperationPayload op) {
-    op.setType(SingleOperationType.EXIST);
-    writeAbstractFields(op);
-  }
 
-  public enum Instantiator implements SingleInstantiator {
-    
-    INSTANCE;
+	public ExistOperation(String storeName, String majorKey) {
+		super(storeName);
+		setMajorKey(majorKey);
+	}
 
-    @Override
-    public ExistOperation parseFrom(SingleOperationPayload payload) {
+	@Override
+	public void writeTo(SingleOperationPayload op) {
+		op.setType(SingleOperationType.EXIST);
+		writeAbstractFields(op);
+	}
 
-      ExistOperation op = new ExistOperation(payload.getStoreName());
+	public enum Instantiator implements SingleInstantiator {
 
-      op.setSuperKey(payload.getSuperKey());
-      op.setMajorKey(payload.getMajorKey());
-      op.setMinorKey(payload.getMinorKey());
-      
-      return op;
-    }
-    
-  }
+		INSTANCE;
+
+		@Override
+		public ExistOperation parseFrom(SingleOperationPayload payload) {
+
+			ExistOperation op = new ExistOperation(payload.getStoreName());
+
+			op.setSuperKey(payload.getSuperKey());
+			op.setMajorKey(payload.getMajorKey());
+			op.setMinorKey(payload.getMinorKey());
+
+			return op;
+		}
+
+	}
 }

@@ -26,59 +26,59 @@ import com.dadril.datty.api.payload.SingleOperationType;
 
 public class SetOperation extends AbstractOperation<SetOperation, VoidResult> {
 
-  private final byte[] newValueOrNull;
-  private int ttlSeconds = DattyConstants.UNSET_TTL;
-  
+	private final byte[] newValueOrNull;
+	private int ttlSeconds = DattyConstants.UNSET_TTL;
+
 	public SetOperation(String storeName, byte[] newValueOrNull) {
 		super(storeName);
 		this.newValueOrNull = newValueOrNull;
 	}
 
-  public SetOperation(String storeName, String majorKey, byte[] newValueOrNull) {
-    super(storeName);
-    setMajorKey(majorKey);
-    this.newValueOrNull = newValueOrNull;
-  }
+	public SetOperation(String storeName, String majorKey, byte[] newValueOrNull) {
+		super(storeName);
+		setMajorKey(majorKey);
+		this.newValueOrNull = newValueOrNull;
+	}
 
-  public byte[] getNewValueOrNull() {
-    return newValueOrNull;
-  }
-  
-  public int getTtlSeconds() {
-    return ttlSeconds;
-  }
+	public byte[] getNewValueOrNull() {
+		return newValueOrNull;
+	}
 
-  public SetOperation setTtlSeconds(int ttlSeconds) {
-    this.ttlSeconds = ttlSeconds;
-    return this;
-  }
+	public int getTtlSeconds() {
+		return ttlSeconds;
+	}
 
-  @Override
-  public void writeTo(SingleOperationPayload op) {
-    op.setType(SingleOperationType.SET);
-    op.setNewValue(newValueOrNull);
-    op.setTtlSeconds(ttlSeconds);
-    writeAbstractFields(op);
-  }
+	public SetOperation setTtlSeconds(int ttlSeconds) {
+		this.ttlSeconds = ttlSeconds;
+		return this;
+	}
 
-  public enum Instantiator implements SingleInstantiator {
-    
-    INSTANCE;
+	@Override
+	public void writeTo(SingleOperationPayload op) {
+		op.setType(SingleOperationType.SET);
+		op.setNewValue(newValueOrNull);
+		op.setTtlSeconds(ttlSeconds);
+		writeAbstractFields(op);
+	}
 
-    @Override
-    public SetOperation parseFrom(SingleOperationPayload payload) {
+	public enum Instantiator implements SingleInstantiator {
 
-      SetOperation op = new SetOperation(payload.getStoreName(), payload.getNewValue());
+		INSTANCE;
 
-      op.setSuperKey(payload.getSuperKey());
-      op.setMajorKey(payload.getMajorKey());
-      op.setMinorKey(payload.getMinorKey());
-      op.setTtlSeconds(payload.getTtlSeconds());
-      
-      return op;
-    }
-    
-  }
-	
-	
+		@Override
+		public SetOperation parseFrom(SingleOperationPayload payload) {
+
+			SetOperation op = new SetOperation(payload.getStoreName(),
+					payload.getNewValue());
+
+			op.setSuperKey(payload.getSuperKey());
+			op.setMajorKey(payload.getMajorKey());
+			op.setMinorKey(payload.getMinorKey());
+			op.setTtlSeconds(payload.getTtlSeconds());
+
+			return op;
+		}
+
+	}
+
 }

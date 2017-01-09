@@ -22,32 +22,34 @@ import java.util.Properties;
  *
  */
 
-public interface StoreManager extends Datty {
+public interface StoreManager {
 
-  /**
-   * Gets the name of the store manager
-   * 
-   * @return not null name
-   */
-  
-  String getName();
-  
-  /**
-   * Finds existing store
-   * 
-   * @param storeName - store name
-   * @return store instance or null
-   */
-  
-  Store findStore(String storeName);
-  
-  /**
-   * Gets existing store or creates a new one
-   * 
-   * @param storeName - store name
-   * @return not null store
-   */
-  
-  Store getStore(String storeName, Properties props, StoreExistsAction action);
-	
+	/**
+	 * Gets the name of the store manager
+	 * 
+	 * @return not null name
+	 */
+
+	String getName();
+
+	/**
+	 * Finds existing store
+	 * 
+	 * @param storeName
+	 *            - store name
+	 * @return store instance or null
+	 */
+
+	Store findStore(String storeName);
+
+	/**
+	 * Gets existing store or creates a new one
+	 * 
+	 * @param storeName
+	 *            - store name
+	 * @return not null store
+	 */
+
+	Store getStore(String storeName, Properties props, StoreExistsAction action);
+
 }

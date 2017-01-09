@@ -21,24 +21,30 @@ import com.dadril.datty.api.payload.DattyPayload;
 
 public interface DattySerializer {
 
-  /**
-   * Serializes operation payload
-   * 
-   * @param payloadInput - not null payload object
-   * @param output - output stream
-   * @return not null byte array
-   */
-  
-  void serialize(DattyPayload payloadInput, OutputStream outputStream) throws IOException;
-  
-  /**
-   * Deserializes operation payload
-   * 
-   * @param inputStream - not null input stream
-   * @param payloadOutput - not null reusable payload
-   * @return not null operation object
-   */
-  
-  void deserialize(InputStream inputStream, DattyPayload payloadOutput) throws IOException;
-  
+	/**
+	 * Serializes operation payload
+	 * 
+	 * @param payloadInput
+	 *            - not null payload object
+	 * @param output
+	 *            - output stream
+	 * @return not null byte array
+	 */
+
+	void serialize(DattyPayload payloadInput, OutputStream outputStream)
+			throws IOException;
+
+	/**
+	 * Deserializes operation payload
+	 * 
+	 * @param inputStream
+	 *            - not null input stream
+	 * @param payloadOutput
+	 *            - not null reusable payload
+	 * @return not null operation object
+	 */
+
+	void deserialize(InputStream inputStream, DattyPayload payloadOutput)
+			throws IOException;
+
 }

@@ -15,9 +15,9 @@ package com.dadril.datty.support.exception;
 
 public class StoreExistsException extends DattyException {
 
-  private static final long serialVersionUID = -6866410369647925540L;
+	private static final long serialVersionUID = -6866410369647925540L;
 
-  public StoreExistsException(String storeName) {
+	public StoreExistsException(String storeName) {
 		super(storeName);
 	}
 

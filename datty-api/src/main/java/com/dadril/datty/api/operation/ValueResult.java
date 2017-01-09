@@ -27,37 +27,37 @@ import com.dadril.datty.support.VersionedValue;
 
 public final class ValueResult implements SingleResult<Value> {
 
-  private final Value value;
-  
-  public ValueResult(Value value) {
-    this.value = value;
-  }
-  
+	private final Value value;
+
+	public ValueResult(Value value) {
+		this.value = value;
+	}
+
 	@Override
 	public Value get() {
 		return value;
 	}
 
-  @Override
-  public void writeTo(SingleResultPayload payload) {
-    payload.setType(SingleResultType.VALUE);
-    payload.setVersion(value.getVersion());
-    payload.setBinaryValue(value.getBackingValue());
-  }	
-  
-  public enum Instantiator implements SingleInstantiator {
-    
-    INSTANCE;
+	@Override
+	public void writeTo(SingleResultPayload payload) {
+		payload.setType(SingleResultType.VALUE);
+		payload.setVersion(value.getVersion());
+		payload.setBinaryValue(value.getBackingValue());
+	}
 
-    @Override
-    public ValueResult parseFrom(SingleResultPayload payload) {
-      
-      byte[] binaryValue = payload.getBinaryValue();
-      long version = payload.getVersion();
-      
-      return new ValueResult(VersionedValue.wrap(binaryValue, version));
-    }
-    
-  }
-  
+	public enum Instantiator implements SingleInstantiator {
+
+		INSTANCE;
+
+		@Override
+		public ValueResult parseFrom(SingleResultPayload payload) {
+
+			byte[] binaryValue = payload.getBinaryValue();
+			long version = payload.getVersion();
+
+			return new ValueResult(VersionedValue.wrap(binaryValue, version));
+		}
+
+	}
+
 }

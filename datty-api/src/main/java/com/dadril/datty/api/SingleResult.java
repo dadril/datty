@@ -28,37 +28,39 @@ import com.dadril.datty.api.payload.SingleResultPayload;
 
 public interface SingleResult<T> extends DattyResult {
 
-  /**
-   * Gets result of the operation
-   * 
-   * @return result or throws runtime DattyException
-   */
-  
+	/**
+	 * Gets result of the operation
+	 * 
+	 * @return result or throws runtime DattyException
+	 */
+
 	T get();
-	
-  /**
-   * Writes single result 
-   * 
-   * @param payload - output payload
-   */
-  
-  void writeTo(SingleResultPayload payload);
-  
-  /**
-   * Single instantiator for result 
-   */
-  
-  interface SingleInstantiator {
-     
-     /**
-      * Instantiation method
-      * 
-      * @param payload of the operation
-      * @return instance of operation
-      */
-     
-    SingleResult<?> parseFrom(SingleResultPayload payload);
-     
-  }
-	
+
+	/**
+	 * Writes single result
+	 * 
+	 * @param payload
+	 *            - output payload
+	 */
+
+	void writeTo(SingleResultPayload payload);
+
+	/**
+	 * Single instantiator for result
+	 */
+
+	interface SingleInstantiator {
+
+		/**
+		 * Instantiation method
+		 * 
+		 * @param payload
+		 *            of the operation
+		 * @return instance of operation
+		 */
+
+		SingleResult<?> parseFrom(SingleResultPayload payload);
+
+	}
+
 }

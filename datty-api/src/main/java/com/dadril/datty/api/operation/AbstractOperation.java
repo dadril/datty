@@ -29,26 +29,28 @@ import io.protostuff.Tag;
  *
  */
 
-public abstract class AbstractOperation<O extends SingleOperation<O>, R extends DattyResult> extends AbstractFuture<R> implements SingleOperation<O>, ListenableFuture<R> {
+public abstract class AbstractOperation<O extends SingleOperation<O>, R extends DattyResult>
+		extends AbstractFuture<R> implements SingleOperation<O>,
+		ListenableFuture<R> {
 
-  @Tag(1)
+	@Tag(1)
 	protected String storeName;
-  
-  @Tag(2)
+
+	@Tag(2)
 	private String superKey;
-  
-  @Tag(3)
+
+	@Tag(3)
 	private String majorKey;
-  
-  @Tag(4)
+
+	@Tag(4)
 	private String minorKey;
-  
+
 	transient private boolean executed;
-	
+
 	public AbstractOperation(String storeName) {
 		this.storeName = storeName;
 	}
-	
+
 	public String getStoreName() {
 		return storeName;
 	}
@@ -58,17 +60,17 @@ public abstract class AbstractOperation<O extends SingleOperation<O>, R extends 
 		this.superKey = superKey;
 		return castThis();
 	}
-	
+
 	public String getSuperKey() {
 		return superKey;
 	}
-	
+
 	public O setMajorKey(String majorKey) {
 		ensureNotExecuted();
 		this.majorKey = majorKey;
 		return castThis();
 	}
-	
+
 	public String getMajorKey() {
 		return majorKey;
 	}
@@ -89,27 +91,29 @@ public abstract class AbstractOperation<O extends SingleOperation<O>, R extends 
 		batch.add(castThis());
 		return castThis();
 	}
-	
+
 	protected boolean isExecuted() {
 		return executed;
 	}
-	
+
 	protected void ensureNotExecuted() {
 		if (executed) {
-			throw new IllegalStateException("execution phase does not allow modificaitons in operation " + this);
+			throw new IllegalStateException(
+					"execution phase does not allow modificaitons in operation "
+							+ this);
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private O castThis() {
 		return (O) this;
 	}
-	
+
 	protected void writeAbstractFields(SingleOperationPayload op) {
-	  op.setStoreName(storeName);
-	  op.setSuperKey(superKey);
-	  op.setMajorKey(majorKey);
-	  op.setMinorKey(minorKey);
+		op.setStoreName(storeName);
+		op.setSuperKey(superKey);
+		op.setMajorKey(majorKey);
+		op.setMinorKey(minorKey);
 	}
-	
+
 }

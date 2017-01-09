@@ -21,5 +21,5 @@ package com.dadril.datty.api;
  */
 
 public interface DattyResult {
-  
+
 }

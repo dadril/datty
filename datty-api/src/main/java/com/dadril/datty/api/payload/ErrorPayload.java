@@ -24,92 +24,92 @@ import io.protostuff.Tag;
 
 public class ErrorPayload {
 
-  @Tag(1)
-  private int errorCode;
-  
-  @Tag(2)
-  private String errorMessage;
+	@Tag(1)
+	private int errorCode;
 
-  @Tag(3)
-  private String errorStacktrace;
+	@Tag(2)
+	private String errorMessage;
 
-  public int getErrorCode() {
-    return errorCode;
-  }
+	@Tag(3)
+	private String errorStacktrace;
 
-  public void setErrorCode(int errorCode) {
-    this.errorCode = errorCode;
-  }
+	public int getErrorCode() {
+		return errorCode;
+	}
 
-  public String getErrorMessage() {
-    return errorMessage;
-  }
+	public void setErrorCode(int errorCode) {
+		this.errorCode = errorCode;
+	}
 
-  public void setErrorMessage(String errorMessage) {
-    this.errorMessage = errorMessage;
-  }
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 
-  public String getErrorStacktrace() {
-    return errorStacktrace;
-  }
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
 
-  public void setErrorStacktrace(String errorStacktrace) {
-    this.errorStacktrace = errorStacktrace;
-  }
-  
-  /**
-   * MessagePack
-   */
-  
-  public void pack(MessagePacker packer) throws IOException {
-    
-    if (errorCode != DattyConstants.UNSET_ERROR) {
-      packer.packInt(1);
-      packer.packInt(errorCode);
-    }
-    
-    if (errorMessage != null) {
-      packer.packInt(2);
-      packer.packString(errorMessage);
-    }
-    
-    if (errorStacktrace != null) {
-      packer.packInt(3);
-      packer.packString(errorStacktrace);
-    }
-    
-    packer.packInt(0);
-    
-  }
+	public String getErrorStacktrace() {
+		return errorStacktrace;
+	}
 
-  public void unpack(MessageUnpacker unpacker) throws IOException {
-    
-    while(true) {
-      
-      int tag = unpacker.unpackInt();
-      
-      if (tag == 0) {
-        return;
-      }
+	public void setErrorStacktrace(String errorStacktrace) {
+		this.errorStacktrace = errorStacktrace;
+	}
 
-      switch(tag) {
-        
-        case 1:
-          errorCode = unpacker.unpackInt();
-          break;
+	/**
+	 * MessagePack
+	 */
 
-        case 2:
-          errorMessage = unpacker.unpackString();
-          break;
+	public void pack(MessagePacker packer) throws IOException {
 
-        case 3:
-          errorStacktrace = unpacker.unpackString();
-          break;
+		if (errorCode != DattyConstants.UNSET_ERROR) {
+			packer.packInt(1);
+			packer.packInt(errorCode);
+		}
 
-      }
-      
-    }
-    
-  }
-  
+		if (errorMessage != null) {
+			packer.packInt(2);
+			packer.packString(errorMessage);
+		}
+
+		if (errorStacktrace != null) {
+			packer.packInt(3);
+			packer.packString(errorStacktrace);
+		}
+
+		packer.packInt(0);
+
+	}
+
+	public void unpack(MessageUnpacker unpacker) throws IOException {
+
+		while (true) {
+
+			int tag = unpacker.unpackInt();
+
+			if (tag == 0) {
+				return;
+			}
+
+			switch (tag) {
+
+			case 1:
+				errorCode = unpacker.unpackInt();
+				break;
+
+			case 2:
+				errorMessage = unpacker.unpackString();
+				break;
+
+			case 3:
+				errorStacktrace = unpacker.unpackString();
+				break;
+
+			}
+
+		}
+
+	}
+
 }

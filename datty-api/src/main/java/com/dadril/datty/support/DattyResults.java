@@ -42,116 +42,124 @@ import com.dadril.datty.support.exception.InstantiatorNotFoundException;
 
 public final class DattyResults {
 
-    private DattyResults() {
-    }
+	private DattyResults() {
+	}
 
-    private final static Map<SingleResultType, SingleResult.SingleInstantiator> knownOperations = new HashMap<>();
-    
-    static {
-      knownOperations.put(SingleResultType.VOID, VoidResult.Instantiator.INSTANCE);
-      knownOperations.put(SingleResultType.BOOLEAN, BooleanResult.Instantiator.INSTANCE);
-      knownOperations.put(SingleResultType.VALUE, ValueResult.Instantiator.INSTANCE);
-      knownOperations.put(SingleResultType.ERROR, ErrorResult.Instantiator.INSTANCE);
-    }
-    
-    public static byte[] toByteArray(DattyResult result, DattySerializer serializer) throws IOException {
-      
-      DattyPayload payloadInput = toPayload(result);
-      
-      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      
-      serializer.serialize(payloadInput, outputStream);
-      
-      return outputStream.toByteArray();
-    }
-    
-    public static DattyPayload toPayload(DattyResult result) {
-      
-      if (result instanceof SingleResult) {
-        DattyPayload payload = new DattyPayload();
-        payload.setType(DattyPayloadType.SR);
-        SingleResult<?> single = (SingleResult<?>) result;
-        single.writeTo(payload.addResult());
-        return payload;
-      }
-      else if (result instanceof BatchResult) {
-        DattyPayload payload = new DattyPayload();
-        payload.setType(DattyPayloadType.BR);
-        BatchResult batch = (BatchResult) result;
-        for (SingleResult<?> single : batch.getList()) {
-          single.writeTo(payload.addResult());
-        }
-        return payload;
-      }
-      else {
-        throw new IllegalArgumentException("unknown result type " + result.getClass());
-      }
-    }
-    
-    public static DattyResult parseFrom(DattyPayload payload) {
-      
-      DattyPayloadType type = payload.getType();
-      if (type == null) {
-        throw new IllegalArgumentException("empty payload type in " + payload);
-      }
-      
-      switch(type) {
-        
-        case SR:
-          return parseSingleResult(payload);
-          
-        case BR:
-          return parseBatchResult(payload);
-          
-        default:
-          throw new IllegalArgumentException("unsupported payload type " + type);
-        
-      }
-      
-    }
-    
-    private static BatchResult parseBatchResult(DattyPayload payload) {
-      
-      BatchResult batch = new BatchResult();
+	private final static Map<SingleResultType, SingleResult.SingleInstantiator> knownOperations = new HashMap<>();
 
-      List<SingleResultPayload> res = payload.getResultList();
-      if (res != null) {
-        for (SingleResultPayload single : res) {
-          
-          batch.add(parseFrom(single));
-        }
-      }
-      
-      return batch;
-      
-    }
-    
-    private static SingleResult<?> parseSingleResult(DattyPayload payload) {
-      
-      List<SingleResultPayload> res = payload.getResultList();
-      
-      if (res == null || res.size() != 1) {
-        throw new IllegalArgumentException("invalid result list size");
-      }
-      
-      return parseFrom(res.get(0));
-      
-    }    
-    
-    public static SingleResult<?> parseFrom(SingleResultPayload payload) {
-      
-      SingleResultType type = payload.getType();
-      if (type == null) {
-        throw new IllegalArgumentException("empty payload type in " + payload);
-      }
-      
-      SingleResult.SingleInstantiator instantiator = knownOperations.get(type);
-      
-      if (instantiator == null) {
-        throw new InstantiatorNotFoundException(type.name());
-      }
-      
-      return instantiator.parseFrom(payload);
-    }
-    
+	static {
+		knownOperations.put(SingleResultType.VOID,
+				VoidResult.Instantiator.INSTANCE);
+		knownOperations.put(SingleResultType.BOOLEAN,
+				BooleanResult.Instantiator.INSTANCE);
+		knownOperations.put(SingleResultType.VALUE,
+				ValueResult.Instantiator.INSTANCE);
+		knownOperations.put(SingleResultType.ERROR,
+				ErrorResult.Instantiator.INSTANCE);
+	}
+
+	public static byte[] toByteArray(DattyResult result,
+			DattySerializer serializer) throws IOException {
+
+		DattyPayload payloadInput = toPayload(result);
+
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+		serializer.serialize(payloadInput, outputStream);
+
+		return outputStream.toByteArray();
+	}
+
+	public static DattyPayload toPayload(DattyResult result) {
+
+		if (result instanceof SingleResult) {
+			DattyPayload payload = new DattyPayload();
+			payload.setType(DattyPayloadType.SR);
+			SingleResult<?> single = (SingleResult<?>) result;
+			single.writeTo(payload.addResult());
+			return payload;
+		} else if (result instanceof BatchResult) {
+			DattyPayload payload = new DattyPayload();
+			payload.setType(DattyPayloadType.BR);
+			BatchResult batch = (BatchResult) result;
+			for (SingleResult<?> single : batch.getList()) {
+				single.writeTo(payload.addResult());
+			}
+			return payload;
+		} else {
+			throw new IllegalArgumentException("unknown result type "
+					+ result.getClass());
+		}
+	}
+
+	public static DattyResult parseFrom(DattyPayload payload) {
+
+		DattyPayloadType type = payload.getType();
+		if (type == null) {
+			throw new IllegalArgumentException("empty payload type in "
+					+ payload);
+		}
+
+		switch (type) {
+
+		case SR:
+			return parseSingleResult(payload);
+
+		case BR:
+			return parseBatchResult(payload);
+
+		default:
+			throw new IllegalArgumentException("unsupported payload type "
+					+ type);
+
+		}
+
+	}
+
+	private static BatchResult parseBatchResult(DattyPayload payload) {
+
+		BatchResult batch = new BatchResult();
+
+		List<SingleResultPayload> res = payload.getResultList();
+		if (res != null) {
+			for (SingleResultPayload single : res) {
+
+				batch.add(parseFrom(single));
+			}
+		}
+
+		return batch;
+
+	}
+
+	private static SingleResult<?> parseSingleResult(DattyPayload payload) {
+
+		List<SingleResultPayload> res = payload.getResultList();
+
+		if (res == null || res.size() != 1) {
+			throw new IllegalArgumentException("invalid result list size");
+		}
+
+		return parseFrom(res.get(0));
+
+	}
+
+	public static SingleResult<?> parseFrom(SingleResultPayload payload) {
+
+		SingleResultType type = payload.getType();
+		if (type == null) {
+			throw new IllegalArgumentException("empty payload type in "
+					+ payload);
+		}
+
+		SingleResult.SingleInstantiator instantiator = knownOperations
+				.get(type);
+
+		if (instantiator == null) {
+			throw new InstantiatorNotFoundException(type.name());
+		}
+
+		return instantiator.parseFrom(payload);
+	}
+
 }

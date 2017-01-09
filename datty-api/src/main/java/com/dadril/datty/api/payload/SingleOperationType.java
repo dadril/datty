@@ -15,9 +15,6 @@ package com.dadril.datty.api.payload;
 
 public enum SingleOperationType {
 
-  EXIST,
-  GET,
-  SET,
-  CAS;
-  
+	EXIST, GET, SET, CAS;
+
 }

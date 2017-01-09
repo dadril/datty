@@ -15,14 +15,14 @@ package com.dadril.datty.support.exception;
 
 public class InstantiatorNotFoundException extends DattyException {
 
-  private static final long serialVersionUID = -6014419327711605806L;
+	private static final long serialVersionUID = -6014419327711605806L;
 
-  public InstantiatorNotFoundException(String typeName) {
+	public InstantiatorNotFoundException(String typeName) {
 		super("instantiator not found for " + typeName);
 	}
 
 	public InstantiatorNotFoundException(String typeName, Throwable t) {
 		super("instantiator not found for " + typeName, t);
 	}
-	
+
 }

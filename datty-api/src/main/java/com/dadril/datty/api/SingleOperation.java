@@ -27,39 +27,43 @@ import com.dadril.datty.api.payload.SingleOperationPayload;
  *
  */
 
-public interface SingleOperation<O extends SingleOperation<O>> extends DattyOperation {
+public interface SingleOperation<O extends SingleOperation<O>> extends
+		DattyOperation {
 
 	/**
 	 * Adds this operation to the batch
 	 * 
-	 * @param batch - batch that will be executed
+	 * @param batch
+	 *            - batch that will be executed
 	 */
-	
-	 O addToBatch(BatchOperation batch);
-	
-	 /**
-	  * Writes single operation 
-	  * 
-	  * @param payload - output payload
-	  */
-	 
-	 void writeTo(SingleOperationPayload payload);
-	 
-	 /**
-	  * Single instantiator for operation 
-	  */
-	 
-	 interface SingleInstantiator {
-	    
-	    /**
-	     * Instantiation method
-	     * 
-	     * @param payload of the operation
-	     * @return instance of operation
-	     */
-	    
-	   SingleOperation<?> parseFrom(SingleOperationPayload payload);
-	    
-	 }
-	 
+
+	O addToBatch(BatchOperation batch);
+
+	/**
+	 * Writes single operation
+	 * 
+	 * @param payload
+	 *            - output payload
+	 */
+
+	void writeTo(SingleOperationPayload payload);
+
+	/**
+	 * Single instantiator for operation
+	 */
+
+	interface SingleInstantiator {
+
+		/**
+		 * Instantiation method
+		 * 
+		 * @param payload
+		 *            of the operation
+		 * @return instance of operation
+		 */
+
+		SingleOperation<?> parseFrom(SingleOperationPayload payload);
+
+	}
+
 }

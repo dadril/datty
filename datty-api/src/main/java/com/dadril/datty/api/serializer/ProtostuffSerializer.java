@@ -24,16 +24,21 @@ import io.protostuff.ProtobufIOUtil;
 
 public enum ProtostuffSerializer implements DattySerializer {
 
-  INSTANCE;
-  
-  @Override
-  public void serialize(DattyPayload payloadInput, OutputStream outputStream) throws IOException {
-    ProtobufIOUtil.writeTo(outputStream, payloadInput, DattySchemas.PAYLOAD_SCHEMA, DattySchemas.getLocalLinkedBuffer());
-  }
+	INSTANCE;
 
-  @Override
-  public void deserialize(InputStream inputStream, DattyPayload payloadOutput) throws IOException {
-    ProtobufIOUtil.mergeFrom(inputStream, payloadOutput, DattySchemas.PAYLOAD_SCHEMA);
-  }
+	@Override
+	public void serialize(DattyPayload payloadInput, OutputStream outputStream)
+			throws IOException {
+		ProtobufIOUtil.writeTo(outputStream, payloadInput,
+				DattySchemas.PAYLOAD_SCHEMA,
+				DattySchemas.getLocalLinkedBuffer());
+	}
+
+	@Override
+	public void deserialize(InputStream inputStream, DattyPayload payloadOutput)
+			throws IOException {
+		ProtobufIOUtil.mergeFrom(inputStream, payloadOutput,
+				DattySchemas.PAYLOAD_SCHEMA);
+	}
 
 }

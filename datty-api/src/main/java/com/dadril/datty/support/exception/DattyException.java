@@ -35,5 +35,5 @@ public class DattyException extends RuntimeException {
 	public DattyException(Throwable t) {
 		super(t);
 	}
-	
+
 }

@@ -26,35 +26,35 @@ import com.dadril.datty.api.payload.SingleResultType;
 
 public final class BooleanResult implements SingleResult<Boolean> {
 
-  private final boolean value;
-  
-  public BooleanResult(boolean value) {
-    this.value = value;
-  }
-  
+	private final boolean value;
+
+	public BooleanResult(boolean value) {
+		this.value = value;
+	}
+
 	@Override
 	public Boolean get() {
 		return value;
 	}
 
-  @Override
-  public void writeTo(SingleResultPayload payload) {
-    payload.setType(SingleResultType.BOOLEAN);
-    payload.setBooleanValue(value);
-  }
-  
-  public enum Instantiator implements SingleInstantiator {
-    
-    INSTANCE;
+	@Override
+	public void writeTo(SingleResultPayload payload) {
+		payload.setType(SingleResultType.BOOLEAN);
+		payload.setBooleanValue(value);
+	}
 
-    @Override
-    public BooleanResult parseFrom(SingleResultPayload payload) {
-      
-      boolean booleanValue = payload.getBooleanValue();
-      
-      return new BooleanResult(booleanValue);
-    }
-    
-  }
-	
+	public enum Instantiator implements SingleInstantiator {
+
+		INSTANCE;
+
+		@Override
+		public BooleanResult parseFrom(SingleResultPayload payload) {
+
+			boolean booleanValue = payload.getBooleanValue();
+
+			return new BooleanResult(booleanValue);
+		}
+
+	}
+
 }

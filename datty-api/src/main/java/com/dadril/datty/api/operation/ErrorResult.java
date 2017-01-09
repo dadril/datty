@@ -30,74 +30,74 @@ import com.dadril.datty.support.DattyErrorCodes;
 
 public class ErrorResult implements SingleResult<Error>, Error {
 
-  private int errorCode = DattyErrorCodes.UNKNOWN_ERROR;
-  private String errorMessage;
-  private String errorStacktrace;
-  
-  @Override
-  public int getErrorCode() {
-    return errorCode;
-  }
+	private int errorCode = DattyErrorCodes.UNKNOWN_ERROR;
+	private String errorMessage;
+	private String errorStacktrace;
 
-  public ErrorResult setErrorCode(int errorCode) {
-    this.errorCode = errorCode;
-    return this;
-  }
+	@Override
+	public int getErrorCode() {
+		return errorCode;
+	}
 
-  @Override
-  public String getErrorMessage() {
-    return errorMessage;
-  }
+	public ErrorResult setErrorCode(int errorCode) {
+		this.errorCode = errorCode;
+		return this;
+	}
 
-  public ErrorResult setErrorMessage(String errorMessage) {
-    this.errorMessage = errorMessage;
-    return this;
-  }
+	@Override
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 
-  @Override
-  public String getErrorStacktrace() {
-    return errorStacktrace;
-  }
+	public ErrorResult setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+		return this;
+	}
 
-  public ErrorResult setErrorStacktrace(String errorStacktrace) {
-    this.errorStacktrace = errorStacktrace;
-    return this;
-  }
+	@Override
+	public String getErrorStacktrace() {
+		return errorStacktrace;
+	}
 
-  @Override
-  public Error get() {
-    return this;
-  }
+	public ErrorResult setErrorStacktrace(String errorStacktrace) {
+		this.errorStacktrace = errorStacktrace;
+		return this;
+	}
 
-  @Override
-  public void writeTo(SingleResultPayload payload) {
-    payload.setType(SingleResultType.ERROR);
-    ErrorPayload error = new ErrorPayload();
-    error.setErrorCode(errorCode);
-    error.setErrorMessage(errorMessage);
-    error.setErrorStacktrace(errorStacktrace);
-    payload.setError(error);
-  }
+	@Override
+	public Error get() {
+		return this;
+	}
 
-  public enum Instantiator implements SingleInstantiator {
-    
-    INSTANCE;
+	@Override
+	public void writeTo(SingleResultPayload payload) {
+		payload.setType(SingleResultType.ERROR);
+		ErrorPayload error = new ErrorPayload();
+		error.setErrorCode(errorCode);
+		error.setErrorMessage(errorMessage);
+		error.setErrorStacktrace(errorStacktrace);
+		payload.setError(error);
+	}
 
-    @Override
-    public ErrorResult parseFrom(SingleResultPayload payload) {
-      
-      ErrorPayload err = payload.getError();
-      
-      ErrorResult res = new ErrorResult();
-      
-      if (err != null) {
-        res.setErrorCode(err.getErrorCode());
-        res.setErrorMessage(err.getErrorMessage());
-        res.setErrorStacktrace(err.getErrorStacktrace());
-      }
-      
-      return res;
-    }
-    
-  }
+	public enum Instantiator implements SingleInstantiator {
+
+		INSTANCE;
+
+		@Override
+		public ErrorResult parseFrom(SingleResultPayload payload) {
+
+			ErrorPayload err = payload.getError();
+
+			ErrorResult res = new ErrorResult();
+
+			if (err != null) {
+				res.setErrorCode(err.getErrorCode());
+				res.setErrorMessage(err.getErrorMessage());
+				res.setErrorStacktrace(err.getErrorStacktrace());
+			}
+
+			return res;
+		}
+
+	}
 }

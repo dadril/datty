@@ -27,79 +27,80 @@ import com.dadril.datty.support.VersionedValue;
  *
  */
 
-public class CasOperation extends AbstractOperation<CasOperation, BooleanResult> {
+public class CasOperation extends
+		AbstractOperation<CasOperation, BooleanResult> {
 
-  private final Value oldValue;
-  private final byte[] newValueOrNull;
-  private int ttlSeconds = DattyConstants.UNSET_TTL;
-  
+	private final Value oldValue;
+	private final byte[] newValueOrNull;
+	private int ttlSeconds = DattyConstants.UNSET_TTL;
+
 	public CasOperation(String storeName, Value oldValue, byte[] newValueOrNull) {
 		super(storeName);
 		this.oldValue = oldValue;
-    this.newValueOrNull = newValueOrNull;
-	}
-	
-	public CasOperation(String storeName, String majorKey, Value oldValue, byte[] newValueOrNull) {
-	  super(storeName);
-	  setMajorKey(majorKey);
-	  this.oldValue = oldValue;
-	  this.newValueOrNull = newValueOrNull;
+		this.newValueOrNull = newValueOrNull;
 	}
 
-  public Value getOldValue() {
-    return oldValue;
-  }
+	public CasOperation(String storeName, String majorKey, Value oldValue,
+			byte[] newValueOrNull) {
+		super(storeName);
+		setMajorKey(majorKey);
+		this.oldValue = oldValue;
+		this.newValueOrNull = newValueOrNull;
+	}
 
-  public byte[] getNewValue() {
-    return newValueOrNull;
-  }
-  
-  public int getTtlSeconds() {
-    return ttlSeconds;
-  }
+	public Value getOldValue() {
+		return oldValue;
+	}
 
-  public CasOperation setTtlSeconds(int ttlSeconds) {
-    this.ttlSeconds = ttlSeconds;
-    return this;
-  }
-  
-  @Override
-  public void writeTo(SingleOperationPayload op) {
-    
-    op.setType(SingleOperationType.CAS);
-    op.setNewValue(newValueOrNull);
-    op.setTtlSeconds(ttlSeconds);
-    
-    long version = oldValue.getVersion();
-    if (version != DattyConstants.UNSET_VERSION) {
-      op.setOldVersion(version);
-    }
-    else {
-      op.setOldValue(oldValue.getBackingValue());
-    }
-    
-    writeAbstractFields(op);
-  }
+	public byte[] getNewValue() {
+		return newValueOrNull;
+	}
 
-  public enum Instantiator implements SingleInstantiator {
-    
-    INSTANCE;
+	public int getTtlSeconds() {
+		return ttlSeconds;
+	}
 
-    @Override
-    public CasOperation parseFrom(SingleOperationPayload payload) {
+	public CasOperation setTtlSeconds(int ttlSeconds) {
+		this.ttlSeconds = ttlSeconds;
+		return this;
+	}
 
-      CasOperation op = new CasOperation(payload.getStoreName(), 
-          VersionedValue.wrap(payload.getOldValue(), payload.getOldVersion()),
-          payload.getNewValue());
+	@Override
+	public void writeTo(SingleOperationPayload op) {
 
-      op.setSuperKey(payload.getSuperKey());
-      op.setMajorKey(payload.getMajorKey());
-      op.setMinorKey(payload.getMinorKey());
-      op.setTtlSeconds(payload.getTtlSeconds());
-      
-      return op;
-    }
-    
-  }
-	
+		op.setType(SingleOperationType.CAS);
+		op.setNewValue(newValueOrNull);
+		op.setTtlSeconds(ttlSeconds);
+
+		long version = oldValue.getVersion();
+		if (version != DattyConstants.UNSET_VERSION) {
+			op.setOldVersion(version);
+		} else {
+			op.setOldValue(oldValue.getBackingValue());
+		}
+
+		writeAbstractFields(op);
+	}
+
+	public enum Instantiator implements SingleInstantiator {
+
+		INSTANCE;
+
+		@Override
+		public CasOperation parseFrom(SingleOperationPayload payload) {
+
+			CasOperation op = new CasOperation(payload.getStoreName(),
+					VersionedValue.wrap(payload.getOldValue(),
+							payload.getOldVersion()), payload.getNewValue());
+
+			op.setSuperKey(payload.getSuperKey());
+			op.setMajorKey(payload.getMajorKey());
+			op.setMinorKey(payload.getMinorKey());
+			op.setTtlSeconds(payload.getTtlSeconds());
+
+			return op;
+		}
+
+	}
+
 }

@@ -22,17 +22,20 @@ import com.dadril.datty.support.DattySchemas;
 
 public enum JsonSerializer implements DattySerializer {
 
-  INSTANCE;
-  
-  @Override
-  public void serialize(DattyPayload payloadInput, OutputStream outputStream) throws IOException {
-    DattySchemas.JSON_MAPPER.writeValue(outputStream, payloadInput);
-  }
+	INSTANCE;
 
-  @Override
-  public void deserialize(InputStream inputStream, DattyPayload payloadOutput) throws IOException {
-    DattyPayload out = DattySchemas.JSON_MAPPER.readValue(inputStream, DattyPayload.class);
-    payloadOutput.copyFrom(out);
-  }
+	@Override
+	public void serialize(DattyPayload payloadInput, OutputStream outputStream)
+			throws IOException {
+		DattySchemas.JSON_MAPPER.writeValue(outputStream, payloadInput);
+	}
+
+	@Override
+	public void deserialize(InputStream inputStream, DattyPayload payloadOutput)
+			throws IOException {
+		DattyPayload out = DattySchemas.JSON_MAPPER.readValue(inputStream,
+				DattyPayload.class);
+		payloadOutput.copyFrom(out);
+	}
 
 }

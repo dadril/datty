@@ -20,15 +20,17 @@ package com.dadril.datty.api;
  *
  */
 
-public interface Datty {
-  
-  /**
-   * Executes datty operation
-   * 
-   * @param operation - single operation
-   * @param timeoutMillis - timeout milliseconds
-   */
-  
-  void execute(DattyOperation operation, int timeoutMillis);
-  
+public interface Datty extends StoreManager {
+
+	/**
+	 * Executes datty operation
+	 * 
+	 * @param operation
+	 *            - single operation
+	 * @param timeoutMillis
+	 *            - timeout milliseconds
+	 */
+
+	void execute(DattyOperation operation, int timeoutMillis);
+
 }

@@ -19,35 +19,34 @@ import java.nio.ByteBuffer;
 
 public class ByteBufferOutputStream extends OutputStream {
 
-  private final ByteBuffer backingBuffer;
+	private final ByteBuffer backingBuffer;
 
-  public ByteBufferOutputStream(int bufferSize) {
-    this(ByteBuffer.allocate(bufferSize));
-  }
+	public ByteBufferOutputStream(int bufferSize) {
+		this(ByteBuffer.allocate(bufferSize));
+	}
 
-  public ByteBufferOutputStream(ByteBuffer byteBuffer) {
-    this.backingBuffer = byteBuffer;
-  }
+	public ByteBufferOutputStream(ByteBuffer byteBuffer) {
+		this.backingBuffer = byteBuffer;
+	}
 
-  public ByteBuffer getBackingBuffer() {
-    return backingBuffer;
-  }
+	public ByteBuffer getBackingBuffer() {
+		return backingBuffer;
+	}
 
-  @Override
-  public void write(int b) throws IOException {
-    if (!backingBuffer.hasRemaining()) { 
-      flush(); 
-    }
-    backingBuffer.put((byte)b);
-  }
+	@Override
+	public void write(int b) throws IOException {
+		if (!backingBuffer.hasRemaining()) {
+			flush();
+		}
+		backingBuffer.put((byte) b);
+	}
 
-  @Override
-  public void write(byte[] bytes, int offset, int length) throws IOException {
-    if (backingBuffer.remaining() < length) { 
-      flush();
-    }
-    backingBuffer.put(bytes, offset, length);
-  }
-  
-  
+	@Override
+	public void write(byte[] bytes, int offset, int length) throws IOException {
+		if (backingBuffer.remaining() < length) {
+			flush();
+		}
+		backingBuffer.put(bytes, offset, length);
+	}
+
 }

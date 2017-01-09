@@ -25,44 +25,45 @@ import java.util.Properties;
 
 public interface Store {
 
-  /**
-   * Gets parent store manager instance
-   * 
-   * @return not null store manager
-   */
-  
-  StoreManager getStoreManager();
-  
-  /**
-   * Gets store name
-   * 
-   * @return not null store name
-   */
-  
-  String getStoreName();
-  
-  /**
-   * Gets store properties
-   * 
-   * @return not null properties of the store specific for store manager
-   */
-  
-  Properties getProperties();
-  
-  /**
-   * Update properties of the store
-   * 
-   * @param props - not null properties specific for store manager
-   */
-  
-  void setProperties(Properties props);
-  
-  /**
-   * Gets statistics specific for store
-   * 
-   * @return not null map
-   */
-  
-  Map<String, String> getStatistics();
-  
+	/**
+	 * Gets parent store manager instance
+	 * 
+	 * @return not null store manager
+	 */
+
+	StoreManager getStoreManager();
+
+	/**
+	 * Gets store name
+	 * 
+	 * @return not null store name
+	 */
+
+	String getStoreName();
+
+	/**
+	 * Gets store properties
+	 * 
+	 * @return not null properties of the store specific for store manager
+	 */
+
+	Properties getProperties();
+
+	/**
+	 * Update properties of the store
+	 * 
+	 * @param props
+	 *            - not null properties specific for store manager
+	 */
+
+	void setProperties(Properties props);
+
+	/**
+	 * Gets statistics specific for store
+	 * 
+	 * @return not null map
+	 */
+
+	Map<String, String> getStatistics();
+
 }

@@ -24,43 +24,46 @@ import com.dadril.datty.support.DattyOperations;
 
 public class MsgpackSerializerTest extends AbstractSerializerTest {
 
-  @Test
-  public void testOutput() throws IOException {
-    
-    GetOperation getOp = new GetOperation("TEST", "key1");
-    
-    ByteArrayOutputStream bout = new ByteArrayOutputStream();
+	@Test
+	public void testOutput() throws IOException {
 
-    MsgpackSerializer.INSTANCE.serialize(DattyOperations.toPayload(getOp), bout);
-    
-    byte[] blob = bout.toByteArray();
+		GetOperation getOp = new GetOperation("TEST", "key1");
 
-    System.out.println(Arrays.toString(blob));
-    
-  }
-  
-  @Test
-  public void testSingle() throws IOException {
-    
-    testSingle(MsgpackSerializer.INSTANCE);
-    
-  }
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
 
-  
-  @Test
-  public void testBatch() throws IOException {
-    
-    testBatch(MsgpackSerializer.INSTANCE);
-    
-  }
-  
-  @Test
-  public void testPerformace() throws IOException {
-    
-    long ser = testSerializePerformace(MsgpackSerializer.INSTANCE, DEFAULT_ITERS);
-    long deser = testDeserializePerformace(MsgpackSerializer.INSTANCE, DEFAULT_ITERS);
-    System.out.println("MsgpackSerializer performance " + ser + "/" + deser);
-    
-  }
-  
+		MsgpackSerializer.INSTANCE.serialize(DattyOperations.toPayload(getOp),
+				bout);
+
+		byte[] blob = bout.toByteArray();
+
+		System.out.println(Arrays.toString(blob));
+
+	}
+
+	@Test
+	public void testSingle() throws IOException {
+
+		testSingle(MsgpackSerializer.INSTANCE);
+
+	}
+
+	@Test
+	public void testBatch() throws IOException {
+
+		testBatch(MsgpackSerializer.INSTANCE);
+
+	}
+
+	@Test
+	public void testPerformace() throws IOException {
+
+		long ser = testSerializePerformace(MsgpackSerializer.INSTANCE,
+				DEFAULT_ITERS);
+		long deser = testDeserializePerformace(MsgpackSerializer.INSTANCE,
+				DEFAULT_ITERS);
+		System.out
+				.println("MsgpackSerializer performance " + ser + "/" + deser);
+
+	}
+
 }

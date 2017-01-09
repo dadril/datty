@@ -15,14 +15,14 @@ package com.dadril.datty.support.exception;
 
 public class StoreMismatchException extends DattyException {
 
-  private static final long serialVersionUID = -4039694905416884592L;
+	private static final long serialVersionUID = -4039694905416884592L;
 
-  public StoreMismatchException(String storeName) {
-    super(storeName);
-  }
+	public StoreMismatchException(String storeName) {
+		super(storeName);
+	}
 
-  public StoreMismatchException(String storeName, Throwable t) {
-    super(storeName, t);
-  }
+	public StoreMismatchException(String storeName, Throwable t) {
+		super(storeName, t);
+	}
 
 }

@@ -27,7 +27,7 @@ public class ConfigurationException extends DattyException {
 	public ConfigurationException(String msg) {
 		super(msg);
 	}
-	
+
 	public ConfigurationException(String msg, Throwable t) {
 		super(msg, t);
 	}
@@ -35,5 +35,5 @@ public class ConfigurationException extends DattyException {
 	public ConfigurationException(Throwable t) {
 		super(t);
 	}
-	
+
 }

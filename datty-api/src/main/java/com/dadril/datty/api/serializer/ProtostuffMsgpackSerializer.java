@@ -24,16 +24,20 @@ import io.protostuff.MsgpackIOUtil;
 
 public enum ProtostuffMsgpackSerializer implements DattySerializer {
 
-  INSTANCE;
-  
-  @Override
-  public void serialize(DattyPayload payloadInput, OutputStream outputStream) throws IOException {
-    MsgpackIOUtil.writeTo(outputStream, payloadInput, DattySchemas.PAYLOAD_SCHEMA, false);
-  }
+	INSTANCE;
 
-  @Override
-  public void deserialize(InputStream inputStream, DattyPayload payloadOutput) throws IOException {
-    MsgpackIOUtil.mergeFrom(inputStream, payloadOutput, DattySchemas.PAYLOAD_SCHEMA, false);
-  }
+	@Override
+	public void serialize(DattyPayload payloadInput, OutputStream outputStream)
+			throws IOException {
+		MsgpackIOUtil.writeTo(outputStream, payloadInput,
+				DattySchemas.PAYLOAD_SCHEMA, false);
+	}
+
+	@Override
+	public void deserialize(InputStream inputStream, DattyPayload payloadOutput)
+			throws IOException {
+		MsgpackIOUtil.mergeFrom(inputStream, payloadOutput,
+				DattySchemas.PAYLOAD_SCHEMA, false);
+	}
 
 }

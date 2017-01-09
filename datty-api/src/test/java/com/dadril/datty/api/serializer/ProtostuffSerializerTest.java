@@ -19,29 +19,30 @@ import org.junit.Test;
 
 public class ProtostuffSerializerTest extends AbstractSerializerTest {
 
-  @Test
-  public void testSingle() throws IOException {
-    
-    testSingle(ProtostuffSerializer.INSTANCE);
-    
-  }
+	@Test
+	public void testSingle() throws IOException {
 
-  
-  @Test
-  public void testBatch() throws IOException {
-    
-    testBatch(ProtostuffSerializer.INSTANCE);
-    
-  }
-  
-  
-  @Test
-  public void testPerformace() throws IOException {
-    
-    long ser = testSerializePerformace(ProtostuffSerializer.INSTANCE, DEFAULT_ITERS);
-    long deser = testDeserializePerformace(ProtostuffSerializer.INSTANCE, DEFAULT_ITERS);
-    System.out.println("ProtostuffSerializer performance " + ser + "/" + deser);
-    
-  }
-  
+		testSingle(ProtostuffSerializer.INSTANCE);
+
+	}
+
+	@Test
+	public void testBatch() throws IOException {
+
+		testBatch(ProtostuffSerializer.INSTANCE);
+
+	}
+
+	@Test
+	public void testPerformace() throws IOException {
+
+		long ser = testSerializePerformace(ProtostuffSerializer.INSTANCE,
+				DEFAULT_ITERS);
+		long deser = testDeserializePerformace(ProtostuffSerializer.INSTANCE,
+				DEFAULT_ITERS);
+		System.out.println("ProtostuffSerializer performance " + ser + "/"
+				+ deser);
+
+	}
+
 }

@@ -14,7 +14,7 @@
 package com.dadril.datty.api;
 
 /**
- * Type of the action 
+ * Type of the action
  * 
  * @author dadril
  *
@@ -22,27 +22,30 @@ package com.dadril.datty.api;
 
 public enum StoreExistsAction {
 
-  /**
-   * Creates a new store only with given properties
-   * 
-   * throws StoreExistsException if store already exists
-   */
-  
-  CREATE_ONLY,     
-  
-  /**
-   * Creates a new store if not exists, otherwise returns existing store without changing it's properties
-   */
-  
-  CREATE_IF_NOT_EXISTS, 
-  
-  /**
-   * Creates a new store if not exists, otherwise updates properties for existing one
-   * 
-   * throws StoreMismatchException if it is impossible to update properties runtime and they are different 
-   *  
-   */
-  
-  UPDATE;   
-  
+	/**
+	 * Creates a new store only with given properties
+	 * 
+	 * throws StoreExistsException if store already exists
+	 */
+
+	CREATE_ONLY,
+
+	/**
+	 * Creates a new store if not exists, otherwise returns existing store
+	 * without changing it's properties
+	 */
+
+	CREATE_IF_NOT_EXISTS,
+
+	/**
+	 * Creates a new store if not exists, otherwise updates properties for
+	 * existing one
+	 * 
+	 * throws StoreMismatchException if it is impossible to update properties
+	 * runtime and they are different
+	 * 
+	 */
+
+	UPDATE;
+
 }

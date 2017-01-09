@@ -14,10 +14,7 @@
 package com.dadril.datty.api.payload;
 
 public enum SingleResultType {
-  
-  VOID,
-  BOOLEAN,
-  VALUE,
-  ERROR;
-  
+
+	VOID, BOOLEAN, VALUE, ERROR;
+
 }

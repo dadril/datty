@@ -25,19 +25,21 @@ import com.dadril.datty.api.payload.DattyPayload;
 
 public enum MsgpackSerializer implements DattySerializer {
 
-  INSTANCE;
-  
-  @Override
-  public void serialize(DattyPayload payloadInput, OutputStream outputStream) throws IOException {
-    MessagePacker packer = MessagePack.newDefaultPacker(outputStream);
-    payloadInput.pack(packer);
-    packer.flush();
-  }
+	INSTANCE;
 
-  @Override
-  public void deserialize(InputStream inputStream, DattyPayload payloadOutput) throws IOException {
-    MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(inputStream);
-    payloadOutput.unpack(unpacker);
-  }
-  
+	@Override
+	public void serialize(DattyPayload payloadInput, OutputStream outputStream)
+			throws IOException {
+		MessagePacker packer = MessagePack.newDefaultPacker(outputStream);
+		payloadInput.pack(packer);
+		packer.flush();
+	}
+
+	@Override
+	public void deserialize(InputStream inputStream, DattyPayload payloadOutput)
+			throws IOException {
+		MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(inputStream);
+		payloadOutput.unpack(unpacker);
+	}
+
 }

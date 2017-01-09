@@ -21,37 +21,38 @@ import com.dadril.datty.api.SingleResult;
 
 /**
  * Batch Result
- *  
+ * 
  * @author dadril
  *
  */
 
 public class BatchResult implements DattyResult {
 
-  private final List<SingleResult<?>> list = new ArrayList<>();
-  
-  /**
-   * Adds operation to the batch
-   * 
-   * @param operation - not null single operation
-   * @return this
-   */
-  
-  public BatchResult add(SingleResult<?> result) {
-    list.add(result);
-    return this;
-  }
+	private final List<SingleResult<?>> list = new ArrayList<>();
 
-  public List<SingleResult<?>> getList() {
-    return list;
-  }
+	/**
+	 * Adds operation to the batch
+	 * 
+	 * @param operation
+	 *            - not null single operation
+	 * @return this
+	 */
 
-  public int size() {
-    return list.size();
-  }
-  
-  public SingleResult<?> get(int i) {
-    return list.get(i);
-  }
+	public BatchResult add(SingleResult<?> result) {
+		list.add(result);
+		return this;
+	}
+
+	public List<SingleResult<?>> getList() {
+		return list;
+	}
+
+	public int size() {
+		return list.size();
+	}
+
+	public SingleResult<?> get(int i) {
+		return list.get(i);
+	}
 
 }

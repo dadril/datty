@@ -32,21 +32,21 @@ public enum VoidResult implements SingleResult<Void> {
 	public Void get() {
 		return null;
 	}
-	
-  @Override
-  public void writeTo(SingleResultPayload payload) {
-    payload.setType(SingleResultType.VOID);
-  }
-	
-  public enum Instantiator implements SingleInstantiator {
-    
-    INSTANCE;
 
-    @Override
-    public VoidResult parseFrom(SingleResultPayload payload) {
-      return VoidResult.VOID;
-    }
-    
-  }
-  
+	@Override
+	public void writeTo(SingleResultPayload payload) {
+		payload.setType(SingleResultType.VOID);
+	}
+
+	public enum Instantiator implements SingleInstantiator {
+
+		INSTANCE;
+
+		@Override
+		public VoidResult parseFrom(SingleResultPayload payload) {
+			return VoidResult.VOID;
+		}
+
+	}
+
 }

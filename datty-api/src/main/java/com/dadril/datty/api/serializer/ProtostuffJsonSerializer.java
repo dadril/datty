@@ -24,16 +24,20 @@ import io.protostuff.JsonIOUtil;
 
 public enum ProtostuffJsonSerializer implements DattySerializer {
 
-  INSTANCE;
-  
-  @Override
-  public void serialize(DattyPayload payloadInput, OutputStream outputStream) throws IOException {
-    JsonIOUtil.writeTo(outputStream, payloadInput, DattySchemas.PAYLOAD_JSON_SCHEMA, false);
-  }
+	INSTANCE;
 
-  @Override
-  public void deserialize(InputStream inputStream, DattyPayload payloadOutput) throws IOException {
-    JsonIOUtil.mergeFrom(inputStream, payloadOutput, DattySchemas.PAYLOAD_JSON_SCHEMA, false);
-  }
+	@Override
+	public void serialize(DattyPayload payloadInput, OutputStream outputStream)
+			throws IOException {
+		JsonIOUtil.writeTo(outputStream, payloadInput,
+				DattySchemas.PAYLOAD_JSON_SCHEMA, false);
+	}
+
+	@Override
+	public void deserialize(InputStream inputStream, DattyPayload payloadOutput)
+			throws IOException {
+		JsonIOUtil.mergeFrom(inputStream, payloadOutput,
+				DattySchemas.PAYLOAD_JSON_SCHEMA, false);
+	}
 
 }

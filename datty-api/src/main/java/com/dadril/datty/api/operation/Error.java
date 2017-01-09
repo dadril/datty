@@ -22,28 +22,28 @@ package com.dadril.datty.api.operation;
 
 public interface Error {
 
-  /**
-   * Gets error code
-   * 
-   * @return error code number
-   */
-  
-  int getErrorCode();
-  
-  /**
-   * Gets error message if has
-   * 
-   * @return error code message or null
-   */
-  
-  String getErrorMessage();
-  
-  /**
-   * Gets exception stacktrace if has
-   * 
-   * @return exception stacktrace or null
-   */
-  
-  String getErrorStacktrace();
-  
+	/**
+	 * Gets error code
+	 * 
+	 * @return error code number
+	 */
+
+	int getErrorCode();
+
+	/**
+	 * Gets error message if has
+	 * 
+	 * @return error code message or null
+	 */
+
+	String getErrorMessage();
+
+	/**
+	 * Gets exception stacktrace if has
+	 * 
+	 * @return exception stacktrace or null
+	 */
+
+	String getErrorStacktrace();
+
 }

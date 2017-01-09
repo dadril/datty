@@ -1,0 +1,46 @@
+/*
+ * Copyright (C) 2016 Data Drilling Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package com.dadril.datty.unit;
+
+import java.io.IOException;
+import java.util.Properties;
+
+import com.dadril.datty.api.Datty;
+import com.dadril.datty.api.DattyFactory;
+
+/**
+ * Simple factory for unit implementation
+ * 
+ * @author dadril
+ *
+ */
+
+public class UnitDattyFactory implements DattyFactory {
+
+	@Override
+	public String getName() {
+		return "unit";
+	}
+
+	@Override
+	public Datty newInstance(Properties props) throws IOException {
+		return new UnitDatty(props);
+	}
+
+	@Override
+	public String toString() {
+		return "UnitDattyFactory";
+	}
+	
+}
