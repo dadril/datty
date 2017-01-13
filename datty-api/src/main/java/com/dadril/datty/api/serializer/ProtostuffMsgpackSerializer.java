@@ -13,14 +13,15 @@
  */
 package com.dadril.datty.api.serializer;
 
+import io.protostuff.MsgpackIOUtil;
+import io.protostuff.MsgpackXIOUtil;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.dadril.datty.api.payload.DattyPayload;
 import com.dadril.datty.support.DattySchemas;
-
-import io.protostuff.MsgpackIOUtil;
 
 public enum ProtostuffMsgpackSerializer implements DattySerializer {
 
@@ -29,8 +30,8 @@ public enum ProtostuffMsgpackSerializer implements DattySerializer {
 	@Override
 	public void serialize(DattyPayload payloadInput, OutputStream outputStream)
 			throws IOException {
-		MsgpackIOUtil.writeTo(outputStream, payloadInput,
-				DattySchemas.PAYLOAD_SCHEMA, false);
+		MsgpackXIOUtil.writeTo(outputStream, payloadInput,
+				DattySchemas.PAYLOAD_SCHEMA, false, DattySchemas.getLocalLinkedBuffer());
 	}
 
 	@Override
