@@ -21,5 +21,6 @@ package io.datty.api;
  */
 
 public interface DattyResult {
-
+	
+	
 }
