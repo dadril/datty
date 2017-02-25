@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Data Drilling Corporation
+ * Copyright (C) 2016 Datty.io Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -20,28 +20,28 @@ package io.datty.api;
  *
  */
 
-public enum StoreExistsAction {
+public enum RegionExistsAction {
 
 	/**
-	 * Creates a new store only with given properties
+	 * Creates a new region only with given properties
 	 * 
-	 * throws StoreExistsException if store already exists
+	 * throws RegionExistsException if region already exists
 	 */
 
 	CREATE_ONLY,
 
 	/**
-	 * Creates a new store if not exists, otherwise returns existing store
+	 * Creates a new region if not exists, otherwise returns existing region
 	 * without changing it's properties
 	 */
 
 	CREATE_IF_NOT_EXISTS,
 
 	/**
-	 * Creates a new store if not exists, otherwise updates properties for
+	 * Creates a new region if not exists, otherwise updates properties for
 	 * existing one
 	 * 
-	 * throws StoreMismatchException if it is impossible to update properties
+	 * throws RegionMismatchException if it is impossible to update properties
 	 * runtime and they are different
 	 * 
 	 */

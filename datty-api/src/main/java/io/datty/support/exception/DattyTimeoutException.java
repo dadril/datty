@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Data Drilling Corporation
+ * Copyright (C) 2016 Datty.io Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,16 +13,27 @@
  */
 package io.datty.support.exception;
 
-public class InstantiatorNotFoundException extends DattyException {
+/**
+ * Datty timeout exception
+ * 
+ * @author dadril
+ *
+ */
 
-	private static final long serialVersionUID = -6014419327711605806L;
+public class DattyTimeoutException extends DattyException {
 
-	public InstantiatorNotFoundException(String typeName) {
-		super("instantiator not found for " + typeName);
+	private static final long serialVersionUID = 942050858050281111L;
+
+	public DattyTimeoutException(String msg) {
+		super(msg);
 	}
 
-	public InstantiatorNotFoundException(String typeName, Throwable t) {
-		super("instantiator not found for " + typeName, t);
+	public DattyTimeoutException(String msg, Throwable t) {
+		super(msg, t);
+	}
+
+	public DattyTimeoutException(Throwable t) {
+		super(t);
 	}
 
 }

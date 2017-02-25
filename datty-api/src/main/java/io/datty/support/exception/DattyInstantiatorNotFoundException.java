@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Data Drilling Corporation
+ * Copyright (C) 2016 Datty.io Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,16 +13,16 @@
  */
 package io.datty.support.exception;
 
-public class StoreMismatchException extends DattyException {
+public class DattyInstantiatorNotFoundException extends DattyException {
 
-	private static final long serialVersionUID = -4039694905416884592L;
+	private static final long serialVersionUID = -6014419327711605806L;
 
-	public StoreMismatchException(String storeName) {
-		super(storeName);
+	public DattyInstantiatorNotFoundException(String typeName) {
+		super("instantiator not found for " + typeName);
 	}
 
-	public StoreMismatchException(String storeName, Throwable t) {
-		super(storeName, t);
+	public DattyInstantiatorNotFoundException(String typeName, Throwable t) {
+		super("instantiator not found for " + typeName, t);
 	}
 
 }

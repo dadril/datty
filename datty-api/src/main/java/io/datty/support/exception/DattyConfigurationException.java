@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Data Drilling Corporation
+ * Copyright (C) 2016 Datty.io Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -14,25 +14,25 @@
 package io.datty.support.exception;
 
 /**
- * Datty timeout exception
+ * Datty configuration exception
  * 
  * @author dadril
  *
  */
 
-public class TimeoutException extends DattyException {
+public class DattyConfigurationException extends DattyException {
 
-	private static final long serialVersionUID = 942050858050281111L;
+	private static final long serialVersionUID = 7345765063535628582L;
 
-	public TimeoutException(String msg) {
+	public DattyConfigurationException(String msg) {
 		super(msg);
 	}
 
-	public TimeoutException(String msg, Throwable t) {
+	public DattyConfigurationException(String msg, Throwable t) {
 		super(msg, t);
 	}
 
-	public TimeoutException(Throwable t) {
+	public DattyConfigurationException(Throwable t) {
 		super(t);
 	}
 

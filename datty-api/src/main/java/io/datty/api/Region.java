@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Data Drilling Corporation
+ * Copyright (C) 2016 Datty.io Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -23,23 +23,23 @@ import java.util.Properties;
  *
  */
 
-public interface Store {
+public interface Region {
 
 	/**
-	 * Gets parent store manager instance
+	 * Gets parent region manager instance
 	 * 
-	 * @return not null store manager
+	 * @return not null region manager
 	 */
 
-	StoreManager getStoreManager();
+	RegionManager getStoreManager();
 
 	/**
-	 * Gets store name
+	 * Gets region name
 	 * 
-	 * @return not null store name
+	 * @return not null region name
 	 */
 
-	String getStoreName();
+	String getRegionName();
 
 	/**
 	 * Gets store properties

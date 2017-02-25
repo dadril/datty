@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Data Drilling Corporation
+ * Copyright (C) 2016 Datty.io Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -25,7 +25,7 @@ import io.datty.api.payload.DattyPayloadType;
 import io.datty.api.payload.SingleResultPayload;
 import io.datty.api.payload.SingleResultType;
 import io.datty.api.serializer.DattySerializer;
-import io.datty.support.exception.InstantiatorNotFoundException;
+import io.datty.support.exception.DattyInstantiatorNotFoundException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -156,7 +156,7 @@ public final class DattyResults {
 				.get(type);
 
 		if (instantiator == null) {
-			throw new InstantiatorNotFoundException(type.name());
+			throw new DattyInstantiatorNotFoundException(type.name());
 		}
 
 		return instantiator.parseFrom(payload);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Data Drilling Corporation
+ * Copyright (C) 2016 Datty.io Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,27 +13,16 @@
  */
 package io.datty.support.exception;
 
-/**
- * Datty configuration exception
- * 
- * @author dadril
- *
- */
+public class RegionMismatchException extends DattyException {
 
-public class ConfigurationException extends DattyException {
+	private static final long serialVersionUID = -4039694905416884592L;
 
-	private static final long serialVersionUID = 7345765063535628582L;
-
-	public ConfigurationException(String msg) {
-		super(msg);
+	public RegionMismatchException(String storeName) {
+		super(storeName);
 	}
 
-	public ConfigurationException(String msg, Throwable t) {
-		super(msg, t);
-	}
-
-	public ConfigurationException(Throwable t) {
-		super(t);
+	public RegionMismatchException(String storeName, Throwable t) {
+		super(storeName, t);
 	}
 
 }

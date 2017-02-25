@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Data Drilling Corporation
+ * Copyright (C) 2016 Datty.io Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,8 +13,8 @@
  */
 package io.datty.unit;
 
-import io.datty.api.Store;
-import io.datty.api.StoreManager;
+import io.datty.api.Region;
+import io.datty.api.RegionManager;
 
 import java.util.Collections;
 import java.util.Map;
@@ -30,30 +30,30 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
  *
  */
 
-public class UnitStore implements Store {
+public class UnitStore implements Region {
 
 	private final static AtomicReferenceFieldUpdater<UnitStore, Properties> PROPS_UPDATER = AtomicReferenceFieldUpdater
 			.newUpdater(UnitStore.class, Properties.class, "props");
 
-	private final StoreManager parent;
+	private final RegionManager parent;
 	private final String name;
 	private volatile Properties props;
 	
 	private final ConcurrentMap<String, UnitRecord> recordMap = new ConcurrentHashMap<String, UnitRecord>();
 
-	public UnitStore(StoreManager parent, String name, Properties props) {
+	public UnitStore(RegionManager parent, String name, Properties props) {
 		this.parent = parent;
 		this.name = name;
 		this.props = props;
 	}
 
 	@Override
-	public StoreManager getStoreManager() {
+	public RegionManager getStoreManager() {
 		return parent;
 	}
 
 	@Override
-	public String getStoreName() {
+	public String getRegionName() {
 		return name;
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Data Drilling Corporation
+ * Copyright (C) 2016 Datty.io Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -20,7 +20,7 @@ package io.datty.api;
  *
  */
 
-public interface Datty extends StoreManager {
+public interface Datty extends RegionManager {
 
 	/**
 	 * Executes datty operation

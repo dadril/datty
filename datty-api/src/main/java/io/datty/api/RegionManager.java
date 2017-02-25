@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Data Drilling Corporation
+ * Copyright (C) 2016 Datty.io Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -16,16 +16,16 @@ package io.datty.api;
 import java.util.Properties;
 
 /**
- * StoreManager interface
+ * RegionManager interface
  * 
  * @author dadril
  *
  */
 
-public interface StoreManager {
+public interface RegionManager {
 
 	/**
-	 * Gets the name of the store manager
+	 * Gets the name of the region manager
 	 * 
 	 * @return not null name
 	 */
@@ -33,23 +33,25 @@ public interface StoreManager {
 	String getName();
 
 	/**
-	 * Finds existing store
+	 * Finds existing region
 	 * 
-	 * @param storeName
-	 *            - store name
-	 * @return store instance or null
+	 * @param regionName
+	 *            - region name
+	 * @return region instance or null
 	 */
 
-	Store findStore(String storeName);
+	Region findStore(String regionName);
 
 	/**
-	 * Gets existing store or creates a new one
+	 * Gets existing region or creates a new one
 	 * 
-	 * @param storeName
-	 *            - store name
-	 * @return not null store
+	 * @param regionName - region name
+	 * @param regionProperties - region specific properties
+	 * @param action - action if region exists
+	 * 
+	 * @return not null region
 	 */
 
-	Store getStore(String storeName, Properties props, StoreExistsAction action);
+	Region getStore(String regionName, Properties regionProperties, RegionExistsAction action);
 
 }

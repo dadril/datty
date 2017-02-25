@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Data Drilling Corporation
+ * Copyright (C) 2016 Datty.io Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,15 +13,15 @@
  */
 package io.datty.support.exception;
 
-public class StoreNotFoundException extends DattyException {
+public class RegionNotFoundException extends DattyException {
 
 	private static final long serialVersionUID = 4824538129120664380L;
 
-	public StoreNotFoundException(String storeName) {
+	public RegionNotFoundException(String storeName) {
 		super(storeName);
 	}
 
-	public StoreNotFoundException(String storeName, Throwable t) {
+	public RegionNotFoundException(String storeName, Throwable t) {
 		super(storeName, t);
 	}
 

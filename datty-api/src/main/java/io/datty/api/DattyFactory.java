@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Data Drilling Corporation
+ * Copyright (C) 2016 Datty.io Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,7 +13,7 @@
  */
 package io.datty.api;
 
-import io.datty.support.exception.ConfigurationException;
+import io.datty.support.exception.DattyConfigurationException;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -84,7 +84,7 @@ public interface DattyFactory {
 		 * Gets any factory
 		 * 
 		 * @return not null factory
-		 * @throws ConfigurationException
+		 * @throws DattyConfigurationException
 		 *             if not found
 		 */
 
@@ -92,7 +92,7 @@ public interface DattyFactory {
 			for (DattyFactory f : serviceLoader) {
 				return f;
 			}
-			throw new ConfigurationException(
+			throw new DattyConfigurationException(
 					"there are no DattyFactory implementations in the classpath");
 		}
 
@@ -100,7 +100,7 @@ public interface DattyFactory {
 		 * Gets store factory from classpath, make sure that it is alone
 		 * 
 		 * @return not null factory
-		 * @throws ConfigurationException
+		 * @throws DattyConfigurationException
 		 *             if not found or non unique
 		 */
 
@@ -110,14 +110,14 @@ public interface DattyFactory {
 				if (found == null) {
 					found = f;
 				} else {
-					throw new ConfigurationException(
+					throw new DattyConfigurationException(
 							"expected unique DattyFactory implementation in the classpath");
 				}
 			}
 			if (found != null) {
 				return found;
 			}
-			throw new ConfigurationException(
+			throw new DattyConfigurationException(
 					"there is no DattyFactory implementation in the classpath");
 		}
 
@@ -127,7 +127,7 @@ public interface DattyFactory {
 		 * @param name
 		 *            - case sensitive name of the store
 		 * @return not null factory
-		 * @throws ConfigurationException
+		 * @throws DattyConfigurationException
 		 *             if not found
 		 */
 
@@ -137,7 +137,7 @@ public interface DattyFactory {
 					return f;
 				}
 			}
-			throw new ConfigurationException(
+			throw new DattyConfigurationException(
 					"there is no DattyFactory implementation in the classpath with a name '"
 							+ name + "'");
 		}

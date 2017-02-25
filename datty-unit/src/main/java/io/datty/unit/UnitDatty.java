@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Data Drilling Corporation
+ * Copyright (C) 2016 Datty.io Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -15,8 +15,8 @@ package io.datty.unit;
 
 import io.datty.api.Datty;
 import io.datty.api.DattyOperation;
-import io.datty.api.Store;
-import io.datty.api.StoreExistsAction;
+import io.datty.api.Region;
+import io.datty.api.RegionExistsAction;
 
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,13 +48,13 @@ public class UnitDatty implements Datty {
 	}
 
 	@Override
-	public Store findStore(String storeName) {
+	public Region findStore(String storeName) {
 		return storeMap.get(storeName);
 	}
 
 	@Override
-	public Store getStore(String storeName, Properties props,
-			StoreExistsAction action) {
+	public Region getStore(String storeName, Properties props,
+			RegionExistsAction action) {
 		
 		
 
