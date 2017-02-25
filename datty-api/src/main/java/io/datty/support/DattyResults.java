@@ -15,7 +15,6 @@ package io.datty.support;
 
 import io.datty.api.DattyResult;
 import io.datty.api.SingleResult;
-import io.datty.api.operation.BatchResult;
 import io.datty.api.operation.BooleanResult;
 import io.datty.api.operation.ErrorResult;
 import io.datty.api.operation.ValueResult;
@@ -78,14 +77,6 @@ public final class DattyResults {
 			SingleResult<?> single = (SingleResult<?>) result;
 			single.writeTo(payload.addResult());
 			return payload;
-		} else if (result instanceof BatchResult) {
-			DattyPayload payload = new DattyPayload();
-			payload.setType(DattyPayloadType.BR);
-			BatchResult batch = (BatchResult) result;
-			for (SingleResult<?> single : batch.getList()) {
-				single.writeTo(payload.addResult());
-			}
-			return payload;
 		} else {
 			throw new IllegalArgumentException("unknown result type "
 					+ result.getClass());
@@ -105,30 +96,11 @@ public final class DattyResults {
 		case SR:
 			return parseSingleResult(payload);
 
-		case BR:
-			return parseBatchResult(payload);
-
 		default:
 			throw new IllegalArgumentException("unsupported payload type "
 					+ type);
 
 		}
-
-	}
-
-	private static BatchResult parseBatchResult(DattyPayload payload) {
-
-		BatchResult batch = new BatchResult();
-
-		List<SingleResultPayload> res = payload.getResultList();
-		if (res != null) {
-			for (SingleResultPayload single : res) {
-
-				batch.add(parseFrom(single));
-			}
-		}
-
-		return batch;
 
 	}
 

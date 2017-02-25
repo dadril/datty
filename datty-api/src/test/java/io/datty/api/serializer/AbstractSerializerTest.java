@@ -1,11 +1,8 @@
 package io.datty.api.serializer;
 
-import io.datty.api.operation.BatchOperation;
-import io.datty.api.operation.BatchResult;
 import io.datty.api.operation.GetOperation;
 import io.datty.api.operation.ValueResult;
 import io.datty.api.payload.DattyPayload;
-import io.datty.api.serializer.DattySerializer;
 import io.datty.io.DattyIOUtil;
 import io.datty.support.DattyOperations;
 import io.datty.support.VersionedValue;
@@ -68,41 +65,6 @@ public abstract class AbstractSerializerTest {
 				serializer);
 
 		compareResult(result, actualRes);
-	}
-
-	protected void testBatch(DattySerializer serializer) throws IOException {
-
-		/**
-		 * Operation
-		 */
-
-		BatchOperation batch = new BatchOperation();
-		batch.add(new GetOperation("TEST", "key1"));
-
-		byte[] blob = DattyIOUtil.toByteArray(batch, serializer);
-
-		BatchOperation actual = (BatchOperation) DattyIOUtil.parseOperation(
-				blob, serializer);
-
-		Assert.assertEquals(batch.size(), actual.size());
-		compareGet((GetOperation) batch.get(0), (GetOperation) actual.get(0));
-
-		/**
-		 * Result
-		 */
-
-		BatchResult batchRes = new BatchResult();
-		batchRes.add(new ValueResult(VersionedValue.wrap(VALUE, 123L)));
-
-		blob = DattyIOUtil.toByteArray(batchRes, serializer);
-
-		BatchResult actualRes = (BatchResult) DattyIOUtil.parseResult(blob,
-				serializer);
-
-		Assert.assertEquals(batchRes.size(), actualRes.size());
-		compareResult((ValueResult) batchRes.get(0),
-				(ValueResult) actualRes.get(0));
-
 	}
 
 	protected long testSerializePerformace(DattySerializer serializer,

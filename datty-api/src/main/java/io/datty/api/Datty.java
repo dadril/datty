@@ -13,6 +13,10 @@
  */
 package io.datty.api;
 
+import io.netty.buffer.ByteBuf;
+import rx.Observable;
+import rx.Single;
+
 /**
  * Base interface to execute asynchronous operations
  * 
@@ -23,7 +27,7 @@ package io.datty.api;
 public interface Datty extends RegionManager {
 
 	/**
-	 * Executes datty operation
+	 * Executes single Datty operation
 	 * 
 	 * @param operation
 	 *            - single operation
@@ -31,6 +35,34 @@ public interface Datty extends RegionManager {
 	 *            - timeout milliseconds
 	 */
 
-	void execute(DattyOperation operation, int timeoutMillis);
+	Single<DattyResult> execute(DattyOperation operation);
 
+	/**
+	 * Executes sequence of Datty operations
+	 * 
+	 * @param operations - sequence of operations
+	 * @return sequence of results
+	 */
+	
+	Observable<DattyResult> executeBatch(Observable<DattyOperation> operations);
+	
+	/**
+	 * Gets large value by key
+	 * 
+	 * @param key - datty key
+	 * @return stream value
+	 */
+	
+	Observable<ByteBuf> streamOut(DattyKey key);
+
+	/**
+	 * Puts large value by key
+	 * 
+	 * @param key - datty key
+	 * @param value - large value
+	 * @return number or bytes written 
+	 */
+	
+	Single<Long> streamIn(DattyKey key, Observable<ByteBuf> value);
+	
 }

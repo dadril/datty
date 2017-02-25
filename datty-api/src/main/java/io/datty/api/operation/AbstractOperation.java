@@ -13,14 +13,12 @@
  */
 package io.datty.api.operation;
 
-import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.AbstractFuture;
-import com.google.common.util.concurrent.ListenableFuture;
-
 import io.datty.api.DattyResult;
 import io.datty.api.SingleOperation;
 import io.datty.api.payload.SingleOperationPayload;
-import io.protostuff.Tag;
+
+import com.google.common.util.concurrent.AbstractFuture;
+import com.google.common.util.concurrent.ListenableFuture;
 
 /**
  * Abstract operation
@@ -33,16 +31,13 @@ public abstract class AbstractOperation<O extends SingleOperation<O>, R extends 
 		extends AbstractFuture<R> implements SingleOperation<O>,
 		ListenableFuture<R> {
 
-	@Tag(1)
+
 	protected String storeName;
 
-	@Tag(2)
 	private String superKey;
 
-	@Tag(3)
 	private String majorKey;
 
-	@Tag(4)
 	private String minorKey;
 
 	transient private boolean executed;
@@ -83,13 +78,6 @@ public abstract class AbstractOperation<O extends SingleOperation<O>, R extends 
 
 	public String getMinorKey() {
 		return minorKey;
-	}
-
-	@Override
-	public O addToBatch(BatchOperation batch) {
-		Preconditions.checkNotNull(batch, "null batch");
-		batch.add(castThis());
-		return castThis();
 	}
 
 	protected boolean isExecuted() {

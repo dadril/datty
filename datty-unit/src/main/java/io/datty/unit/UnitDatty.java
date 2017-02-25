@@ -14,13 +14,19 @@
 package io.datty.unit;
 
 import io.datty.api.Datty;
+import io.datty.api.DattyKey;
 import io.datty.api.DattyOperation;
+import io.datty.api.DattyResult;
 import io.datty.api.Region;
 import io.datty.api.RegionExistsAction;
+import io.netty.buffer.ByteBuf;
 
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import rx.Observable;
+import rx.Single;
 
 /**
  * Unit implementation for Datty API
@@ -48,24 +54,41 @@ public class UnitDatty implements Datty {
 	}
 
 	@Override
-	public Region findStore(String storeName) {
-		return storeMap.get(storeName);
-	}
-
-	@Override
-	public Region getStore(String storeName, Properties props,
-			RegionExistsAction action) {
-		
-		
-
-		
+	public Region findStore(String regionName) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void execute(DattyOperation operation, int timeoutMillis) {
+	public Region getStore(String regionName, Properties regionProperties,
+			RegionExistsAction action) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
+	@Override
+	public Single<DattyResult> execute(DattyOperation operation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
+	@Override
+	public Observable<DattyResult> executeBatch(
+			Observable<DattyOperation> operations) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Observable<ByteBuf> streamOut(DattyKey key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Single<Long> streamIn(DattyKey key, Observable<ByteBuf> value) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

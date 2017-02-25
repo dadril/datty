@@ -13,7 +13,6 @@
  */
 package io.datty.api;
 
-import io.datty.api.operation.BatchOperation;
 import io.datty.api.payload.SingleOperationPayload;
 
 /**
@@ -29,15 +28,6 @@ import io.datty.api.payload.SingleOperationPayload;
 
 public interface SingleOperation<O extends SingleOperation<O>> extends
 		DattyOperation {
-
-	/**
-	 * Adds this operation to the batch
-	 * 
-	 * @param batch
-	 *            - batch that will be executed
-	 */
-
-	O addToBatch(BatchOperation batch);
 
 	/**
 	 * Writes single operation

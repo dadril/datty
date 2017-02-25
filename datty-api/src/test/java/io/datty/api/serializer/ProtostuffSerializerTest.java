@@ -29,13 +29,6 @@ public class ProtostuffSerializerTest extends AbstractSerializerTest {
 	}
 
 	@Test
-	public void testBatch() throws IOException {
-
-		testBatch(ProtostuffSerializer.INSTANCE);
-
-	}
-
-	@Test
 	public void testPerformace() throws IOException {
 
 		long ser = testSerializePerformace(ProtostuffSerializer.INSTANCE,

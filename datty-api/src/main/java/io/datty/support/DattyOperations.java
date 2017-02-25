@@ -15,7 +15,6 @@ package io.datty.support;
 
 import io.datty.api.DattyOperation;
 import io.datty.api.SingleOperation;
-import io.datty.api.operation.BatchOperation;
 import io.datty.api.operation.CasOperation;
 import io.datty.api.operation.ExistOperation;
 import io.datty.api.operation.GetOperation;
@@ -92,14 +91,6 @@ public final class DattyOperations {
 			SingleOperation<?> single = (SingleOperation<?>) operation;
 			single.writeTo(payload.addOperation());
 			return payload;
-		} else if (operation instanceof BatchOperation) {
-			DattyPayload payload = new DattyPayload();
-			payload.setType(DattyPayloadType.BO);
-			BatchOperation batch = (BatchOperation) operation;
-			for (SingleOperation<?> single : batch.getList()) {
-				single.writeTo(payload.addOperation());
-			}
-			return payload;
 		} else {
 			throw new IllegalArgumentException("unknown operaiton type "
 					+ operation.getClass());
@@ -119,30 +110,11 @@ public final class DattyOperations {
 		case SO:
 			return parseSingleOperation(payload);
 
-		case BO:
-			return parseBatchOperation(payload);
-
 		default:
 			throw new IllegalArgumentException("unsupported payload type "
 					+ type);
 
 		}
-
-	}
-
-	private static BatchOperation parseBatchOperation(DattyPayload payload) {
-
-		BatchOperation batch = new BatchOperation();
-
-		List<SingleOperationPayload> ops = payload.getOperationList();
-		if (ops != null) {
-			for (SingleOperationPayload single : ops) {
-
-				batch.add(parseFrom(single));
-			}
-		}
-
-		return batch;
 
 	}
 
