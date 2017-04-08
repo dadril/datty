@@ -17,6 +17,7 @@ import io.datty.api.Datty;
 import io.datty.api.DattyConstants;
 import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
+import io.datty.api.result.AbstractResult;
 import io.datty.support.exception.DattyUncompletedException;
 import rx.Single;
 
@@ -76,11 +77,16 @@ public abstract class AbstractOperation<O extends DattyOperation, R extends Datt
 	}
 
 	@Override
+	public boolean hasTimeoutMillis() {
+		return timeoutMillis != DattyConstants.UNSET_TIMEOUT;
+	}
+	
+	@Override
 	public int getTimeoutMillis() {
 		return timeoutMillis;
 	}
 
-	public O setTimeoutMillis(int timeoutMillis) {
+	public O withTimeoutMillis(int timeoutMillis) {
 		this.timeoutMillis = timeoutMillis;
 		return castThis();
 	}
@@ -116,13 +122,20 @@ public abstract class AbstractOperation<O extends DattyOperation, R extends Datt
 	}
 
 	@Override
-	public void complete(DattyResult result) {
+	public DattyResult complete(DattyResult result) {
 		
 		if (result == null) {
 			throw new IllegalArgumentException("empty result");
 		}
 		
 		this.result = result;
+		
+		if (result instanceof AbstractResult) {
+			AbstractResult abstractResult = (AbstractResult) result;
+			abstractResult.setOperation(this);
+		}
+		
+		return this.result;
 	}
 
 	@Override

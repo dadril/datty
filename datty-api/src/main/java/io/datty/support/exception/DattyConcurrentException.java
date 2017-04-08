@@ -11,48 +11,29 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.support.exception;
 
 /**
- * Datty Constants
+ * DattyConcurrentException
  * 
  * @author dadril
  *
  */
 
-public final class DattyConstants {
+public class DattyConcurrentException extends DattyException {
 
-	private DattyConstants() {
+	private static final long serialVersionUID = 1913746029865832415L;
+
+	public DattyConcurrentException(String msg) {
+		super(msg);
 	}
 
-	/**
-	 * Default/unset parameter for TimeToLive in seconds
-	 */
+	public DattyConcurrentException(String msg, Throwable t) {
+		super(msg, t);
+	}
 
-	public static final int UNSET_TTL = 0;
-
-	/**
-	 * Default/unset parameter for SLA timeout in milliseconds
-	 */
-
-	public static final int UNSET_TIMEOUT = 0;
-
-	/**
-	 * Default/unset parameter for version of the value
-	 */
-
-	public static final long UNSET_VERSION = 0L;
-
-	/**
-	 * Default/unset error code
-	 */
-
-	public static final int UNSET_ERROR = 0;
-
-	/**
-	 * Default max concurrent tries parameter
-	 */
-
-	public static final int MAX_CONCURRENT_TRIES = 5;
+	public DattyConcurrentException(Throwable t) {
+		super(t);
+	}
 	
 }

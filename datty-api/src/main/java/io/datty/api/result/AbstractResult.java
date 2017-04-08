@@ -32,7 +32,7 @@ public abstract class AbstractResult implements DattyResult {
 		return operation;
 	}
 
-	protected void setOperation(DattyOperation operation) {
+	public void setOperation(DattyOperation operation) {
 		this.operation = operation;
 	}
 	

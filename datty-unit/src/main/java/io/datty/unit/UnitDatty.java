@@ -24,6 +24,7 @@ import io.datty.api.Datty;
 import io.datty.api.DattyKey;
 import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
+import io.datty.spi.AbstractDatty;
 import io.datty.support.exception.CacheExistsException;
 import io.netty.buffer.ByteBuf;
 import rx.Observable;
@@ -36,7 +37,7 @@ import rx.Single;
  *
  */
 
-public class UnitDatty implements Datty, CacheManager {
+public class UnitDatty extends AbstractDatty implements Datty, CacheManager {
 
 	private final String name;
 	private final ConcurrentMap<String, UnitCache> cacheMap = new ConcurrentHashMap<String, UnitCache>();
@@ -125,29 +126,25 @@ public class UnitDatty implements Datty, CacheManager {
 	 * -------------------------
 	 */
 
+
 	@Override
-	public Single<DattyResult> execute(DattyOperation operation) {
+	public Single<DattyResult> doExecute(DattyOperation operation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Observable<DattyResult> executeBatch(Observable<DattyOperation> operations) {
+	public Observable<DattyResult> doStreamOut(DattyKey key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Observable<ByteBuf> streamOut(DattyKey key) {
+	public Single<DattyResult> doStreamIn(DattyKey key, Observable<ByteBuf> value) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public Single<Long> streamIn(DattyKey key, Observable<ByteBuf> value) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public String toString() {

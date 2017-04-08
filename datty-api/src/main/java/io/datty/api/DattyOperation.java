@@ -53,6 +53,14 @@ public interface DattyOperation {
 	String getMajorKey();
 	
 	/**
+	 * Returns true is defined timeout millis
+	 * 
+	 * @return true if has timeout millis
+	 */
+	
+	boolean hasTimeoutMillis();
+	
+	/**
 	 * Gets SLA timeout in milliseconds for operation
 	 * 
 	 * @return timeout milliseconds or 0
@@ -86,9 +94,10 @@ public interface DattyOperation {
 	 * Completes operation
 	 * 
 	 * @param result - not null result
+	 * @return result associated with operation 
 	 */
 	
-	void complete(DattyResult result);
+	DattyResult complete(DattyResult result);
 	
 	/**
 	 * Executes operation if is created from Cache

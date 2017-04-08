@@ -13,6 +13,9 @@
  */
 package io.datty.api.result;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import io.datty.api.DattyError;
 
 /**
@@ -26,10 +29,48 @@ import io.datty.api.DattyError;
 
 public class ErrorResult extends AbstractResult implements DattyError {
 
-	private int errorCode = DattyError.ErrCode.UNKNOWN.getCode();
+	private int errorCode;
 	private String errorMessage;
 	private String errorStacktrace;
 
+	public ErrorResult() {
+		this.errorCode = DattyError.ErrCode.UNKNOWN.getCode();
+	}
+
+	public ErrorResult(DattyError.ErrCode errcode) {
+		this.errorCode = errcode.getCode();
+	}
+
+	public ErrorResult(DattyError.ErrCode errcode, Throwable e) {
+		this(errcode.getCode(), e);
+	}
+	
+	public ErrorResult(int errorCode) {
+		this.errorCode = errorCode;
+	}
+	
+	public ErrorResult(int errorCode, Throwable e) {
+		this.errorCode = errorCode;
+		this.errorMessage = e.getMessage();
+		this.errorStacktrace = getStackTrace(e);
+	}
+
+	public static String getStackTrace(Throwable t) {
+		StringWriter w = new StringWriter();
+		if (t != null) {
+			t.printStackTrace(new PrintWriter(w));
+		}
+		return w.toString();
+	}
+	
+	public static ErrorResult of(DattyError.ErrCode errcode) {
+		return new ErrorResult(errcode); 
+	}
+
+	public static ErrorResult of(int errcode) {
+		return new ErrorResult(errcode); 
+	}
+	
 	@Override
 	public int getErrorCode() {
 		return errorCode;

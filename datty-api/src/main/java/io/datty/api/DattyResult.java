@@ -51,8 +51,9 @@ public interface DattyResult {
 		ERROR(2),
 		BOOL(3),
 		BOOLMAP(4),
-		VALUE(5),
-		RECORD(6);
+		LONG(5),
+		VALUE(6),
+		RECORD(7);
 		
 		private final int rescode;
 		
