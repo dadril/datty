@@ -29,6 +29,8 @@ import rx.Single;
 
 public abstract class AbstractOperation<O extends DattyOperation, R extends DattyResult> implements DattyOperation {
 
+	protected Datty datty;
+	
 	protected String cacheName;
 
 	protected String superKey;
@@ -83,6 +85,11 @@ public abstract class AbstractOperation<O extends DattyOperation, R extends Datt
 		return castThis();
 	}
 	
+	public O withDatty(Datty datty) {
+		this.datty = datty;
+		return castThis();
+	}
+	
 	@SuppressWarnings("unchecked")
 	private O castThis() {
 		return (O) this;
@@ -119,7 +126,12 @@ public abstract class AbstractOperation<O extends DattyOperation, R extends Datt
 	}
 
 	@Override
-	public Single<DattyResult> execute(Datty datty) {
+	public Single<DattyResult> execute() {
+		
+		if (datty == null) {
+			throw new IllegalStateException("datty is empty");
+		}
+		
 		return datty.execute(this);
 	}
 

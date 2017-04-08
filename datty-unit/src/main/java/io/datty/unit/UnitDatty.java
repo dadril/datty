@@ -13,18 +13,19 @@
  */
 package io.datty.unit;
 
-import io.datty.api.Datty;
-import io.datty.api.DattyKey;
-import io.datty.api.DattyOperation;
-import io.datty.api.DattyResult;
-import io.datty.api.Cache;
-import io.datty.api.CacheExistsAction;
-import io.netty.buffer.ByteBuf;
-
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import io.datty.api.Cache;
+import io.datty.api.CacheExistsAction;
+import io.datty.api.CacheManager;
+import io.datty.api.Datty;
+import io.datty.api.DattyKey;
+import io.datty.api.DattyOperation;
+import io.datty.api.DattyResult;
+import io.datty.support.exception.CacheExistsException;
+import io.netty.buffer.ByteBuf;
 import rx.Observable;
 import rx.Single;
 
@@ -35,18 +36,94 @@ import rx.Single;
  *
  */
 
-public class UnitDatty implements Datty {
+public class UnitDatty implements Datty, CacheManager {
 
 	private final String name;
 	private final ConcurrentMap<String, UnitCache> cacheMap = new ConcurrentHashMap<String, UnitCache>();
-
+	private Datty currentDatty;
+	
 	public UnitDatty() {
 		this(new Properties());
 	}
 
 	public UnitDatty(Properties props) {
 		this.name = props.getProperty(UnitPropertyKeys.NAME);
+		this.currentDatty = this;
 	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public Cache getCache(String cacheName) {
+		return cacheMap.get(cacheName);
+	}
+
+	private UnitCache createAndPut(String cacheName, Properties cacheProperties) {
+		UnitCache cache = new UnitCache(this, cacheName, cacheProperties);
+		UnitCache c = cacheMap.putIfAbsent(cacheName, cache);
+		if (c != null) {
+			cache = c;
+		}
+		return cache;
+	}
+	
+	@Override
+	public Cache getCache(String cacheName, Properties cacheProperties, CacheExistsAction action) {
+		UnitCache cache = cacheMap.get(cacheName);
+		
+		switch(action) {
+		
+		case CREATE_ONLY:
+			if (cache != null) {
+				throw new CacheExistsException(cacheName);
+			}
+			break;
+		
+		case CREATE_IF_NOT_EXISTS:
+			if (cache == null) {
+				cache = createAndPut(cacheName, cacheProperties);
+			}
+ 			break;
+ 			
+		case UPDATE:
+			if (cache != null) {
+				cache.setCacheProperties(cacheProperties);
+			}
+			else {
+				cache = createAndPut(cacheName, cacheProperties);
+			}
+ 			break;
+ 			
+		}
+
+		return cache;
+	}
+
+	@Override
+	public Datty getDatty() {
+		return currentDatty;
+	}
+
+	@Override
+	public void setDatty(Datty newDatty) {
+
+		if (newDatty == null) {
+			throw new IllegalArgumentException("empty new datty");
+		}
+		
+		this.currentDatty = newDatty;
+	}
+	
+	/*
+	 * -------------------------
+	 * 
+	 *          DATTY
+	 * 
+	 * -------------------------
+	 */
 
 	@Override
 	public Single<DattyResult> execute(DattyOperation operation) {

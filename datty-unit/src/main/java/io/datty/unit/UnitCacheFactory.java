@@ -13,11 +13,11 @@
  */
 package io.datty.unit;
 
-import io.datty.api.Datty;
-import io.datty.api.DattyFactory;
-
 import java.io.IOException;
 import java.util.Properties;
+
+import io.datty.api.CacheFactory;
+import io.datty.api.CacheManager;
 
 /**
  * Simple factory for unit implementation
@@ -26,7 +26,7 @@ import java.util.Properties;
  *
  */
 
-public class UnitDattyFactory implements DattyFactory {
+public class UnitCacheFactory implements CacheFactory {
 
 	@Override
 	public String getFactoryName() {
@@ -34,13 +34,13 @@ public class UnitDattyFactory implements DattyFactory {
 	}
 
 	@Override
-	public Datty newInstance(Properties props) throws IOException {
+	public CacheManager newInstance(Properties props) throws IOException {
 		return new UnitDatty(props);
 	}
 
 	@Override
 	public String toString() {
-		return "UnitDattyFactory";
+		return "UnitCacheFactory";
 	}
 	
 }

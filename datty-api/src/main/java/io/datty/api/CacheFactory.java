@@ -22,13 +22,13 @@ import java.util.ServiceLoader;
 import java.util.Set;
 
 /**
- * Datty Factory interface, creator of datty instance
+ * CacheFactory interface, creator of CacheManager instance
  * 
  * @author dadril
  *
  */
 
-public interface DattyFactory {
+public interface CacheFactory {
 
 	/**
 	 * Gets the unique name of the factory
@@ -47,7 +47,7 @@ public interface DattyFactory {
 	 * @throws IOException
 	 */
 
-	Datty newInstance(Properties props) throws IOException;
+	CacheManager newInstance(Properties props) throws IOException;
 
 	/**
 	 * Locator class to search and select factories
@@ -58,14 +58,14 @@ public interface DattyFactory {
 
 	public static final class Locator {
 
-		private final ServiceLoader<DattyFactory> serviceLoader;
+		private final ServiceLoader<CacheFactory> serviceLoader;
 
 		/**
 		 * Creates locator with a current class loader
 		 */
 
 		public Locator() {
-			this.serviceLoader = ServiceLoader.load(DattyFactory.class);
+			this.serviceLoader = ServiceLoader.load(CacheFactory.class);
 		}
 
 		/**
@@ -76,7 +76,7 @@ public interface DattyFactory {
 		 */
 
 		public Locator(ClassLoader classLoader) {
-			this.serviceLoader = ServiceLoader.load(DattyFactory.class,
+			this.serviceLoader = ServiceLoader.load(CacheFactory.class,
 					classLoader);
 		}
 
@@ -88,8 +88,8 @@ public interface DattyFactory {
 		 *             if not found
 		 */
 
-		public DattyFactory getAny() {
-			for (DattyFactory f : serviceLoader) {
+		public CacheFactory getAny() {
+			for (CacheFactory f : serviceLoader) {
 				return f;
 			}
 			throw new DattyFactoryException(
@@ -104,9 +104,9 @@ public interface DattyFactory {
 		 *             if not found or non unique
 		 */
 
-		public DattyFactory getSingle() {
-			DattyFactory found = null;
-			for (DattyFactory f : serviceLoader) {
+		public CacheFactory getSingle() {
+			CacheFactory found = null;
+			for (CacheFactory f : serviceLoader) {
 				if (found == null) {
 					found = f;
 				} else {
@@ -131,8 +131,8 @@ public interface DattyFactory {
 		 *             if not found
 		 */
 
-		public DattyFactory getByName(String name) {
-			for (DattyFactory f : serviceLoader) {
+		public CacheFactory getByName(String name) {
+			for (CacheFactory f : serviceLoader) {
 				if (f.getFactoryName().equals(name)) {
 					return f;
 				}
@@ -150,7 +150,7 @@ public interface DattyFactory {
 
 		public Set<String> getAvailableFactories() {
 			Set<String> set = new HashSet<String>();
-			for (DattyFactory f : serviceLoader) {
+			for (CacheFactory f : serviceLoader) {
 				set.add(f.getFactoryName());
 			}
 			return set;

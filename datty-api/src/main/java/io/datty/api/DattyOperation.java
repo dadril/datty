@@ -91,11 +91,11 @@ public interface DattyOperation {
 	void complete(DattyResult result);
 	
 	/**
-	 * Executes operation
+	 * Executes operation if is created from Cache
 	 * 
 	 * @param datty - datty instance
 	 */
 
-	Single<DattyResult> execute(Datty datty);
+	Single<DattyResult> execute();
 	
 }

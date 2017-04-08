@@ -53,4 +53,22 @@ public interface CacheManager {
 
 	Cache getCache(String cacheName, Properties cacheProperties, CacheExistsAction action);
 
+	/**
+	 * Gets datty associated with CacheManager
+	 *  
+	 * @return not null datty instance
+	 */
+	
+	Datty getDatty();
+	
+	/**
+	 * Associate CacheManager with Datty instance
+	 * 
+	 * Application could wrap Datty instance for advanced logging processing
+	 * 
+	 * @param newDatty - not null datty instance
+	 */
+	
+	void setDatty(Datty newDatty);
+	
 }

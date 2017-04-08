@@ -13,16 +13,14 @@
  */
 package io.datty.unit;
 
-import io.datty.api.Datty;
-import io.datty.api.DattyFactory;
-import io.datty.unit.UnitDattyFactory;
-import io.datty.unit.UnitPropertyKeys;
-
 import java.io.IOException;
 import java.util.Properties;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.datty.api.CacheFactory;
+import io.datty.api.CacheManager;
 
 /**
  * Unit factory test
@@ -36,16 +34,16 @@ public class UnitDattyFactoryTest {
 	@Test
 	public void testCreation() throws IOException {
 
-		UnitDattyFactory factory = new UnitDattyFactory();
+		UnitCacheFactory factory = new UnitCacheFactory();
 
 		Assert.assertEquals("unit", factory.getFactoryName());
 
 		Properties props = new Properties();
 		props.put(UnitPropertyKeys.NAME, "test");
 
-		Datty datty = factory.newInstance(props);
+		CacheManager cacheManager = factory.newInstance(props);
 
-		Assert.assertNotNull(datty);
+		Assert.assertNotNull(cacheManager);
 
 
 	}
@@ -53,12 +51,12 @@ public class UnitDattyFactoryTest {
 	@Test
 	public void testLocator() throws IOException {
 
-		DattyFactory.Locator locator = new DattyFactory.Locator();
+		CacheFactory.Locator locator = new CacheFactory.Locator();
 
-		DattyFactory factory = locator.getByName("unit");
+		CacheFactory factory = locator.getByName("unit");
 
 		Assert.assertEquals("unit", factory.getFactoryName());
-		Assert.assertTrue(factory instanceof UnitDattyFactory);
+		Assert.assertTrue(factory instanceof UnitCacheFactory);
 
 	}
 

@@ -13,6 +13,13 @@
  */
 package io.datty.unit;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+
 import io.datty.api.Cache;
 import io.datty.api.CacheManager;
 import io.datty.api.operation.CompareAndSetOperation;
@@ -20,13 +27,6 @@ import io.datty.api.operation.ExecuteOperation;
 import io.datty.api.operation.ExistsOperation;
 import io.datty.api.operation.GetOperation;
 import io.datty.api.operation.SetOperation;
-
-import java.util.Collections;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 /**
  * Unit implementation of the Cache interface
@@ -40,13 +40,13 @@ public class UnitCache implements Cache {
 	private final static AtomicReferenceFieldUpdater<UnitCache, Properties> PROPS_UPDATER = AtomicReferenceFieldUpdater
 			.newUpdater(UnitCache.class, Properties.class, "props");
 
-	private final CacheManager parent;
+	private final UnitDatty parent;
 	private final String cacheName;
 	private volatile Properties props;
 	
 	private final ConcurrentMap<String, UnitRecord> recordMap = new ConcurrentHashMap<String, UnitRecord>();
 
-	public UnitCache(CacheManager parent, String cacheName, Properties props) {
+	protected UnitCache(UnitDatty parent, String cacheName, Properties props) {
 		this.parent = parent;
 		this.cacheName = cacheName;
 		this.props = props;
@@ -79,27 +79,27 @@ public class UnitCache implements Cache {
 
 	@Override
 	public GetOperation get(String majorKey) {
-		return new GetOperation(cacheName, majorKey);
+		return new GetOperation(cacheName, majorKey).withDatty(parent.getDatty());
 	}
 
 	@Override
 	public ExistsOperation exists(String majorKey) {
-		return new ExistsOperation(cacheName, majorKey);
+		return new ExistsOperation(cacheName, majorKey).withDatty(parent.getDatty());
 	}
 
 	@Override
 	public SetOperation set(String majorKey) {
-		return new SetOperation(cacheName, majorKey);
+		return new SetOperation(cacheName, majorKey).withDatty(parent.getDatty());
 	}
 
 	@Override
 	public CompareAndSetOperation compareAndSet(String majorKey) {
-		return new CompareAndSetOperation(cacheName, majorKey);
+		return new CompareAndSetOperation(cacheName, majorKey).withDatty(parent.getDatty());
 	}
 
 	@Override
 	public ExecuteOperation execute(String majorKey) {
-		return new ExecuteOperation(cacheName, majorKey);
+		return new ExecuteOperation(cacheName, majorKey).withDatty(parent.getDatty());
 	}
 
 	@Override

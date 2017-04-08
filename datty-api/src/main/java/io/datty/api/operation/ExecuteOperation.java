@@ -23,7 +23,7 @@ import io.netty.buffer.ByteBuf;
  *
  */
 
-public class ExecuteOperation extends AbstractUpdateOperation<ExistsOperation, PayloadResult> implements UpdateOperation {
+public class ExecuteOperation extends AbstractUpdateOperation<ExecuteOperation, PayloadResult> implements UpdateOperation {
 
 	private String packageName;
 	private String functionName;
