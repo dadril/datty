@@ -11,23 +11,27 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.api.result;
+
+import io.netty.buffer.ByteBuf;
 
 /**
- * Base interface for all results
+ * PayloadResult
  * 
  * @author dadril
  *
  */
 
-public interface DattyResult {
+public class PayloadResult extends AbstractResult {
+
+	private final ByteBuf payload;
 	
-	/**
-	 * Gets operation associated with result
-	 * 
-	 * @return not null datty operation
-	 */
+	public PayloadResult(ByteBuf payload) {
+		this.payload = payload;
+	}
+
+	public ByteBuf getPayload() {
+		return payload;
+	}
 	
-	DattyOperation getOperation();
-		
 }

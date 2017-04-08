@@ -11,23 +11,25 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.api.operation;
+
+import io.datty.api.DattyOperation;
 
 /**
- * Base interface for all results
+ * DattyUpdateOperation
  * 
  * @author dadril
  *
  */
 
-public interface DattyResult {
-	
+public interface UpdateOperation extends DattyOperation {
+
 	/**
-	 * Gets operation associated with result
+	 * Gets TTL time to live in seconds
 	 * 
-	 * @return not null datty operation
+	 * @return ttl or 0
 	 */
 	
-	DattyOperation getOperation();
-		
+	int getTtlSeconds();
+	
 }

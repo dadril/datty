@@ -13,12 +13,12 @@
  */
 package io.datty.api.operation;
 
+import io.datty.api.Datty;
+import io.datty.api.DattyConstants;
+import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
-import io.datty.api.SingleOperation;
-import io.datty.api.payload.SingleOperationPayload;
-
-import com.google.common.util.concurrent.AbstractFuture;
-import com.google.common.util.concurrent.ListenableFuture;
+import io.datty.support.exception.DattyUncompletedException;
+import rx.Single;
 
 /**
  * Abstract operation
@@ -27,81 +27,102 @@ import com.google.common.util.concurrent.ListenableFuture;
  *
  */
 
-public abstract class AbstractOperation<O extends SingleOperation<O>, R extends DattyResult>
-		extends AbstractFuture<R> implements SingleOperation<O>,
-		ListenableFuture<R> {
+public abstract class AbstractOperation<O extends DattyOperation, R extends DattyResult> implements DattyOperation {
 
+	protected String cacheName;
 
-	protected String storeName;
+	protected String superKey;
 
-	private String superKey;
+	protected String majorKey;
+	
+	protected int timeoutMillis = DattyConstants.UNSET_TIMEOUT;
 
-	private String majorKey;
-
-	private String minorKey;
-
-	transient private boolean executed;
-
-	public AbstractOperation(String storeName) {
-		this.storeName = storeName;
+	protected DattyResult result;
+	
+	public AbstractOperation(String cacheName) {
+		this.cacheName = cacheName;
+	}
+	
+	public AbstractOperation(String cacheName, String majorKey) {
+		this.cacheName = cacheName;
+		this.majorKey = majorKey;
 	}
 
-	public String getStoreName() {
-		return storeName;
+	@Override
+	public String getCacheName() {
+		return cacheName;
 	}
 
-	public O setSuperKey(String superKey) {
-		ensureNotExecuted();
-		this.superKey = superKey;
-		return castThis();
-	}
-
+	@Override
 	public String getSuperKey() {
 		return superKey;
 	}
 
-	public O setMajorKey(String majorKey) {
-		ensureNotExecuted();
-		this.majorKey = majorKey;
+	public O setSuperKey(String superKey) {
+		this.superKey = superKey;
 		return castThis();
 	}
-
+	
+	@Override
 	public String getMajorKey() {
 		return majorKey;
 	}
 
-	public O setMinorKey(String minorKey) {
-		ensureNotExecuted();
-		this.minorKey = minorKey;
+	public O setMajorKey(String majorKey) {
+		this.majorKey = majorKey;
 		return castThis();
 	}
 
-	public String getMinorKey() {
-		return minorKey;
+	@Override
+	public int getTimeoutMillis() {
+		return timeoutMillis;
 	}
 
-	protected boolean isExecuted() {
-		return executed;
+	public O setTimeoutMillis(int timeoutMillis) {
+		this.timeoutMillis = timeoutMillis;
+		return castThis();
 	}
-
-	protected void ensureNotExecuted() {
-		if (executed) {
-			throw new IllegalStateException(
-					"execution phase does not allow modificaitons in operation "
-							+ this);
-		}
-	}
-
+	
 	@SuppressWarnings("unchecked")
 	private O castThis() {
 		return (O) this;
 	}
 
-	protected void writeAbstractFields(SingleOperationPayload op) {
-		op.setStoreName(storeName);
-		op.setSuperKey(superKey);
-		op.setMajorKey(majorKey);
-		op.setMinorKey(minorKey);
+	@Override
+	public boolean isCompleted() {
+		return result != null;
 	}
 
+	@Override
+	public DattyResult getResult() {
+		
+		if (result == null) {
+			throw new DattyUncompletedException("operation is not completed: " + this);
+		}
+		
+		return result;
+	}
+
+	@Override
+	public void reset() {
+		this.result = null;
+	}
+
+	@Override
+	public void complete(DattyResult result) {
+		
+		if (result == null) {
+			throw new IllegalArgumentException("empty result");
+		}
+		
+		this.result = result;
+	}
+
+	@Override
+	public Single<DattyResult> execute(Datty datty) {
+		return datty.execute(this);
+	}
+
+	
+	
 }

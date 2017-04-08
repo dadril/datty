@@ -17,43 +17,40 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import io.datty.api.result.RecordResult;
-
 /**
- * Get operation
+ * Exists operation
  * 
  * @author dadril
  *
  */
 
-public class GetOperation extends AbstractOperation<GetOperation, RecordResult> {
+public class ExistsOperation extends AbstractOperation<ExistsOperation, ExistsResult> {
 
 	private Set<String> minorKeys = null;
-	private boolean allMinorKeys;
+	private boolean anyMinorKey;
 	
-	public GetOperation(String cacheName) {
-		super(cacheName);
+	public ExistsOperation(String storeName) {
+		super(storeName);
 	}
 
-	public GetOperation(String cacheName, String majorKey) {
-		super(cacheName, majorKey);
+	public ExistsOperation(String storeName, String majorKey) {
+		super(storeName, majorKey);
 	}
 
-	public boolean isAllMinorKeys() {
-		return allMinorKeys;
+	public boolean isAnyMinorKey() {
+		return anyMinorKey;
 	}
 
-	public GetOperation allMinorKeys(boolean all) {
-		this.allMinorKeys = all;
+	public ExistsOperation anyMinorKey() {
+		return anyMinorKey(true);
+	}
+
+	public ExistsOperation anyMinorKey(boolean anyMinorKey) {
+		this.anyMinorKey = anyMinorKey;
 		return this;
 	}
 	
-	public GetOperation allMinorKeys() {
-		this.allMinorKeys = true;
-		return this;
-	}
-	
-	public GetOperation addMinorKey(String minorKey) {
+	public ExistsOperation addMinorKey(String minorKey) {
 		if (this.minorKeys == null) {
 			this.minorKeys = Collections.singleton(minorKey);
 		}
@@ -65,6 +62,5 @@ public class GetOperation extends AbstractOperation<GetOperation, RecordResult> 
 		}
 		return this;
 	}
-
 
 }

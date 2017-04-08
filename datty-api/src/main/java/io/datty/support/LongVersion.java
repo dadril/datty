@@ -11,23 +11,34 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.support;
+
+import io.datty.api.operation.Version;
+import io.datty.api.operation.VersionType;
 
 /**
- * Base interface for all results
+ * LongVersion
  * 
  * @author dadril
  *
  */
 
-public interface DattyResult {
+public class LongVersion implements Version {
+
+	private final long value;
 	
-	/**
-	 * Gets operation associated with result
-	 * 
-	 * @return not null datty operation
-	 */
+	public LongVersion(long value) {
+		this.value = value;
+	}
 	
-	DattyOperation getOperation();
-		
+	@Override
+	public VersionType type() {
+		return VersionType.LONG;
+	}
+
+	@Override
+	public long asLong() {
+		return value;
+	}
+
 }

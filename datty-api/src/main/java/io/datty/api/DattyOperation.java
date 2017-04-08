@@ -13,10 +13,12 @@
  */
 package io.datty.api;
 
+import rx.Single;
+
 /**
  * Base interface for all operations
  * 
- * All operations are immutable except result state
+ * All operations are going to be executed in single thread in event loop
  * 
  * @author dadril
  *
@@ -24,4 +26,76 @@ package io.datty.api;
 
 public interface DattyOperation {
 
+	/**
+	 * Gets cache name
+	 * 
+	 * @return not null cache name
+	 */
+	
+	String getCacheName();
+	
+	/**
+	 * Gets super key (cross database routing key) if exists
+	 * 
+	 * Best usage is the country code
+	 * 
+	 * @return super key or null
+	 */
+	
+	String getSuperKey();
+	
+	/**
+	 * Gets major key (partition key)
+	 * 
+	 * @return major key
+	 */
+	
+	String getMajorKey();
+	
+	/**
+	 * Gets SLA timeout in milliseconds for operation
+	 * 
+	 * @return timeout milliseconds or 0
+	 */
+	
+	int getTimeoutMillis();
+	
+	/**
+	 * Gets status of the operation
+	 * 
+	 * @return true if completed
+	 */
+	
+	boolean isCompleted();
+	
+	/**
+	 * Gets operation result
+	 * 
+	 * @return not null result or throw DattyUncompletedException
+	 */
+	
+	DattyResult getResult();
+	
+	/**
+	 * Resets operation, removes result
+	 */
+	
+	void reset();
+	
+	/**
+	 * Completes operation
+	 * 
+	 * @param result - not null result
+	 */
+	
+	void complete(DattyResult result);
+	
+	/**
+	 * Executes operation
+	 * 
+	 * @param datty - datty instance
+	 */
+
+	Single<DattyResult> execute(Datty datty);
+	
 }

@@ -11,23 +11,18 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.support.exception;
 
-/**
- * Base interface for all results
- * 
- * @author dadril
- *
- */
+public class CacheMismatchException extends DattyException {
 
-public interface DattyResult {
-	
-	/**
-	 * Gets operation associated with result
-	 * 
-	 * @return not null datty operation
-	 */
-	
-	DattyOperation getOperation();
-		
+	private static final long serialVersionUID = -4039694905416884592L;
+
+	public CacheMismatchException(String cacheName) {
+		super(cacheName);
+	}
+
+	public CacheMismatchException(String cacheName, Throwable t) {
+		super(cacheName, t);
+	}
+
 }

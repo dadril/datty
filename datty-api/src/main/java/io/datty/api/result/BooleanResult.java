@@ -11,23 +11,25 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.api.result;
 
 /**
- * Base interface for all results
+ * BooleanResult
  * 
  * @author dadril
  *
  */
 
-public interface DattyResult {
-	
-	/**
-	 * Gets operation associated with result
-	 * 
-	 * @return not null datty operation
-	 */
-	
-	DattyOperation getOperation();
-		
+public final class BooleanResult extends AbstractResult {
+
+	private final boolean value;
+
+	public BooleanResult(boolean value) {
+		this.value = value;
+	}
+
+	public boolean get() {
+		return value;
+	}
+
 }

@@ -14,20 +14,36 @@
 package io.datty.api;
 
 /**
- * Base interface for all results
+ * Error interface for result operation
  * 
  * @author dadril
  *
  */
 
-public interface DattyResult {
-	
+public interface DattyError {
+
 	/**
-	 * Gets operation associated with result
+	 * Gets error code
 	 * 
-	 * @return not null datty operation
+	 * @return error code number
 	 */
-	
-	DattyOperation getOperation();
-		
+
+	int getErrorCode();
+
+	/**
+	 * Gets error message if has
+	 * 
+	 * @return error code message or null
+	 */
+
+	String getErrorMessage();
+
+	/**
+	 * Gets exception stacktrace if has
+	 * 
+	 * @return exception stacktrace or null
+	 */
+
+	String getErrorStacktrace();
+
 }

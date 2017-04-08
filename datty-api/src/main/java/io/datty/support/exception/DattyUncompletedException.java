@@ -11,23 +11,30 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.support.exception;
 
 /**
- * Base interface for all results
+ * DattyUncompletedException
  * 
  * @author dadril
  *
  */
 
-public interface DattyResult {
+public class DattyUncompletedException extends DattyException {
+
+	private static final long serialVersionUID = 5923609109806506268L;
+
+	public DattyUncompletedException(String msg) {
+		super(msg);
+	}
+
+	public DattyUncompletedException(String msg, Throwable t) {
+		super(msg, t);
+	}
+
+	public DattyUncompletedException(Throwable t) {
+		super(t);
+	}
+
 	
-	/**
-	 * Gets operation associated with result
-	 * 
-	 * @return not null datty operation
-	 */
-	
-	DattyOperation getOperation();
-		
 }

@@ -11,23 +11,29 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.api.result;
+
+import io.datty.api.DattyOperation;
+import io.datty.api.DattyResult;
 
 /**
- * Base interface for all results
+ * Abstract Result
  * 
  * @author dadril
  *
  */
 
-public interface DattyResult {
+public abstract class AbstractResult implements DattyResult {
+
+	private DattyOperation operation;
 	
-	/**
-	 * Gets operation associated with result
-	 * 
-	 * @return not null datty operation
-	 */
+	@Override
+	public DattyOperation getOperation() {
+		return operation;
+	}
+
+	protected void setOperation(DattyOperation operation) {
+		this.operation = operation;
+	}
 	
-	DattyOperation getOperation();
-		
 }

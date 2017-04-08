@@ -18,35 +18,52 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.datty.api.UpdatePolicy;
-import io.datty.api.result.VoidResult;
+import io.datty.api.result.BooleanResult;
 import io.netty.buffer.ByteBuf;
 
 /**
- * Set operation
+ * CompareAndSetOperation
+ * 
+ * Compare And Set Operation
  * 
  * @author dadril
  *
  */
 
-public class SetOperation extends AbstractUpdateOperation<SetOperation, VoidResult> implements UpdateOperation {
+public class CompareAndSetOperation extends
+	AbstractUpdateOperation<CompareAndSetOperation, BooleanResult> implements UpdateOperation {
 
+	/**
+	 * Old version of the record
+	 */
+	
+	private Version oldVersion;
+	
 	/**
 	 * Key is the minorKey, value is payload
 	 */
 	private Map<String, ByteBuf> newValues = null;
 	
 	private UpdatePolicy updatePolicy = UpdatePolicy.MERGE;
-	
-	public SetOperation(String storeName) {
+
+	public CompareAndSetOperation(String storeName) {
 		super(storeName);
 	}
 
-	public SetOperation(String storeName, String majorKey) {
-		super(storeName);
-		setMajorKey(majorKey);
+	public CompareAndSetOperation(String storeName, String majorKey) {
+		super(storeName, majorKey);
 	}
 
-	public SetOperation addValue(String minorKey, ByteBuf valueOrNull) {
+	public Version getOldVersion() {
+		return oldVersion;
+	}
+
+	public CompareAndSetOperation setOldVersion(Version oldVersion) {
+		this.oldVersion = oldVersion;
+		return this;
+	}
+
+	public CompareAndSetOperation addValue(String minorKey, ByteBuf valueOrNull) {
 		if (newValues == null) {
 			this.newValues = Collections.singletonMap(minorKey, valueOrNull);
 		}
@@ -64,9 +81,10 @@ public class SetOperation extends AbstractUpdateOperation<SetOperation, VoidResu
 		return updatePolicy;
 	}
 
-	public SetOperation setUpdatePolicy(UpdatePolicy updatePolicy) {
+	public CompareAndSetOperation setUpdatePolicy(UpdatePolicy updatePolicy) {
 		this.updatePolicy = updatePolicy;
 		return this;
 	}
+
 
 }

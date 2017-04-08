@@ -17,8 +17,8 @@ import io.datty.api.Datty;
 import io.datty.api.DattyKey;
 import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
-import io.datty.api.Region;
-import io.datty.api.RegionExistsAction;
+import io.datty.api.Cache;
+import io.datty.api.CacheExistsAction;
 import io.netty.buffer.ByteBuf;
 
 import java.util.Properties;
@@ -38,7 +38,7 @@ import rx.Single;
 public class UnitDatty implements Datty {
 
 	private final String name;
-	private final ConcurrentMap<String, UnitStore> storeMap = new ConcurrentHashMap<String, UnitStore>();
+	private final ConcurrentMap<String, UnitCache> cacheMap = new ConcurrentHashMap<String, UnitCache>();
 
 	public UnitDatty() {
 		this(new Properties());
@@ -49,32 +49,13 @@ public class UnitDatty implements Datty {
 	}
 
 	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public Region findStore(String regionName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Region getStore(String regionName, Properties regionProperties,
-			RegionExistsAction action) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Single<DattyResult> execute(DattyOperation operation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Observable<DattyResult> executeBatch(
-			Observable<DattyOperation> operations) {
+	public Observable<DattyResult> executeBatch(Observable<DattyOperation> operations) {
 		// TODO Auto-generated method stub
 		return null;
 	}

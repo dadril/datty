@@ -14,20 +14,38 @@
 package io.datty.api;
 
 /**
- * Base interface for all results
+ * Type of the action if cache exists
  * 
  * @author dadril
  *
  */
 
-public interface DattyResult {
-	
+public enum CacheExistsAction {
+
 	/**
-	 * Gets operation associated with result
+	 * Creates a new cache only with given properties
 	 * 
-	 * @return not null datty operation
+	 * throws CacheExistsException if region already exists
 	 */
-	
-	DattyOperation getOperation();
-		
+
+	CREATE_ONLY,
+
+	/**
+	 * Creates a new cache if not exists, otherwise returns existing cache
+	 * without changing it's properties
+	 */
+
+	CREATE_IF_NOT_EXISTS,
+
+	/**
+	 * Creates a new cache if not exists, otherwise updates properties for
+	 * existing one
+	 * 
+	 * throws CacheMismatchException if it is impossible to update properties
+	 * runtime if they different
+	 * 
+	 */
+
+	UPDATE;
+
 }

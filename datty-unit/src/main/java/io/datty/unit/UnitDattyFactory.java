@@ -29,7 +29,7 @@ import java.util.Properties;
 public class UnitDattyFactory implements DattyFactory {
 
 	@Override
-	public String getName() {
+	public String getFactoryName() {
 		return "unit";
 	}
 

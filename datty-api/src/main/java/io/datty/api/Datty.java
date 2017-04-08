@@ -24,21 +24,18 @@ import rx.Single;
  *
  */
 
-public interface Datty extends RegionManager {
+public interface Datty {
 
 	/**
-	 * Executes single Datty operation
+	 * Executes single datty operation
 	 * 
-	 * @param operation
-	 *            - single operation
-	 * @param timeoutMillis
-	 *            - timeout milliseconds
+	 * @param operation - datty operation
 	 */
 
 	Single<DattyResult> execute(DattyOperation operation);
-
+	
 	/**
-	 * Executes sequence of Datty operations
+	 * Executes sequence of datty operations
 	 * 
 	 * @param operations - sequence of operations
 	 * @return sequence of results

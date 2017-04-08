@@ -13,21 +13,44 @@
  */
 package io.datty.api;
 
+import java.util.Properties;
+
 /**
- * Base interface for all results
+ * CacheManager interface
  * 
  * @author dadril
  *
  */
 
-public interface DattyResult {
-	
+public interface CacheManager {
+
 	/**
-	 * Gets operation associated with result
+	 * Gets the name of the region manager
 	 * 
-	 * @return not null datty operation
+	 * @return not null name
 	 */
-	
-	DattyOperation getOperation();
-		
+
+	String getName();
+
+	/**
+	 * Gets cache
+	 * 
+	 * @param cacheName - not null cache name
+	 * @return cache instance or null
+	 */
+
+	Cache getCache(String cacheName);
+
+	/**
+	 * Gets existing region or creates a new one
+	 * 
+	 * @param cacheName - region name
+	 * @param cacheProperties - region specific properties
+	 * @param action - action if region exists
+	 * 
+	 * @return not null region
+	 */
+
+	Cache getCache(String cacheName, Properties cacheProperties, CacheExistsAction action);
+
 }

@@ -14,20 +14,14 @@
 package io.datty.api;
 
 /**
- * Base interface for all results
+ * UpdatePolicy
  * 
  * @author dadril
  *
  */
 
-public interface DattyResult {
+public enum UpdatePolicy {
 	
-	/**
-	 * Gets operation associated with result
-	 * 
-	 * @return not null datty operation
-	 */
+	MERGE, REPLACE;
 	
-	DattyOperation getOperation();
-		
 }

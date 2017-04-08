@@ -11,23 +11,32 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.api.operation;
 
 /**
- * Base interface for all results
+ * Abstract interface that provides version of record
  * 
  * @author dadril
  *
  */
 
-public interface DattyResult {
-	
+public interface Version {
+
 	/**
-	 * Gets operation associated with result
+	 * Gets version type
 	 * 
-	 * @return not null datty operation
+	 * @return not null version type
 	 */
 	
-	DattyOperation getOperation();
-		
+	VersionType type();
+	
+	/**
+	 * Gets version value as a long
+	 * 
+	 * @return not null version
+	 */
+	
+	long asLong();
+	
+	
 }

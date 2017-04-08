@@ -11,23 +11,26 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.api.operation;
+
+import io.datty.api.DattyResult;
 
 /**
- * Base interface for all results
+ * TypedOperation
  * 
  * @author dadril
  *
+ * @param <R> - result type
  */
 
-public interface DattyResult {
-	
+public interface TypedOperation<R extends DattyResult> {
+
 	/**
-	 * Gets operation associated with result
+	 * Gets typed result
 	 * 
-	 * @return not null datty operation
+	 * @return typed result of the operation or DattyException
 	 */
 	
-	DattyOperation getOperation();
-		
+	R get();
+	
 }

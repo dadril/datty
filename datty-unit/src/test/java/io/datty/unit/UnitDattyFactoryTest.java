@@ -38,7 +38,7 @@ public class UnitDattyFactoryTest {
 
 		UnitDattyFactory factory = new UnitDattyFactory();
 
-		Assert.assertEquals("unit", factory.getName());
+		Assert.assertEquals("unit", factory.getFactoryName());
 
 		Properties props = new Properties();
 		props.put(UnitPropertyKeys.NAME, "test");
@@ -46,7 +46,7 @@ public class UnitDattyFactoryTest {
 		Datty datty = factory.newInstance(props);
 
 		Assert.assertNotNull(datty);
-		Assert.assertEquals("test", datty.getName());
+
 
 	}
 
@@ -57,7 +57,7 @@ public class UnitDattyFactoryTest {
 
 		DattyFactory factory = locator.getByName("unit");
 
-		Assert.assertEquals("unit", factory.getName());
+		Assert.assertEquals("unit", factory.getFactoryName());
 		Assert.assertTrue(factory instanceof UnitDattyFactory);
 
 	}

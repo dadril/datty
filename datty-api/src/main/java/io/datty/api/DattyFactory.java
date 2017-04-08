@@ -13,7 +13,7 @@
  */
 package io.datty.api;
 
-import io.datty.support.exception.DattyConfigurationException;
+import io.datty.support.exception.DattyFactoryException;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -36,7 +36,7 @@ public interface DattyFactory {
 	 * @return not null name
 	 */
 
-	String getName();
+	String getFactoryName();
 
 	/**
 	 * Creates new instance of the datty store manager
@@ -84,7 +84,7 @@ public interface DattyFactory {
 		 * Gets any factory
 		 * 
 		 * @return not null factory
-		 * @throws DattyConfigurationException
+		 * @throws DattyFactoryException
 		 *             if not found
 		 */
 
@@ -92,7 +92,7 @@ public interface DattyFactory {
 			for (DattyFactory f : serviceLoader) {
 				return f;
 			}
-			throw new DattyConfigurationException(
+			throw new DattyFactoryException(
 					"there are no DattyFactory implementations in the classpath");
 		}
 
@@ -100,7 +100,7 @@ public interface DattyFactory {
 		 * Gets store factory from classpath, make sure that it is alone
 		 * 
 		 * @return not null factory
-		 * @throws DattyConfigurationException
+		 * @throws DattyFactoryException
 		 *             if not found or non unique
 		 */
 
@@ -110,14 +110,14 @@ public interface DattyFactory {
 				if (found == null) {
 					found = f;
 				} else {
-					throw new DattyConfigurationException(
+					throw new DattyFactoryException(
 							"expected unique DattyFactory implementation in the classpath");
 				}
 			}
 			if (found != null) {
 				return found;
 			}
-			throw new DattyConfigurationException(
+			throw new DattyFactoryException(
 					"there is no DattyFactory implementation in the classpath");
 		}
 
@@ -127,17 +127,17 @@ public interface DattyFactory {
 		 * @param name
 		 *            - case sensitive name of the store
 		 * @return not null factory
-		 * @throws DattyConfigurationException
+		 * @throws DattyFactoryException
 		 *             if not found
 		 */
 
 		public DattyFactory getByName(String name) {
 			for (DattyFactory f : serviceLoader) {
-				if (f.getName().equals(name)) {
+				if (f.getFactoryName().equals(name)) {
 					return f;
 				}
 			}
-			throw new DattyConfigurationException(
+			throw new DattyFactoryException(
 					"there is no DattyFactory implementation in the classpath with a name '"
 							+ name + "'");
 		}
@@ -151,7 +151,7 @@ public interface DattyFactory {
 		public Set<String> getAvailableFactories() {
 			Set<String> set = new HashSet<String>();
 			for (DattyFactory f : serviceLoader) {
-				set.add(f.getName());
+				set.add(f.getFactoryName());
 			}
 			return set;
 		}
