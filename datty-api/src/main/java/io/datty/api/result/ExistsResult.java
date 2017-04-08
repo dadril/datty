@@ -11,12 +11,10 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api.operation;
+package io.datty.api.result;
 
 import java.util.Map;
 import java.util.Set;
-
-import io.datty.api.result.AbstractResult;
 
 /**
  * ExistsResult
@@ -54,6 +52,11 @@ public class ExistsResult extends AbstractResult {
 	
 	public Boolean exists(String minorKey) {
 		return existsValues.get(minorKey);
+	}
+	
+	@Override
+	public ResCode getCode() {
+		return ResCode.EXIST;
 	}
 	
 }

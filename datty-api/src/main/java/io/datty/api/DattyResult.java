@@ -29,5 +29,40 @@ public interface DattyResult {
 	 */
 	
 	DattyOperation getOperation();
+
+	/**
+	 * Gets result code
+	 * 
+	 * @return not null result code
+	 */
+	
+	ResCode getCode();
+
+	/**
+	 * Result code enum
+	 * 
+	 * @author dadril
+	 *
+	 */
+	
+	public enum ResCode {
 		
+		VOID(1),
+		ERROR(2),
+		BOOL(3),
+		EXIST(4),
+		PAYLOAD(5),
+		RECORD(6);
+		
+		private final int rescode;
+		
+		private ResCode(int rescode) {
+			this.rescode = rescode;
+		}
+
+		public int getRescode() {
+			return rescode;
+		}
+		
+	}
 }

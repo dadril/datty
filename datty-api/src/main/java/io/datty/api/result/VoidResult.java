@@ -22,4 +22,9 @@ package io.datty.api.result;
 
 public class VoidResult extends AbstractResult {
 
+	@Override
+	public ResCode getCode() {
+		return ResCode.VOID;
+	}
+
 }

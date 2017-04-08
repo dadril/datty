@@ -64,6 +64,9 @@ public class ExecuteOperation extends AbstractUpdateOperation<ExecuteOperation, 
 		return this;
 	}
 	
-	
+	@Override
+	public OpCode getCode() {
+		return OpCode.EXECUTE;
+	}	
 	
 }

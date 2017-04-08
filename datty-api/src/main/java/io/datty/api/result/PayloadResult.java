@@ -34,4 +34,9 @@ public class PayloadResult extends AbstractResult {
 		return payload;
 	}
 	
+	@Override
+	public ResCode getCode() {
+		return ResCode.PAYLOAD;
+	}
+	
 }

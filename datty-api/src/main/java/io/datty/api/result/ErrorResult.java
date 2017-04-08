@@ -60,5 +60,10 @@ public class ErrorResult extends AbstractResult implements DattyError {
 		this.errorStacktrace = errorStacktrace;
 		return this;
 	}
+	
+	@Override
+	public ResCode getCode() {
+		return ResCode.ERROR;
+	}
 
 }

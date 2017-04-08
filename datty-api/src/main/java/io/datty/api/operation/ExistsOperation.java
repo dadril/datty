@@ -17,6 +17,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import io.datty.api.result.ExistsResult;
+
 /**
  * Exists operation
  * 
@@ -61,6 +63,11 @@ public class ExistsOperation extends AbstractOperation<ExistsOperation, ExistsRe
 			this.minorKeys.add(minorKey);
 		}
 		return this;
+	}
+	
+	@Override
+	public OpCode getCode() {
+		return OpCode.EXIST;
 	}
 
 }

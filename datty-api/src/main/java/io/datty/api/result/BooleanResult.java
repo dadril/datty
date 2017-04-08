@@ -32,4 +32,9 @@ public final class BooleanResult extends AbstractResult {
 		return value;
 	}
 
+	@Override
+	public ResCode getCode() {
+		return ResCode.BOOL;
+	}
+	
 }

@@ -66,5 +66,9 @@ public class GetOperation extends AbstractOperation<GetOperation, RecordResult> 
 		return this;
 	}
 
+	@Override
+	public OpCode getCode() {
+		return OpCode.GET;
+	}
 
 }

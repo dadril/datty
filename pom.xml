@@ -10,10 +10,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<slf4j.api.version>1.7.5</slf4j.api.version>
-		<guava.version>19.0</guava.version>
-		<jackson.version>2.7.1</jackson.version>
-		<protostuff.version>1.5.3-SNAPSHOT</protostuff.version>
-		<msgpack.version>0.8.11</msgpack.version>
 		<netty.version>4.1.5.Final</netty.version>
 		<rxjava.version>1.2.2</rxjava.version>
 		<junit.version>4.11</junit.version>
@@ -40,50 +36,6 @@
 				<version>${slf4j.api.version}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>com.google.guava</groupId>
-				<artifactId>guava</artifactId>
-				<version>${guava.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.msgpack</groupId>
-				<artifactId>msgpack-core</artifactId>
-				<version>${msgpack.version}</version>
-			</dependency>
-
-			<!-- protostuff -->
-
-			<dependency>
-				<groupId>io.protostuff</groupId>
-				<artifactId>protostuff-api</artifactId>
-				<version>${protostuff.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>io.protostuff</groupId>
-				<artifactId>protostuff-runtime</artifactId>
-				<version>${protostuff.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>io.protostuff</groupId>
-				<artifactId>protostuff-core</artifactId>
-				<version>${protostuff.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>io.protostuff</groupId>
-				<artifactId>protostuff-json</artifactId>
-				<version>${protostuff.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>io.protostuff</groupId>
-				<artifactId>protostuff-msgpack</artifactId>
-				<version>${protostuff.version}</version>
-			</dependency>
-
 			<!-- RX -->
 
 			<dependency>
@@ -98,32 +50,6 @@
 				<groupId>io.netty</groupId>
 				<artifactId>netty-buffer</artifactId>
 				<version>${netty.version}</version>
-			</dependency>
-
-			<!-- JSON -->
-
-			<dependency>
-				<groupId>com.fasterxml.jackson.jaxrs</groupId>
-				<artifactId>jackson-jaxrs-json-provider</artifactId>
-				<version>${jackson.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>com.fasterxml.jackson.core</groupId>
-				<artifactId>jackson-annotations</artifactId>
-				<version>${jackson.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>com.fasterxml.jackson.core</groupId>
-				<artifactId>jackson-core</artifactId>
-				<version>${jackson.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>com.fasterxml.jackson.core</groupId>
-				<artifactId>jackson-databind</artifactId>
-				<version>${jackson.version}</version>
 			</dependency>
 
 			<!-- TEST -->
@@ -157,6 +83,8 @@
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
+          <testSource>${java.version}</testSource>
+          <testTarget>${java.version}</testTarget>					
 				</configuration>
 			</plugin>
 			<plugin>

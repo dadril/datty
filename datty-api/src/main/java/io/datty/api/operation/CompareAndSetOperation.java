@@ -86,5 +86,9 @@ public class CompareAndSetOperation extends
 		return this;
 	}
 
-
+	@Override
+	public OpCode getCode() {
+		return OpCode.COMPARE_AND_SET;
+	}
+	
 }

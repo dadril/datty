@@ -64,5 +64,11 @@ public final class RecordResult extends AbstractResult {
 	public ByteBuf get(String minorKey) {
 		return values.get(minorKey);
 	}
+	
+	@Override
+	public ResCode getCode() {
+		return ResCode.RECORD;
+	}
+
 
 }

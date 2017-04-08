@@ -98,4 +98,39 @@ public interface DattyOperation {
 
 	Single<DattyResult> execute();
 	
+	/**
+	 * Gets operation code
+	 * 
+	 * @return not null operation code
+	 */
+	
+	OpCode getCode();
+
+	/**
+	 * Operation code enum
+	 * 
+	 * @author dadril
+	 *
+	 */
+	
+	public enum OpCode {
+		
+		EXIST(1),
+		GET(2),
+		SET(3),
+		COMPARE_AND_SET(4),
+		EXECUTE(5);
+		
+		private final int opcode;
+		
+		private OpCode(int opcode) {
+			this.opcode = opcode;
+		}
+
+		public int getOpcode() {
+			return opcode;
+		}
+		
+	}
+	
 }

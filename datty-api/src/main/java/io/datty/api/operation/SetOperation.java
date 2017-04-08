@@ -68,5 +68,10 @@ public class SetOperation extends AbstractUpdateOperation<SetOperation, VoidResu
 		this.updatePolicy = updatePolicy;
 		return this;
 	}
+	
+	@Override
+	public OpCode getCode() {
+		return OpCode.SET;
+	}
 
 }
