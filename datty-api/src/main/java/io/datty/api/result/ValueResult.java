@@ -16,27 +16,27 @@ package io.datty.api.result;
 import io.netty.buffer.ByteBuf;
 
 /**
- * PayloadResult
+ * ValueResult
  * 
  * @author dadril
  *
  */
 
-public class PayloadResult extends AbstractResult {
+public class ValueResult extends AbstractResult {
 
-	private final ByteBuf payload;
+	private final ByteBuf value;
 	
-	public PayloadResult(ByteBuf payload) {
-		this.payload = payload;
+	public ValueResult(ByteBuf value) {
+		this.value = value;
 	}
 
-	public ByteBuf getPayload() {
-		return payload;
+	public ByteBuf getValue() {
+		return value;
 	}
 	
 	@Override
 	public ResCode getCode() {
-		return ResCode.PAYLOAD;
+		return ResCode.VALUE;
 	}
 	
 }

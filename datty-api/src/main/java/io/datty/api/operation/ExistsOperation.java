@@ -67,7 +67,7 @@ public class ExistsOperation extends AbstractOperation<ExistsOperation, ExistsRe
 	
 	@Override
 	public OpCode getCode() {
-		return OpCode.EXIST;
+		return OpCode.EXISTS;
 	}
 
 }

@@ -51,7 +51,7 @@ public interface DattyResult {
 		ERROR(2),
 		BOOL(3),
 		EXIST(4),
-		PAYLOAD(5),
+		VALUE(5),
 		RECORD(6);
 		
 		private final int rescode;

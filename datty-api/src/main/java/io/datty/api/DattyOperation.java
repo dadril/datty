@@ -115,7 +115,7 @@ public interface DattyOperation {
 	
 	public enum OpCode {
 		
-		EXIST(1),
+		EXISTS(1),
 		GET(2),
 		SET(3),
 		COMPARE_AND_SET(4),
