@@ -127,8 +127,17 @@ public interface DattyOperation {
 			this.opcode = opcode;
 		}
 
-		public int getOpcode() {
+		public int getCode() {
 			return opcode;
+		}
+		
+		public static OpCode findByCode(int code) {
+			for (OpCode v : values()) {
+				if (v.getCode() == code) {
+					return v;
+				}
+			}
+			return null;
 		}
 		
 	}

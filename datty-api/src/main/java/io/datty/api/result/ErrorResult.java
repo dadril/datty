@@ -14,7 +14,6 @@
 package io.datty.api.result;
 
 import io.datty.api.DattyError;
-import io.datty.support.DattyErrorCodes;
 
 /**
  * All errors must be based on this interface
@@ -27,7 +26,7 @@ import io.datty.support.DattyErrorCodes;
 
 public class ErrorResult extends AbstractResult implements DattyError {
 
-	private int errorCode = DattyErrorCodes.UNKNOWN_ERROR;
+	private int errorCode = DattyError.ErrCode.UNKNOWN.getCode();
 	private String errorMessage;
 	private String errorStacktrace;
 

@@ -46,4 +46,36 @@ public interface DattyError {
 
 	String getErrorStacktrace();
 
+	/**
+	 * Enum of known error codes
+	 * 
+	 * @author dadril
+	 *
+	 */
+	
+	public enum ErrCode {
+		
+		UNKNOWN(1);
+		
+		private final int errcode;
+		
+		private ErrCode(int errcode) {
+			this.errcode = errcode;
+		}
+
+		public int getCode() {
+			return errcode;
+		}
+		
+		public static ErrCode findByCode(int code) {
+			for (ErrCode v : values()) {
+				if (v.getCode() == code) {
+					return v;
+				}
+			}
+			return null;
+		}
+		
+	}
+	
 }

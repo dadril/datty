@@ -60,8 +60,17 @@ public interface DattyResult {
 			this.rescode = rescode;
 		}
 
-		public int getRescode() {
+		public int getCode() {
 			return rescode;
+		}
+		
+		public static ResCode findByCode(int code) {
+			for (ResCode v : values()) {
+				if (v.getCode() == code) {
+					return v;
+				}
+			}
+			return null;
 		}
 		
 	}
