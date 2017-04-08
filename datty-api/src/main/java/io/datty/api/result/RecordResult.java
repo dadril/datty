@@ -13,6 +13,7 @@
  */
 package io.datty.api.result;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,9 +41,17 @@ public final class RecordResult extends AbstractResult {
 	
 	private final Map<String, ByteBuf> values;
 	
+	public RecordResult(Version version) {
+		this(version, null);
+	}
+	
 	public RecordResult(Version version, Map<String, ByteBuf> values) {
 		this.version = version;
-		this.values = values;
+		this.values = values != null ? values : Collections.emptyMap();
+	}
+	
+	public boolean hasVersion() {
+		return version != null;
 	}
 	
 	public Version getVersion() {
@@ -70,5 +79,9 @@ public final class RecordResult extends AbstractResult {
 		return ResCode.RECORD;
 	}
 
+	@Override
+	public String toString() {
+		return "RecordResult [version=" + version + ", values=" + values + "]";
+	}
 
 }

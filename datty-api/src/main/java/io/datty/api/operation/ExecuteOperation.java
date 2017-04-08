@@ -67,6 +67,14 @@ public class ExecuteOperation extends AbstractUpdateOperation<ExecuteOperation, 
 	@Override
 	public OpCode getCode() {
 		return OpCode.EXECUTE;
+	}
+
+	@Override
+	public String toString() {
+		return "ExecuteOperation [packageName=" + packageName + ", functionName=" + functionName + ", arguments="
+				+ arguments + ", cacheName=" + cacheName + ", superKey=" + superKey + ", majorKey=" + majorKey
+				+ ", timeoutMillis=" + timeoutMillis + "]";
 	}	
+	
 	
 }

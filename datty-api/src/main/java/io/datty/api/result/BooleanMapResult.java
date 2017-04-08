@@ -13,50 +13,60 @@
  */
 package io.datty.api.result;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * ExistsResult
+ * BooleanMapResult
  * 
  * @author dadril
  *
  */
 
-public class ExistsResult extends AbstractResult {
+public class BooleanMapResult extends AbstractResult {
 
-	private final boolean existsRecord;
+	private final boolean value;
 	
-	private final Map<String, Boolean> existsValues;
+	private final Map<String, Boolean> values;
 	
-	public ExistsResult(boolean existsRecord, Map<String, Boolean> existsValues) {
-		this.existsRecord = existsRecord;
-		this.existsValues = existsValues;
+	public BooleanMapResult(boolean value) {
+		this(value, null);
+	}
+	
+	public BooleanMapResult(boolean value, Map<String, Boolean> values) {
+		this.value = value;
+		this.values = values != null ? values : Collections.emptyMap();
 	}
 
-	public boolean isExistsRecord() {
-		return existsRecord;
+	public boolean get() {
+		return value;
 	}
 
 	public boolean isEmpty() {
-		return existsValues.isEmpty();
+		return values.isEmpty();
 	}
 	
 	public int size() {
-		return existsValues.size();
+		return values.size();
 	}
 	
 	public Set<String> minorKeys() {
-		return existsValues.keySet();
+		return values.keySet();
 	}
 	
-	public Boolean exists(String minorKey) {
-		return existsValues.get(minorKey);
+	public Boolean get(String minorKey) {
+		return values.get(minorKey);
 	}
 	
 	@Override
 	public ResCode getCode() {
-		return ResCode.EXIST;
+		return ResCode.BOOLMAP;
+	}
+
+	@Override
+	public String toString() {
+		return "BooleanMapResult [value=" + value + ", values=" + values + "]";
 	}
 	
 }

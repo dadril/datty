@@ -41,4 +41,9 @@ public class LongVersion implements Version {
 		return value;
 	}
 
+	@Override
+	public String toString() {
+		return "LongVersion [value=" + value + "]";
+	}
+
 }

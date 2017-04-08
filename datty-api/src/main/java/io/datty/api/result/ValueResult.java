@@ -38,5 +38,11 @@ public class ValueResult extends AbstractResult {
 	public ResCode getCode() {
 		return ResCode.VALUE;
 	}
+
+	@Override
+	public String toString() {
+		return "ValueResult [value=" + value + "]";
+	}
+
 	
 }

@@ -50,7 +50,7 @@ public interface DattyResult {
 		VOID(1),
 		ERROR(2),
 		BOOL(3),
-		EXIST(4),
+		BOOLMAP(4),
 		VALUE(5),
 		RECORD(6);
 		

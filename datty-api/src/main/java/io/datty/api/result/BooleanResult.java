@@ -36,5 +36,10 @@ public final class BooleanResult extends AbstractResult {
 	public ResCode getCode() {
 		return ResCode.BOOL;
 	}
+
+	@Override
+	public String toString() {
+		return "BooleanResult [value=" + value + "]";
+	}
 	
 }

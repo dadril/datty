@@ -27,4 +27,9 @@ public class VoidResult extends AbstractResult {
 		return ResCode.VOID;
 	}
 
+	@Override
+	public String toString() {
+		return "VoidResult";
+	}
+
 }

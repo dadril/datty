@@ -71,4 +71,11 @@ public class GetOperation extends AbstractOperation<GetOperation, RecordResult> 
 		return OpCode.GET;
 	}
 
+	@Override
+	public String toString() {
+		return "GetOperation [minorKeys=" + minorKeys + ", allMinorKeys=" + allMinorKeys + ", cacheName=" + cacheName
+				+ ", superKey=" + superKey + ", majorKey=" + majorKey + ", timeoutMillis=" + timeoutMillis + "]";
+	}
+
+
 }

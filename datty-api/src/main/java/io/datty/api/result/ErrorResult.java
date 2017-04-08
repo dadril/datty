@@ -65,4 +65,10 @@ public class ErrorResult extends AbstractResult implements DattyError {
 		return ResCode.ERROR;
 	}
 
+	@Override
+	public String toString() {
+		return "ErrorResult [errorCode=" + errorCode + ", errorMessage=" + errorMessage + ", errorStacktrace="
+				+ errorStacktrace + "]";
+	}
+	
 }

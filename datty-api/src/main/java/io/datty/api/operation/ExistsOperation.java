@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import io.datty.api.result.ExistsResult;
+import io.datty.api.result.BooleanMapResult;
 
 /**
  * Exists operation
@@ -26,7 +26,7 @@ import io.datty.api.result.ExistsResult;
  *
  */
 
-public class ExistsOperation extends AbstractOperation<ExistsOperation, ExistsResult> {
+public class ExistsOperation extends AbstractOperation<ExistsOperation, BooleanMapResult> {
 
 	private Set<String> minorKeys = null;
 	private boolean anyMinorKey;
@@ -68,6 +68,12 @@ public class ExistsOperation extends AbstractOperation<ExistsOperation, ExistsRe
 	@Override
 	public OpCode getCode() {
 		return OpCode.EXISTS;
+	}
+
+	@Override
+	public String toString() {
+		return "ExistsOperation [minorKeys=" + minorKeys + ", anyMinorKey=" + anyMinorKey + ", cacheName=" + cacheName
+				+ ", superKey=" + superKey + ", majorKey=" + majorKey + ", timeoutMillis=" + timeoutMillis + "]";
 	}
 
 }

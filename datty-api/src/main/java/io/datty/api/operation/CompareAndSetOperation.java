@@ -90,5 +90,13 @@ public class CompareAndSetOperation extends
 	public OpCode getCode() {
 		return OpCode.COMPARE_AND_SET;
 	}
+
+	@Override
+	public String toString() {
+		return "CompareAndSetOperation [oldVersion=" + oldVersion + ", newValues=" + newValues + ", updatePolicy="
+				+ updatePolicy + ", cacheName=" + cacheName + ", superKey=" + superKey + ", majorKey=" + majorKey
+				+ ", timeoutMillis=" + timeoutMillis + "]";
+	}
+	
 	
 }

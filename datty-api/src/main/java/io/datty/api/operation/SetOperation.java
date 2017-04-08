@@ -74,4 +74,10 @@ public class SetOperation extends AbstractUpdateOperation<SetOperation, VoidResu
 		return OpCode.SET;
 	}
 
+	@Override
+	public String toString() {
+		return "SetOperation [newValues=" + newValues + ", updatePolicy=" + updatePolicy + ", cacheName=" + cacheName
+				+ ", superKey=" + superKey + ", majorKey=" + majorKey + ", timeoutMillis=" + timeoutMillis + "]";
+	}
+
 }
