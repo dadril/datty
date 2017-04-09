@@ -67,7 +67,7 @@ public class GetOperation extends AbstractOperation<GetOperation, RecordResult> 
 	}
 	
 	public Set<String> getMinorKeys() {
-		return minorKeys != null ? minorKeys : Collections.emptySet();
+		return minorKeys != null ? minorKeys : Collections.<String>emptySet();
 	}
 
 	@Override

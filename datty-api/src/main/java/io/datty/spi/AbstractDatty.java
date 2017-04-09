@@ -61,7 +61,7 @@ public abstract class AbstractDatty implements Datty {
 	}
 	
 	@Override
-	public Single<DattyResult> execute(DattyOperation operation) {
+	public Single<DattyResult> execute(final DattyOperation operation) {
 		
 		Single<DattyResult> result = doExecute(operation);
 		
@@ -112,7 +112,7 @@ public abstract class AbstractDatty implements Datty {
 	public Single<List<DattyResult>> executeBatch(final List<DattyOperation> operations, int timeoutMillis) {
 
 		if (operations.isEmpty()) {
-			return Single.just(Collections.emptyList());
+			return Single.just(Collections.<DattyResult>emptyList());
 		}
 		
 		int size = operations.size();

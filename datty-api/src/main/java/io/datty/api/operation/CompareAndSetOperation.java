@@ -54,6 +54,10 @@ public class CompareAndSetOperation extends
 		super(cacheName, majorKey);
 	}
 
+	public boolean hasOldVersion() {
+		return oldVersion != null;
+	}
+	
 	public Version getOldVersion() {
 		return oldVersion;
 	}
@@ -77,6 +81,10 @@ public class CompareAndSetOperation extends
 		return this;
 	}
 	
+	public Map<String, ByteBuf> getValues() {
+		return newValues != null ? newValues : Collections.<String, ByteBuf>emptyMap();
+	}
+
 	public UpdatePolicy getUpdatePolicy() {
 		return updatePolicy;
 	}

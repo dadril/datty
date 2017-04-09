@@ -16,6 +16,7 @@ package io.datty.api.result;
 import java.util.Map;
 import java.util.Set;
 
+import io.datty.api.DattyResult;
 import io.datty.api.operation.Version;
 import io.datty.support.exception.RecordNotExistsException;
 import io.netty.buffer.ByteBuf;
@@ -45,13 +46,17 @@ public final class RecordResult extends AbstractResult {
 		this(null, null);
 	}
 	
-	public RecordResult(Version version) {
-		this(version, null);
-	}
-	
 	public RecordResult(Version version, Map<String, ByteBuf> values) {
 		this.version = version;
 		this.values = values;
+	}
+	
+	public static DattyResult absent() {
+		return new RecordResult();
+	}
+	
+	public static DattyResult of(Version version, Map<String, ByteBuf> values) {
+		return new RecordResult(version, values);
 	}
 	
 	public boolean hasVersion() {

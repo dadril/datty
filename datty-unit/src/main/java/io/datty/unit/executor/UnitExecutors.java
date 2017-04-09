@@ -31,6 +31,8 @@ public final class UnitExecutors {
 		codeList[OpCode.EXISTS.getCode()] = ExistsExecutor.INSTANCE;
 		codeList[OpCode.GET.getCode()] = GetExecutor.INSTANCE;
 		codeList[OpCode.SET.getCode()] = SetExecutor.INSTANCE;
+		codeList[OpCode.COMPARE_AND_SET.getCode()] = CompareAndSetExecutor.INSTANCE;
+		codeList[OpCode.EXECUTE.getCode()] = ExecuteExecutor.INSTANCE;
 		
 	}
 	

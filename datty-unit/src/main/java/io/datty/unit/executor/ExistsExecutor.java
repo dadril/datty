@@ -40,7 +40,7 @@ public enum ExistsExecutor implements OperationExecutor<ExistsOperation> {
 		UnitRecord record = recordMap.get(majorKey);
 		
 		if (operation.isAnyMinorKey()) {
-			return Single.just(new BooleanMapResult(record != null));
+			return Single.just(BooleanMapResult.of(record != null));
 		}
 		else {
 			
@@ -50,7 +50,7 @@ public enum ExistsExecutor implements OperationExecutor<ExistsOperation> {
 				map.put(minorKey, recordExists ? record.hasColumn(minorKey) : false);
 			}
 			
-			return Single.just(new BooleanMapResult(recordExists, map));
+			return Single.just(BooleanMapResult.of(recordExists, map));
 		}
 		
 	}

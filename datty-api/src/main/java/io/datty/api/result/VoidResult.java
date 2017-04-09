@@ -13,6 +13,8 @@
  */
 package io.datty.api.result;
 
+import io.datty.api.DattyResult;
+
 /**
  * VoidResult
  * 
@@ -22,6 +24,10 @@ package io.datty.api.result;
 
 public class VoidResult extends AbstractResult {
 
+	public static DattyResult create() {
+		return new VoidResult();
+	}
+	
 	@Override
 	public ResCode getCode() {
 		return ResCode.VOID;

@@ -17,6 +17,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+import io.datty.api.DattyResult;
+
 /**
  * BooleanMapResult
  * 
@@ -31,7 +33,7 @@ public class BooleanMapResult extends AbstractResult {
 	private final Map<String, Boolean> values;
 	
 	public BooleanMapResult(boolean value) {
-		this(value, Collections.emptyMap());
+		this(value, Collections.<String, Boolean>emptyMap());
 	}
 	
 	public BooleanMapResult(boolean value, Map<String, Boolean> values) {
@@ -39,6 +41,14 @@ public class BooleanMapResult extends AbstractResult {
 		this.values = values;
 	}
 
+	public static DattyResult of(boolean value) {
+		return new BooleanMapResult(value);
+	}
+	
+	public static DattyResult of(boolean value, Map<String, Boolean> values) {
+		return new BooleanMapResult(value, values);
+	}
+	
 	public boolean get() {
 		return value;
 	}

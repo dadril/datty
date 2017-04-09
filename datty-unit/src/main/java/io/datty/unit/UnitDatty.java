@@ -169,7 +169,7 @@ public class UnitDatty extends AbstractDatty implements Datty, CacheManager {
 		
 		UnitRecord record = cache.getRecordMap().get(majorKey);
 		if (record == null) {
-			return Observable.just(new ValueResult());
+			return Observable.just(ValueResult.ofNull());
 		}
 		
 		String minorKey = key.getMinorKey();
@@ -179,7 +179,7 @@ public class UnitDatty extends AbstractDatty implements Datty, CacheManager {
 		
 		ByteBuf value = record.getColumn(minorKey);
 		
-		return Observable.just(new ValueResult(value));
+		return Observable.just(ValueResult.of(value));
 	}
 
 	@Override
@@ -209,9 +209,7 @@ public class UnitDatty extends AbstractDatty implements Datty, CacheManager {
 			}
 		}
 		
-		final ByteBuf destBuffer = UnitConstants.ALLOC.buffer();
-		
-		record.createColumn(minorKey, destBuffer);
+		final ByteBuf destBuffer = record.createColumn(minorKey);
 		
 		record.incrementVersion();
 		

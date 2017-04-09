@@ -13,52 +13,31 @@
  */
 package io.datty.unit.executor;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
-import io.datty.api.DattyError.ErrCode;
 import io.datty.api.DattyResult;
-import io.datty.api.operation.GetOperation;
+import io.datty.api.DattyError.ErrCode;
+import io.datty.api.operation.ExecuteOperation;
 import io.datty.api.result.ErrorResult;
-import io.datty.api.result.RecordResult;
+import io.datty.api.result.ValueResult;
 import io.datty.unit.UnitRecord;
-import io.netty.buffer.ByteBuf;
 import rx.Single;
 
-public enum GetExecutor implements OperationExecutor<GetOperation> {
+public enum ExecuteExecutor implements OperationExecutor<ExecuteOperation> {
 
 	INSTANCE;
-	
+
 	@Override
-	public Single<DattyResult> execute(ConcurrentMap<String, UnitRecord> recordMap, GetOperation operation) {
+	public Single<DattyResult> execute(ConcurrentMap<String, UnitRecord> recordMap, ExecuteOperation operation) {
 		
 		String majorKey = operation.getMajorKey();
 		if (majorKey == null) {
 			return Single.just(ErrorResult.of(ErrCode.BAD_ARGUMENTS, "empty majorKey"));
 		}
 		
-		UnitRecord record = recordMap.get(majorKey);
-		if (record == null) {
-			return Single.just(RecordResult.absent());
-		}
-
-		if (operation.isAllMinorKeys()) {
-			return Single.just(RecordResult.of(record.getVersion(), record.getColumnMap()));
-		}
-		else {
-			
-			Map<String, ByteBuf> map = new HashMap<String, ByteBuf>();
-			for (String minorKey : operation.getMinorKeys()) {
-				ByteBuf value = record.getColumn(minorKey);
-				if (value != null) {
-					map.put(minorKey, value);
-				}
-			}
-			
-			return Single.just(RecordResult.of(record.getVersion(), map));
-		}
-
+		return Single.just(ValueResult.of(operation.getArguments()));
 	}
+	
+	
 	
 }

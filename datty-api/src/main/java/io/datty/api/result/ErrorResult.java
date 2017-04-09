@@ -17,6 +17,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import io.datty.api.DattyError;
+import io.datty.api.DattyResult;
 
 /**
  * All errors must be based on this interface
@@ -73,19 +74,19 @@ public class ErrorResult extends AbstractResult implements DattyError {
 		return w.toString();
 	}
 	
-	public static ErrorResult of(DattyError.ErrCode errcode) {
+	public static DattyResult of(DattyError.ErrCode errcode) {
 		return new ErrorResult(errcode); 
 	}
 	
-	public static ErrorResult of(DattyError.ErrCode errcode, String message) {
+	public static DattyResult of(DattyError.ErrCode errcode, String message) {
 		return new ErrorResult(errcode, message); 
 	}
 
-	public static ErrorResult of(int errcode) {
+	public static DattyResult of(int errcode) {
 		return new ErrorResult(errcode); 
 	}
 	
-	public static ErrorResult of(int errcode, String message) {
+	public static DattyResult of(int errcode, String message) {
 		return new ErrorResult(errcode, message); 
 	}
 	

@@ -13,6 +13,8 @@
  */
 package io.datty.api.result;
 
+import io.datty.api.DattyResult;
+
 /**
  * BooleanResult
  * 
@@ -26,6 +28,10 @@ public final class BooleanResult extends AbstractResult {
 
 	public BooleanResult(boolean value) {
 		this.value = value;
+	}
+	
+	public static DattyResult of(boolean value) {
+		return new BooleanResult(value);
 	}
 
 	public boolean get() {

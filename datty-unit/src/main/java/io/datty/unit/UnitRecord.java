@@ -55,18 +55,20 @@ public final class UnitRecord {
 		return columnMap.get(minorKey);
 	}
 	
-	public void setColumn(String minorKey, ByteBuf value) {
+	public void addColumn(String minorKey, ByteBuf value) {
 		ByteBuf old = columnMap.put(minorKey, value != null ? value.copy() : null);
 		if (old != null) {
 			old.release();
 		}
 	}
 	
-	public void createColumn(String minorKey, ByteBuf empty) {
+	public ByteBuf createColumn(String minorKey) {
+		ByteBuf empty = UnitConstants.ALLOC.buffer();
 		ByteBuf old = columnMap.put(minorKey, empty);
 		if (old != null) {
 			old.release();
 		}
+		return empty;
 	}
 
 	public Map<String, ByteBuf> getColumnMap() {
