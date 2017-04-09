@@ -11,42 +11,14 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api.result;
+package io.datty.support.exception;
 
-import io.netty.buffer.ByteBuf;
+public class RecordNotExistsException extends DattyException {
 
-/**
- * ValueResult
- * 
- * @author dadril
- *
- */
+	private static final long serialVersionUID = 3901791422852088942L;
 
-public class ValueResult extends AbstractResult {
-
-	private final ByteBuf value;
-	
-	public ValueResult() {
-		this.value = null;
-	}
-	
-	public ValueResult(ByteBuf value) {
-		this.value = value;
+	public RecordNotExistsException() {
+		super("record not exists");
 	}
 
-	public ByteBuf getValue() {
-		return value;
-	}
-	
-	@Override
-	public ResCode getCode() {
-		return ResCode.VALUE;
-	}
-
-	@Override
-	public String toString() {
-		return "ValueResult [value=" + value + "]";
-	}
-
-	
 }

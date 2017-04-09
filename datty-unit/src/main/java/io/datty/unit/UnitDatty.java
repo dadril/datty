@@ -21,14 +21,22 @@ import io.datty.api.Cache;
 import io.datty.api.CacheExistsAction;
 import io.datty.api.CacheManager;
 import io.datty.api.Datty;
+import io.datty.api.DattyError.ErrCode;
 import io.datty.api.DattyKey;
 import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
+import io.datty.api.result.ErrorResult;
+import io.datty.api.result.LongResult;
+import io.datty.api.result.ValueResult;
 import io.datty.spi.AbstractDatty;
 import io.datty.support.exception.CacheExistsException;
+import io.datty.unit.executor.OperationExecutor;
+import io.datty.unit.executor.UnitExecutors;
 import io.netty.buffer.ByteBuf;
 import rx.Observable;
 import rx.Single;
+import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Unit implementation for Datty API
@@ -127,24 +135,107 @@ public class UnitDatty extends AbstractDatty implements Datty, CacheManager {
 	 */
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Single<DattyResult> doExecute(DattyOperation operation) {
-		// TODO Auto-generated method stub
-		return null;
+
+		UnitCache cache = cacheMap.get(operation.getCacheName());
+		if (cache == null) {
+			return Single.just(ErrorResult.of(ErrCode.CACHE_NOT_FOUND));
+		}
+		
+		@SuppressWarnings("rawtypes")
+		OperationExecutor executor = UnitExecutors.findExecutor(operation.getCode());
+		
+		if (executor == null) {
+			return Single.just(ErrorResult.of(ErrCode.UNKNOWN_OPERATION));
+		}
+		
+		return executor.execute(cache.getRecordMap(), operation);
 	}
 
 	@Override
 	public Observable<DattyResult> doStreamOut(DattyKey key) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		UnitCache cache = cacheMap.get(key.getCacheName());
+		if (cache == null) {
+			return Observable.just(ErrorResult.of(ErrCode.CACHE_NOT_FOUND));
+		}
+		
+		String majorKey = key.getMajorKey();
+		if (majorKey == null) {
+			return Observable.just(ErrorResult.of(ErrCode.BAD_ARGUMENTS, "empty majorKey"));
+		}
+		
+		UnitRecord record = cache.getRecordMap().get(majorKey);
+		if (record == null) {
+			return Observable.just(new ValueResult());
+		}
+		
+		String minorKey = key.getMinorKey();
+		if (minorKey == null) {
+			return Observable.just(ErrorResult.of(ErrCode.BAD_ARGUMENTS, "empty minorKey"));
+		}
+		
+		ByteBuf value = record.getColumn(minorKey);
+		
+		return Observable.just(new ValueResult(value));
 	}
 
 	@Override
 	public Single<DattyResult> doStreamIn(DattyKey key, Observable<ByteBuf> value) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		
+		UnitCache cache = cacheMap.get(key.getCacheName());
+		if (cache == null) {
+			return Single.just(ErrorResult.of(ErrCode.CACHE_NOT_FOUND));
+		}
+		
+		String majorKey = key.getMajorKey();
+		if (majorKey == null) {
+			return Single.just(ErrorResult.of(ErrCode.BAD_ARGUMENTS, "empty majorKey"));
+		}
+		
+		String minorKey = key.getMinorKey();
+		if (minorKey == null) {
+			return Single.just(ErrorResult.of(ErrCode.BAD_ARGUMENTS, "empty minorKey"));
+		}
+		
+		UnitRecord record = cache.getRecordMap().get(majorKey);
+		if (record == null) {
+			record = new UnitRecord();
+			UnitRecord c = cache.getRecordMap().putIfAbsent(majorKey, record);
+			if (c != null) {
+				record = c;
+			}
+		}
+		
+		final ByteBuf destBuffer = UnitConstants.ALLOC.buffer();
+		
+		record.createColumn(minorKey, destBuffer);
+		
+		record.incrementVersion();
+		
+		Observable<ByteBuf> result = value.reduce(destBuffer, new Func2<ByteBuf, ByteBuf, ByteBuf>() {
 
+			@Override
+			public ByteBuf call(ByteBuf dest, ByteBuf chunk) {
+				dest.writeBytes(chunk);
+				return dest;
+			}
+			
+		});
+		
+		return result.map(new Func1<ByteBuf, DattyResult>() {
+
+			@Override
+			public DattyResult call(ByteBuf buf) {
+				return new LongResult(buf.readableBytes());
+			}
+			
+		}).toSingle();
+
+		
+	}
 
 	@Override
 	public String toString() {

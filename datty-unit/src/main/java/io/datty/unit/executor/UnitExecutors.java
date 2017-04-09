@@ -11,42 +11,31 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api.result;
+package io.datty.unit.executor;
 
-import io.netty.buffer.ByteBuf;
+import io.datty.api.DattyOperation.OpCode;
 
 /**
- * ValueResult
+ * UnitExecutors
  * 
  * @author dadril
  *
  */
 
-public class ValueResult extends AbstractResult {
+public final class UnitExecutors {
 
-	private final ByteBuf value;
+	private final static OperationExecutor<?>[] codeList = new OperationExecutor<?>[OpCode.max() + 1];
 	
-	public ValueResult() {
-		this.value = null;
-	}
-	
-	public ValueResult(ByteBuf value) {
-		this.value = value;
-	}
-
-	public ByteBuf getValue() {
-		return value;
+	private UnitExecutors() {
+		
+		codeList[OpCode.EXISTS.getCode()] = ExistsExecutor.INSTANCE;
+		codeList[OpCode.GET.getCode()] = GetExecutor.INSTANCE;
+		codeList[OpCode.SET.getCode()] = SetExecutor.INSTANCE;
+		
 	}
 	
-	@Override
-	public ResCode getCode() {
-		return ResCode.VALUE;
+	public static OperationExecutor<?> findExecutor(OpCode opcode) {
+		return codeList[opcode.getCode()];
 	}
-
-	@Override
-	public String toString() {
-		return "ValueResult [value=" + value + "]";
-	}
-
 	
 }

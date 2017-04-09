@@ -40,6 +40,11 @@ public class ErrorResult extends AbstractResult implements DattyError {
 	public ErrorResult(DattyError.ErrCode errcode) {
 		this.errorCode = errcode.getCode();
 	}
+	
+	public ErrorResult(DattyError.ErrCode errcode, String message) {
+		this.errorCode = errcode.getCode();
+		this.errorMessage = message;
+	}
 
 	public ErrorResult(DattyError.ErrCode errcode, Throwable e) {
 		this(errcode.getCode(), e);
@@ -47,6 +52,11 @@ public class ErrorResult extends AbstractResult implements DattyError {
 	
 	public ErrorResult(int errorCode) {
 		this.errorCode = errorCode;
+	}
+	
+	public ErrorResult(int errorCode, String message) {
+		this.errorCode = errorCode;
+		this.errorMessage = message;
 	}
 	
 	public ErrorResult(int errorCode, Throwable e) {
@@ -66,9 +76,17 @@ public class ErrorResult extends AbstractResult implements DattyError {
 	public static ErrorResult of(DattyError.ErrCode errcode) {
 		return new ErrorResult(errcode); 
 	}
+	
+	public static ErrorResult of(DattyError.ErrCode errcode, String message) {
+		return new ErrorResult(errcode, message); 
+	}
 
 	public static ErrorResult of(int errcode) {
 		return new ErrorResult(errcode); 
+	}
+	
+	public static ErrorResult of(int errcode, String message) {
+		return new ErrorResult(errcode, message); 
 	}
 	
 	@Override

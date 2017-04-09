@@ -42,6 +42,8 @@ public abstract class AbstractOperation<O extends DattyOperation, R extends Datt
 
 	protected DattyResult result;
 	
+	protected int sequenceNumber;
+	
 	public AbstractOperation(String cacheName) {
 		this.cacheName = cacheName;
 	}
@@ -146,6 +148,15 @@ public abstract class AbstractOperation<O extends DattyOperation, R extends Datt
 		}
 		
 		return datty.execute(this);
+	}
+
+	public int getSequenceNumber() {
+		return sequenceNumber;
+	}
+
+	public DattyOperation setSequenceNumber(int sequenceNumber) {
+		this.sequenceNumber = sequenceNumber;
+		return this;
 	}
 
 	

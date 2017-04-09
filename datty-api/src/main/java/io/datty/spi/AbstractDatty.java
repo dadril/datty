@@ -122,14 +122,12 @@ public abstract class AbstractDatty implements Datty {
 		
 		for (int i = 0; i != size; ++i) {
 			
-			final int position = i;
-			
-			Single<DattyResult> singleResult = execute(operations.get(i));
+			Single<DattyResult> singleResult = execute(operations.get(i).setSequenceNumber(i));
 			
 			singleResult = singleResult.map(new Func1<DattyResult, DattyResult>() {
 				
 				public DattyResult call(DattyResult res) {
-					resultList.add(position, res);
+					resultList.add(res.getOperation().getSequenceNumber(), res);
 					return res;
 				}
 				

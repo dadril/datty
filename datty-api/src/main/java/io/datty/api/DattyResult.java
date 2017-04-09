@@ -13,6 +13,8 @@
  */
 package io.datty.api;
 
+import io.datty.api.DattyOperation.OpCode;
+
 /**
  * Base interface for all results
  * 
@@ -72,6 +74,16 @@ public interface DattyResult {
 				}
 			}
 			return null;
+		}
+		
+		public static int max() {
+			int max = Integer.MIN_VALUE;
+			for (ResCode v : values()) {
+				if (max < v.getCode()) {
+					max = v.getCode();
+				}
+			}
+			return max;
 		}
 		
 	}

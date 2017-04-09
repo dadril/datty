@@ -108,6 +108,22 @@ public interface DattyOperation {
 	Single<DattyResult> execute();
 	
 	/**
+	 * Gets sequence number of the operation
+	 * 
+	 * @return it is using in batch or other sequence operations to keep the order
+	 */
+	
+	int getSequenceNumber();
+	
+	/**
+	 * Sets sequence number of the operation
+	 * 
+	 * @param sequenceNumber - sequence number
+	 */
+	
+	DattyOperation setSequenceNumber(int sequenceNumber);
+	
+	/**
 	 * Gets operation code
 	 * 
 	 * @return not null operation code
@@ -147,6 +163,16 @@ public interface DattyOperation {
 				}
 			}
 			return null;
+		}
+		
+		public static int max() {
+			int max = Integer.MIN_VALUE;
+			for (OpCode v : values()) {
+				if (max < v.getCode()) {
+					max = v.getCode();
+				}
+			}
+			return max;
 		}
 		
 	}

@@ -13,6 +13,15 @@
  */
 package io.datty.unit;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
+
+import io.datty.api.operation.Version;
+import io.datty.support.LongVersion;
+import io.netty.buffer.ByteBuf;
+
 /**
  * Unit implementation of record
  * 
@@ -20,6 +29,48 @@ package io.datty.unit;
  *
  */
 
-public class UnitRecord {
+public final class UnitRecord {
 
+	private final ConcurrentMap<String, ByteBuf> columnMap = new ConcurrentHashMap<String, ByteBuf>();
+	
+	private final AtomicLong version = new AtomicLong(-1L);
+	
+	public void incrementVersion() {
+		version.incrementAndGet();
+	}
+	
+	public Version getVersion() {
+		return new LongVersion(version.get());
+	}
+	
+	public void clear() {
+		columnMap.clear();
+	}
+	
+	public boolean hasColumn(String minorKey) {
+		return columnMap.containsKey(minorKey);
+	}
+	
+	public ByteBuf getColumn(String minorKey) {
+		return columnMap.get(minorKey);
+	}
+	
+	public void setColumn(String minorKey, ByteBuf value) {
+		ByteBuf old = columnMap.put(minorKey, value != null ? value.copy() : null);
+		if (old != null) {
+			old.release();
+		}
+	}
+	
+	public void createColumn(String minorKey, ByteBuf empty) {
+		ByteBuf old = columnMap.put(minorKey, empty);
+		if (old != null) {
+			old.release();
+		}
+	}
+
+	public Map<String, ByteBuf> getColumnMap() {
+		return columnMap;
+	}
+	
 }

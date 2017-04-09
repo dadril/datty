@@ -101,6 +101,10 @@ public class UnitCache implements Cache {
 	public ExecuteOperation execute(String majorKey) {
 		return new ExecuteOperation(cacheName, majorKey).withDatty(parent.getDatty());
 	}
+	
+	public ConcurrentMap<String, UnitRecord> getRecordMap() {
+		return recordMap;
+	}
 
 	@Override
 	public String toString() {

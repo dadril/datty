@@ -65,6 +65,10 @@ public class ExistsOperation extends AbstractOperation<ExistsOperation, BooleanM
 		return this;
 	}
 	
+	public Set<String> getMinorKeys() {
+		return minorKeys != null ? minorKeys : Collections.emptySet();
+	}
+
 	@Override
 	public OpCode getCode() {
 		return OpCode.EXISTS;

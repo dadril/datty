@@ -58,7 +58,9 @@ public interface DattyError {
 		UNKNOWN(1),
 		CACHE_NOT_FOUND(2),
 		TIMEOUT(3),
-		CONCURRENT_RETIRES(4);
+		CONCURRENT_RETIRES(4),
+		BAD_ARGUMENTS(5),
+		UNKNOWN_OPERATION(6);
 		
 		private final int errcode;
 		
@@ -77,6 +79,16 @@ public interface DattyError {
 				}
 			}
 			return null;
+		}
+		
+		public static int max() {
+			int max = Integer.MIN_VALUE;
+			for (ErrCode v : values()) {
+				if (max < v.getCode()) {
+					max = v.getCode();
+				}
+			}
+			return max;
 		}
 		
 	}

@@ -11,42 +11,24 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api.result;
+package io.datty.unit.executor;
 
-import io.netty.buffer.ByteBuf;
+import java.util.concurrent.ConcurrentMap;
 
-/**
- * ValueResult
- * 
- * @author dadril
- *
- */
+import io.datty.api.DattyOperation;
+import io.datty.api.DattyResult;
+import io.datty.unit.UnitRecord;
+import rx.Single;
 
-public class ValueResult extends AbstractResult {
-
-	private final ByteBuf value;
+public interface OperationExecutor<O extends DattyOperation> {
 	
-	public ValueResult() {
-		this.value = null;
-	}
+	/**
+	 * Executes operation
+	 * 
+	 * @param operation - datty operation
+	 * @return result
+	 */
 	
-	public ValueResult(ByteBuf value) {
-		this.value = value;
-	}
-
-	public ByteBuf getValue() {
-		return value;
-	}
-	
-	@Override
-	public ResCode getCode() {
-		return ResCode.VALUE;
-	}
-
-	@Override
-	public String toString() {
-		return "ValueResult [value=" + value + "]";
-	}
-
+	Single<DattyResult> execute(ConcurrentMap<String, UnitRecord> recordMap, O operation);
 	
 }

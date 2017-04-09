@@ -46,12 +46,12 @@ public class CompareAndSetOperation extends
 	
 	private UpdatePolicy updatePolicy = UpdatePolicy.MERGE;
 
-	public CompareAndSetOperation(String storeName) {
-		super(storeName);
+	public CompareAndSetOperation(String cacheName) {
+		super(cacheName);
 	}
 
-	public CompareAndSetOperation(String storeName, String majorKey) {
-		super(storeName, majorKey);
+	public CompareAndSetOperation(String cacheName, String majorKey) {
+		super(cacheName, majorKey);
 	}
 
 	public Version getOldVersion() {

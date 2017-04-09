@@ -11,42 +11,24 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api.result;
+package io.datty.unit;
 
-import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.UnpooledByteBufAllocator;
 
 /**
- * ValueResult
+ * UnitConstants
  * 
  * @author dadril
  *
  */
 
-public class ValueResult extends AbstractResult {
+public class UnitConstants {
 
-	private final ByteBuf value;
+	/**
+	 * Default unit allocator
+	 */
 	
-	public ValueResult() {
-		this.value = null;
-	}
-	
-	public ValueResult(ByteBuf value) {
-		this.value = value;
-	}
-
-	public ByteBuf getValue() {
-		return value;
-	}
-	
-	@Override
-	public ResCode getCode() {
-		return ResCode.VALUE;
-	}
-
-	@Override
-	public String toString() {
-		return "ValueResult [value=" + value + "]";
-	}
-
+  public static ByteBufAllocator ALLOC = UnpooledByteBufAllocator.DEFAULT;
 	
 }

@@ -59,7 +59,11 @@ public class SetOperation extends AbstractUpdateOperation<SetOperation, VoidResu
 		}
 		return this;
 	}
-	
+
+	public Map<String, ByteBuf> getValues() {
+		return newValues != null ? newValues : Collections.emptyMap();
+	}
+
 	public UpdatePolicy getUpdatePolicy() {
 		return updatePolicy;
 	}

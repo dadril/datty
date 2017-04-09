@@ -13,11 +13,11 @@
  */
 package io.datty.api.result;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
 import io.datty.api.operation.Version;
+import io.datty.support.exception.RecordNotExistsException;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -41,13 +41,17 @@ public final class RecordResult extends AbstractResult {
 	
 	private final Map<String, ByteBuf> values;
 	
+	public RecordResult() {
+		this(null, null);
+	}
+	
 	public RecordResult(Version version) {
 		this(version, null);
 	}
 	
 	public RecordResult(Version version, Map<String, ByteBuf> values) {
 		this.version = version;
-		this.values = values != null ? values : Collections.emptyMap();
+		this.values = values;
 	}
 	
 	public boolean hasVersion() {
@@ -57,20 +61,44 @@ public final class RecordResult extends AbstractResult {
 	public Version getVersion() {
 		return version;
 	}
+	
+	public boolean exists() {
+		return values != null;
+	}
 
 	public boolean isEmpty() {
+		
+		if (!exists()) {
+			throw new RecordNotExistsException();
+		}
+		
 		return values.isEmpty();
 	}
 	
 	public int size() {
+		
+		if (!exists()) {
+			throw new RecordNotExistsException();
+		}
+		
 		return values.size();
 	}
 	
 	public Set<String> minorKeys() {
+		
+		if (!exists()) {
+			throw new RecordNotExistsException();
+		}
+		
 		return values.keySet();
 	}
 	
 	public ByteBuf get(String minorKey) {
+		
+		if (!exists()) {
+			throw new RecordNotExistsException();
+		}
+		
 		return values.get(minorKey);
 	}
 	

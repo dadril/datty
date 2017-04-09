@@ -31,12 +31,12 @@ public class BooleanMapResult extends AbstractResult {
 	private final Map<String, Boolean> values;
 	
 	public BooleanMapResult(boolean value) {
-		this(value, null);
+		this(value, Collections.emptyMap());
 	}
 	
 	public BooleanMapResult(boolean value, Map<String, Boolean> values) {
 		this.value = value;
-		this.values = values != null ? values : Collections.emptyMap();
+		this.values = values;
 	}
 
 	public boolean get() {

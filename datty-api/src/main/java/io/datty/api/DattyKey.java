@@ -34,10 +34,20 @@ public final class DattyKey {
 	}
 	
 	public DattyKey(String cacheName) {
+		
+		if (cacheName == null) {
+			throw new IllegalArgumentException("empty cache name");
+		}
+		
 		this.cacheName = cacheName;
 	}
 
 	public DattyKey(String cacheName, String majorKey) {
+		
+		if (cacheName == null) {
+			throw new IllegalArgumentException("empty cache name");
+		}
+		
 		this.cacheName = cacheName;
 		this.majorKey = majorKey;
 	}
@@ -47,6 +57,11 @@ public final class DattyKey {
 	}
 
 	public DattyKey setCacheName(String cacheName) {
+		
+		if (cacheName == null) {
+			throw new IllegalArgumentException("empty cache name");
+		}
+		
 		this.cacheName = cacheName;
 		return this;
 	}
