@@ -13,7 +13,6 @@
  */
 package io.datty.api.result;
 
-import io.datty.api.DattyResult;
 import io.datty.api.operation.ExecuteOperation;
 import io.netty.buffer.ByteBuf;
 
@@ -36,11 +35,11 @@ public class ExecuteResult extends AbstractResult<ExecuteOperation, ExecuteResul
 		this.value = value;
 	}
 	
-	public static DattyResult<?> ofNull() {
+	public static ExecuteResult ofNull() {
 		return new ExecuteResult();
 	}
 	
-	public static DattyResult<?> of(ByteBuf value) {
+	public static ExecuteResult of(ByteBuf value) {
 		return new ExecuteResult(value);
 	}
 

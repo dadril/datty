@@ -21,24 +21,10 @@ import io.datty.api.Cache;
 import io.datty.api.CacheExistsAction;
 import io.datty.api.CacheManager;
 import io.datty.api.Datty;
-import io.datty.api.DattyError.ErrCode;
-import io.datty.api.DattyKey;
-import io.datty.api.DattyOperation;
-import io.datty.api.DattyResult;
 import io.datty.api.DattySingle;
-import io.datty.api.result.ErrorResult;
-import io.datty.api.result.ExecuteResult;
-import io.datty.api.result.LongResult;
-import io.datty.spi.AbstractDattyDriver;
+import io.datty.spi.DattySingleDriver;
+import io.datty.spi.DattySingleProvider;
 import io.datty.support.exception.CacheExistsException;
-import io.datty.support.exception.CacheNotFoundException;
-import io.datty.unit.executor.OperationExecutor;
-import io.datty.unit.executor.UnitExecutors;
-import io.netty.buffer.ByteBuf;
-import rx.Observable;
-import rx.Single;
-import rx.functions.Func1;
-import rx.functions.Func2;
 
 /**
  * Unit implementation for Datty API
@@ -47,7 +33,7 @@ import rx.functions.Func2;
  *
  */
 
-public class UnitCacheManager extends AbstractDattyDriver implements DattySingle, CacheManager {
+public class UnitCacheManager implements CacheManager {
 
 	private final String name;
 	private final ConcurrentMap<String, UnitCache> cacheMap = new ConcurrentHashMap<String, UnitCache>();
@@ -59,7 +45,10 @@ public class UnitCacheManager extends AbstractDattyDriver implements DattySingle
 
 	public UnitCacheManager(Properties props) {
 		this.name = props.getProperty(UnitPropertyKeys.NAME);
-		this.currentDatty = this;
+		
+		DattySingle single = new DattySingleProvider(new DattySingleDriver(new UnitDattySingle(cacheMap)));
+		
+		this.currentDatty = new UnitDatty(single);
 	}
 
 	@Override
@@ -115,7 +104,7 @@ public class UnitCacheManager extends AbstractDattyDriver implements DattySingle
 
 	@Override
 	public Datty getDatty() {
-		return currentDatty;
+		return this.currentDatty;
 	}
 
 	@Override
@@ -136,7 +125,7 @@ public class UnitCacheManager extends AbstractDattyDriver implements DattySingle
 	 * -------------------------
 	 */
 
-
+/*
 	@SuppressWarnings("unchecked")
 	@Override
 	public Single<DattyResult> doExecute(DattyOperation operation) {
@@ -236,6 +225,7 @@ public class UnitCacheManager extends AbstractDattyDriver implements DattySingle
 
 		
 	}
+	*/
 
 	@Override
 	public String toString() {

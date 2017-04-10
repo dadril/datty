@@ -13,7 +13,6 @@
  */
 package io.datty.api.result;
 
-import io.datty.api.DattyResult;
 import io.datty.api.operation.PutOperation;
 
 /**
@@ -25,7 +24,7 @@ import io.datty.api.operation.PutOperation;
 
 public class PutResult extends AbstractResult<PutOperation, PutResult> {
 
-	public static DattyResult<?> create() {
+	public static PutResult empty() {
 		return new PutResult();
 	}
 	

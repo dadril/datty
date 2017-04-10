@@ -16,7 +16,6 @@ package io.datty.api.result;
 import java.util.Map;
 import java.util.Set;
 
-import io.datty.api.DattyResult;
 import io.datty.api.operation.GetOperation;
 import io.datty.api.operation.Version;
 import io.datty.support.exception.RecordNotExistsException;
@@ -52,11 +51,11 @@ public final class GetResult extends AbstractResult<GetOperation, GetResult> {
 		this.values = values;
 	}
 	
-	public static DattyResult<?> absent() {
+	public static GetResult absent() {
 		return new GetResult();
 	}
 	
-	public static DattyResult<?> of(Version version, Map<String, ByteBuf> values) {
+	public static GetResult of(Version version, Map<String, ByteBuf> values) {
 		return new GetResult(version, values);
 	}
 	

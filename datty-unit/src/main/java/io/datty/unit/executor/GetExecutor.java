@@ -17,28 +17,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
-import io.datty.api.DattyError.ErrCode;
-import io.datty.api.DattyResult;
 import io.datty.api.operation.GetOperation;
-import io.datty.api.result.ErrorResult;
 import io.datty.api.result.GetResult;
 import io.datty.unit.UnitRecord;
 import io.netty.buffer.ByteBuf;
 import rx.Single;
 
-public enum GetExecutor implements OperationExecutor<GetOperation> {
+public enum GetExecutor implements OperationExecutor<GetOperation, GetResult> {
 
 	INSTANCE;
 	
 	@Override
-	public Single<DattyResult> execute(ConcurrentMap<String, UnitRecord> recordMap, GetOperation operation) {
+	public Single<GetResult> execute(ConcurrentMap<String, UnitRecord> recordMap, GetOperation operation) {
 		
-		String majorKey = operation.getMajorKey();
-		if (majorKey == null) {
-			return Single.just(ErrorResult.of(ErrCode.BAD_ARGUMENTS, "empty majorKey"));
-		}
-		
-		UnitRecord record = recordMap.get(majorKey);
+		UnitRecord record = recordMap.get(operation.getMajorKey());
 		if (record == null) {
 			return Single.just(GetResult.absent());
 		}

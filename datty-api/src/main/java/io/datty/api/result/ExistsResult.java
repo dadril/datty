@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import io.datty.api.DattyResult;
 import io.datty.api.operation.ExistsOperation;
 
 public class ExistsResult extends AbstractResult<ExistsOperation, ExistsResult> {
@@ -35,11 +34,11 @@ public class ExistsResult extends AbstractResult<ExistsOperation, ExistsResult> 
 		this.values = values;
 	}
 
-	public static DattyResult<?> of(boolean value) {
+	public static ExistsResult of(boolean value) {
 		return new ExistsResult(value);
 	}
 	
-	public static DattyResult<?> of(boolean value, Map<String, Boolean> values) {
+	public static ExistsResult of(boolean value, Map<String, Boolean> values) {
 		return new ExistsResult(value, values);
 	}
 	

@@ -13,6 +13,8 @@
  */
 package io.datty.unit.executor;
 
+import io.datty.api.DattyOperation;
+import io.datty.api.DattyResult;
 import io.datty.api.DattyOperation.OpCode;
 
 /**
@@ -24,20 +26,24 @@ import io.datty.api.DattyOperation.OpCode;
 
 public final class UnitExecutors {
 
-	private final static OperationExecutor<?>[] codeList = new OperationExecutor<?>[OpCode.max() + 1];
+	private final static OperationExecutor<?, ?>[] codeList = new OperationExecutor<?, ?>[OpCode.max() + 1];
 	
-	private UnitExecutors() {
+	static {
 		
 		codeList[OpCode.EXISTS.getCode()] = ExistsExecutor.INSTANCE;
 		codeList[OpCode.GET.getCode()] = GetExecutor.INSTANCE;
-		codeList[OpCode.PUT.getCode()] = SetExecutor.INSTANCE;
+		codeList[OpCode.PUT.getCode()] = PutExecutor.INSTANCE;
 		codeList[OpCode.COMPARE_AND_SET.getCode()] = CompareAndSetExecutor.INSTANCE;
 		codeList[OpCode.EXECUTE.getCode()] = ExecuteExecutor.INSTANCE;
 		
 	}
+
+	private UnitExecutors() {
+	}
 	
-	public static OperationExecutor<?> findExecutor(OpCode opcode) {
-		return codeList[opcode.getCode()];
+	@SuppressWarnings("unchecked")
+	public static <O extends DattyOperation<O, R>, R extends DattyResult<O>> OperationExecutor<O, R> findExecutor(OpCode opcode) {
+		return (OperationExecutor<O, R>) codeList[opcode.getCode()];
 	}
 	
 }

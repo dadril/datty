@@ -16,32 +16,24 @@ package io.datty.unit.executor;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
-import io.datty.api.DattyError.ErrCode;
-import io.datty.api.DattyResult;
 import io.datty.api.UpdatePolicy;
 import io.datty.api.operation.PutOperation;
-import io.datty.api.result.ErrorResult;
 import io.datty.api.result.PutResult;
 import io.datty.unit.UnitRecord;
 import io.netty.buffer.ByteBuf;
 import rx.Single;
 
-public enum SetExecutor implements OperationExecutor<PutOperation> {
+public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
 
 	INSTANCE;
 	
 	@Override
-	public Single<DattyResult> execute(ConcurrentMap<String, UnitRecord> recordMap, PutOperation operation) {
+	public Single<PutResult> execute(ConcurrentMap<String, UnitRecord> recordMap, PutOperation operation) {
 
-		String majorKey = operation.getMajorKey();
-		if (majorKey == null) {
-			return Single.just(ErrorResult.of(ErrCode.BAD_ARGUMENTS, "empty majorKey"));
-		}
-		
-		UnitRecord record = recordMap.get(majorKey);
+		UnitRecord record = recordMap.get(operation.getMajorKey());
 		if (record == null) {
 			record = new UnitRecord();
-			UnitRecord c = recordMap.putIfAbsent(majorKey, record);
+			UnitRecord c = recordMap.putIfAbsent(operation.getMajorKey(), record);
 			if (c != null) {
 				record = c;
 			}
@@ -57,7 +49,7 @@ public enum SetExecutor implements OperationExecutor<PutOperation> {
 
 		record.incrementVersion();
 		
-		return Single.just(PutResult.create());
+		return Single.just(PutResult.empty());
 	}
 	
 }

@@ -13,7 +13,6 @@
  */
 package io.datty.api.result;
 
-import io.datty.api.DattyResult;
 import io.datty.api.operation.CompareAndSetOperation;
 
 /**
@@ -31,7 +30,7 @@ public final class CompareAndSetResult extends AbstractResult<CompareAndSetOpera
 		this.value = value;
 	}
 	
-	public static DattyResult<?> of(boolean value) {
+	public static CompareAndSetResult of(boolean value) {
 		return new CompareAndSetResult(value);
 	}
 

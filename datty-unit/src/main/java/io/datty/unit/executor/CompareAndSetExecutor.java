@@ -16,34 +16,26 @@ package io.datty.unit.executor;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
-import io.datty.api.DattyError.ErrCode;
-import io.datty.api.DattyResult;
 import io.datty.api.UpdatePolicy;
 import io.datty.api.operation.CompareAndSetOperation;
 import io.datty.api.result.CompareAndSetResult;
-import io.datty.api.result.ErrorResult;
 import io.datty.unit.UnitRecord;
 import io.netty.buffer.ByteBuf;
 import rx.Single;
 
-public enum CompareAndSetExecutor implements OperationExecutor<CompareAndSetOperation> {
+public enum CompareAndSetExecutor implements OperationExecutor<CompareAndSetOperation, CompareAndSetResult> {
 
 	INSTANCE;
 
 	@Override
-	public Single<DattyResult> execute(ConcurrentMap<String, UnitRecord> recordMap, CompareAndSetOperation operation) {
+	public Single<CompareAndSetResult> execute(ConcurrentMap<String, UnitRecord> recordMap, CompareAndSetOperation operation) {
 		
-		String majorKey = operation.getMajorKey();
-		if (majorKey == null) {
-			return Single.just(ErrorResult.of(ErrCode.BAD_ARGUMENTS, "empty majorKey"));
-		}
-		
-		UnitRecord record = recordMap.get(majorKey);
+		UnitRecord record = recordMap.get(operation.getMajorKey());
 		
 		if (record == null) {
 			
 			if (!operation.hasOldVersion()) {
-				boolean updated = null == recordMap.putIfAbsent(majorKey, newRecord(operation));
+				boolean updated = null == recordMap.putIfAbsent(operation.getMajorKey(), newRecord(operation));
 				return Single.just(CompareAndSetResult.of(updated));
 			}
 			

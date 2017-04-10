@@ -14,11 +14,11 @@ import rx.functions.Func1;
  *
  */
 
-public class AbstractDattyProvider implements DattySingle {
+public class DattySingleProvider implements DattySingle {
 
 	private final DattySingle driver;
 	
-	public AbstractDattyProvider(DattySingle driver) {
+	public DattySingleProvider(DattySingle driver) {
 		this.driver = driver;
 	}
 	

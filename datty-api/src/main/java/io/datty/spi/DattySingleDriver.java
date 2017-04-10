@@ -34,12 +34,12 @@ import rx.functions.Func2;
  *
  */
 
-public abstract class AbstractDattyDriver implements DattySingle {
+public class DattySingleDriver implements DattySingle {
 	
-	private final DattySingle impl;
+	private final DattySingle single;
 	
-	public AbstractDattyDriver(DattySingle impl) {
-		this.impl = impl;
+	public DattySingleDriver(DattySingle single) {
+		this.single = single;
 	}
 	
 	/**
@@ -53,7 +53,7 @@ public abstract class AbstractDattyDriver implements DattySingle {
 	@Override
 	public <O extends DattyOperation<O, R>, R extends DattyResult<O>> Single<R> execute(final O operation) {
 		
-		Single<R> result = impl.execute(operation);
+		Single<R> result = single.execute(operation);
 		
 		if (operation.hasTimeoutMillis()) {
 			

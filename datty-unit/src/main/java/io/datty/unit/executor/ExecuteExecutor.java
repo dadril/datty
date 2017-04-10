@@ -15,27 +15,20 @@ package io.datty.unit.executor;
 
 import java.util.concurrent.ConcurrentMap;
 
-import io.datty.api.DattyResult;
-import io.datty.api.DattyError.ErrCode;
 import io.datty.api.operation.ExecuteOperation;
-import io.datty.api.result.ErrorResult;
 import io.datty.api.result.ExecuteResult;
 import io.datty.unit.UnitRecord;
 import rx.Single;
 
-public enum ExecuteExecutor implements OperationExecutor<ExecuteOperation> {
+public enum ExecuteExecutor implements OperationExecutor<ExecuteOperation, ExecuteResult> {
 
 	INSTANCE;
 
 	@Override
-	public Single<DattyResult> execute(ConcurrentMap<String, UnitRecord> recordMap, ExecuteOperation operation) {
-		
-		String majorKey = operation.getMajorKey();
-		if (majorKey == null) {
-			return Single.just(ErrorResult.of(ErrCode.BAD_ARGUMENTS, "empty majorKey"));
-		}
+	public Single<ExecuteResult> execute(ConcurrentMap<String, UnitRecord> recordMap, ExecuteOperation operation) {
 		
 		return Single.just(ExecuteResult.of(operation.getArguments()));
+		
 	}
 	
 	

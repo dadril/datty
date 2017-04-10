@@ -20,7 +20,7 @@ import io.datty.api.DattyResult;
 import io.datty.unit.UnitRecord;
 import rx.Single;
 
-public interface OperationExecutor<O extends DattyOperation> {
+public interface OperationExecutor<O extends DattyOperation<O, R>, R extends DattyResult<O>> {
 	
 	/**
 	 * Executes operation
@@ -29,6 +29,6 @@ public interface OperationExecutor<O extends DattyOperation> {
 	 * @return result
 	 */
 	
-	Single<DattyResult> execute(ConcurrentMap<String, UnitRecord> recordMap, O operation);
+	Single<R> execute(ConcurrentMap<String, UnitRecord> recordMap, O operation);
 	
 }

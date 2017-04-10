@@ -17,30 +17,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
-import io.datty.api.DattyError.ErrCode;
-import io.datty.api.DattyResult;
 import io.datty.api.operation.ExistsOperation;
-import io.datty.api.result.BooleanMapResult;
-import io.datty.api.result.ErrorResult;
+import io.datty.api.result.ExistsResult;
 import io.datty.unit.UnitRecord;
 import rx.Single;
 
-public enum ExistsExecutor implements OperationExecutor<ExistsOperation> {
+public enum ExistsExecutor implements OperationExecutor<ExistsOperation, ExistsResult> {
 
 	INSTANCE;
 	
 	@Override
-	public Single<DattyResult> execute(ConcurrentMap<String, UnitRecord> recordMap, ExistsOperation operation) {
+	public Single<ExistsResult> execute(ConcurrentMap<String, UnitRecord> recordMap, ExistsOperation operation) {
 		
-		String majorKey = operation.getMajorKey();
-		if (majorKey == null) {
-			return Single.just(ErrorResult.of(ErrCode.BAD_ARGUMENTS, "empty majorKey"));
-		}
-		
-		UnitRecord record = recordMap.get(majorKey);
+		UnitRecord record = recordMap.get(operation.getMajorKey());
 		
 		if (operation.isAnyMinorKey()) {
-			return Single.just(BooleanMapResult.of(record != null));
+			return Single.just(ExistsResult.of(record != null));
 		}
 		else {
 			
@@ -50,7 +42,7 @@ public enum ExistsExecutor implements OperationExecutor<ExistsOperation> {
 				map.put(minorKey, recordExists ? record.hasColumn(minorKey) : false);
 			}
 			
-			return Single.just(BooleanMapResult.of(recordExists, map));
+			return Single.just(ExistsResult.of(recordExists, map));
 		}
 		
 	}
