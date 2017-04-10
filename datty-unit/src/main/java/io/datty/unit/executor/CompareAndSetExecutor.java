@@ -20,7 +20,7 @@ import io.datty.api.DattyError.ErrCode;
 import io.datty.api.DattyResult;
 import io.datty.api.UpdatePolicy;
 import io.datty.api.operation.CompareAndSetOperation;
-import io.datty.api.result.BooleanResult;
+import io.datty.api.result.CompareAndSetResult;
 import io.datty.api.result.ErrorResult;
 import io.datty.unit.UnitRecord;
 import io.netty.buffer.ByteBuf;
@@ -44,7 +44,7 @@ public enum CompareAndSetExecutor implements OperationExecutor<CompareAndSetOper
 			
 			if (!operation.hasOldVersion()) {
 				boolean updated = null == recordMap.putIfAbsent(majorKey, newRecord(operation));
-				return Single.just(BooleanResult.of(updated));
+				return Single.just(CompareAndSetResult.of(updated));
 			}
 			
 		}
@@ -58,11 +58,11 @@ public enum CompareAndSetExecutor implements OperationExecutor<CompareAndSetOper
 				record.addColumn(e.getKey(), e.getValue());
 			}
 			
-			return Single.just(BooleanResult.of(true));
+			return Single.just(CompareAndSetResult.of(true));
 			
 		}
 		
-		return Single.just(BooleanResult.of(false));
+		return Single.just(CompareAndSetResult.of(false));
 
 	}
 	

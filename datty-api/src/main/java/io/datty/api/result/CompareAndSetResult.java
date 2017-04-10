@@ -14,48 +14,39 @@
 package io.datty.api.result;
 
 import io.datty.api.DattyResult;
-import io.netty.buffer.ByteBuf;
+import io.datty.api.operation.CompareAndSetOperation;
 
 /**
- * ValueResult
+ * CompareAndSetResult
  * 
  * @author dadril
  *
  */
 
-public class ValueResult extends AbstractResult {
+public final class CompareAndSetResult extends AbstractResult<CompareAndSetOperation, CompareAndSetResult> {
 
-	private final ByteBuf value;
-	
-	public ValueResult() {
-		this.value = null;
-	}
-	
-	public ValueResult(ByteBuf value) {
+	private final boolean value;
+
+	public CompareAndSetResult(boolean value) {
 		this.value = value;
 	}
 	
-	public static DattyResult ofNull() {
-		return new ValueResult();
-	}
-	
-	public static DattyResult of(ByteBuf value) {
-		return new ValueResult(value);
+	public static DattyResult<?> of(boolean value) {
+		return new CompareAndSetResult(value);
 	}
 
-	public ByteBuf getValue() {
+	public boolean get() {
 		return value;
 	}
-	
+
 	@Override
 	public ResCode getCode() {
-		return ResCode.VALUE;
+		return ResCode.COMPARE_AND_SET;
 	}
 
 	@Override
 	public String toString() {
-		return "ValueResult [value=" + value + "]";
+		return "CompareAndSetResult [value=" + value + "]";
 	}
-
 	
 }

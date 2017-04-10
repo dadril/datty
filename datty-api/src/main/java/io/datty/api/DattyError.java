@@ -44,7 +44,7 @@ public interface DattyError {
 	 * @return exception stacktrace or null
 	 */
 
-	String getErrorStacktrace();
+	String getErrorStackTrace();
 
 	/**
 	 * Enum of known error codes

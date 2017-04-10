@@ -20,7 +20,7 @@ import io.datty.api.operation.CompareAndSetOperation;
 import io.datty.api.operation.ExecuteOperation;
 import io.datty.api.operation.ExistsOperation;
 import io.datty.api.operation.GetOperation;
-import io.datty.api.operation.SetOperation;
+import io.datty.api.operation.PutOperation;
 
 /**
  * Cache interface
@@ -95,7 +95,7 @@ public interface Cache {
 	 * @return not null set operation
 	 */
 	
-	SetOperation set(String majorKey);
+	PutOperation put(String majorKey);
 	
 	/**
 	 * Creates compare and set operation

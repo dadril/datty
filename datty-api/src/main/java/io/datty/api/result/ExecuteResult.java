@@ -13,27 +13,50 @@
  */
 package io.datty.api.result;
 
-import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
+import io.datty.api.operation.ExecuteOperation;
+import io.netty.buffer.ByteBuf;
 
 /**
- * Abstract Result
+ * ExecuteResult
  * 
  * @author dadril
  *
  */
 
-public abstract class AbstractResult<O extends DattyOperation<O, R>, R extends DattyResult<O>> implements DattyResult<O> {
+public class ExecuteResult extends AbstractResult<ExecuteOperation, ExecuteResult> {
 
-	private O operation;
+	private final ByteBuf value;
+	
+	public ExecuteResult() {
+		this.value = null;
+	}
+	
+	public ExecuteResult(ByteBuf value) {
+		this.value = value;
+	}
+	
+	public static DattyResult<?> ofNull() {
+		return new ExecuteResult();
+	}
+	
+	public static DattyResult<?> of(ByteBuf value) {
+		return new ExecuteResult(value);
+	}
+
+	public ByteBuf getValue() {
+		return value;
+	}
 	
 	@Override
-	public O getOperation() {
-		return operation;
+	public ResCode getCode() {
+		return ResCode.EXECUTE;
 	}
 
-	public void setOperation(O operation) {
-		this.operation = operation;
+	@Override
+	public String toString() {
+		return "ExecuteResult [value=" + value + "]";
 	}
+
 	
 }

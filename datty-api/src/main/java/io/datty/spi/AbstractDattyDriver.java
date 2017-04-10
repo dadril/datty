@@ -13,44 +13,34 @@
  */
 package io.datty.spi;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import io.datty.api.Datty;
 import io.datty.api.DattyConstants;
-import io.datty.api.DattyError.ErrCode;
-import io.datty.api.DattyKey;
+import io.datty.api.DattyError;
 import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
-import io.datty.api.result.ErrorResult;
+import io.datty.api.DattySingle;
 import io.datty.support.exception.DattyConcurrentException;
+import io.datty.support.exception.DattyErrorException;
 import io.datty.support.exception.DattyTimeoutException;
-import io.netty.buffer.ByteBuf;
-import rx.Completable;
-import rx.Observable;
 import rx.Single;
-import rx.functions.Func0;
-import rx.functions.Func1;
+import rx.functions.Action1;
 import rx.functions.Func2;
 
 /**
- * AbstractDatty
- * 
- * Adds SLA and retry logic
+ * Server side
  * 
  * @author dadril
  *
  */
 
-public abstract class AbstractDatty implements Datty {
-
-	abstract public Single<DattyResult> doExecute(DattyOperation operation);
+public abstract class AbstractDattyDriver implements DattySingle {
 	
-	abstract public Observable<DattyResult> doStreamOut(DattyKey key);
+	private final DattySingle impl;
 	
-	abstract public Single<DattyResult> doStreamIn(DattyKey key, Observable<ByteBuf> value);
+	public AbstractDattyDriver(DattySingle impl) {
+		this.impl = impl;
+	}
 	
 	/**
 	 * Configurable parameters
@@ -61,17 +51,17 @@ public abstract class AbstractDatty implements Datty {
 	}
 	
 	@Override
-	public Single<DattyResult> execute(final DattyOperation operation) {
+	public <O extends DattyOperation<O, R>, R extends DattyResult<O>> Single<R> execute(final O operation) {
 		
-		Single<DattyResult> result = doExecute(operation);
+		Single<R> result = impl.execute(operation);
 		
 		if (operation.hasTimeoutMillis()) {
 			
 			result = result.timeout(operation.getTimeoutMillis(), TimeUnit.MILLISECONDS, 
-					Single.just(ErrorResult.of(ErrCode.TIMEOUT)));
+					Single.<R>error(new DattyTimeoutException(operation)));
 			
 		}
-		
+
 		result = result.retry(new Func2<Integer, Throwable, Boolean>() {
 
 			public Boolean call(Integer attempts, Throwable e) {
@@ -85,23 +75,22 @@ public abstract class AbstractDatty implements Datty {
 			
 		});
 		
-		result = result.onErrorReturn(new Func1<Throwable, DattyResult>() {
+		result.doOnError(new Action1<Throwable>() {
 
-			public DattyResult call(Throwable e) {
-				return exceptionToError(e);
+			@Override
+			public void call(Throwable t) {
+				if (!(t instanceof DattyErrorException)) {
+					throw new DattyErrorException(DattyError.ErrCode.UNKNOWN, operation, t);
+				}
 			}
 			
 		});
 		
-		return result.map(new Func1<DattyResult, DattyResult>() {
-			
-			public DattyResult call(DattyResult r) {
-				return operation.complete(r);
-			}
-			
-		});
+		return result;
 		
 	}
+	
+	/*
 
 	@Override
 	public Single<List<DattyResult>> executeBatch(List<DattyOperation> operations) {
@@ -257,5 +246,7 @@ public abstract class AbstractDatty implements Datty {
 
 		return new ErrorResult(ErrCode.UNKNOWN, e);
 	}
+	
+	*/
 	
 }

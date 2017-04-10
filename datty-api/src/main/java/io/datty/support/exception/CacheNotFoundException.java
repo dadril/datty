@@ -13,16 +13,19 @@
  */
 package io.datty.support.exception;
 
-public class CacheNotFoundException extends DattyException {
+import io.datty.api.DattyError;
+import io.datty.api.DattyOperation;
+
+public class CacheNotFoundException extends DattyErrorException {
 
 	private static final long serialVersionUID = 4824538129120664380L;
 
-	public CacheNotFoundException(String cacheName) {
-		super(cacheName);
+	public CacheNotFoundException(String cacheName, DattyOperation<?, ?> operation) {
+		super(DattyError.ErrCode.CACHE_NOT_FOUND, cacheName, operation);
 	}
 
-	public CacheNotFoundException(String cacheName, Throwable t) {
-		super(cacheName, t);
+	public CacheNotFoundException(String cacheName, DattyOperation<?, ?> operation, Throwable t) {
+		super(DattyError.ErrCode.CACHE_NOT_FOUND, cacheName, operation, t);
 	}
 
 }

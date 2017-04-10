@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.datty.api.UpdatePolicy;
-import io.datty.api.result.BooleanResult;
+import io.datty.api.result.CompareAndSetResult;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -30,8 +30,7 @@ import io.netty.buffer.ByteBuf;
  *
  */
 
-public class CompareAndSetOperation extends
-	AbstractUpdateOperation<CompareAndSetOperation, BooleanResult> implements UpdateOperation {
+public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSetOperation, CompareAndSetResult> {
 
 	/**
 	 * Old version of the record

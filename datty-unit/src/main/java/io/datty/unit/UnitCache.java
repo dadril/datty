@@ -26,7 +26,7 @@ import io.datty.api.operation.CompareAndSetOperation;
 import io.datty.api.operation.ExecuteOperation;
 import io.datty.api.operation.ExistsOperation;
 import io.datty.api.operation.GetOperation;
-import io.datty.api.operation.SetOperation;
+import io.datty.api.operation.PutOperation;
 
 /**
  * Unit implementation of the Cache interface
@@ -40,13 +40,13 @@ public class UnitCache implements Cache {
 	private final static AtomicReferenceFieldUpdater<UnitCache, Properties> PROPS_UPDATER = AtomicReferenceFieldUpdater
 			.newUpdater(UnitCache.class, Properties.class, "props");
 
-	private final UnitDatty parent;
+	private final UnitCacheManager parent;
 	private final String cacheName;
 	private volatile Properties props;
 	
 	private final ConcurrentMap<String, UnitRecord> recordMap = new ConcurrentHashMap<String, UnitRecord>();
 
-	protected UnitCache(UnitDatty parent, String cacheName, Properties props) {
+	protected UnitCache(UnitCacheManager parent, String cacheName, Properties props) {
 		this.parent = parent;
 		this.cacheName = cacheName;
 		this.props = props;
@@ -88,8 +88,8 @@ public class UnitCache implements Cache {
 	}
 
 	@Override
-	public SetOperation set(String majorKey) {
-		return new SetOperation(cacheName, majorKey).withDatty(parent.getDatty());
+	public PutOperation put(String majorKey) {
+		return new PutOperation(cacheName, majorKey).withDatty(parent.getDatty());
 	}
 
 	@Override

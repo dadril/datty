@@ -19,7 +19,7 @@ import io.datty.api.DattyResult;
 import io.datty.api.DattyError.ErrCode;
 import io.datty.api.operation.ExecuteOperation;
 import io.datty.api.result.ErrorResult;
-import io.datty.api.result.ValueResult;
+import io.datty.api.result.ExecuteResult;
 import io.datty.unit.UnitRecord;
 import rx.Single;
 
@@ -35,7 +35,7 @@ public enum ExecuteExecutor implements OperationExecutor<ExecuteOperation> {
 			return Single.just(ErrorResult.of(ErrCode.BAD_ARGUMENTS, "empty majorKey"));
 		}
 		
-		return Single.just(ValueResult.of(operation.getArguments()));
+		return Single.just(ExecuteResult.of(operation.getArguments()));
 	}
 	
 	

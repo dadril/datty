@@ -13,8 +13,6 @@
  */
 package io.datty.api;
 
-import io.datty.api.DattyOperation.OpCode;
-
 /**
  * Base interface for all results
  * 
@@ -22,15 +20,15 @@ import io.datty.api.DattyOperation.OpCode;
  *
  */
 
-public interface DattyResult {
-	
+public interface DattyResult<O extends DattyOperation<O, ? extends DattyResult<O>>> {
+		
 	/**
 	 * Gets operation associated with result
 	 * 
 	 * @return not null datty operation
 	 */
 	
-	DattyOperation getOperation();
+	O getOperation();
 
 	/**
 	 * Gets result code
@@ -49,13 +47,13 @@ public interface DattyResult {
 	
 	public enum ResCode {
 		
-		VOID(1),
-		ERROR(2),
-		BOOL(3),
-		BOOLMAP(4),
-		LONG(5),
-		VALUE(6),
-		RECORD(7);
+		EXISTS(1),
+		GET(2),
+		PUT(3),
+		COMPARE_AND_SET(4),
+		EXECUTE(5),
+		ERROR(6),
+		LONG(7);
 		
 		private final int rescode;
 		

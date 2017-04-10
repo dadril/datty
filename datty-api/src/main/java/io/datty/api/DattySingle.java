@@ -11,31 +11,18 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api.result;
+package io.datty.api;
 
-import io.datty.api.DattyResult;
+import rx.Single;
 
-/**
- * VoidResult
- * 
- * @author dadril
- *
- */
+public interface DattySingle {
 
-public class VoidResult extends AbstractResult {
+	/**
+	 * Executes single datty operation
+	 * 
+	 * @param operation - datty operation
+	 */
 
-	public static DattyResult create() {
-		return new VoidResult();
-	}
+	<O extends DattyOperation<O, R>, R extends DattyResult<O>> Single<R> execute(O operation);
 	
-	@Override
-	public ResCode getCode() {
-		return ResCode.VOID;
-	}
-
-	@Override
-	public String toString() {
-		return "VoidResult";
-	}
-
 }

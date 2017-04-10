@@ -24,8 +24,8 @@ import io.datty.api.DattyResult;
  *
  */
 
-public abstract class AbstractUpdateOperation<O extends DattyOperation, R extends DattyResult> 
-	extends AbstractOperation<O, R> implements UpdateOperation {
+public abstract class AbstractUpdateOperation<O extends DattyOperation<O, R>, R extends DattyResult<O>> 
+	extends AbstractOperation<O, R> implements UpdateOperation<O, R> {
 
 	private int ttlSeconds = DattyConstants.UNSET_TTL;
 	
@@ -42,10 +42,9 @@ public abstract class AbstractUpdateOperation<O extends DattyOperation, R extend
 		return ttlSeconds;
 	}
 
-	@SuppressWarnings("unchecked")
 	public O setTtlSeconds(int ttlSeconds) {
 		this.ttlSeconds = ttlSeconds;
-		return (O) this;
+		return castThis();
 	}
 	
 }

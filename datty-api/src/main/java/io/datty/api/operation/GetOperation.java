@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import io.datty.api.result.RecordResult;
+import io.datty.api.result.GetResult;
 
 /**
  * Get operation
@@ -26,7 +26,7 @@ import io.datty.api.result.RecordResult;
  *
  */
 
-public class GetOperation extends AbstractOperation<GetOperation, RecordResult> {
+public class GetOperation extends AbstractOperation<GetOperation, GetResult> {
 
 	private Set<String> minorKeys = null;
 	private boolean allMinorKeys;

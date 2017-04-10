@@ -47,7 +47,7 @@ public interface CacheFactory {
 	 * @throws IOException
 	 */
 
-	CacheManager newInstance(Properties props) throws IOException;
+	CacheManager newInstance(Properties props);
 
 	/**
 	 * Locator class to search and select factories

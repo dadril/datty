@@ -11,41 +11,37 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api.result;
+package io.datty.support;
 
+import io.datty.api.DattyError;
+import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
+import io.datty.support.exception.DattyErrorException;
 
 /**
- * BooleanResult
+ * DattyErrors
  * 
  * @author dadril
  *
  */
 
-public final class BooleanResult extends AbstractResult {
+public final class DattyErrors {
 
-	private final boolean value;
-
-	public BooleanResult(boolean value) {
-		this.value = value;
+	private DattyErrors() {
 	}
 	
-	public static DattyResult of(boolean value) {
-		return new BooleanResult(value);
-	}
-
-	public boolean get() {
-		return value;
-	}
-
-	@Override
-	public ResCode getCode() {
-		return ResCode.BOOL;
-	}
-
-	@Override
-	public String toString() {
-		return "BooleanResult [value=" + value + "]";
+	public static <O extends DattyOperation<O, R>, R extends DattyResult<O>> R throwOnError(R result) {
+		
+		if (result instanceof DattyError) {
+			
+			DattyError error = (DattyError) result;
+			
+			throw new DattyErrorException(error, result.getOperation());
+			
+		}
+		
+		return result;
+		
 	}
 	
 }

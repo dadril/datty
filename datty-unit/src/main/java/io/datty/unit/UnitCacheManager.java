@@ -25,11 +25,13 @@ import io.datty.api.DattyError.ErrCode;
 import io.datty.api.DattyKey;
 import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
+import io.datty.api.DattySingle;
 import io.datty.api.result.ErrorResult;
+import io.datty.api.result.ExecuteResult;
 import io.datty.api.result.LongResult;
-import io.datty.api.result.ValueResult;
-import io.datty.spi.AbstractDatty;
+import io.datty.spi.AbstractDattyDriver;
 import io.datty.support.exception.CacheExistsException;
+import io.datty.support.exception.CacheNotFoundException;
 import io.datty.unit.executor.OperationExecutor;
 import io.datty.unit.executor.UnitExecutors;
 import io.netty.buffer.ByteBuf;
@@ -45,17 +47,17 @@ import rx.functions.Func2;
  *
  */
 
-public class UnitDatty extends AbstractDatty implements Datty, CacheManager {
+public class UnitCacheManager extends AbstractDattyDriver implements DattySingle, CacheManager {
 
 	private final String name;
 	private final ConcurrentMap<String, UnitCache> cacheMap = new ConcurrentHashMap<String, UnitCache>();
 	private Datty currentDatty;
 	
-	public UnitDatty() {
+	public UnitCacheManager() {
 		this(new Properties());
 	}
 
-	public UnitDatty(Properties props) {
+	public UnitCacheManager(Properties props) {
 		this.name = props.getProperty(UnitPropertyKeys.NAME);
 		this.currentDatty = this;
 	}
@@ -159,7 +161,7 @@ public class UnitDatty extends AbstractDatty implements Datty, CacheManager {
 		
 		UnitCache cache = cacheMap.get(key.getCacheName());
 		if (cache == null) {
-			return Observable.just(ErrorResult.of(ErrCode.CACHE_NOT_FOUND));
+			return Observable.error(new CacheNotFoundException(key.getCacheName()));
 		}
 		
 		String majorKey = key.getMajorKey();
@@ -169,7 +171,7 @@ public class UnitDatty extends AbstractDatty implements Datty, CacheManager {
 		
 		UnitRecord record = cache.getRecordMap().get(majorKey);
 		if (record == null) {
-			return Observable.just(ValueResult.ofNull());
+			return Observable.just(ExecuteResult.ofNull());
 		}
 		
 		String minorKey = key.getMinorKey();
@@ -179,7 +181,7 @@ public class UnitDatty extends AbstractDatty implements Datty, CacheManager {
 		
 		ByteBuf value = record.getColumn(minorKey);
 		
-		return Observable.just(ValueResult.of(value));
+		return Observable.just(ExecuteResult.of(value));
 	}
 
 	@Override

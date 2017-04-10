@@ -21,7 +21,7 @@ import io.datty.api.DattyError.ErrCode;
 import io.datty.api.DattyResult;
 import io.datty.api.operation.GetOperation;
 import io.datty.api.result.ErrorResult;
-import io.datty.api.result.RecordResult;
+import io.datty.api.result.GetResult;
 import io.datty.unit.UnitRecord;
 import io.netty.buffer.ByteBuf;
 import rx.Single;
@@ -40,11 +40,11 @@ public enum GetExecutor implements OperationExecutor<GetOperation> {
 		
 		UnitRecord record = recordMap.get(majorKey);
 		if (record == null) {
-			return Single.just(RecordResult.absent());
+			return Single.just(GetResult.absent());
 		}
 
 		if (operation.isAllMinorKeys()) {
-			return Single.just(RecordResult.of(record.getVersion(), record.getColumnMap()));
+			return Single.just(GetResult.of(record.getVersion(), record.getColumnMap()));
 		}
 		else {
 			
@@ -56,7 +56,7 @@ public enum GetExecutor implements OperationExecutor<GetOperation> {
 				}
 			}
 			
-			return Single.just(RecordResult.of(record.getVersion(), map));
+			return Single.just(GetResult.of(record.getVersion(), map));
 		}
 
 	}

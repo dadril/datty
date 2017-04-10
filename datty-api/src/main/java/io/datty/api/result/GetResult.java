@@ -17,18 +17,19 @@ import java.util.Map;
 import java.util.Set;
 
 import io.datty.api.DattyResult;
+import io.datty.api.operation.GetOperation;
 import io.datty.api.operation.Version;
 import io.datty.support.exception.RecordNotExistsException;
 import io.netty.buffer.ByteBuf;
 
 /**
- * RecordResult
+ * GetResult
  * 
  * @author dadril
  *
  */
 
-public final class RecordResult extends AbstractResult {
+public final class GetResult extends AbstractResult<GetOperation, GetResult> {
 
 	/**
 	 * Record version if exists
@@ -42,21 +43,21 @@ public final class RecordResult extends AbstractResult {
 	
 	private final Map<String, ByteBuf> values;
 	
-	public RecordResult() {
+	public GetResult() {
 		this(null, null);
 	}
 	
-	public RecordResult(Version version, Map<String, ByteBuf> values) {
+	public GetResult(Version version, Map<String, ByteBuf> values) {
 		this.version = version;
 		this.values = values;
 	}
 	
-	public static DattyResult absent() {
-		return new RecordResult();
+	public static DattyResult<?> absent() {
+		return new GetResult();
 	}
 	
-	public static DattyResult of(Version version, Map<String, ByteBuf> values) {
-		return new RecordResult(version, values);
+	public static DattyResult<?> of(Version version, Map<String, ByteBuf> values) {
+		return new GetResult(version, values);
 	}
 	
 	public boolean hasVersion() {
@@ -109,12 +110,12 @@ public final class RecordResult extends AbstractResult {
 	
 	@Override
 	public ResCode getCode() {
-		return ResCode.RECORD;
+		return ResCode.GET;
 	}
 
 	@Override
 	public String toString() {
-		return "RecordResult [version=" + version + ", values=" + values + "]";
+		return "GetResult [version=" + version + ", values=" + values + "]";
 	}
 
 }

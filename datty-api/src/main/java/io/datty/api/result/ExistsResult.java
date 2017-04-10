@@ -18,35 +18,29 @@ import java.util.Map;
 import java.util.Set;
 
 import io.datty.api.DattyResult;
+import io.datty.api.operation.ExistsOperation;
 
-/**
- * BooleanMapResult
- * 
- * @author dadril
- *
- */
-
-public class BooleanMapResult extends AbstractResult {
+public class ExistsResult extends AbstractResult<ExistsOperation, ExistsResult> {
 
 	private final boolean value;
 	
 	private final Map<String, Boolean> values;
 	
-	public BooleanMapResult(boolean value) {
+	public ExistsResult(boolean value) {
 		this(value, Collections.<String, Boolean>emptyMap());
 	}
 	
-	public BooleanMapResult(boolean value, Map<String, Boolean> values) {
+	public ExistsResult(boolean value, Map<String, Boolean> values) {
 		this.value = value;
 		this.values = values;
 	}
 
-	public static DattyResult of(boolean value) {
-		return new BooleanMapResult(value);
+	public static DattyResult<?> of(boolean value) {
+		return new ExistsResult(value);
 	}
 	
-	public static DattyResult of(boolean value, Map<String, Boolean> values) {
-		return new BooleanMapResult(value, values);
+	public static DattyResult<?> of(boolean value, Map<String, Boolean> values) {
+		return new ExistsResult(value, values);
 	}
 	
 	public boolean get() {
@@ -71,12 +65,13 @@ public class BooleanMapResult extends AbstractResult {
 	
 	@Override
 	public ResCode getCode() {
-		return ResCode.BOOLMAP;
+		return ResCode.EXISTS;
 	}
 
 	@Override
 	public String toString() {
-		return "BooleanMapResult [value=" + value + ", values=" + values + "]";
+		return "ExistsResult [value=" + value + ", values=" + values + "]";
 	}
+	
 	
 }

@@ -11,26 +11,21 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api.operation;
+package io.datty.support.exception;
 
-import io.datty.api.DattyResult;
+import io.datty.api.DattyError;
+import io.datty.api.DattyOperation;
 
-/**
- * TypedOperation
- * 
- * @author dadril
- *
- * @param <R> - result type
- */
+public class DattyUnknownException extends DattyErrorException {
 
-public interface TypedOperation<R extends DattyResult> {
+	private static final long serialVersionUID = 2893531469960548353L;
 
-	/**
-	 * Gets typed result
-	 * 
-	 * @return typed result of the operation or DattyException
-	 */
-	
-	R get();
+	public DattyUnknownException(DattyOperation<?, ?> operation) {
+		super(DattyError.ErrCode.UNKNOWN, operation);
+	}
+
+	public DattyUnknownException(DattyOperation<?, ?> operation, Throwable t) {
+		super(DattyError.ErrCode.UNKNOWN, operation, t);
+	}
 	
 }

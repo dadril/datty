@@ -26,15 +26,7 @@ import rx.Single;
  *
  */
 
-public interface Datty {
-
-	/**
-	 * Executes single datty operation
-	 * 
-	 * @param operation - datty operation
-	 */
-
-	Single<DattyResult> execute(DattyOperation operation);
+public interface Datty extends DattySingle {
 	
 	/**
 	 * Executes sequence of datty operations

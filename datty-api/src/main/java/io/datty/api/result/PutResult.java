@@ -11,35 +11,32 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.unit;
+package io.datty.api.result;
 
-import java.util.Properties;
-
-import io.datty.api.CacheFactory;
-import io.datty.api.CacheManager;
+import io.datty.api.DattyResult;
+import io.datty.api.operation.PutOperation;
 
 /**
- * Simple factory for unit implementation
+ * PutResult
  * 
  * @author dadril
  *
  */
 
-public class UnitCacheFactory implements CacheFactory {
+public class PutResult extends AbstractResult<PutOperation, PutResult> {
 
-	@Override
-	public String getFactoryName() {
-		return "unit";
+	public static DattyResult<?> create() {
+		return new PutResult();
 	}
-
+	
 	@Override
-	public CacheManager newInstance(Properties props) {
-		return new UnitCacheManager(props);
+	public ResCode getCode() {
+		return ResCode.PUT;
 	}
 
 	@Override
 	public String toString() {
-		return "UnitCacheFactory";
+		return "PutResult";
 	}
-	
+
 }

@@ -13,7 +13,7 @@
  */
 package io.datty.api.operation;
 
-import io.datty.api.result.ValueResult;
+import io.datty.api.result.ExecuteResult;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -23,7 +23,7 @@ import io.netty.buffer.ByteBuf;
  *
  */
 
-public class ExecuteOperation extends AbstractUpdateOperation<ExecuteOperation, ValueResult> implements UpdateOperation {
+public class ExecuteOperation extends AbstractUpdateOperation<ExecuteOperation, ExecuteResult> {
 
 	private String packageName;
 	private String functionName;

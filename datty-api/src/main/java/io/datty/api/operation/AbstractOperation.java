@@ -13,12 +13,11 @@
  */
 package io.datty.api.operation;
 
-import io.datty.api.Datty;
 import io.datty.api.DattyConstants;
 import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
+import io.datty.api.DattySingle;
 import io.datty.api.result.AbstractResult;
-import io.datty.support.exception.DattyUncompletedException;
 import rx.Single;
 
 /**
@@ -28,9 +27,9 @@ import rx.Single;
  *
  */
 
-public abstract class AbstractOperation<O extends DattyOperation, R extends DattyResult> implements DattyOperation {
+public abstract class AbstractOperation<O extends DattyOperation<O, R>, R extends DattyResult<O>> implements DattyOperation<O, R> {
 
-	protected Datty datty;
+	protected DattySingle datty;
 	
 	protected String cacheName;
 
@@ -39,10 +38,8 @@ public abstract class AbstractOperation<O extends DattyOperation, R extends Datt
 	protected String majorKey;
 	
 	protected int timeoutMillis = DattyConstants.UNSET_TIMEOUT;
-
-	protected DattyResult result;
 	
-	protected int sequenceNumber;
+	protected R fallback;
 	
 	public AbstractOperation(String cacheName) {
 		this.cacheName = cacheName;
@@ -93,72 +90,40 @@ public abstract class AbstractOperation<O extends DattyOperation, R extends Datt
 		return castThis();
 	}
 	
-	public O withDatty(Datty datty) {
+	public O withDatty(DattySingle datty) {
 		this.datty = datty;
 		return castThis();
 	}
 	
 	@SuppressWarnings("unchecked")
-	private O castThis() {
+	protected O castThis() {
 		return (O) this;
 	}
-
+	
 	@Override
-	public boolean isCompleted() {
-		return result != null;
+	public R getFallback() {
+		return fallback;
 	}
 
 	@Override
-	public DattyResult getResult() {
-		
-		if (result == null) {
-			throw new DattyUncompletedException("operation is not completed: " + this);
+	public O onFallback(R fallback) {
+		if (fallback instanceof AbstractResult) {
+			AbstractResult<O, R> abstractResult = (AbstractResult<O, R>) fallback;
+			abstractResult.setOperation(castThis());
 		}
-		
-		return result;
+		this.fallback = fallback;
+		return castThis();
 	}
 
 	@Override
-	public void reset() {
-		this.result = null;
-	}
-
-	@Override
-	public DattyResult complete(DattyResult result) {
-		
-		if (result == null) {
-			throw new IllegalArgumentException("empty result");
-		}
-		
-		this.result = result;
-		
-		if (result instanceof AbstractResult) {
-			AbstractResult abstractResult = (AbstractResult) result;
-			abstractResult.setOperation(this);
-		}
-		
-		return this.result;
-	}
-
-	@Override
-	public Single<DattyResult> execute() {
+	public Single<R> execute() {
 		
 		if (datty == null) {
 			throw new IllegalStateException("datty is empty");
 		}
 		
-		return datty.execute(this);
+		return datty.execute(castThis());
 	}
 
-	public int getSequenceNumber() {
-		return sequenceNumber;
-	}
-
-	public DattyOperation setSequenceNumber(int sequenceNumber) {
-		this.sequenceNumber = sequenceNumber;
-		return this;
-	}
-
-	
 	
 }

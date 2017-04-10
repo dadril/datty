@@ -18,17 +18,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.datty.api.UpdatePolicy;
-import io.datty.api.result.VoidResult;
+import io.datty.api.result.PutResult;
 import io.netty.buffer.ByteBuf;
 
 /**
- * Set operation
+ * Put operation
  * 
  * @author dadril
  *
  */
 
-public class SetOperation extends AbstractUpdateOperation<SetOperation, VoidResult> implements UpdateOperation {
+public class PutOperation extends AbstractUpdateOperation<PutOperation, PutResult> {
 
 	/**
 	 * Key is the minorKey, value is payload
@@ -37,16 +37,16 @@ public class SetOperation extends AbstractUpdateOperation<SetOperation, VoidResu
 	
 	private UpdatePolicy updatePolicy = UpdatePolicy.MERGE;
 	
-	public SetOperation(String storeName) {
+	public PutOperation(String storeName) {
 		super(storeName);
 	}
 
-	public SetOperation(String storeName, String majorKey) {
+	public PutOperation(String storeName, String majorKey) {
 		super(storeName);
 		setMajorKey(majorKey);
 	}
 
-	public SetOperation addValue(String minorKey, ByteBuf valueOrNull) {
+	public PutOperation addValue(String minorKey, ByteBuf valueOrNull) {
 		if (newValues == null) {
 			this.newValues = Collections.singletonMap(minorKey, valueOrNull);
 		}
@@ -68,19 +68,19 @@ public class SetOperation extends AbstractUpdateOperation<SetOperation, VoidResu
 		return updatePolicy;
 	}
 
-	public SetOperation setUpdatePolicy(UpdatePolicy updatePolicy) {
+	public PutOperation setUpdatePolicy(UpdatePolicy updatePolicy) {
 		this.updatePolicy = updatePolicy;
 		return this;
 	}
 	
 	@Override
 	public OpCode getCode() {
-		return OpCode.SET;
+		return OpCode.PUT;
 	}
 
 	@Override
 	public String toString() {
-		return "SetOperation [newValues=" + newValues + ", updatePolicy=" + updatePolicy + ", cacheName=" + cacheName
+		return "PutOperation [newValues=" + newValues + ", updatePolicy=" + updatePolicy + ", cacheName=" + cacheName
 				+ ", superKey=" + superKey + ", majorKey=" + majorKey + ", timeoutMillis=" + timeoutMillis + "]";
 	}
 

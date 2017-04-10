@@ -24,7 +24,7 @@ import rx.Single;
  *
  */
 
-public interface DattyOperation {
+public interface DattyOperation<O extends DattyOperation<O, R>, R extends DattyResult<O>> {
 
 	/**
 	 * Gets cache name
@@ -69,35 +69,21 @@ public interface DattyOperation {
 	int getTimeoutMillis();
 	
 	/**
-	 * Gets status of the operation
+	 * Gets fallback result if exists
 	 * 
-	 * @return true if completed
+	 * @return null or fallback
 	 */
 	
-	boolean isCompleted();
+	R getFallback();
 	
 	/**
-	 * Gets operation result
+	 * Sets fallback result in case of error
 	 * 
-	 * @return not null result or throw DattyUncompletedException
+	 * @param fallback - fallback result
+	 * @return this
 	 */
 	
-	DattyResult getResult();
-	
-	/**
-	 * Resets operation, removes result
-	 */
-	
-	void reset();
-	
-	/**
-	 * Completes operation
-	 * 
-	 * @param result - not null result
-	 * @return result associated with operation 
-	 */
-	
-	DattyResult complete(DattyResult result);
+	O onFallback(R fallback);
 	
 	/**
 	 * Executes operation if is created from Cache
@@ -105,23 +91,7 @@ public interface DattyOperation {
 	 * @param datty - datty instance
 	 */
 
-	Single<DattyResult> execute();
-	
-	/**
-	 * Gets sequence number of the operation
-	 * 
-	 * @return it is using in batch or other sequence operations to keep the order
-	 */
-	
-	int getSequenceNumber();
-	
-	/**
-	 * Sets sequence number of the operation
-	 * 
-	 * @param sequenceNumber - sequence number
-	 */
-	
-	DattyOperation setSequenceNumber(int sequenceNumber);
+	Single<R> execute();
 	
 	/**
 	 * Gets operation code
@@ -142,7 +112,7 @@ public interface DattyOperation {
 		
 		EXISTS(1),
 		GET(2),
-		SET(3),
+		PUT(3),
 		COMPARE_AND_SET(4),
 		EXECUTE(5);
 		
