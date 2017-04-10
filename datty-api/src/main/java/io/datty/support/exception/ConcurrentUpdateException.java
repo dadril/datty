@@ -13,12 +13,22 @@
  */
 package io.datty.support.exception;
 
-public class RecordNotExistsException extends DattyException {
+import io.datty.api.DattyError;
+import io.datty.api.DattyOperation;
 
-	private static final long serialVersionUID = 3901791422852088942L;
+/**
+ * ConcurrentUpdateException
+ * 
+ * @author dadril
+ *
+ */
 
-	public RecordNotExistsException() {
-		super("record not exists");
+public class ConcurrentUpdateException extends DattyErrorException {
+
+	private static final long serialVersionUID = 1913746029865832415L;
+
+	public ConcurrentUpdateException(DattyOperation<?, ?> operation) {
+		super(DattyError.ErrCode.CONCURRENT_UPDATE, operation);
 	}
-
+	
 }

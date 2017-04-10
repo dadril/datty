@@ -13,12 +13,12 @@
  */
 package io.datty.api.result;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
 import io.datty.api.operation.GetOperation;
 import io.datty.api.operation.Version;
-import io.datty.support.exception.RecordNotExistsException;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -74,7 +74,7 @@ public final class GetResult extends AbstractResult<GetOperation, GetResult> {
 	public boolean isEmpty() {
 		
 		if (!exists()) {
-			throw new RecordNotExistsException();
+			return true;
 		}
 		
 		return values.isEmpty();
@@ -83,7 +83,7 @@ public final class GetResult extends AbstractResult<GetOperation, GetResult> {
 	public int size() {
 		
 		if (!exists()) {
-			throw new RecordNotExistsException();
+			return 0;
 		}
 		
 		return values.size();
@@ -92,7 +92,7 @@ public final class GetResult extends AbstractResult<GetOperation, GetResult> {
 	public Set<String> minorKeys() {
 		
 		if (!exists()) {
-			throw new RecordNotExistsException();
+			return Collections.emptySet();
 		}
 		
 		return values.keySet();
@@ -101,7 +101,7 @@ public final class GetResult extends AbstractResult<GetOperation, GetResult> {
 	public ByteBuf get(String minorKey) {
 		
 		if (!exists()) {
-			throw new RecordNotExistsException();
+			return null;
 		}
 		
 		return values.get(minorKey);

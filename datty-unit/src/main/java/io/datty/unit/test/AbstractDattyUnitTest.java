@@ -22,6 +22,8 @@ import io.datty.api.CacheExistsAction;
 import io.datty.api.CacheFactory;
 import io.datty.api.CacheManager;
 import io.datty.unit.UnitPropertyKeys;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public abstract class AbstractDattyUnitTest {
 
@@ -34,6 +36,12 @@ public abstract class AbstractDattyUnitTest {
 	static protected CacheManager cacheManager;
 	
 	static protected Cache cache;
+	
+	static protected  final String minorKey = "def";
+	
+	static protected  final ByteBuf value = Unpooled.wrappedBuffer("value".getBytes());
+
+	static protected  final ByteBuf newValue = Unpooled.wrappedBuffer("newValue".getBytes());
 
 	@BeforeClass
 	public static void init() {

@@ -73,6 +73,11 @@ public class PutOperation extends AbstractUpdateOperation<PutOperation, PutResul
 		return this;
 	}
 	
+	public PutOperation withPolicy(UpdatePolicy updatePolicy) {
+		this.updatePolicy = updatePolicy;
+		return this;
+	}
+	
 	@Override
 	public OpCode getCode() {
 		return OpCode.PUT;

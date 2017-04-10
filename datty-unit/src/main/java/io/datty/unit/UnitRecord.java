@@ -33,7 +33,7 @@ public final class UnitRecord {
 
 	private final ConcurrentMap<String, ByteBuf> columnMap = new ConcurrentHashMap<String, ByteBuf>();
 	
-	private final AtomicLong version = new AtomicLong(-1L);
+	private final AtomicLong version = new AtomicLong(0L);
 	
 	public void incrementVersion() {
 		version.incrementAndGet();
@@ -56,7 +56,7 @@ public final class UnitRecord {
 	}
 	
 	public void addColumn(String minorKey, ByteBuf value) {
-		ByteBuf old = columnMap.put(minorKey, value != null ? value.copy() : null);
+		ByteBuf old = value != null ? columnMap.put(minorKey, value.copy()) : columnMap.remove(minorKey);
 		if (old != null) {
 			old.release();
 		}
@@ -73,6 +73,10 @@ public final class UnitRecord {
 
 	public Map<String, ByteBuf> getColumnMap() {
 		return columnMap;
+	}
+	
+	public boolean isEmpty() {
+		return columnMap.isEmpty();
 	}
 	
 }

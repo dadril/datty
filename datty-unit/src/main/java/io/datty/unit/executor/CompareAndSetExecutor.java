@@ -50,6 +50,8 @@ public enum CompareAndSetExecutor implements OperationExecutor<CompareAndSetOper
 				record.addColumn(e.getKey(), e.getValue());
 			}
 			
+			record.incrementVersion();
+			
 			return Single.just(CompareAndSetResult.of(true));
 			
 		}
@@ -59,10 +61,15 @@ public enum CompareAndSetExecutor implements OperationExecutor<CompareAndSetOper
 	}
 	
 	private static UnitRecord newRecord(CompareAndSetOperation operation) {
+		
 		UnitRecord record = new UnitRecord();
+		
 		for (Map.Entry<String, ByteBuf> e : operation.getValues().entrySet()) {
 			record.addColumn(e.getKey(), e.getValue());
 		}
+		
+		record.incrementVersion();
+		
 		return record;
 	}
 	

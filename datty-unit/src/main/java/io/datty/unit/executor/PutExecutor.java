@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentMap;
 import io.datty.api.UpdatePolicy;
 import io.datty.api.operation.PutOperation;
 import io.datty.api.result.PutResult;
+import io.datty.support.exception.ConcurrentUpdateException;
 import io.datty.unit.UnitRecord;
 import io.netty.buffer.ByteBuf;
 import rx.Single;
@@ -48,6 +49,12 @@ public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
 		}
 
 		record.incrementVersion();
+		
+		if (record.isEmpty()) {
+			if (!recordMap.remove(operation.getMajorKey(), record)) {
+				return Single.error(new ConcurrentUpdateException(operation));
+			}
+		}
 		
 		return Single.just(PutResult.empty());
 	}

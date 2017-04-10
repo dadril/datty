@@ -47,4 +47,9 @@ public abstract class AbstractUpdateOperation<O extends DattyOperation<O, R>, R 
 		return castThis();
 	}
 	
+	public O withTimeToLive(int ttlSeconds) {
+		this.ttlSeconds = ttlSeconds;
+		return castThis();
+	}
+	
 }

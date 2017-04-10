@@ -65,6 +65,11 @@ public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSe
 		this.oldVersion = oldVersion;
 		return this;
 	}
+	
+	public CompareAndSetOperation withVersion(Version oldVersion) {
+		this.oldVersion = oldVersion;
+		return this;
+	}
 
 	public CompareAndSetOperation addValue(String minorKey, ByteBuf valueOrNull) {
 		if (newValues == null) {
@@ -89,6 +94,11 @@ public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSe
 	}
 
 	public CompareAndSetOperation setUpdatePolicy(UpdatePolicy updatePolicy) {
+		this.updatePolicy = updatePolicy;
+		return this;
+	}
+	
+	public CompareAndSetOperation withPolicy(UpdatePolicy updatePolicy) {
 		this.updatePolicy = updatePolicy;
 		return this;
 	}

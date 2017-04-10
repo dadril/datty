@@ -20,7 +20,7 @@ import io.datty.api.DattyError;
 import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
 import io.datty.api.DattySingle;
-import io.datty.support.exception.DattyConcurrentException;
+import io.datty.support.exception.ConcurrentUpdateException;
 import io.datty.support.exception.DattyErrorException;
 import io.datty.support.exception.DattyTimeoutException;
 import rx.Single;
@@ -66,7 +66,7 @@ public class DattySingleDriver implements DattySingle {
 
 			public Boolean call(Integer attempts, Throwable e) {
 
-				if (e instanceof DattyConcurrentException) {
+				if (e instanceof ConcurrentUpdateException) {
 					return attempts < getMaxConcurrentTries();
 				}
 
@@ -75,13 +75,15 @@ public class DattySingleDriver implements DattySingle {
 			
 		});
 		
-		result.doOnError(new Action1<Throwable>() {
+		result = result.doOnError(new Action1<Throwable>() {
 
 			@Override
 			public void call(Throwable t) {
+
 				if (!(t instanceof DattyErrorException)) {
 					throw new DattyErrorException(DattyError.ErrCode.UNKNOWN, operation, t);
 				}
+				
 			}
 			
 		});
