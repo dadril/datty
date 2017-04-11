@@ -35,7 +35,7 @@ public final class UnitValue {
 	}
 	
 	public ByteBuf asByteBuf() {
-		return buffer;
+		return buffer.resetReaderIndex();
 	}
 	
 }

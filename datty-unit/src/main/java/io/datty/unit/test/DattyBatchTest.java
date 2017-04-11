@@ -76,8 +76,8 @@ public class DattyBatchTest extends AbstractDattyUnitTest {
 		 */
 		
 		List<DattyOperation> batch = new ArrayList<DattyOperation>();
-		batch.add(new PutOperation(CACHE_NAME, majorKey).addValue(minorKey, value));
-		batch.add(new PutOperation(CACHE_NAME, majorKeyOther).addValue(minorKey, value));
+		batch.add(new PutOperation(CACHE_NAME, majorKey).addValue(minorKey, value()));
+		batch.add(new PutOperation(CACHE_NAME, majorKeyOther).addValue(minorKey, value()));
 		
 		List<DattyResult> results = cacheManager.getDatty().executeBatch(batch).toBlocking().value();
 		
@@ -106,12 +106,12 @@ public class DattyBatchTest extends AbstractDattyUnitTest {
 		GetResult result = (GetResult) results.get(0);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result.exists());
-		Assert.assertEquals(value, result.get(minorKey));
+		Assert.assertEquals(value(), result.get(minorKey));
 		
 		result = (GetResult) results.get(1);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result.exists());
-		Assert.assertEquals(value, result.get(minorKey));
+		Assert.assertEquals(value(), result.get(minorKey));
 		
 	}
 	

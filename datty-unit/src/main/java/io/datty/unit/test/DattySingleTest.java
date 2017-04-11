@@ -80,7 +80,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 		String majorKey = UUID.randomUUID().toString();
 		
-		cache.put(majorKey).addValue(minorKey, value).execute().toBlocking().value();
+		cache.put(majorKey).addValue(minorKey, value()).execute().toBlocking().value();
 		
 		// record
 		ExistsResult exists = cache.exists(majorKey).allMinorKeys().execute().toBlocking().value();
@@ -97,7 +97,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		Assert.assertTrue(get.hasVersion());
 		Assert.assertNotNull(get.getVersion());
 		Assert.assertEquals(1, get.size());
-		Assert.assertEquals(value, get.get(minorKey));
+		Assert.assertEquals(value(), get.get(minorKey));
 		
 		// column
 		get = cache.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
@@ -105,7 +105,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		Assert.assertTrue(get.hasVersion());
 		Assert.assertNotNull(get.getVersion());
 		Assert.assertEquals(1, get.size());
-		Assert.assertEquals(value, get.get(minorKey));
+		Assert.assertEquals(value(), get.get(minorKey));
 		
 	}
 	
@@ -114,10 +114,10 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 		String majorKey = UUID.randomUUID().toString();
 		
-		cache.put(majorKey).addValue(minorKey, value).execute().toBlocking();
+		cache.put(majorKey).addValue(minorKey, value()).execute().toBlocking();
 		
 		GetResult result = cache.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
-		Assert.assertEquals(value, result.get(minorKey));
+		Assert.assertEquals(value(), result.get(minorKey));
 		
 		cache.put(majorKey).withPolicy(UpdatePolicy.REPLACE).execute().toBlocking().value();
 		
@@ -135,10 +135,10 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 		String majorKey = UUID.randomUUID().toString();
 		
-		cache.put(majorKey).addValue(minorKey, value).execute().toBlocking();
+		cache.put(majorKey).addValue(minorKey, value()).execute().toBlocking();
 		
 		GetResult result = cache.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
-		Assert.assertEquals(value, result.get(minorKey));
+		Assert.assertEquals(value(), result.get(minorKey));
 		
 		cache.put(majorKey).withPolicy(UpdatePolicy.MERGE).execute().toBlocking().value();
 		
@@ -148,7 +148,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		result = cache.get(majorKey).allMinorKeys().execute().toBlocking().value();
 		Assert.assertTrue(result.exists());
 		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(value, result.get(minorKey));
+		Assert.assertEquals(value(), result.get(minorKey));
 		
 	}
 	
@@ -157,10 +157,10 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 		String majorKey = UUID.randomUUID().toString();
 		
-		cache.put(majorKey).addValue(minorKey, value).execute().toBlocking();
+		cache.put(majorKey).addValue(minorKey, value()).execute().toBlocking();
 		
 		GetResult result = cache.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
-		Assert.assertEquals(value, result.get(minorKey));
+		Assert.assertEquals(value(), result.get(minorKey));
 		
 		cache.put(majorKey).addValue(minorKey, null).withPolicy(UpdatePolicy.MERGE).execute().toBlocking().value();
 		
@@ -178,7 +178,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 		String majorKey = UUID.randomUUID().toString();
 		
-		boolean updated = cache.compareAndSet(majorKey).addValue(majorKey, value).withVersion(null).execute().toBlocking().value().get();
+		boolean updated = cache.compareAndSet(majorKey).addValue(majorKey, value()).withVersion(null).execute().toBlocking().value().get();
 		Assert.assertTrue(updated);
 		
 		boolean exists = cache.exists(majorKey).allMinorKeys().execute().toBlocking().value().exists();
@@ -191,15 +191,15 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 		String majorKey = UUID.randomUUID().toString();
 
-		cache.put(majorKey).addValue(minorKey, value).execute().toBlocking();
+		cache.put(majorKey).addValue(minorKey, value()).execute().toBlocking();
 		
 		GetResult result = cache.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
 		
-		boolean updated = cache.compareAndSet(majorKey).addValue(minorKey, newValue).withVersion(result.getVersion()).execute().toBlocking().value().get();
+		boolean updated = cache.compareAndSet(majorKey).addValue(minorKey, newValue()).withVersion(result.getVersion()).execute().toBlocking().value().get();
 		Assert.assertTrue(updated);
 
 		result = cache.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
-		Assert.assertEquals(newValue, result.get(minorKey));
+		Assert.assertEquals(newValue(), result.get(minorKey));
 
 	}
 }

@@ -82,8 +82,8 @@ public class DattySequenceTest extends AbstractDattyUnitTest {
 		 * Put
 		 */
 		
-		DattyOperation put1 = new PutOperation(CACHE_NAME, majorKey).addValue(minorKey, value);
-		DattyOperation put2 = new PutOperation(CACHE_NAME, majorKeyOther).addValue(minorKey, value);
+		DattyOperation put1 = new PutOperation(CACHE_NAME, majorKey).addValue(minorKey, value());
+		DattyOperation put2 = new PutOperation(CACHE_NAME, majorKeyOther).addValue(minorKey, value());
 		
 		Observable<DattyOperation> input = Observable.just(put1, put2);
 		
@@ -117,12 +117,12 @@ public class DattySequenceTest extends AbstractDattyUnitTest {
 		GetResult result = (GetResult) results.get(0);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result.exists());
-		Assert.assertEquals(value, result.get(minorKey));
+		Assert.assertEquals(value(), result.get(minorKey));
 		
 		result = (GetResult) results.get(1);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result.exists());
-		Assert.assertEquals(value, result.get(minorKey));
+		Assert.assertEquals(value(), result.get(minorKey));
 		
 	}
 	

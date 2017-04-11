@@ -39,10 +39,18 @@ public abstract class AbstractDattyUnitTest {
 	
 	static protected  final String minorKey = "def";
 	
-	static protected  final ByteBuf value = Unpooled.wrappedBuffer("value".getBytes());
+	static private  final ByteBuf value = Unpooled.wrappedBuffer("value".getBytes());
 
-	static protected  final ByteBuf newValue = Unpooled.wrappedBuffer("newValue".getBytes());
+	static private  final ByteBuf newValue = Unpooled.wrappedBuffer("newValue".getBytes());
 
+	static protected ByteBuf value() {
+		return value.resetReaderIndex();
+	}
+
+	static protected ByteBuf newValue() {
+		return newValue.resetReaderIndex();
+	}
+	
 	@BeforeClass
 	public static void init() {
 		
