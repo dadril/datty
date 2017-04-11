@@ -13,13 +13,13 @@
  */
 package io.datty.unit.test;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.google.common.collect.Lists;
 
 import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
@@ -27,22 +27,27 @@ import io.datty.api.operation.GetOperation;
 import io.datty.api.operation.PutOperation;
 import io.datty.api.result.GetResult;
 import io.datty.api.result.PutResult;
+import rx.Observable;
 
 /**
- * DattyBatchTest
+ * DattySequenceTest
  * 
  * @author Alex Shvid
  *
  */
 
-public class DattyBatchTest extends AbstractDattyUnitTest {
+public class DattySequenceTest extends AbstractDattyUnitTest {
 
 	@Test
 	public void testEmpty() {
 		
-		List<DattyResult> result = cacheManager.getDatty().executeBatch(Collections.<DattyOperation>emptyList()).toBlocking().value();
+		Observable<DattyOperation> input = Observable.empty();
 		
-		Assert.assertTrue(result.isEmpty());
+		Iterable<DattyResult> result = cacheManager.getDatty().executeSequence(input).toBlocking().toIterable();
+		
+		List<DattyResult> list = Lists.newArrayList(result);
+		
+		Assert.assertTrue(list.isEmpty());
 		
 	}
 	
@@ -51,15 +56,17 @@ public class DattyBatchTest extends AbstractDattyUnitTest {
 		
 		String majorKey = UUID.randomUUID().toString();
 		
-		List<DattyOperation> batch = new ArrayList<DattyOperation>();
-		batch.add(new GetOperation(CACHE_NAME, majorKey).allMinorKeys());
+		DattyOperation getOp = new GetOperation(CACHE_NAME, majorKey).allMinorKeys();
 		
-		List<DattyResult> results = cacheManager.getDatty().executeBatch(batch).toBlocking().value();
+		Observable<DattyOperation> input = Observable.just(getOp);
 		
-		Assert.assertFalse(results.isEmpty());
-		Assert.assertEquals(1, results.size());
+		Iterable<DattyResult> results = cacheManager.getDatty().executeSequence(input).toBlocking().toIterable();
+		List<DattyResult> list = Lists.newArrayList(results);
 		
-		GetResult result = (GetResult) results.get(0);
+		Assert.assertFalse(list.isEmpty());
+		Assert.assertEquals(1, list.size());
+		
+		GetResult result = (GetResult) list.get(0);
 		Assert.assertNotNull(result);
 		Assert.assertFalse(result.exists());
 		
@@ -75,11 +82,13 @@ public class DattyBatchTest extends AbstractDattyUnitTest {
 		 * Put
 		 */
 		
-		List<DattyOperation> batch = new ArrayList<DattyOperation>();
-		batch.add(new PutOperation(CACHE_NAME, majorKey).addValue(minorKey, value));
-		batch.add(new PutOperation(CACHE_NAME, majorKeyOther).addValue(minorKey, value));
+		DattyOperation put1 = new PutOperation(CACHE_NAME, majorKey).addValue(minorKey, value);
+		DattyOperation put2 = new PutOperation(CACHE_NAME, majorKeyOther).addValue(minorKey, value);
 		
-		List<DattyResult> results = cacheManager.getDatty().executeBatch(batch).toBlocking().value();
+		Observable<DattyOperation> input = Observable.just(put1, put2);
+		
+		Iterable<DattyResult> iterable = cacheManager.getDatty().executeSequence(input).toBlocking().toIterable();
+		List<DattyResult> results = Lists.newArrayList(iterable);
 		
 		Assert.assertFalse(results.isEmpty());
 		Assert.assertEquals(2, results.size());
@@ -94,11 +103,13 @@ public class DattyBatchTest extends AbstractDattyUnitTest {
 		 * Get
 		 */
 		
-		batch = new ArrayList<DattyOperation>();
-		batch.add(new GetOperation(CACHE_NAME, majorKey).addMinorKey(minorKey));
-		batch.add(new GetOperation(CACHE_NAME, majorKeyOther).addMinorKey(minorKey));
+		DattyOperation get1 = new GetOperation(CACHE_NAME, majorKey).addMinorKey(minorKey);
+		DattyOperation get2 = new GetOperation(CACHE_NAME, majorKeyOther).addMinorKey(minorKey);
 		
-		results = cacheManager.getDatty().executeBatch(batch).toBlocking().value();
+		input = Observable.just(get1, get2);
+		
+		iterable = cacheManager.getDatty().executeSequence(input).toBlocking().toIterable();
+		results = Lists.newArrayList(iterable);
 		
 		Assert.assertFalse(results.isEmpty());
 		Assert.assertEquals(2, results.size());

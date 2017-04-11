@@ -86,7 +86,7 @@ public class GetResult extends AbstractResult<GetOperation, GetResult> {
 	}
 	
 	public boolean exists() {
-		return this.values != null;
+		return this.version != null;
 	}
 
 	public boolean isEmpty() {

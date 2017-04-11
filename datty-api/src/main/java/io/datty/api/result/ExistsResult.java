@@ -59,7 +59,7 @@ public class ExistsResult extends AbstractResult<ExistsOperation, ExistsResult> 
 	}
 	
 	public boolean exists() {
-		return this.minorKeys != null;
+		return this.version != null;
 	}
 	
 	public boolean isEmpty() {
