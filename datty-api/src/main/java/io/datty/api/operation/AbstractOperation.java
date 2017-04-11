@@ -114,6 +114,10 @@ public abstract class AbstractOperation<O extends TypedOperation<O, R>, R extend
 		this.fallback = fallback;
 		return castThis();
 	}
+	
+	public O withFallback(R fallback) {
+		return onFallback(fallback);
+	}
 
 	@Override
 	public Single<R> execute() {

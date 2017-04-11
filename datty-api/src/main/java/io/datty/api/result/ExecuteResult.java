@@ -25,26 +25,18 @@ import io.netty.buffer.ByteBuf;
 
 public class ExecuteResult extends AbstractResult<ExecuteOperation, ExecuteResult> {
 
-	private final ByteBuf value;
+	private ByteBuf value;
 	
 	public ExecuteResult() {
-		this.value = null;
-	}
-	
-	public ExecuteResult(ByteBuf value) {
-		this.value = value;
-	}
-	
-	public static ExecuteResult ofNull() {
-		return new ExecuteResult();
-	}
-	
-	public static ExecuteResult of(ByteBuf value) {
-		return new ExecuteResult(value);
 	}
 
-	public ByteBuf getValue() {
+	public ByteBuf get() {
 		return value;
+	}
+	
+	public ExecuteResult set(ByteBuf val) {
+		this.value = val;
+		return this;
 	}
 	
 	@Override

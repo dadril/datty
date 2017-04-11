@@ -13,53 +13,115 @@
  */
 package io.datty.api.result;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
 
 import io.datty.api.operation.ExistsOperation;
+import io.datty.api.operation.Version;
+
+/**
+ * ExistsResult
+ * 
+ * @author Alex Shvid
+ *
+ */
 
 public class ExistsResult extends AbstractResult<ExistsOperation, ExistsResult> {
 
-	private final boolean value;
+	/**
+	 * Record version if exists
+	 */
 	
-	private final Map<String, Boolean> values;
+	private Version version;
 	
-	public ExistsResult(boolean value) {
-		this(value, Collections.<String, Boolean>emptyMap());
+	/**
+	 * Retrieved minorKeys from the record (all or selected)
+	 */
+	
+	private Set<String> minorKeys;
+	
+	public ExistsResult() {
 	}
 	
-	public ExistsResult(boolean value, Map<String, Boolean> values) {
-		this.value = value;
-		this.values = values;
-	}
-
-	public static ExistsResult of(boolean value) {
-		return new ExistsResult(value);
+	public boolean hasVersion() {
+		return version != null;
 	}
 	
-	public static ExistsResult of(boolean value, Map<String, Boolean> values) {
-		return new ExistsResult(value, values);
+	public Version getVersion() {
+		return version;
 	}
 	
-	public boolean get() {
-		return value;
+	public ExistsResult setVersion(Version version) {
+		this.version = version;
+		return this;
 	}
-
+	
+	public boolean exists() {
+		return this.minorKeys != null;
+	}
+	
 	public boolean isEmpty() {
-		return values.isEmpty();
+		
+		if (this.minorKeys == null) {
+			return true;
+		}
+		
+		return this.minorKeys.isEmpty();
 	}
 	
 	public int size() {
-		return values.size();
+		
+		if (this.minorKeys == null) {
+			return 0;
+		}
+		
+		return this.minorKeys.size();
 	}
 	
 	public Set<String> minorKeys() {
-		return values.keySet();
+		
+		if (this.minorKeys == null) {
+			return Collections.emptySet();
+		}
+		
+		return this.minorKeys;
 	}
 	
-	public Boolean get(String minorKey) {
-		return values.get(minorKey);
+	public boolean exists(String minorKey) {
+		
+		if (this.minorKeys == null) {
+			return false;
+		}
+		
+		return this.minorKeys.contains(minorKey);
+	}
+	
+	public ExistsResult addMinorKey(String minorKey) {
+		if (this.minorKeys == null) {
+			this.minorKeys = Collections.singleton(minorKey);
+		}
+		else {
+			if (this.minorKeys.size() == 1) {
+				this.minorKeys = new HashSet<String>(this.minorKeys);
+			}
+			this.minorKeys.add(minorKey);
+		}
+		return this;
+	}
+	
+	public ExistsResult addMinorKeys(Collection<String> minorKeys) {
+		if (this.minorKeys == null) {
+			this.minorKeys = new HashSet<String>(minorKeys);
+		}
+		else {
+			if (this.minorKeys.size() == 1) {
+				this.minorKeys = new HashSet<String>(this.minorKeys);
+			}
+			this.minorKeys.addAll(minorKeys);
+		}
+		return this;
 	}
 	
 	@Override
@@ -69,8 +131,7 @@ public class ExistsResult extends AbstractResult<ExistsOperation, ExistsResult> 
 
 	@Override
 	public String toString() {
-		return "ExistsResult [value=" + value + ", values=" + values + "]";
+		return "ExistsResult [version=" + version + ", minorKeys=" + minorKeys + "]";
 	}
-	
-	
+
 }

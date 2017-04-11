@@ -13,6 +13,7 @@
  */
 package io.datty.api.operation;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,8 +29,8 @@ import io.datty.api.result.ExistsResult;
 
 public class ExistsOperation extends AbstractOperation<ExistsOperation, ExistsResult> {
 
-	private Set<String> minorKeys = null;
-	private boolean anyMinorKey;
+	private boolean allMinorKeys;
+	private Set<String> minorKeys;
 	
 	public ExistsOperation(String storeName) {
 		super(storeName);
@@ -39,28 +40,42 @@ public class ExistsOperation extends AbstractOperation<ExistsOperation, ExistsRe
 		super(storeName, majorKey);
 	}
 
-	public boolean isAnyMinorKey() {
-		return anyMinorKey;
+	public boolean isAllMinorKeys() {
+		return allMinorKeys;
 	}
 
-	public ExistsOperation anyMinorKey() {
-		return anyMinorKey(true);
-	}
-
-	public ExistsOperation anyMinorKey(boolean anyMinorKey) {
-		this.anyMinorKey = anyMinorKey;
+	public ExistsOperation allMinorKeys(boolean all) {
+		this.allMinorKeys = all;
 		return this;
 	}
 	
+	public ExistsOperation allMinorKeys() {
+		this.allMinorKeys = true;
+		return this;
+	}
+
 	public ExistsOperation addMinorKey(String minorKey) {
 		if (this.minorKeys == null) {
 			this.minorKeys = Collections.singleton(minorKey);
 		}
-		else if (this.minorKeys.size() == 1) {
-			this.minorKeys = new HashSet<String>(this.minorKeys);
+		else {
+			if (this.minorKeys.size() == 1) {
+				this.minorKeys = new HashSet<String>(this.minorKeys);
+			}
+			this.minorKeys.add(minorKey);
+		}
+		return this;
+	}
+	
+	public ExistsOperation addMinorKeys(Collection<String> minorKeys) {
+		if (this.minorKeys == null) {
+			this.minorKeys = new HashSet<String>(minorKeys);
 		}
 		else {
-			this.minorKeys.add(minorKey);
+			if (this.minorKeys.size() == 1) {
+				this.minorKeys = new HashSet<String>(this.minorKeys);
+			}
+			this.minorKeys.addAll(minorKeys);
 		}
 		return this;
 	}
@@ -76,7 +91,7 @@ public class ExistsOperation extends AbstractOperation<ExistsOperation, ExistsRe
 
 	@Override
 	public String toString() {
-		return "ExistsOperation [minorKeys=" + minorKeys + ", anyMinorKey=" + anyMinorKey + ", cacheName=" + cacheName
+		return "ExistsOperation [allMinorKeys=" + allMinorKeys + ", minorKeys=" + minorKeys + ", cacheName=" + cacheName
 				+ ", superKey=" + superKey + ", majorKey=" + majorKey + ", timeoutMillis=" + timeoutMillis + "]";
 	}
 

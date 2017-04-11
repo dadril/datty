@@ -33,7 +33,7 @@ public class PutOperation extends AbstractUpdateOperation<PutOperation, PutResul
 	/**
 	 * Key is the minorKey, value is payload
 	 */
-	private Map<String, ByteBuf> newValues = null;
+	private Map<String, ByteBuf> newValues;
 	
 	private UpdatePolicy updatePolicy = UpdatePolicy.MERGE;
 	
@@ -47,15 +47,27 @@ public class PutOperation extends AbstractUpdateOperation<PutOperation, PutResul
 	}
 
 	public PutOperation addValue(String minorKey, ByteBuf valueOrNull) {
-		if (newValues == null) {
+		if (this.newValues == null) {
 			this.newValues = Collections.singletonMap(minorKey, valueOrNull);
 		}
-		else if (newValues.size() == 1) {
-			this.newValues = new HashMap<>(newValues);
+		else {
+			if (this.newValues.size() == 1) {
+				this.newValues = new HashMap<>(this.newValues);
+			}
 			this.newValues.put(minorKey, valueOrNull);
 		}
+		return this;
+	}
+	
+	public PutOperation addValues(Map<String, ByteBuf> values) {
+		if (this.newValues == null) {
+			this.newValues = new HashMap<String, ByteBuf>(values);
+		}
 		else {
-			this.newValues.put(minorKey, valueOrNull);
+			if (this.newValues.size() == 1) {
+				this.newValues = new HashMap<String, ByteBuf>(this.newValues);
+			}
+			this.newValues.putAll(values);
 		}
 		return this;
 	}

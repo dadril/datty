@@ -13,6 +13,7 @@
  */
 package io.datty.api.operation;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,8 +29,8 @@ import io.datty.api.result.GetResult;
 
 public class GetOperation extends AbstractOperation<GetOperation, GetResult> {
 
-	private Set<String> minorKeys = null;
 	private boolean allMinorKeys;
+	private Set<String> minorKeys;
 	
 	public GetOperation(String cacheName) {
 		super(cacheName);
@@ -57,11 +58,24 @@ public class GetOperation extends AbstractOperation<GetOperation, GetResult> {
 		if (this.minorKeys == null) {
 			this.minorKeys = Collections.singleton(minorKey);
 		}
-		else if (this.minorKeys.size() == 1) {
-			this.minorKeys = new HashSet<String>(this.minorKeys);
+		else {
+			if (this.minorKeys.size() == 1) {
+				this.minorKeys = new HashSet<String>(this.minorKeys);
+			}			
+			this.minorKeys.add(minorKey);
+		}
+		return this;
+	}
+	
+	public GetOperation addMinorKeys(Collection<String> minorKeys) {
+		if (this.minorKeys == null) {
+			this.minorKeys = new HashSet<String>(minorKeys);
 		}
 		else {
-			this.minorKeys.add(minorKey);
+			if (this.minorKeys.size() == 1) {
+				this.minorKeys = new HashSet<String>(this.minorKeys);
+			}
+			this.minorKeys.addAll(minorKeys);
 		}
 		return this;
 	}

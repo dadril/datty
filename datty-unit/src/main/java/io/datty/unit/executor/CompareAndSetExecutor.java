@@ -23,6 +23,13 @@ import io.datty.support.exception.ConcurrentUpdateException;
 import io.datty.unit.UnitRecord;
 import rx.Single;
 
+/**
+ * CompareAndSetExecutor
+ * 
+ * @author Alex Shvid
+ *
+ */
+
 public enum CompareAndSetExecutor implements OperationExecutor<CompareAndSetOperation, CompareAndSetResult> {
 
 	INSTANCE;
@@ -39,7 +46,7 @@ public enum CompareAndSetExecutor implements OperationExecutor<CompareAndSetOper
 				
 				if (record.isEmpty()) {
 					// do nothing
-					return Single.just(CompareAndSetResult.of(true));
+					return Single.just(new CompareAndSetResult().set(true));
 				}
 				
 				boolean updated = null == recordMap.putIfAbsent(operation.getMajorKey(), record);
@@ -48,7 +55,7 @@ public enum CompareAndSetExecutor implements OperationExecutor<CompareAndSetOper
 					return Single.error(new ConcurrentUpdateException(operation));
 				}
 				else {
-					return Single.just(CompareAndSetResult.of(updated));
+					return Single.just(new CompareAndSetResult().set(updated));
 				}
 				
 			}
@@ -66,12 +73,12 @@ public enum CompareAndSetExecutor implements OperationExecutor<CompareAndSetOper
 				return Single.error(new ConcurrentUpdateException(operation));
 			}
 			else {
-				return Single.just(CompareAndSetResult.of(updated));
+				return Single.just(new CompareAndSetResult().set(updated));
 			}
 			
 		}
 		
-		return Single.just(CompareAndSetResult.of(false));
+		return Single.just(new CompareAndSetResult().set(false));
 
 	}
 	

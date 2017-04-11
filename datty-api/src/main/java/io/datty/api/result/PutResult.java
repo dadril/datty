@@ -24,8 +24,7 @@ import io.datty.api.operation.PutOperation;
 
 public class PutResult extends AbstractResult<PutOperation, PutResult> {
 
-	public static PutResult empty() {
-		return new PutResult();
+	public PutResult() {
 	}
 	
 	@Override

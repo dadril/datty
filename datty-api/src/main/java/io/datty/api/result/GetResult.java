@@ -14,6 +14,7 @@
 package io.datty.api.result;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,35 +29,47 @@ import io.netty.buffer.ByteBuf;
  *
  */
 
-public final class GetResult extends AbstractResult<GetOperation, GetResult> {
+public class GetResult extends AbstractResult<GetOperation, GetResult> {
 
 	/**
 	 * Record version if exists
 	 */
 	
-	private final Version version;
+	private Version version;
 	
 	/**
 	 * key is the minorKey, value is payload
 	 */
 	
-	private final Map<String, ByteBuf> values;
+	private Map<String, ByteBuf> values;
 	
 	public GetResult() {
-		this(null, null);
 	}
 	
-	public GetResult(Version version, Map<String, ByteBuf> values) {
-		this.version = version;
-		this.values = values;
+	public GetResult addValue(String minorKey, ByteBuf valueOrNull) {
+		if (this.values == null) {
+			this.values = Collections.singletonMap(minorKey, valueOrNull);
+		}
+		else {
+			if (this.values.size() == 1) {
+				this.values = new HashMap<>(this.values);
+			}
+			this.values.put(minorKey, valueOrNull);
+		}
+		return this;
 	}
 	
-	public static GetResult absent() {
-		return new GetResult();
-	}
-	
-	public static GetResult of(Version version, Map<String, ByteBuf> values) {
-		return new GetResult(version, values);
+	public GetResult addValues(Map<String, ByteBuf> map) {
+		if (this.values == null) {
+			this.values = new HashMap<String, ByteBuf>(map);
+		}
+		else {
+			if (this.values.size() == 1) {
+				this.values = new HashMap<String, ByteBuf>(this.values);
+			}
+			this.values.putAll(map);
+		}
+		return this;
 	}
 	
 	public boolean hasVersion() {
@@ -67,44 +80,49 @@ public final class GetResult extends AbstractResult<GetOperation, GetResult> {
 		return version;
 	}
 	
+	public GetResult setVersion(Version version) {
+		this.version = version;
+		return this;
+	}
+	
 	public boolean exists() {
-		return values != null;
+		return this.values != null;
 	}
 
 	public boolean isEmpty() {
 		
-		if (!exists()) {
+		if (this.values == null) {
 			return true;
 		}
 		
-		return values.isEmpty();
+		return this.values.isEmpty();
 	}
 	
 	public int size() {
 		
-		if (!exists()) {
+		if (this.values == null) {
 			return 0;
 		}
 		
-		return values.size();
+		return this.values.size();
 	}
 	
 	public Set<String> minorKeys() {
 		
-		if (!exists()) {
+		if (this.values == null) {
 			return Collections.emptySet();
 		}
 		
-		return values.keySet();
+		return this.values.keySet();
 	}
 	
 	public ByteBuf get(String minorKey) {
 		
-		if (!exists()) {
+		if (this.values == null) {
 			return null;
 		}
 		
-		return values.get(minorKey);
+		return this.values.get(minorKey);
 	}
 	
 	@Override

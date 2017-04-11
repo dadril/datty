@@ -13,7 +13,6 @@
  */
 package io.datty.unit.executor;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
@@ -21,8 +20,14 @@ import io.datty.api.operation.GetOperation;
 import io.datty.api.result.GetResult;
 import io.datty.unit.UnitRecord;
 import io.datty.unit.UnitValue;
-import io.netty.buffer.ByteBuf;
 import rx.Single;
+
+/**
+ * GetExecutor
+ * 
+ * @author Alex Shvid
+ *
+ */
 
 public enum GetExecutor implements OperationExecutor<GetOperation, GetResult> {
 
@@ -32,32 +37,34 @@ public enum GetExecutor implements OperationExecutor<GetOperation, GetResult> {
 	public Single<GetResult> execute(ConcurrentMap<String, UnitRecord> recordMap, GetOperation operation) {
 		
 		UnitRecord record = recordMap.get(operation.getMajorKey());
-		if (record == null) {
-			return Single.just(GetResult.absent());
-		}
+		
+		GetResult result = new GetResult();
+		
+		if (record != null) {
+			
+			result.setVersion(record.getVersion());
 
-		if (operation.isAllMinorKeys()) {
-			
-			Map<String, ByteBuf> map = new HashMap<String, ByteBuf>();
-			for (Map.Entry<String, UnitValue> e : record.getColumnMap().entrySet()) {
-				map.put(e.getKey(), e.getValue().asByteBuf());
-			}
-			
-			return Single.just(GetResult.of(record.getVersion(), map));
-		}
-		else {
-			
-			Map<String, ByteBuf> map = new HashMap<String, ByteBuf>();
-			for (String minorKey : operation.getMinorKeys()) {
-				UnitValue value = record.getColumn(minorKey);
-				if (value != null) {
-					map.put(minorKey, value.asByteBuf());
+			if (operation.isAllMinorKeys()) {
+				
+				for (Map.Entry<String, UnitValue> e : record.getColumnMap().entrySet()) {
+					result.addValue(e.getKey(), e.getValue().asByteBuf());
 				}
+				
 			}
-			
-			return Single.just(GetResult.of(record.getVersion(), map));
+			else {
+				
+				for (String minorKey : operation.getMinorKeys()) {
+					UnitValue value = record.getColumn(minorKey);
+					if (value != null) {
+						result.addValue(minorKey, value.asByteBuf());
+					}
+				}
+				
+			}
+		
 		}
 
+		return Single.just(result);
 	}
 	
 }

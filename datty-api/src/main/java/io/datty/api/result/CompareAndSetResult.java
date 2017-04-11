@@ -24,20 +24,20 @@ import io.datty.api.operation.CompareAndSetOperation;
 
 public final class CompareAndSetResult extends AbstractResult<CompareAndSetOperation, CompareAndSetResult> {
 
-	private final boolean value;
+	private boolean value;
 
-	public CompareAndSetResult(boolean value) {
-		this.value = value;
-	}
-	
-	public static CompareAndSetResult of(boolean value) {
-		return new CompareAndSetResult(value);
+	public CompareAndSetResult() {
 	}
 
 	public boolean get() {
 		return value;
 	}
 
+	public CompareAndSetResult set(boolean val) {
+		this.value = val;
+		return this;
+	}
+	
 	@Override
 	public ResCode getCode() {
 		return ResCode.COMPARE_AND_SET;

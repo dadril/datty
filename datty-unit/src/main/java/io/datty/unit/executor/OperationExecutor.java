@@ -20,6 +20,15 @@ import io.datty.api.result.TypedResult;
 import io.datty.unit.UnitRecord;
 import rx.Single;
 
+/**
+ * OperationExecutor
+ * 
+ * @author Alex Shvid
+ *
+ * @param <O> - operation type
+ * @param <R> - result type
+ */
+
 public interface OperationExecutor<O extends TypedOperation<O, R>, R extends TypedResult<O>> {
 	
 	/**

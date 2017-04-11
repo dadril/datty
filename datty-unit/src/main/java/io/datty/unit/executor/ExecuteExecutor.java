@@ -20,6 +20,13 @@ import io.datty.api.result.ExecuteResult;
 import io.datty.unit.UnitRecord;
 import rx.Single;
 
+/**
+ * ExecuteExecutor
+ * 
+ * @author Alex Shvid
+ *
+ */
+
 public enum ExecuteExecutor implements OperationExecutor<ExecuteOperation, ExecuteResult> {
 
 	INSTANCE;
@@ -27,10 +34,9 @@ public enum ExecuteExecutor implements OperationExecutor<ExecuteOperation, Execu
 	@Override
 	public Single<ExecuteResult> execute(ConcurrentMap<String, UnitRecord> recordMap, ExecuteOperation operation) {
 		
-		return Single.just(ExecuteResult.of(operation.getArguments()));
+		return Single.just(new ExecuteResult().set(operation.getArguments()));
 		
 	}
-	
-	
+
 	
 }

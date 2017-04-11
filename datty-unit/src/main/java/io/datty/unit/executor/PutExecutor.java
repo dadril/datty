@@ -21,6 +21,13 @@ import io.datty.support.exception.ConcurrentUpdateException;
 import io.datty.unit.UnitRecord;
 import rx.Single;
 
+/**
+ * PutExecutor
+ * 
+ * @author Alex Shvid
+ *
+ */
+
 public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
 
 	INSTANCE;
@@ -38,7 +45,7 @@ public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
 				return Single.error(new ConcurrentUpdateException(operation));
 			}
 			else {
-				return Single.just(PutResult.empty());
+				return Single.just(new PutResult());
 			}
 		}
 		else {
@@ -53,7 +60,7 @@ public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
 				return Single.error(new ConcurrentUpdateException(operation));
 			}
 			
-			return Single.just(PutResult.empty());
+			return Single.just(new PutResult());
 		}
 	}
 	

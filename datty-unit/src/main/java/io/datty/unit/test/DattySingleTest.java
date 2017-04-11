@@ -48,11 +48,23 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 	}
 	
 	@Test
+	public void testFallback() {
+		
+		GetResult fallback = new GetResult();
+		
+		GetResult actual = cacheManager.getDatty().execute(new GetOperation("unknownCache", "majorKey").withFallback(fallback)).toBlocking().value();
+		
+		Assert.assertFalse(actual.exists());
+		
+	}
+	
+	
+	@Test
 	public void testNotExists() {
 		
 		String majorKey = UUID.randomUUID().toString();
 		
-		boolean exists = cache.exists(majorKey).anyMinorKey().execute().toBlocking().value().get();
+		boolean exists = cache.exists(majorKey).allMinorKeys().execute().toBlocking().value().exists();
 		Assert.assertFalse(exists);
 		
 		GetResult result = cache.get(majorKey).allMinorKeys().execute().toBlocking().value();
@@ -71,13 +83,13 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		cache.put(majorKey).addValue(minorKey, value).execute().toBlocking().value();
 		
 		// record
-		ExistsResult exists = cache.exists(majorKey).anyMinorKey().execute().toBlocking().value();
-		Assert.assertTrue(exists.get());
+		ExistsResult exists = cache.exists(majorKey).allMinorKeys().execute().toBlocking().value();
+		Assert.assertTrue(exists.exists());
 		
 		// column
 		exists = cache.exists(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
-		Assert.assertTrue(exists.get());
-		Assert.assertTrue(exists.get(minorKey));
+		Assert.assertTrue(exists.exists());
+		Assert.assertTrue(exists.exists(minorKey));
 		
 	  // record
 		GetResult get = cache.get(majorKey).allMinorKeys().execute().toBlocking().value();
@@ -109,7 +121,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 		cache.put(majorKey).withPolicy(UpdatePolicy.REPLACE).execute().toBlocking().value();
 		
-		boolean exists = cache.exists(majorKey).anyMinorKey().execute().toBlocking().value().get();
+		boolean exists = cache.exists(majorKey).allMinorKeys().execute().toBlocking().value().exists();
 		Assert.assertFalse(exists);
 		
 		result = cache.get(majorKey).allMinorKeys().execute().toBlocking().value();
@@ -130,7 +142,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 		cache.put(majorKey).withPolicy(UpdatePolicy.MERGE).execute().toBlocking().value();
 		
-		boolean exists = cache.exists(majorKey).anyMinorKey().execute().toBlocking().value().get();
+		boolean exists = cache.exists(majorKey).allMinorKeys().execute().toBlocking().value().exists();
 		Assert.assertTrue(exists);
 		
 		result = cache.get(majorKey).allMinorKeys().execute().toBlocking().value();
@@ -152,7 +164,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 		cache.put(majorKey).addValue(minorKey, null).withPolicy(UpdatePolicy.MERGE).execute().toBlocking().value();
 		
-		boolean exists = cache.exists(majorKey).anyMinorKey().execute().toBlocking().value().get();
+		boolean exists = cache.exists(majorKey).allMinorKeys().execute().toBlocking().value().exists();
 		Assert.assertFalse(exists);
 		
 		result = cache.get(majorKey).allMinorKeys().execute().toBlocking().value();
@@ -169,7 +181,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		boolean updated = cache.compareAndSet(majorKey).addValue(majorKey, value).withVersion(null).execute().toBlocking().value().get();
 		Assert.assertTrue(updated);
 		
-		boolean exists = cache.exists(majorKey).anyMinorKey().execute().toBlocking().value().get();
+		boolean exists = cache.exists(majorKey).allMinorKeys().execute().toBlocking().value().exists();
 		Assert.assertTrue(exists);
 		
 	}

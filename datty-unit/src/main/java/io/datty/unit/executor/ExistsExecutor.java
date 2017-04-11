@@ -13,14 +13,19 @@
  */
 package io.datty.unit.executor;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 import io.datty.api.operation.ExistsOperation;
 import io.datty.api.result.ExistsResult;
 import io.datty.unit.UnitRecord;
 import rx.Single;
+
+/**
+ * ExistsExecutor
+ * 
+ * @author Alex Shvid
+ *
+ */
 
 public enum ExistsExecutor implements OperationExecutor<ExistsOperation, ExistsResult> {
 
@@ -31,20 +36,25 @@ public enum ExistsExecutor implements OperationExecutor<ExistsOperation, ExistsR
 		
 		UnitRecord record = recordMap.get(operation.getMajorKey());
 		
-		if (operation.isAnyMinorKey()) {
-			return Single.just(ExistsResult.of(record != null));
-		}
-		else {
+		ExistsResult result = new ExistsResult();
+		if (record != null) {
+		
+			result.setVersion(record.getVersion());
 			
-			boolean recordExists = record != null;
-			Map<String, Boolean> map = new HashMap<String, Boolean>();
-			for (String minorKey : operation.getMinorKeys()) {
-				map.put(minorKey, recordExists ? record.hasColumn(minorKey) : false);
+			if (operation.isAllMinorKeys()) {
+				result.addMinorKeys(operation.getMinorKeys());
+			}
+			else {
+				for (String minorKey : operation.getMinorKeys()) {
+					if (record.hasColumn(minorKey)) {
+						result.addMinorKey(minorKey);
+					}
+				}
 			}
 			
-			return Single.just(ExistsResult.of(recordExists, map));
 		}
 		
+		return Single.just(result);
 	}
 	
 }
