@@ -20,71 +20,55 @@ import io.datty.api.DattyError;
 import io.datty.api.DattyOperation;
 
 /**
- * Base class that comes to streaming on error
+ * Base class that comes to stream errors from single operation
  * 
  * @author Alex Shvid
  *
  */
 
-public class DattyErrorException extends DattyException implements DattyError {
+public class DattySingleException extends DattyException implements DattyError {
 
 	private static final long serialVersionUID = 5237472769279645794L;
 	
-	private final int errorCode;
+	private final ErrCode errorCode;
 	private final String errorMessage;
 	private final String errorStackTrace;
 	
 	private final DattyOperation operation;
 	
-	public DattyErrorException(DattyError.ErrCode errCode, DattyOperation operation) {
+	public DattySingleException(DattyError.ErrCode errCode, DattyOperation operation) {
 		super(errCode.name());
-		this.errorCode = errCode.getCode();
+		this.errorCode = errCode;
 		this.errorMessage = errCode.name();
 		this.errorStackTrace = null;
 		this.operation = operation;
 	}
 	
-	public DattyErrorException(DattyError.ErrCode errCode, DattyOperation operation, Throwable t) {
+	public DattySingleException(DattyError.ErrCode errCode, DattyOperation operation, Throwable t) {
 		super(errCode.name());
-		this.errorCode = errCode.getCode();
+		this.errorCode = errCode;
 		this.errorMessage = t.getMessage();
 		this.errorStackTrace = getStackTrace(t);
 		this.operation = operation;
 	}
 	
-	public DattyErrorException(DattyError.ErrCode errCode, String message, DattyOperation operation) {
+	public DattySingleException(DattyError.ErrCode errCode, String message, DattyOperation operation) {
 		super(message);
-		this.errorCode = errCode.getCode();
+		this.errorCode = errCode;
 		this.errorMessage = errCode.name();
 		this.errorStackTrace = null;
 		this.operation = operation;
 	}
 	
-	public DattyErrorException(DattyError.ErrCode errCode, String message, DattyOperation operation, Throwable t) {
+	public DattySingleException(DattyError.ErrCode errCode, String message, DattyOperation operation, Throwable t) {
 		super(message);
-		this.errorCode = errCode.getCode();
+		this.errorCode = errCode;
 		this.errorMessage = message;
 		this.errorStackTrace = getStackTrace(t);
 		this.operation = operation;
 	}
 	
-	public DattyErrorException(int errorCode, DattyOperation operation) {
-		super(Integer.toString(errorCode));
-		this.errorCode = errorCode;
-		this.errorMessage = null;
-		this.errorStackTrace = null;
-		this.operation = operation;
-	}
-	
-	public DattyErrorException(int errorCode, DattyOperation operation, Throwable t) {
-		super(Integer.toString(errorCode));
-		this.errorCode = errorCode;
-		this.errorMessage = t.getMessage();
-		this.errorStackTrace = getStackTrace(t);
-		this.operation = operation;
-	}
-	
-	public DattyErrorException(DattyError error, DattyOperation operation) {
+	public DattySingleException(DattyError error, DattyOperation operation) {
 		super(error.getErrorMessage());
 		this.errorCode = error.getErrorCode();
 		this.errorMessage = error.getErrorMessage();
@@ -93,7 +77,7 @@ public class DattyErrorException extends DattyException implements DattyError {
 	}
 	
 	@Override
-	public int getErrorCode() {
+	public ErrCode getErrorCode() {
 		return errorCode;
 	}
 

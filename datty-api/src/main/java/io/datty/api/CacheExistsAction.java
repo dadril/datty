@@ -25,7 +25,7 @@ public enum CacheExistsAction {
 	/**
 	 * Creates a new cache only with given properties
 	 * 
-	 * throws CacheExistsException if region already exists
+	 * throws DattyCacheException(CACHE_EXISTS) if region already exists
 	 */
 
 	CREATE_ONLY,
@@ -41,7 +41,7 @@ public enum CacheExistsAction {
 	 * Creates a new cache if not exists, otherwise updates properties for
 	 * existing one
 	 * 
-	 * throws CacheMismatchException if it is impossible to update properties
+	 * throws DattyCacheException(CACHE_MISTMACH) if it is impossible to update properties
 	 * runtime if they different
 	 * 
 	 */

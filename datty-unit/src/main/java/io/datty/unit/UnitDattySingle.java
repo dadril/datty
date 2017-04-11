@@ -19,8 +19,7 @@ import io.datty.api.DattyError.ErrCode;
 import io.datty.api.DattySingle;
 import io.datty.api.operation.TypedOperation;
 import io.datty.api.result.TypedResult;
-import io.datty.support.exception.CacheNotFoundException;
-import io.datty.support.exception.DattyErrorException;
+import io.datty.support.exception.DattySingleException;
 import io.datty.unit.executor.OperationExecutor;
 import io.datty.unit.executor.UnitExecutors;
 import rx.Single;
@@ -40,18 +39,18 @@ public final class UnitDattySingle implements DattySingle {
 		UnitCache cache = cacheMap.get(cacheName);
 		
 		if (cache == null) {
-			return Single.error(new CacheNotFoundException(cacheName, operation));
+			return Single.error(new DattySingleException(ErrCode.CACHE_NOT_FOUND, cacheName, operation));
 		}
 		
 		String majorKey = operation.getMajorKey();
 		if (majorKey == null) {
-			return Single.error(new DattyErrorException(ErrCode.BAD_ARGUMENTS, "empty majorKey", operation));
+			return Single.error(new DattySingleException(ErrCode.BAD_ARGUMENTS, "empty majorKey", operation));
 		}
 		
 		OperationExecutor<O, R> executor = UnitExecutors.findExecutor(operation.getCode());
 		
 		if (executor == null) {
-			return Single.error(new DattyErrorException(ErrCode.UNKNOWN_OPERATION, "unknown operation: " + operation.getCode().name(), operation));
+			return Single.error(new DattySingleException(ErrCode.UNKNOWN_OPERATION, "unknown operation: " + operation.getCode().name(), operation));
 		}
 		
 		return executor.execute(cache.getRecordMap(), operation);

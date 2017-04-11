@@ -16,7 +16,6 @@ package io.datty.spi;
 import io.datty.api.DattyError;
 import io.datty.api.DattyKey;
 import io.datty.api.DattyStream;
-import io.datty.support.exception.DattyErrorException;
 import io.datty.support.exception.DattyStreamException;
 import io.netty.buffer.ByteBuf;
 import rx.Observable;
@@ -48,7 +47,7 @@ public class DattyStreamDriver implements DattyStream {
 			@Override
 			public void call(Throwable t) {
 
-				if (!(t instanceof DattyErrorException)) {
+				if (!(t instanceof DattyStreamException)) {
 					throw new DattyStreamException(DattyError.ErrCode.UNKNOWN, key, t);
 				}
 				
@@ -69,7 +68,7 @@ public class DattyStreamDriver implements DattyStream {
 			@Override
 			public void call(Throwable t) {
 
-				if (!(t instanceof DattyErrorException)) {
+				if (!(t instanceof DattyStreamException)) {
 					throw new DattyStreamException(DattyError.ErrCode.UNKNOWN, key, t);
 				}
 				

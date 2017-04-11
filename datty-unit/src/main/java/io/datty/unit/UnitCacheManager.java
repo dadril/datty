@@ -26,7 +26,8 @@ import io.datty.api.DattyStream;
 import io.datty.spi.DattySingleDriver;
 import io.datty.spi.DattySingleProvider;
 import io.datty.spi.DattyStreamDriver;
-import io.datty.support.exception.CacheExistsException;
+import io.datty.support.exception.DattyCacheException;
+import io.datty.support.exception.DattyCacheException.CacheErrors;
 
 /**
  * Unit implementation for Datty API
@@ -82,7 +83,7 @@ public class UnitCacheManager implements CacheManager {
 		
 		case CREATE_ONLY:
 			if (cache != null) {
-				throw new CacheExistsException(cacheName);
+				throw new DattyCacheException(CacheErrors.CACHE_EXISTS, cacheName);
 			}
 			break;
 		

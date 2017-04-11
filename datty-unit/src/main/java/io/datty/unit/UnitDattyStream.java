@@ -15,11 +15,16 @@ package io.datty.unit;
 
 import java.util.concurrent.ConcurrentMap;
 
+import io.datty.api.DattyError;
 import io.datty.api.DattyKey;
 import io.datty.api.DattyStream;
+import io.datty.api.UpdatePolicy;
+import io.datty.support.exception.DattyStreamException;
 import io.netty.buffer.ByteBuf;
 import rx.Observable;
 import rx.Single;
+import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * UnitDattyStream
@@ -38,14 +43,93 @@ public class UnitDattyStream implements DattyStream {
 
 	@Override
 	public Observable<ByteBuf> streamOut(DattyKey key) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		UnitCache cache = cacheMap.get(key.getCacheName());
+		if (cache == null) {
+			return Observable.error(new DattyStreamException(DattyError.ErrCode.CACHE_NOT_FOUND, key));
+		}
+		
+		String majorKey = key.getMajorKey();
+		String minorKey = key.getMinorKey();
+		
+		if (majorKey == null || minorKey == null) {
+			return Observable.error(new DattyStreamException(DattyError.ErrCode.BAD_ARGUMENTS, key));
+		}
+		
+		UnitRecord record = cache.getRecordMap().get(majorKey);
+		if (record == null) {
+			return Observable.just(null);
+		}
+				
+		UnitValue value = record.getColumn(minorKey);
+		if (value == null) {
+			return Observable.just(null);
+		}
+		
+		return Observable.just(value.asByteBuf());
+		
 	}
 
 	@Override
 	public Single<Long> streamIn(DattyKey key, Observable<ByteBuf> value) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		UnitCache cache = cacheMap.get(key.getCacheName());
+		if (cache == null) {
+			return Single.error(new DattyStreamException(DattyError.ErrCode.CACHE_NOT_FOUND, key));
+		}
+		
+		String majorKey = key.getMajorKey();
+		String minorKey = key.getMinorKey();
+		
+		if (majorKey == null || minorKey == null) {
+			return Single.error(new DattyStreamException(DattyError.ErrCode.BAD_ARGUMENTS, key));
+		}
+				
+		UnitRecord record = cache.getRecordMap().get(majorKey);
+		if (record == null) {
+			
+			record = new UnitRecord(minorKey, new UnitValue());
+			UnitRecord c = cache.getRecordMap().putIfAbsent(majorKey, record);
+			if (c != null) {
+				record = c;
+			}
+		}
+		
+		if (!record.hasColumn(minorKey)) {
+			
+			UnitRecord newRecord = new UnitRecord(record, minorKey, new UnitValue(), UpdatePolicy.MERGE);
+			if (!cache.getRecordMap().replace(majorKey, record, newRecord)) {
+				return Single.error(new DattyStreamException(DattyError.ErrCode.CONCURRENT_UPDATE, key));
+			}
+			
+			record = newRecord;
+		}
+		
+		UnitValue streamingValue = record.getColumn(minorKey);
+		if (streamingValue == null) {
+			return Single.error(new DattyStreamException(DattyError.ErrCode.UNKNOWN, key));
+		}
+		
+		final ByteBuf destBuffer = streamingValue.asByteBuf();
+		
+		Observable<ByteBuf> result = value.reduce(destBuffer, new Func2<ByteBuf, ByteBuf, ByteBuf>() {
+
+			@Override
+			public ByteBuf call(ByteBuf dest, ByteBuf chunk) {
+				dest.writeBytes(chunk);
+				return dest;
+			}
+			
+		});
+		
+		return result.map(new Func1<ByteBuf, Long>() {
+
+			@Override
+			public Long call(ByteBuf buf) {
+				return (long) buf.readableBytes();
+			}
+			
+		}).toSingle();
 	}
 
 }

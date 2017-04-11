@@ -30,7 +30,7 @@ public class DattyStreamException extends DattyException implements DattyError {
 
 	private static final long serialVersionUID = 7327609149908024059L;
 	
-	private final int errorCode;
+	private final ErrCode errorCode;
 	private final String errorMessage;
 	private final String errorStackTrace;
 	
@@ -38,7 +38,7 @@ public class DattyStreamException extends DattyException implements DattyError {
 	
 	public DattyStreamException(DattyError.ErrCode errCode, DattyKey key) {
 		super(errCode.name());
-		this.errorCode = errCode.getCode();
+		this.errorCode = errCode;
 		this.errorMessage = errCode.name();
 		this.errorStackTrace = null;
 		this.key = key;
@@ -46,14 +46,14 @@ public class DattyStreamException extends DattyException implements DattyError {
 	
 	public DattyStreamException(DattyError.ErrCode errCode, DattyKey key, Throwable t) {
 		super(errCode.name());
-		this.errorCode = errCode.getCode();
+		this.errorCode = errCode;
 		this.errorMessage = t.getMessage();
 		this.errorStackTrace = getStackTrace(t);
 		this.key = key;
 	}
 	
 	@Override
-	public int getErrorCode() {
+	public ErrCode getErrorCode() {
 		return errorCode;
 	}
 

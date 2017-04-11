@@ -20,9 +20,7 @@ import io.datty.api.DattyError;
 import io.datty.api.DattySingle;
 import io.datty.api.operation.TypedOperation;
 import io.datty.api.result.TypedResult;
-import io.datty.support.exception.ConcurrentUpdateException;
-import io.datty.support.exception.DattyErrorException;
-import io.datty.support.exception.DattyTimeoutException;
+import io.datty.support.exception.DattySingleException;
 import rx.Single;
 import rx.functions.Action1;
 import rx.functions.Func2;
@@ -58,7 +56,7 @@ public class DattySingleDriver implements DattySingle {
 		if (operation.hasTimeoutMillis()) {
 			
 			result = result.timeout(operation.getTimeoutMillis(), TimeUnit.MILLISECONDS, 
-					Single.<R>error(new DattyTimeoutException(operation)));
+					Single.<R>error(new DattySingleException(DattyError.ErrCode.TIMEOUT, operation)));
 			
 		}
 
@@ -66,7 +64,7 @@ public class DattySingleDriver implements DattySingle {
 
 			public Boolean call(Integer attempts, Throwable e) {
 
-				if (e instanceof ConcurrentUpdateException) {
+				if (e instanceof DattyError && ((DattyError) e).getErrorCode() == DattyError.ErrCode.CONCURRENT_UPDATE) {
 					return attempts < getMaxConcurrentTries();
 				}
 
@@ -80,8 +78,8 @@ public class DattySingleDriver implements DattySingle {
 			@Override
 			public void call(Throwable t) {
 
-				if (!(t instanceof DattyErrorException)) {
-					throw new DattyErrorException(DattyError.ErrCode.UNKNOWN, operation, t);
+				if (!(t instanceof DattySingleException)) {
+					throw new DattySingleException(DattyError.ErrCode.UNKNOWN, operation, t);
 				}
 				
 			}

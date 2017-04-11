@@ -28,7 +28,7 @@ public interface DattyError {
 	 * @return error code number
 	 */
 
-	int getErrorCode();
+	ErrCode getErrorCode();
 
 	/**
 	 * Gets error message if has
