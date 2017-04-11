@@ -25,6 +25,17 @@ public final class UnitPropertyKeys {
 	private UnitPropertyKeys() {
 	}
 
+	/**
+	 * Factory constants
+	 */
+	
 	public static final String NAME = "name";
 
+	/**
+	 * Cache constants
+	 */
+	
+	public static final String MAX_ENTRIES = "maxEntries";
+
+	public static final String TTL_SECONDS = "timeToLiveSeconds";
 }

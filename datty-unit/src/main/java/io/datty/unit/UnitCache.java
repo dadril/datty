@@ -18,7 +18,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+
+import com.google.common.cache.CacheBuilder;
 
 import io.datty.api.Cache;
 import io.datty.api.CacheManager;
@@ -27,6 +30,7 @@ import io.datty.api.operation.ExecuteOperation;
 import io.datty.api.operation.ExistsOperation;
 import io.datty.api.operation.GetOperation;
 import io.datty.api.operation.PutOperation;
+import io.datty.support.exception.DattyException;
 
 /**
  * Unit implementation of the Cache interface
@@ -44,12 +48,41 @@ public class UnitCache implements Cache {
 	private final String cacheName;
 	private volatile Properties props;
 	
-	private final ConcurrentMap<String, UnitRecord> recordMap = new ConcurrentHashMap<String, UnitRecord>();
+	private final com.google.common.cache.Cache<String, UnitRecord> backingCache;
+	private final ConcurrentMap<String, UnitRecord> recordMap;
 
 	protected UnitCache(UnitCacheManager parent, String cacheName, Properties props) {
 		this.parent = parent;
 		this.cacheName = cacheName;
 		this.props = props;
+		
+		String ttlSeconds = props.getProperty(UnitPropertyKeys.MAX_ENTRIES);
+		String maxEntries = props.getProperty(UnitPropertyKeys.MAX_ENTRIES);
+		if (maxEntries != null) {
+			CacheBuilder<Object, Object> builder = CacheBuilder.newBuilder();
+			try {
+				builder.maximumSize(Integer.parseInt(maxEntries));
+			}
+			catch(NumberFormatException e) {
+				throw new DattyException("invalid property maxEntries in cache: " + cacheName + ", value=" + maxEntries);
+			}
+			if (ttlSeconds != null) {
+				try {
+					builder.expireAfterWrite(Integer.parseInt(ttlSeconds), TimeUnit.SECONDS);
+				}
+				catch(NumberFormatException e) {
+					throw new DattyException("invalid property maxEntries in cache: " + cacheName + ", value=" + maxEntries);
+				}
+			}
+			
+			this.backingCache = builder.build();
+			this.recordMap = backingCache.asMap();
+		}
+		else {
+			this.backingCache = null;
+			this.recordMap = new ConcurrentHashMap<String, UnitRecord>();
+		}
+		
 	}
 
 	@Override
