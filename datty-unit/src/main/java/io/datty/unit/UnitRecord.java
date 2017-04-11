@@ -14,10 +14,10 @@
 package io.datty.unit;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
 
+import com.google.common.collect.ImmutableMap;
+
+import io.datty.api.UpdatePolicy;
 import io.datty.api.operation.Version;
 import io.datty.support.LongVersion;
 import io.netty.buffer.ByteBuf;
@@ -25,53 +25,99 @@ import io.netty.buffer.ByteBuf;
 /**
  * Unit implementation of record
  * 
+ * Immutable record
+ * 
  * @author dadril
  *
  */
 
 public final class UnitRecord {
 
-	private final ConcurrentMap<String, ByteBuf> columnMap = new ConcurrentHashMap<String, ByteBuf>();
+	private final Map<String, UnitValue> columnMap;
 	
-	private final AtomicLong version = new AtomicLong(0L);
+	private final long version;
+
+	public UnitRecord(String minorKey, UnitValue value) {
+		ImmutableMap.Builder<String, UnitValue> builder = ImmutableMap.builder();
+		if (value != null) {
+			builder.put(minorKey, value);
+		}
+		this.columnMap = builder.build();
+		this.version = 1L;
+	}
 	
-	public void incrementVersion() {
-		version.incrementAndGet();
+	public UnitRecord(UnitRecord previous, String minorKey, UnitValue value, UpdatePolicy updatePolicy) {
+		ImmutableMap.Builder<String, UnitValue> builder = ImmutableMap.builder();
+		
+		for (Map.Entry<String, UnitValue> e : previous.columnMap.entrySet()) {
+			if (e.getKey().equals(minorKey)) {
+				if (value != null) {
+					builder.put(minorKey, value);
+				}
+				else {
+					builder.put(e);
+				}
+			}
+		}
+		
+		this.columnMap = builder.build();
+		this.version = 1L;
+	}
+	
+	public UnitRecord(Map<String, ByteBuf> map) {
+		this.columnMap = toImmutableBuilder(map).build();
+		this.version = 1L;
+	}
+	
+	public UnitRecord(UnitRecord previous, Map<String, ByteBuf> map, UpdatePolicy updatePolicy) {
+		
+		switch(updatePolicy) {
+		
+		case REPLACE:
+			this.columnMap = toImmutableBuilder(map).build();
+			break;
+			
+		case MERGE:
+			ImmutableMap.Builder<String, UnitValue> builder = toImmutableBuilder(map);
+			for (Map.Entry<String, UnitValue> e : previous.columnMap.entrySet()) {
+				if (!map.containsKey(e.getKey())) {
+					builder.put(e);
+				}
+			}
+			this.columnMap = builder.build();
+			break;
+			
+		default:
+			throw new IllegalArgumentException("unknown update policy: " + updatePolicy);	
+		}
+				
+		this.version = previous.version + 1;
+	}
+	
+	private ImmutableMap.Builder<String, UnitValue> toImmutableBuilder(Map<String, ByteBuf> map) {
+		ImmutableMap.Builder<String, UnitValue> builder = ImmutableMap.builder();
+		for (Map.Entry<String, ByteBuf> e : map.entrySet()) {
+			ByteBuf valueOrNull = e.getValue();
+			if (valueOrNull != null) {
+				builder.put(e.getKey(), new UnitValue(e.getValue()));
+			}
+		}
+		return builder;
 	}
 	
 	public Version getVersion() {
-		return new LongVersion(version.get());
-	}
-	
-	public void clear() {
-		columnMap.clear();
+		return new LongVersion(version);
 	}
 	
 	public boolean hasColumn(String minorKey) {
 		return columnMap.containsKey(minorKey);
 	}
 	
-	public ByteBuf getColumn(String minorKey) {
+	public UnitValue getColumn(String minorKey) {
 		return columnMap.get(minorKey);
 	}
 	
-	public void addColumn(String minorKey, ByteBuf value) {
-		ByteBuf old = value != null ? columnMap.put(minorKey, value.copy()) : columnMap.remove(minorKey);
-		if (old != null) {
-			old.release();
-		}
-	}
-	
-	public ByteBuf createColumn(String minorKey) {
-		ByteBuf empty = UnitConstants.ALLOC.buffer();
-		ByteBuf old = columnMap.put(minorKey, empty);
-		if (old != null) {
-			old.release();
-		}
-		return empty;
-	}
-
-	public Map<String, ByteBuf> getColumnMap() {
+	public Map<String, UnitValue> getColumnMap() {
 		return columnMap;
 	}
 	

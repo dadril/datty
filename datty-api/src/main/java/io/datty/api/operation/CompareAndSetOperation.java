@@ -36,7 +36,7 @@ public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSe
 	 * Old version of the record
 	 */
 	
-	private Version oldVersion;
+	private Version version;
 	
 	/**
 	 * Key is the minorKey, value is payload
@@ -53,21 +53,21 @@ public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSe
 		super(cacheName, majorKey);
 	}
 
-	public boolean hasOldVersion() {
-		return oldVersion != null;
+	public boolean hasVersion() {
+		return version != null;
 	}
 	
-	public Version getOldVersion() {
-		return oldVersion;
+	public Version getVersion() {
+		return version;
 	}
 
-	public CompareAndSetOperation setOldVersion(Version oldVersion) {
-		this.oldVersion = oldVersion;
+	public CompareAndSetOperation setVersion(Version oldVersion) {
+		this.version = oldVersion;
 		return this;
 	}
 	
 	public CompareAndSetOperation withVersion(Version oldVersion) {
-		this.oldVersion = oldVersion;
+		this.version = oldVersion;
 		return this;
 	}
 
@@ -110,7 +110,7 @@ public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSe
 
 	@Override
 	public String toString() {
-		return "CompareAndSetOperation [oldVersion=" + oldVersion + ", newValues=" + newValues + ", updatePolicy="
+		return "CompareAndSetOperation [oldVersion=" + version + ", newValues=" + newValues + ", updatePolicy="
 				+ updatePolicy + ", cacheName=" + cacheName + ", superKey=" + superKey + ", majorKey=" + majorKey
 				+ ", timeoutMillis=" + timeoutMillis + "]";
 	}

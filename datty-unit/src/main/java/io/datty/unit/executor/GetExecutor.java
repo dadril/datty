@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentMap;
 import io.datty.api.operation.GetOperation;
 import io.datty.api.result.GetResult;
 import io.datty.unit.UnitRecord;
+import io.datty.unit.UnitValue;
 import io.netty.buffer.ByteBuf;
 import rx.Single;
 
@@ -36,15 +37,21 @@ public enum GetExecutor implements OperationExecutor<GetOperation, GetResult> {
 		}
 
 		if (operation.isAllMinorKeys()) {
-			return Single.just(GetResult.of(record.getVersion(), record.getColumnMap()));
+			
+			Map<String, ByteBuf> map = new HashMap<String, ByteBuf>();
+			for (Map.Entry<String, UnitValue> e : record.getColumnMap().entrySet()) {
+				map.put(e.getKey(), e.getValue().asByteBuf());
+			}
+			
+			return Single.just(GetResult.of(record.getVersion(), map));
 		}
 		else {
 			
 			Map<String, ByteBuf> map = new HashMap<String, ByteBuf>();
 			for (String minorKey : operation.getMinorKeys()) {
-				ByteBuf value = record.getColumn(minorKey);
+				UnitValue value = record.getColumn(minorKey);
 				if (value != null) {
-					map.put(minorKey, value);
+					map.put(minorKey, value.asByteBuf());
 				}
 			}
 			

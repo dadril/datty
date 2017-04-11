@@ -13,15 +13,12 @@
  */
 package io.datty.unit.executor;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
-import io.datty.api.UpdatePolicy;
 import io.datty.api.operation.PutOperation;
 import io.datty.api.result.PutResult;
 import io.datty.support.exception.ConcurrentUpdateException;
 import io.datty.unit.UnitRecord;
-import io.netty.buffer.ByteBuf;
 import rx.Single;
 
 public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
@@ -32,31 +29,32 @@ public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
 	public Single<PutResult> execute(ConcurrentMap<String, UnitRecord> recordMap, PutOperation operation) {
 
 		UnitRecord record = recordMap.get(operation.getMajorKey());
+		
 		if (record == null) {
-			record = new UnitRecord();
+			
+			record = new UnitRecord(operation.getValues());
 			UnitRecord c = recordMap.putIfAbsent(operation.getMajorKey(), record);
 			if (c != null) {
-				record = c;
-			}
-		}
-
-		if (operation.getUpdatePolicy() == UpdatePolicy.REPLACE) {
-			record.clear();
-		}
-		
-		for (Map.Entry<String, ByteBuf> e : operation.getValues().entrySet()) {
-			record.addColumn(e.getKey(), e.getValue());
-		}
-
-		record.incrementVersion();
-		
-		if (record.isEmpty()) {
-			if (!recordMap.remove(operation.getMajorKey(), record)) {
 				return Single.error(new ConcurrentUpdateException(operation));
 			}
+			else {
+				return Single.just(PutResult.empty());
+			}
 		}
-		
-		return Single.just(PutResult.empty());
+		else {
+			
+			UnitRecord newRecord = new UnitRecord(record, operation.getValues(), operation.getUpdatePolicy());
+			
+			boolean updated = newRecord.isEmpty() ? 
+					recordMap.remove(operation.getMajorKey(), record) :
+					recordMap.replace(operation.getMajorKey(), record, newRecord);
+			
+			if (!updated) {
+				return Single.error(new ConcurrentUpdateException(operation));
+			}
+			
+			return Single.just(PutResult.empty());
+		}
 	}
 	
 }

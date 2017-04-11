@@ -13,14 +13,14 @@
  */
 package io.datty.unit.executor;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
-import io.datty.api.UpdatePolicy;
 import io.datty.api.operation.CompareAndSetOperation;
+import io.datty.api.operation.Version;
+import io.datty.api.operation.VersionType;
 import io.datty.api.result.CompareAndSetResult;
+import io.datty.support.exception.ConcurrentUpdateException;
 import io.datty.unit.UnitRecord;
-import io.netty.buffer.ByteBuf;
 import rx.Single;
 
 public enum CompareAndSetExecutor implements OperationExecutor<CompareAndSetOperation, CompareAndSetResult> {
@@ -34,25 +34,40 @@ public enum CompareAndSetExecutor implements OperationExecutor<CompareAndSetOper
 		
 		if (record == null) {
 			
-			if (!operation.hasOldVersion()) {
-				boolean updated = null == recordMap.putIfAbsent(operation.getMajorKey(), newRecord(operation));
-				return Single.just(CompareAndSetResult.of(updated));
+			if (isZeroVersion(operation.getVersion())) {
+				record = new UnitRecord(operation.getValues());
+				
+				if (record.isEmpty()) {
+					// do nothing
+					return Single.just(CompareAndSetResult.of(true));
+				}
+				
+				boolean updated = null == recordMap.putIfAbsent(operation.getMajorKey(), record);
+				
+				if (!updated) {
+					return Single.error(new ConcurrentUpdateException(operation));
+				}
+				else {
+					return Single.just(CompareAndSetResult.of(updated));
+				}
+				
 			}
 			
 		}
-		else if (operation.hasOldVersion() && operation.getOldVersion().equals(record.getVersion())) {
+		else if (operation.hasVersion() && operation.getVersion().equals(record.getVersion())) {
 
-			if (operation.getUpdatePolicy() == UpdatePolicy.REPLACE) {
-				record.clear();
+			UnitRecord newRecord = new UnitRecord(record, operation.getValues(), operation.getUpdatePolicy());
+			
+			boolean updated = newRecord.isEmpty() ?
+					recordMap.remove(operation.getMajorKey(), record) :
+					recordMap.replace(operation.getMajorKey(), record, newRecord);
+			
+			if (!updated) {
+				return Single.error(new ConcurrentUpdateException(operation));
 			}
-			
-			for (Map.Entry<String, ByteBuf> e : operation.getValues().entrySet()) {
-				record.addColumn(e.getKey(), e.getValue());
+			else {
+				return Single.just(CompareAndSetResult.of(updated));
 			}
-			
-			record.incrementVersion();
-			
-			return Single.just(CompareAndSetResult.of(true));
 			
 		}
 		
@@ -60,17 +75,17 @@ public enum CompareAndSetExecutor implements OperationExecutor<CompareAndSetOper
 
 	}
 	
-	private static UnitRecord newRecord(CompareAndSetOperation operation) {
+	private boolean isZeroVersion(Version version) {
 		
-		UnitRecord record = new UnitRecord();
-		
-		for (Map.Entry<String, ByteBuf> e : operation.getValues().entrySet()) {
-			record.addColumn(e.getKey(), e.getValue());
+		if (version == null) {
+			return true;
 		}
 		
-		record.incrementVersion();
+		if (version.type() == VersionType.LONG && version.asLong() == 0L) {
+			return true;
+		}
 		
-		return record;
+		return false;
 	}
 	
 }
