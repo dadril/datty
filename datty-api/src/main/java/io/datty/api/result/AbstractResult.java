@@ -13,17 +13,16 @@
  */
 package io.datty.api.result;
 
-import io.datty.api.DattyOperation;
-import io.datty.api.DattyResult;
+import io.datty.api.operation.TypedOperation;
 
 /**
  * Abstract Result
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 
-public abstract class AbstractResult<O extends DattyOperation<O, R>, R extends DattyResult<O>> implements DattyResult<O> {
+public abstract class AbstractResult<O extends TypedOperation<O, R>, R extends TypedResult<O>> implements TypedResult<O> {
 
 	private O operation;
 	

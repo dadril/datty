@@ -16,7 +16,7 @@ package io.datty.api;
 /**
  * Datty Constants
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

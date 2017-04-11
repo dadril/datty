@@ -22,7 +22,7 @@ import io.datty.api.result.GetResult;
 /**
  * Get operation
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

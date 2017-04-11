@@ -35,7 +35,7 @@ import io.datty.support.exception.DattyException;
 /**
  * Unit implementation of the Cache interface
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

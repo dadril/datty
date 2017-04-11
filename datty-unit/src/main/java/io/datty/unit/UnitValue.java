@@ -18,7 +18,7 @@ import io.netty.buffer.ByteBuf;
 /**
  * Immutable bytes
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

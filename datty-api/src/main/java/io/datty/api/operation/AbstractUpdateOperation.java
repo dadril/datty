@@ -14,17 +14,16 @@
 package io.datty.api.operation;
 
 import io.datty.api.DattyConstants;
-import io.datty.api.DattyOperation;
-import io.datty.api.DattyResult;
+import io.datty.api.result.TypedResult;
 
 /**
  * Abstract update operation
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 
-public abstract class AbstractUpdateOperation<O extends DattyOperation<O, R>, R extends DattyResult<O>> 
+public abstract class AbstractUpdateOperation<O extends TypedOperation<O, R>, R extends TypedResult<O>> 
 	extends AbstractOperation<O, R> implements UpdateOperation<O, R> {
 
 	private int ttlSeconds = DattyConstants.UNSET_TTL;

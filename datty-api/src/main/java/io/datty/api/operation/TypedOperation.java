@@ -11,21 +11,37 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.support.exception;
+package io.datty.api.operation;
 
-import io.datty.api.DattyError;
 import io.datty.api.DattyOperation;
+import io.datty.api.result.TypedResult;
+import rx.Single;
 
-public class DattyUnknownException extends DattyErrorException {
+public interface TypedOperation<O extends TypedOperation<O, R>, R extends TypedResult<O>> extends DattyOperation {
 
-	private static final long serialVersionUID = 2893531469960548353L;
+	/**
+	 * Gets fallback result if exists
+	 * 
+	 * @return null or fallback
+	 */
+	
+	R getFallback();
+	
+	/**
+	 * Sets fallback result in case of error
+	 * 
+	 * @param fallback - fallback result
+	 * @return this
+	 */
+	
+	O onFallback(R fallback);
+	
+	/**
+	 * Executes operation if is created from Cache
+	 * 
+	 * @param datty - datty instance
+	 */
 
-	public DattyUnknownException(DattyOperation operation) {
-		super(DattyError.ErrCode.UNKNOWN, operation);
-	}
-
-	public DattyUnknownException(DattyOperation operation, Throwable t) {
-		super(DattyError.ErrCode.UNKNOWN, operation, t);
-	}
+	Single<R> execute();
 	
 }

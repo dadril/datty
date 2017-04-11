@@ -15,12 +15,12 @@ package io.datty.unit.executor;
 
 import java.util.concurrent.ConcurrentMap;
 
-import io.datty.api.DattyOperation;
-import io.datty.api.DattyResult;
+import io.datty.api.operation.TypedOperation;
+import io.datty.api.result.TypedResult;
 import io.datty.unit.UnitRecord;
 import rx.Single;
 
-public interface OperationExecutor<O extends DattyOperation<O, R>, R extends DattyResult<O>> {
+public interface OperationExecutor<O extends TypedOperation<O, R>, R extends TypedResult<O>> {
 	
 	/**
 	 * Executes operation

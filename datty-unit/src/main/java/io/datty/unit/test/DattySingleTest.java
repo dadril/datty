@@ -24,6 +24,12 @@ import io.datty.api.result.ExistsResult;
 import io.datty.api.result.GetResult;
 import io.datty.support.exception.CacheNotFoundException;
 
+/**
+ * DattySingleTest
+ * 
+ * @author Alex Shvid
+ *
+ */
 
 public class DattySingleTest extends AbstractDattyUnitTest {
 

@@ -16,7 +16,7 @@ package io.datty.api;
 /**
  * Error interface for result operation
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 
@@ -49,7 +49,7 @@ public interface DattyError {
 	/**
 	 * Enum of known error codes
 	 * 
-	 * @author dadril
+	 * @author Alex Shvid
 	 *
 	 */
 	

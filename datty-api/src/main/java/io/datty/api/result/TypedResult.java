@@ -11,29 +11,19 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.support.exception;
+package io.datty.api.result;
 
-/**
- * Root hierarchy exception for all datty runtime exceptions
- * 
- * @author Alex Shvid
- *
- */
+import io.datty.api.DattyResult;
+import io.datty.api.operation.TypedOperation;
 
-public class DattyException extends RuntimeException {
+public interface TypedResult<O extends TypedOperation<O, ? extends TypedResult<O>>> extends DattyResult {
 
-	private static final long serialVersionUID = -359861329437043934L;
-
-	public DattyException(String msg) {
-		super(msg);
-	}
-
-	public DattyException(String msg, Throwable t) {
-		super(msg, t);
-	}
-
-	public DattyException(Throwable t) {
-		super(t);
-	}
-
+	/**
+	 * Gets operation associated with result
+	 * 
+	 * @return not null datty operation
+	 */
+	
+	O getOperation();
+	
 }

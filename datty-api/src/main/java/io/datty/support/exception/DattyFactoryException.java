@@ -16,7 +16,7 @@ package io.datty.support.exception;
 /**
  * Datty configuration exception
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

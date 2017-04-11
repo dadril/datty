@@ -19,7 +19,7 @@ import io.datty.api.DattyOperation;
 /**
  * Datty timeout exception
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 
@@ -27,11 +27,11 @@ public class DattyTimeoutException extends DattyErrorException {
 
 	private static final long serialVersionUID = 942050858050281111L;
 
-	public DattyTimeoutException(DattyOperation<?, ?> operation) {
+	public DattyTimeoutException(DattyOperation operation) {
 		super(DattyError.ErrCode.TIMEOUT, operation);
 	}
 
-	public DattyTimeoutException(DattyOperation<?, ?> operation, Throwable t) {
+	public DattyTimeoutException(DattyOperation operation, Throwable t) {
 		super(DattyError.ErrCode.TIMEOUT, operation, t);
 	}
 	

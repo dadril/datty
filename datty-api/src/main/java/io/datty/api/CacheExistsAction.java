@@ -16,7 +16,7 @@ package io.datty.api;
 /**
  * Type of the action if cache exists
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

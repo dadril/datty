@@ -13,6 +13,8 @@
  */
 package io.datty.api;
 
+import io.datty.api.operation.TypedOperation;
+import io.datty.api.result.TypedResult;
 import rx.Single;
 
 public interface DattySingle {
@@ -23,6 +25,6 @@ public interface DattySingle {
 	 * @param operation - datty operation
 	 */
 
-	<O extends DattyOperation<O, R>, R extends DattyResult<O>> Single<R> execute(O operation);
+	<O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(O operation);
 	
 }

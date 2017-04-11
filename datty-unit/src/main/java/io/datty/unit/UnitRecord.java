@@ -27,7 +27,7 @@ import io.netty.buffer.ByteBuf;
  * 
  * Immutable record
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

@@ -16,7 +16,7 @@ package io.datty.api.operation;
 /**
  * Supported versions
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

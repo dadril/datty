@@ -13,40 +13,39 @@
  */
 package io.datty.unit;
 
-import io.datty.api.Datty;
+import java.util.concurrent.ConcurrentMap;
+
 import io.datty.api.DattyKey;
-import io.datty.api.DattySingle;
 import io.datty.api.DattyStream;
-import io.datty.api.operation.TypedOperation;
-import io.datty.api.result.TypedResult;
-import io.datty.spi.AbstractDattyAdapter;
 import io.netty.buffer.ByteBuf;
 import rx.Observable;
 import rx.Single;
 
-public class UnitDatty extends AbstractDattyAdapter implements Datty {
+/**
+ * UnitDattyStream
+ * 
+ * @author Alex Shvid
+ *
+ */
 
-	private final DattySingle single;
-	private final DattyStream stream;
+public class UnitDattyStream implements DattyStream {
+
+	private final ConcurrentMap<String, UnitCache> cacheMap;
 	
-	public UnitDatty(DattySingle single, DattyStream stream) {
-		this.single = single;
-		this.stream = stream;
-	}
-	
-	@Override
-	public <O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(O operation) {
-		return single.execute(operation);
+	public UnitDattyStream(ConcurrentMap<String, UnitCache> cacheMap) {
+		this.cacheMap = cacheMap;
 	}
 
 	@Override
 	public Observable<ByteBuf> streamOut(DattyKey key) {
-		return stream.streamOut(key);
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public Single<Long> streamIn(DattyKey key, Observable<ByteBuf> value) {
-		return stream.streamIn(key, value);
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

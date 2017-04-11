@@ -21,7 +21,7 @@ import io.datty.api.CacheManager;
 /**
  * Simple factory for unit implementation
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

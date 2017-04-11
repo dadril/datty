@@ -18,7 +18,7 @@ import io.datty.api.operation.CompareAndSetOperation;
 /**
  * CompareAndSetResult
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

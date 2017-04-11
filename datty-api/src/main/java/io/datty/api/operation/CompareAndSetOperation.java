@@ -26,7 +26,7 @@ import io.netty.buffer.ByteBuf;
  * 
  * Compare And Set Operation
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

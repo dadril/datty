@@ -24,7 +24,7 @@ import io.netty.buffer.ByteBuf;
 /**
  * GetResult
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

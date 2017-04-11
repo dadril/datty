@@ -1,16 +1,16 @@
 package io.datty.spi;
 
-import io.datty.api.DattyOperation;
-import io.datty.api.DattyResult;
 import io.datty.api.DattySingle;
+import io.datty.api.operation.TypedOperation;
 import io.datty.api.result.AbstractResult;
+import io.datty.api.result.TypedResult;
 import rx.Single;
 import rx.functions.Func1;
 
 /**
  * Client side
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 
@@ -23,7 +23,7 @@ public class DattySingleProvider implements DattySingle {
 	}
 	
 	@Override
-	public <O extends DattyOperation<O, R>, R extends DattyResult<O>> Single<R> execute(final O operation) {
+	public <O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(final O operation) {
 
 		final R fallback = operation.getFallback();
 
@@ -35,6 +35,7 @@ public class DattySingleProvider implements DattySingle {
 				@Override
 				public R call(R res) {
 					if (res instanceof AbstractResult) {
+						@SuppressWarnings("unchecked")
 						AbstractResult<O, R> abstractResult = (AbstractResult<O, R>) res;
 						abstractResult.setOperation(operation);
 					}

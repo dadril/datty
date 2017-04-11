@@ -19,7 +19,7 @@ import io.netty.buffer.UnpooledByteBufAllocator;
 /**
  * UnitConstants
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

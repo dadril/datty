@@ -19,7 +19,7 @@ import io.netty.buffer.ByteBuf;
 /**
  * ExecuteOperation
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

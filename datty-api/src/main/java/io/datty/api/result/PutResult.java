@@ -18,7 +18,7 @@ import io.datty.api.operation.PutOperation;
 /**
  * PutResult
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

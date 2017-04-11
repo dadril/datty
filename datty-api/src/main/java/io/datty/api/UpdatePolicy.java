@@ -16,7 +16,7 @@ package io.datty.api;
 /**
  * UpdatePolicy
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

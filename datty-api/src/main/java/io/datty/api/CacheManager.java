@@ -18,7 +18,7 @@ import java.util.Properties;
 /**
  * CacheManager interface
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

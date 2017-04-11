@@ -16,7 +16,7 @@ package io.datty.api.operation;
 /**
  * Abstract interface that provides version of record
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

@@ -22,7 +22,7 @@ import io.datty.api.DattyKey;
 /**
  * Base class that comes to streaming on error
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

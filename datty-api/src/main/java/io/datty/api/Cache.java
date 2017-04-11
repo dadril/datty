@@ -25,7 +25,7 @@ import io.datty.api.operation.PutOperation;
 /**
  * Cache interface
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

@@ -19,7 +19,7 @@ import io.datty.api.operation.VersionType;
 /**
  * LongVersion
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

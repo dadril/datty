@@ -16,9 +16,9 @@ package io.datty.unit;
 import java.util.concurrent.ConcurrentMap;
 
 import io.datty.api.DattyError.ErrCode;
-import io.datty.api.DattyOperation;
-import io.datty.api.DattyResult;
 import io.datty.api.DattySingle;
+import io.datty.api.operation.TypedOperation;
+import io.datty.api.result.TypedResult;
 import io.datty.support.exception.CacheNotFoundException;
 import io.datty.support.exception.DattyErrorException;
 import io.datty.unit.executor.OperationExecutor;
@@ -34,7 +34,7 @@ public final class UnitDattySingle implements DattySingle {
 	}
 	
 	@Override
-	public <O extends DattyOperation<O, R>, R extends DattyResult<O>> Single<R> execute(O operation) {
+	public <O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(O operation) {
 		
 		String cacheName = operation.getCacheName();
 		UnitCache cache = cacheMap.get(cacheName);

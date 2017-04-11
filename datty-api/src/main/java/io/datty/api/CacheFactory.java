@@ -24,7 +24,7 @@ import java.util.Set;
 /**
  * CacheFactory interface, creator of CacheManager instance
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 
@@ -52,7 +52,7 @@ public interface CacheFactory {
 	/**
 	 * Locator class to search and select factories
 	 * 
-	 * @author dadril
+	 * @author Alex Shvid
 	 *
 	 */
 

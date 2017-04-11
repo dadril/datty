@@ -17,9 +17,9 @@ import java.util.concurrent.TimeUnit;
 
 import io.datty.api.DattyConstants;
 import io.datty.api.DattyError;
-import io.datty.api.DattyOperation;
-import io.datty.api.DattyResult;
 import io.datty.api.DattySingle;
+import io.datty.api.operation.TypedOperation;
+import io.datty.api.result.TypedResult;
 import io.datty.support.exception.ConcurrentUpdateException;
 import io.datty.support.exception.DattyErrorException;
 import io.datty.support.exception.DattyTimeoutException;
@@ -28,9 +28,9 @@ import rx.functions.Action1;
 import rx.functions.Func2;
 
 /**
- * Server side
+ * Server side for correct exceptions handling and SLA
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 
@@ -51,7 +51,7 @@ public class DattySingleDriver implements DattySingle {
 	}
 	
 	@Override
-	public <O extends DattyOperation<O, R>, R extends DattyResult<O>> Single<R> execute(final O operation) {
+	public <O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(final O operation) {
 		
 		Single<R> result = single.execute(operation);
 		
@@ -91,164 +91,5 @@ public class DattySingleDriver implements DattySingle {
 		return result;
 		
 	}
-	
-	/*
-
-	@Override
-	public Single<List<DattyResult>> executeBatch(List<DattyOperation> operations) {
-		return executeBatch(operations, DattyConstants.UNSET_TIMEOUT);
-	}
-
-	@Override
-	public Single<List<DattyResult>> executeBatch(final List<DattyOperation> operations, int timeoutMillis) {
-
-		if (operations.isEmpty()) {
-			return Single.just(Collections.<DattyResult>emptyList());
-		}
-		
-		int size = operations.size();
-		
-		final List<DattyResult> resultList = new ArrayList<DattyResult>(size); 
-		final List<Completable> joinList = new ArrayList<Completable>(size);
-		
-		for (int i = 0; i != size; ++i) {
-			
-			Single<DattyResult> singleResult = execute(operations.get(i).setSequenceNumber(i));
-			
-			singleResult = singleResult.map(new Func1<DattyResult, DattyResult>() {
-				
-				public DattyResult call(DattyResult res) {
-					resultList.add(res.getOperation().getSequenceNumber(), res);
-					return res;
-				}
-				
-			});
-			
-			joinList.add(singleResult.toCompletable());
-			
-		}
-		
-		Single<List<DattyResult>> result = Completable.merge(joinList).toSingle(new Func0<List<DattyResult>> () {
-			
-			public List<DattyResult> call() {
-				return resultList;
-			}
-			
-		});
-		
-		if (timeoutMillis != DattyConstants.UNSET_TIMEOUT) {
-			
-			result = result.timeout(timeoutMillis, TimeUnit.MILLISECONDS, 
-					Single.just(timeoutsOf(operations.size())));
-			
-		}
-		
-		return result;
-	}
-
-	private List<DattyResult> timeoutsOf(int size) {
-		List<DattyResult> list = new ArrayList<DattyResult>(size);
-		for (int i = 0; i != size; ++i) {
-			list.add(ErrorResult.of(ErrCode.TIMEOUT));
-		}
-		return list;
-	}
-	
-	@Override
-	public Observable<DattyResult> executeSequence(Observable<DattyOperation> operations) {
-		return executeSequence(operations, DattyConstants.UNSET_TIMEOUT);
-	}
-	
-	@Override
-	public Observable<DattyResult> executeSequence(Observable<DattyOperation> operations, int totalTimeoutMillis) {
-		
-		Observable<DattyResult> results = operations.flatMap(new Func1<DattyOperation, Observable<DattyResult>>() {
-			
-			public Observable<DattyResult> call(DattyOperation op) {
-				return execute(op).toObservable();
-			}
-			
-		});
-		
-		if (totalTimeoutMillis != DattyConstants.UNSET_TIMEOUT) {
-			
-			results = results.timeout(totalTimeoutMillis, TimeUnit.MILLISECONDS, 
-					Observable.just(ErrorResult.of(ErrCode.TIMEOUT)));
-			
-		}
-		
-		return results;
-	}
-
-	@Override
-	public Observable<DattyResult> streamOut(DattyKey key) {
-		return streamOut(key, DattyConstants.UNSET_TIMEOUT);
-	}
-	
-	@Override
-	public Observable<DattyResult> streamOut(DattyKey key, int totalTimeoutMillis) {
-		
-		Observable<DattyResult> results = doStreamOut(key);
-		
-		results = results.onErrorReturn(new Func1<Throwable, DattyResult>() {
-
-			public DattyResult call(Throwable e) {
-				return exceptionToError(e);
-			}
-			
-		});
-		
-		if (totalTimeoutMillis != DattyConstants.UNSET_TIMEOUT) {
-			
-			results = results.timeout(totalTimeoutMillis, TimeUnit.MILLISECONDS, 
-					Observable.just(ErrorResult.of(ErrCode.TIMEOUT)));
-			
-		}
-		
-		return results;
-				
-	}
-	@Override
-	public Single<DattyResult> streamIn(DattyKey key, Observable<ByteBuf> value) {
-		return streamIn(key, value, DattyConstants.UNSET_TIMEOUT);
-	}
-	
-	@Override
-	public Single<DattyResult> streamIn(DattyKey key, Observable<ByteBuf> value, int totalTimeoutMillis) {
-		
-		Single<DattyResult> result = doStreamIn(key, value);
-		
-		result = result.onErrorReturn(new Func1<Throwable, DattyResult>() {
-
-			public DattyResult call(Throwable e) {
-				return exceptionToError(e);
-			}
-			
-		});
-		
-		if (totalTimeoutMillis != DattyConstants.UNSET_TIMEOUT) {
-			
-			result = result.timeout(totalTimeoutMillis, TimeUnit.MILLISECONDS, 
-					Single.just(ErrorResult.of(ErrCode.TIMEOUT)));
-			
-		}
-		
-		return result;
-	}
-
-	private static DattyResult exceptionToError(Throwable e) {
-		
-		if (e instanceof DattyTimeoutException) {
-			return ErrorResult.of(ErrCode.TIMEOUT);
-		}
-		
-		if (e instanceof DattyConcurrentException) {
-			return ErrorResult.of(ErrCode.CONCURRENT_RETIRES);
-		}
-
-		return new ErrorResult(ErrCode.UNKNOWN, e);
-	}
-	
-	*/
 	
 }

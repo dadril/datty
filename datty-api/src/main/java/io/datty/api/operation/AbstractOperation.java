@@ -14,20 +14,19 @@
 package io.datty.api.operation;
 
 import io.datty.api.DattyConstants;
-import io.datty.api.DattyOperation;
-import io.datty.api.DattyResult;
 import io.datty.api.DattySingle;
 import io.datty.api.result.AbstractResult;
+import io.datty.api.result.TypedResult;
 import rx.Single;
 
 /**
  * Abstract operation
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 
-public abstract class AbstractOperation<O extends DattyOperation<O, R>, R extends DattyResult<O>> implements DattyOperation<O, R> {
+public abstract class AbstractOperation<O extends TypedOperation<O, R>, R extends TypedResult<O>> implements TypedOperation<O, R> {
 
 	protected DattySingle datty;
 	
@@ -108,6 +107,7 @@ public abstract class AbstractOperation<O extends DattyOperation<O, R>, R extend
 	@Override
 	public O onFallback(R fallback) {
 		if (fallback instanceof AbstractResult) {
+			@SuppressWarnings("unchecked")
 			AbstractResult<O, R> abstractResult = (AbstractResult<O, R>) fallback;
 			abstractResult.setOperation(castThis());
 		}

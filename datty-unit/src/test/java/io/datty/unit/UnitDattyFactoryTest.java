@@ -25,7 +25,7 @@ import io.datty.api.CacheManager;
 /**
  * Unit factory test
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

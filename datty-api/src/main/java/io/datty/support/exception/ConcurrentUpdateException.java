@@ -19,7 +19,7 @@ import io.datty.api.DattyOperation;
 /**
  * ConcurrentUpdateException
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 
@@ -27,7 +27,7 @@ public class ConcurrentUpdateException extends DattyErrorException {
 
 	private static final long serialVersionUID = 1913746029865832415L;
 
-	public ConcurrentUpdateException(DattyOperation<?, ?> operation) {
+	public ConcurrentUpdateException(DattyOperation operation) {
 		super(DattyError.ErrCode.CONCURRENT_UPDATE, operation);
 	}
 	

@@ -13,18 +13,16 @@
  */
 package io.datty.api;
 
-import rx.Single;
-
 /**
  * Base interface for all operations
  * 
  * All operations are going to be executed in single thread in event loop
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 
-public interface DattyOperation<O extends DattyOperation<O, R>, R extends DattyResult<O>> {
+public interface DattyOperation {
 
 	/**
 	 * Gets cache name
@@ -69,31 +67,6 @@ public interface DattyOperation<O extends DattyOperation<O, R>, R extends DattyR
 	int getTimeoutMillis();
 	
 	/**
-	 * Gets fallback result if exists
-	 * 
-	 * @return null or fallback
-	 */
-	
-	R getFallback();
-	
-	/**
-	 * Sets fallback result in case of error
-	 * 
-	 * @param fallback - fallback result
-	 * @return this
-	 */
-	
-	O onFallback(R fallback);
-	
-	/**
-	 * Executes operation if is created from Cache
-	 * 
-	 * @param datty - datty instance
-	 */
-
-	Single<R> execute();
-	
-	/**
 	 * Gets operation code
 	 * 
 	 * @return not null operation code
@@ -104,7 +77,7 @@ public interface DattyOperation<O extends DattyOperation<O, R>, R extends DattyR
 	/**
 	 * Operation code enum
 	 * 
-	 * @author dadril
+	 * @author Alex Shvid
 	 *
 	 */
 	

@@ -15,18 +15,17 @@ package io.datty.api;
 
 import java.util.List;
 
-import io.netty.buffer.ByteBuf;
 import rx.Observable;
 import rx.Single;
 
 /**
  * Base interface to execute asynchronous operations
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 
-public interface Datty extends DattySingle {
+public interface Datty extends DattySingle, DattyStream {
 	
 	/**
 	 * Executes sequence of datty operations
@@ -41,69 +40,9 @@ public interface Datty extends DattySingle {
 	 * Executes sequence of datty operations
 	 * 
 	 * @param operations - sequence of operations
-	 * @param timeoutMillis - timeout in milliseconds or 0
-	 * @return sequence of results
-	 */
-	
-	Single<List<DattyResult>> executeBatch(List<DattyOperation> operations, int timeoutMillis);
-	
-	/**
-	 * Executes sequence of datty operations
-	 * 
-	 * @param operations - sequence of operations
 	 * @return sequence of results
 	 */
 	
 	Observable<DattyResult> executeSequence(Observable<DattyOperation> operations);
-	
-	/**
-	 * Executes sequence of datty operations
-	 * 
-	 * @param operations - sequence of operations
-	 * @param totalTimeoutMillis - total timeout milliseconds for the whole batch
-	 * @return sequence of results
-	 */
-	
-	Observable<DattyResult> executeSequence(Observable<DattyOperation> operations, int totalTimeoutMillis);
-	
-	/**
-	 * Gets large value by key
-	 * 
-	 * @param key - datty key
-	 * @return stream ValueResult with value bytes or return ErrorResult 
-	 */
-	
-	Observable<DattyResult> streamOut(DattyKey key);
-	
-	/**
-	 * Gets large value by key
-	 * 
-	 * @param key - datty key
-	 * @param totalTimeoutMillis - total timeout milliseconds for the whole stream
-	 * @return stream ValueResult with value bytes or return ErrorResult 
-	 */
-	
-	Observable<DattyResult> streamOut(DattyKey key, int totalTimeoutMillis);
-
-	/**
-	 * Puts large value by key
-	 * 
-	 * @param key - datty key
-	 * @param value - large value
-	 * @return number or bytes written in LongResult or ErrorResult
-	 */
-	
-	Single<DattyResult> streamIn(DattyKey key, Observable<ByteBuf> value);
-	
-	/**
-	 * Puts large value by key
-	 * 
-	 * @param key - datty key
-	 * @param value - large value
-	 * @param totalTimeoutMillis - total timeout milliseconds for the whole stream
-	 * @return number or bytes written in LongResult or ErrorResult
-	 */
-	
-	Single<DattyResult> streamIn(DattyKey key, Observable<ByteBuf> value, int totalTimeoutMillis);
 	
 }

@@ -11,29 +11,38 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.support.exception;
+package io.datty.api;
+
+import io.netty.buffer.ByteBuf;
+import rx.Observable;
+import rx.Single;
 
 /**
- * Root hierarchy exception for all datty runtime exceptions
+ * DattyStream
  * 
  * @author Alex Shvid
  *
  */
 
-public class DattyException extends RuntimeException {
+public interface DattyStream {
 
-	private static final long serialVersionUID = -359861329437043934L;
-
-	public DattyException(String msg) {
-		super(msg);
-	}
-
-	public DattyException(String msg, Throwable t) {
-		super(msg, t);
-	}
-
-	public DattyException(Throwable t) {
-		super(t);
-	}
-
+	/**
+	 * Gets large value by key
+	 * 
+	 * @param key - datty key
+	 * @return stream ValueResult with value bytes or return ErrorResult 
+	 */
+	
+	Observable<ByteBuf> streamOut(DattyKey key);
+	
+	/**
+	 * Puts large value by key
+	 * 
+	 * @param key - datty key
+	 * @param value - large value
+	 * @return number or bytes written in LongResult or ErrorResult
+	 */
+	
+	Single<Long> streamIn(DattyKey key, Observable<ByteBuf> value);
+		
 }

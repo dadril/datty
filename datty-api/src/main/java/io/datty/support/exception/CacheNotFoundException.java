@@ -20,11 +20,11 @@ public class CacheNotFoundException extends DattyErrorException {
 
 	private static final long serialVersionUID = 4824538129120664380L;
 
-	public CacheNotFoundException(String cacheName, DattyOperation<?, ?> operation) {
+	public CacheNotFoundException(String cacheName, DattyOperation operation) {
 		super(DattyError.ErrCode.CACHE_NOT_FOUND, cacheName, operation);
 	}
 
-	public CacheNotFoundException(String cacheName, DattyOperation<?, ?> operation, Throwable t) {
+	public CacheNotFoundException(String cacheName, DattyOperation operation, Throwable t) {
 		super(DattyError.ErrCode.CACHE_NOT_FOUND, cacheName, operation, t);
 	}
 

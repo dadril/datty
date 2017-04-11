@@ -16,7 +16,7 @@ package io.datty.unit;
 /**
  * Unit property keys
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

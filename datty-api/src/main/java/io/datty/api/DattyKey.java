@@ -16,7 +16,7 @@ package io.datty.api;
 /**
  * Datty key for streaming operations
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 

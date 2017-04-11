@@ -13,14 +13,14 @@
  */
 package io.datty.unit.executor;
 
-import io.datty.api.DattyOperation;
-import io.datty.api.DattyResult;
 import io.datty.api.DattyOperation.OpCode;
+import io.datty.api.operation.TypedOperation;
+import io.datty.api.result.TypedResult;
 
 /**
  * UnitExecutors
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 
@@ -42,7 +42,7 @@ public final class UnitExecutors {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <O extends DattyOperation<O, R>, R extends DattyResult<O>> OperationExecutor<O, R> findExecutor(OpCode opcode) {
+	public static <O extends TypedOperation<O, R>, R extends TypedResult<O>> OperationExecutor<O, R> findExecutor(OpCode opcode) {
 		return (OperationExecutor<O, R>) codeList[opcode.getCode()];
 	}
 	

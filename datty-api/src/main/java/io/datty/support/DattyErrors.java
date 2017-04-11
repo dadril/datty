@@ -14,14 +14,14 @@
 package io.datty.support;
 
 import io.datty.api.DattyError;
-import io.datty.api.DattyOperation;
-import io.datty.api.DattyResult;
+import io.datty.api.operation.TypedOperation;
+import io.datty.api.result.TypedResult;
 import io.datty.support.exception.DattyErrorException;
 
 /**
  * DattyErrors
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 
@@ -30,7 +30,7 @@ public final class DattyErrors {
 	private DattyErrors() {
 	}
 	
-	public static <O extends DattyOperation<O, R>, R extends DattyResult<O>> R throwOnError(R result) {
+	public static <O extends TypedOperation<O, R>, R extends TypedResult<O>> R throwOnError(R result) {
 		
 		if (result instanceof DattyError) {
 			

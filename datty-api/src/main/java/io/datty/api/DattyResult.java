@@ -16,20 +16,12 @@ package io.datty.api;
 /**
  * Base interface for all results
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 
-public interface DattyResult<O extends DattyOperation<O, ? extends DattyResult<O>>> {
+public interface DattyResult {
 		
-	/**
-	 * Gets operation associated with result
-	 * 
-	 * @return not null datty operation
-	 */
-	
-	O getOperation();
-
 	/**
 	 * Gets result code
 	 * 
@@ -41,7 +33,7 @@ public interface DattyResult<O extends DattyOperation<O, ? extends DattyResult<O
 	/**
 	 * Result code enum
 	 * 
-	 * @author dadril
+	 * @author Alex Shvid
 	 *
 	 */
 	
@@ -51,9 +43,7 @@ public interface DattyResult<O extends DattyOperation<O, ? extends DattyResult<O
 		GET(2),
 		PUT(3),
 		COMPARE_AND_SET(4),
-		EXECUTE(5),
-		ERROR(6),
-		LONG(7);
+		EXECUTE(5);
 		
 		private final int rescode;
 		

@@ -13,17 +13,16 @@
  */
 package io.datty.api.operation;
 
-import io.datty.api.DattyOperation;
-import io.datty.api.DattyResult;
+import io.datty.api.result.TypedResult;
 
 /**
  * UpdateOperation
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 
-public interface UpdateOperation<O extends DattyOperation<O, R>, R extends DattyResult<O>> extends DattyOperation<O, R> {
+public interface UpdateOperation<O extends TypedOperation<O, R>, R extends TypedResult<O>> extends TypedOperation<O, R> {
 
 	/**
 	 * Gets TTL time to live in seconds

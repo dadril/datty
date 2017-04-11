@@ -22,7 +22,7 @@ import io.datty.api.result.ExistsResult;
 /**
  * Exists operation
  * 
- * @author dadril
+ * @author Alex Shvid
  *
  */
 
