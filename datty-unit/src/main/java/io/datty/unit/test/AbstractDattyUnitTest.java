@@ -25,6 +25,13 @@ import io.datty.unit.UnitPropertyKeys;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
+/**
+ * AbstractDattyUnitTest
+ * 
+ * @author Alex Shvid
+ *
+ */
+
 public abstract class AbstractDattyUnitTest {
 
 	static final String FACTORY_NAME = System.getProperty("datty.factory");

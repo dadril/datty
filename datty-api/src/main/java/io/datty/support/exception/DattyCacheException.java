@@ -13,6 +13,8 @@
  */
 package io.datty.support.exception;
 
+import io.datty.api.CacheError;
+
 /**
  * DattyCacheException
  * 
@@ -24,30 +26,23 @@ public class DattyCacheException extends DattyException {
 
 	private static final long serialVersionUID = 1918157804627815761L;
 
-	public enum CacheErrors {
-		
-		CACHE_EXISTS,
-		CACHE_MISTMATCH;
-		
-	}
-	
-	private final CacheErrors errors;
+	private final CacheError error;
 	private final String cacheName;
 	
-	public DattyCacheException(CacheErrors errors, String cacheName) {
-		super(errors.name() + ": " + cacheName);
-		this.errors = errors;
+	public DattyCacheException(CacheError error, String cacheName) {
+		super(error.name() + ": " + cacheName);
+		this.error = error;
 		this.cacheName = cacheName;
 	}
 
-	public DattyCacheException(CacheErrors errors, String cacheName, Throwable t) {
-		super(errors.name() + ": " + cacheName, t);
-		this.errors = errors;
+	public DattyCacheException(CacheError error, String cacheName, Throwable t) {
+		super(error.name() + ": " + cacheName, t);
+		this.error = error;
 		this.cacheName = cacheName;
 	}
 
-	public CacheErrors getErrors() {
-		return errors;
+	public CacheError getError() {
+		return error;
 	}
 
 	public String getCacheName() {

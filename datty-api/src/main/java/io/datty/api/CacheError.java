@@ -11,27 +11,51 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api.result;
-
-import io.datty.api.DattyResult;
-import io.datty.api.operation.TypedOperation;
+package io.datty.api;
 
 /**
- * TypedResult
+ * CacheError
+ * 
+ * Known cache errors
  * 
  * @author Alex Shvid
  *
- * @param <O> - datty operation type
  */
 
-public interface TypedResult<O extends TypedOperation<O, ? extends TypedResult<O>>> extends DattyResult {
-
-	/**
-	 * Gets operation associated with result
-	 * 
-	 * @return not null datty operation
-	 */
+public enum CacheError {
 	
-	O getOperation();
+	CACHE_EXISTS(1),
+	
+	CACHE_MISTMATCH(2);
+	
+	private final int code;
+	
+	private CacheError(int code) {
+		this.code = code;
+	}
+
+	public int getCode() {
+		return code;
+	}
+	
+	public static CacheError findByCode(int code) {
+		for (CacheError v : values()) {
+			if (v.getCode() == code) {
+				return v;
+			}
+		}
+		return null;
+	}
+	
+	public static int max() {
+		int max = Integer.MIN_VALUE;
+		for (CacheError v : values()) {
+			if (max < v.getCode()) {
+				max = v.getCode();
+			}
+		}
+		return max;
+	}
+	
 	
 }

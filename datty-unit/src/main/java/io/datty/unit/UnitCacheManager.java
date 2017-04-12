@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import io.datty.api.Cache;
+import io.datty.api.CacheError;
 import io.datty.api.CacheExistsAction;
 import io.datty.api.CacheManager;
 import io.datty.api.Datty;
@@ -27,7 +28,6 @@ import io.datty.spi.DattySingleDriver;
 import io.datty.spi.DattySingleProvider;
 import io.datty.spi.DattyStreamDriver;
 import io.datty.support.exception.DattyCacheException;
-import io.datty.support.exception.DattyCacheException.CacheErrors;
 
 /**
  * Unit implementation for Datty API
@@ -83,7 +83,7 @@ public class UnitCacheManager implements CacheManager {
 		
 		case CREATE_ONLY:
 			if (cache != null) {
-				throw new DattyCacheException(CacheErrors.CACHE_EXISTS, cacheName);
+				throw new DattyCacheException(CacheError.CACHE_EXISTS, cacheName);
 			}
 			break;
 		

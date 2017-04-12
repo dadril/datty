@@ -24,6 +24,13 @@ import io.netty.buffer.ByteBuf;
 import rx.Observable;
 import rx.Single;
 
+/**
+ * UnitDatty
+ * 
+ * @author Alex Shvid
+ *
+ */
+
 public class UnitDatty extends AbstractDattyAdapter implements Datty {
 
 	private final DattySingle single;

@@ -24,6 +24,13 @@ import io.datty.unit.executor.OperationExecutor;
 import io.datty.unit.executor.UnitExecutors;
 import rx.Single;
 
+/**
+ * UnitDattySingle
+ * 
+ * @author Alex Shvid
+ *
+ */
+
 public final class UnitDattySingle implements DattySingle {
 
 	private final ConcurrentMap<String, UnitCache> cacheMap;

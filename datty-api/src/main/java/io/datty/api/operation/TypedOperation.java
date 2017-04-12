@@ -17,6 +17,15 @@ import io.datty.api.DattyOperation;
 import io.datty.api.result.TypedResult;
 import rx.Single;
 
+/**
+ * TypedOperation
+ * 
+ * @author Alex Shvid
+ *
+ * @param <O> - datty operation type
+ * @param <R> - datty return type
+ */
+
 public interface TypedOperation<O extends TypedOperation<O, R>, R extends TypedResult<O>> extends DattyOperation {
 
 	/**

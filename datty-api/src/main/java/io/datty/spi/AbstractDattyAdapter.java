@@ -27,6 +27,15 @@ import rx.Single;
 import rx.functions.Func0;
 import rx.functions.Func1;
 
+/**
+ * AbstractDattyAdapter
+ * 
+ * Abstract adaptor class that is using DattySingle to execute batch and sequence operations
+ * 
+ * @author Alex Shvid
+ *
+ */
+
 public abstract class AbstractDattyAdapter implements Datty {
 	
 	@Override
