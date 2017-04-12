@@ -11,7 +11,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<slf4j.api.version>1.7.5</slf4j.api.version>
 		<netty.version>4.1.5.Final</netty.version>
-		<guava.version>19.0</guava.version>
 		<rxjava.version>1.2.2</rxjava.version>
 		<junit.version>4.11</junit.version>
 		<java.version>1.7</java.version>
@@ -20,6 +19,8 @@
 	<modules>
 		<module>datty-api</module>
 		<module>datty-unit</module>
+    <module>datty-aerospike</module>
+    <module>spring-data-datty</module>		
 	</modules>
 
 	<scm>

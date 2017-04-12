@@ -10,6 +10,10 @@
     <artifactId>datty-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
+  
+  <properties>
+    <guava.version>19.0</guava.version>
+  </properties>  
 
   <dependencies>
   
