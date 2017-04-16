@@ -45,14 +45,17 @@ public enum AerospikeExists implements AerospikeOperation<ExistsOperation, Exist
 		AerospikeCacheManager cacheManager = cache.getParent();
 		QueryPolicy queryPolicy = cache.getConfig().getQueryPolicy(operation.getTimeoutMillis());
 		Key recordKey = new Key(cacheManager.getConfig().getNamespace(), cache.getCacheName(), operation.getMajorKey());
+		Set<String> minorKeys = operation.getMinorKeys();
 		
 		Single<Record> result;
 		if (operation.isAllMinorKeys()) {
 			 result = cacheManager.getClient().get(queryPolicy, recordKey, cache.singleExceptionTransformer(operation));
 		}
-		else {
-			Set<String> minorKeys = operation.getMinorKeys();
-			String[] binNames = minorKeys.toArray(new String[minorKeys.size()]);
+		else if (minorKeys.isEmpty()) {
+			 result = cacheManager.getClient().getHeader(queryPolicy, recordKey, cache.singleExceptionTransformer(operation));
+		}
+		else {	
+			 String[] binNames = minorKeys.toArray(new String[minorKeys.size()]);
 			 result = cacheManager.getClient().get(queryPolicy, recordKey, binNames, cache.singleExceptionTransformer(operation));
 		}
 		
@@ -70,31 +73,35 @@ public enum AerospikeExists implements AerospikeOperation<ExistsOperation, Exist
 		
 		ExistsResult result = new ExistsResult();
 		
-		if (record != null) {
+		if (record == null) {
+			return result;
+		}
 			
-			result.setVersion(new LongVersion(record.generation));
+		result.setVersion(new LongVersion(record.generation));
 
-			if (operation.isAllMinorKeys()) {
+		if (record.bins == null) {
+			return result;
+		}
 				
-				for (Map.Entry<String, Object> e : record.bins.entrySet()) {
-					Object value = e.getValue();
-					if (value != null) {
-						result.addMinorKey(e.getKey());
-					}
+		if (operation.isAllMinorKeys()) {
+			
+			for (Map.Entry<String, Object> e : record.bins.entrySet()) {
+				Object value = e.getValue();
+				if (value != null) {
+					result.addMinorKey(e.getKey());
 				}
-				
 			}
-			else {
-				
-				for (String minorKey : operation.getMinorKeys()) {
-					Object value = record.bins.get(minorKey);
-					if (value != null) {
-						result.addMinorKey(minorKey);
-					}
+			
+		}
+		else if (!operation.getMinorKeys().isEmpty()) {
+			
+			for (String minorKey : operation.getMinorKeys()) {
+				Object value = record.bins.get(minorKey);
+				if (value != null) {
+					result.addMinorKey(minorKey);
 				}
-				
 			}
-		
+			
 		}
 		
 		return result;

@@ -42,9 +42,9 @@ public enum ExistsExecutor implements OperationExecutor<ExistsOperation, ExistsR
 			result.setVersion(record.getVersion());
 			
 			if (operation.isAllMinorKeys()) {
-				result.addMinorKeys(operation.getMinorKeys());
+				result.addMinorKeys(record.columnSet());
 			}
-			else {
+			else if (!operation.getMinorKeys().isEmpty()) {
 				for (String minorKey : operation.getMinorKeys()) {
 					if (record.hasColumn(minorKey)) {
 						result.addMinorKey(minorKey);

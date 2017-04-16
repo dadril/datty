@@ -14,6 +14,7 @@
 package io.datty.unit;
 
 import java.util.Map;
+import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -119,6 +120,10 @@ public final class UnitRecord {
 	
 	public Map<String, UnitValue> getColumnMap() {
 		return columnMap;
+	}
+	
+	public Set<String> columnSet() {
+		return columnMap.keySet();
 	}
 	
 	public boolean isEmpty() {

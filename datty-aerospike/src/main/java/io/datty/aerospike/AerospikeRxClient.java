@@ -126,6 +126,41 @@ public final class AerospikeRxClient {
 	 * 
 	 * @param queryPolicy - query policy
 	 * @param key - major key
+	 * @param exceptionTransformer - exception transformer
+	 * @return record or null
+	 */
+	
+	public Single<Record> getHeader(final QueryPolicy queryPolicy, final Key key, final ExceptionTransformer<?> exceptionTransformer) {
+		
+		return Single.<Record>create(new OnSubscribe<Record>() {
+
+			@Override
+			public void call(final SingleSubscriber<? super Record> subscriber) {
+
+				client.getHeader(queryPolicy, new RecordListener() {
+
+					@Override
+					public void onSuccess(Key key, Record record) {
+						subscriber.onSuccess(record);
+					}
+
+					@Override
+					public void onFailure(AerospikeException exception) {
+						subscriber.onError(exceptionTransformer.transformException(exception));
+					}
+					
+				}, key);
+
+			}
+			
+		});
+	}	
+	
+	/**
+	 * Gets record for the specific key and required bin names
+	 * 
+	 * @param queryPolicy - query policy
+	 * @param key - major key
 	 * @param binNames - bin names
 	 * @param exceptionTransformer - exception transformer
 	 * @return record or null
