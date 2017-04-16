@@ -11,31 +11,35 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.unit;
+package io.datty.aerospike;
+
+import java.util.Properties;
+
+import io.datty.api.CacheFactory;
+import io.datty.api.CacheManager;
+import io.datty.unit.UnitCacheManager;
 
 /**
- * Unit property keys
+ * AerospikeCacheFactory
  * 
  * @author Alex Shvid
  *
  */
 
-public final class UnitPropertyKeys {
+public class AerospikeCacheFactory implements CacheFactory {
 
-	private UnitPropertyKeys() {
+	@Override
+	public String getFactoryName() {
+		return "aerospike";
 	}
 
-	/**
-	 * CacheManager constants
-	 */
-	
-	public static final String NAME = "name";
+	@Override
+	public CacheManager newInstance(Properties props) {
+		return new UnitCacheManager(props);
+	}
 
-	/**
-	 * Cache constants
-	 */
-	
-	public static final String MAX_ENTRIES = "maxEntries";
-
-	public static final String TTL_SECONDS = "timeToLiveSeconds";
+	@Override
+	public String toString() {
+		return "AerospikeCacheFactory";
+	}
 }

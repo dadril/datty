@@ -16,6 +16,8 @@ package io.datty.api;
 /**
  * Datty key for streaming operations
  * 
+ * TTL is only for streamIn operation
+ * 
  * @author Alex Shvid
  *
  */
@@ -29,6 +31,8 @@ public final class DattyKey {
 	private String majorKey;
 	
 	private String minorKey;
+	
+	private int ttlSeconds = DattyConstants.UNSET_TTL;
 	
 	public DattyKey() {
 	}
@@ -90,6 +94,20 @@ public final class DattyKey {
 
 	public DattyKey setMinorKey(String minorKey) {
 		this.minorKey = minorKey;
+		return this;
+	}
+	
+	public int getTtlSeconds() {
+		return ttlSeconds;
+	}
+
+	public DattyKey setTtlSeconds(int ttlSeconds) {
+		this.ttlSeconds = ttlSeconds;
+		return this;
+	}
+	
+	public DattyKey withTimeToLive(int ttlSeconds) {
+		this.ttlSeconds = ttlSeconds;
 		return this;
 	}
 

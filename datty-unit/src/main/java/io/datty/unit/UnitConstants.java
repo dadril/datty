@@ -26,6 +26,12 @@ import io.netty.buffer.UnpooledByteBufAllocator;
 public class UnitConstants {
 
 	/**
+	 * Default name for the CacheManager
+	 */
+	
+	public static final String DEFAULT_NAME = "unit";
+	
+	/**
 	 * Default unit allocator
 	 */
 	

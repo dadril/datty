@@ -11,31 +11,31 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.unit;
+package io.datty.aerospike.executor;
+
+import io.datty.aerospike.AerospikeCache;
+import io.datty.api.operation.TypedOperation;
+import io.datty.api.result.TypedResult;
+import rx.Single;
 
 /**
- * Unit property keys
+ * OperationExecutor
  * 
  * @author Alex Shvid
  *
+ * @param <O> - operation type
+ * @param <R> - result type
  */
 
-public final class UnitPropertyKeys {
-
-	private UnitPropertyKeys() {
-	}
-
+public interface AerospikeOperation<O extends TypedOperation<O, R>, R extends TypedResult<O>> {
+	
 	/**
-	 * CacheManager constants
+	 * Executes operation
+	 * 
+	 * @param operation - datty operation
+	 * @return result
 	 */
 	
-	public static final String NAME = "name";
-
-	/**
-	 * Cache constants
-	 */
+	Single<R> execute(AerospikeCache cache, O operation);
 	
-	public static final String MAX_ENTRIES = "maxEntries";
-
-	public static final String TTL_SECONDS = "timeToLiveSeconds";
 }

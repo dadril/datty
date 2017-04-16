@@ -11,49 +11,59 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.unit;
+package io.datty.aerospike;
 
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import com.aerospike.client.AerospikeException;
+import com.aerospike.client.async.AsyncClient;
 
 import io.datty.api.Cache;
 import io.datty.api.CacheError;
 import io.datty.api.CacheExistsAction;
 import io.datty.api.CacheManager;
 import io.datty.api.Datty;
-import io.datty.api.DattySingle;
-import io.datty.api.DattyStream;
-import io.datty.spi.DattySingleDriver;
-import io.datty.spi.DattySingleProvider;
-import io.datty.spi.DattyStreamDriver;
 import io.datty.support.exception.DattyCacheException;
+import io.datty.support.exception.DattyFactoryException;
 
 /**
- * Unit implementation for Datty API
+ * AerospikeCacheManager
  * 
  * @author Alex Shvid
  *
  */
 
-public class UnitCacheManager implements CacheManager {
+public class AerospikeCacheManager implements CacheManager {
 
 	private final String name;
-	private final ConcurrentMap<String, UnitCache> cacheMap = new ConcurrentHashMap<String, UnitCache>();
+	private final AerospikeConfig config;
+	private final AerospikeRxClient client;
+	private final ConcurrentMap<String, AerospikeCache> cacheMap = new ConcurrentHashMap<String, AerospikeCache>();
 	private Datty currentDatty;
 	
-	public UnitCacheManager() {
+	public AerospikeCacheManager() {
 		this(new Properties());
 	}
 
-	public UnitCacheManager(Properties props) {
-		this.name = props.getProperty(UnitPropertyKeys.NAME, UnitConstants.DEFAULT_NAME);
+	public AerospikeCacheManager(Properties props) {
 		
-		DattySingle single = new DattySingleProvider(new DattySingleDriver(new UnitDattySingle(cacheMap)));
+		this.name = props.getProperty(AerospikePropertyKeys.NAME, AerospikeConstants.DEFAULT_NAME);
+		this.config = new AerospikeConfig(props);
+		this.client = new AerospikeRxClient(instantiateClient(this.config)); 
 		
-		DattyStream stream = new DattyStreamDriver(new UnitDattyStream(cacheMap));
+		AerospikeDattySingle dattySingle = new AerospikeDattySingle(this);
 		
-		this.currentDatty = new UnitDatty(single, stream);
+		this.currentDatty = null;
+	}
+	
+	public AerospikeConfig getConfig() {
+		return config;
+	}
+
+	public AerospikeRxClient getClient() {
+		return client;
 	}
 
 	@Override
@@ -65,19 +75,23 @@ public class UnitCacheManager implements CacheManager {
 	public Cache getCache(String cacheName) {
 		return cacheMap.get(cacheName);
 	}
-
-	private UnitCache createAndPut(String cacheName, Properties cacheProperties) {
-		UnitCache cache = new UnitCache(this, cacheName, cacheProperties);
-		UnitCache c = cacheMap.putIfAbsent(cacheName, cache);
+	
+	protected AerospikeCache getAerospikeCache(String cacheName) {
+		return cacheMap.get(cacheName);
+	}
+	
+	private AerospikeCache createAndPut(String cacheName, Properties cacheProperties) {
+		AerospikeCache cache = new AerospikeCache(this, cacheName, cacheProperties);
+		AerospikeCache c = cacheMap.putIfAbsent(cacheName, cache);
 		if (c != null) {
 			cache = c;
 		}
 		return cache;
 	}
-	
+
 	@Override
 	public Cache getCache(String cacheName, Properties cacheProperties, CacheExistsAction action) {
-		UnitCache cache = cacheMap.get(cacheName);
+		AerospikeCache cache = cacheMap.get(cacheName);
 		
 		switch(action) {
 		
@@ -106,7 +120,7 @@ public class UnitCacheManager implements CacheManager {
 
 		return cache;
 	}
-
+	
 	@Override
 	public Datty getDatty() {
 		return this.currentDatty;
@@ -122,9 +136,18 @@ public class UnitCacheManager implements CacheManager {
 		this.currentDatty = newDatty;
 	}
 
+	private AsyncClient instantiateClient(AerospikeConfig config) {
+		try {
+			return new AsyncClient(config.getClientPolicy(), config.getHosts());
+		}
+		catch(AerospikeException e) {
+			throw new DattyFactoryException("fail to instantiate aerospike instance: ", e);
+		}
+	}
+	
 	@Override
 	public String toString() {
-		return "UnitDatty [name=" + name + "]";
+		return "AerospikeCacheManager [name=" + name + "]";
 	}
-
+	
 }

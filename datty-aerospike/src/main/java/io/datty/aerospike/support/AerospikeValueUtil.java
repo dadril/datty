@@ -11,45 +11,40 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api.result;
+package io.datty.aerospike.support;
 
-import io.datty.api.operation.CompareAndSetOperation;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
- * CompareAndSetResult
+ * AerospikeValueUtil
  * 
  * @author Alex Shvid
  *
  */
 
-public final class CompareAndSetResult extends AbstractResult<CompareAndSetOperation, CompareAndSetResult> {
+public final class AerospikeValueUtil {
 
-	private boolean value;
+	private AerospikeValueUtil() {
+	}
 
-	public CompareAndSetResult() {
+	public static ByteBuf toByteBuf(Object value) {
+		if (value instanceof byte[]) {
+			return Unpooled.wrappedBuffer((byte[]) value);
+		}
+		else if (value instanceof String) {
+			return asByteBuf((String) value);
+		}
+		else {
+			return asByteBuf(value.toString());
+		}
 	}
 	
-	public CompareAndSetResult(boolean value) {
-		this.value = value;
-	}
-
-	public boolean get() {
-		return value;
-	}
-
-	public CompareAndSetResult set(boolean val) {
-		this.value = val;
-		return this;
-	}
-	
-	@Override
-	public ResCode getCode() {
-		return ResCode.COMPARE_AND_SET;
-	}
-
-	@Override
-	public String toString() {
-		return "CompareAndSetResult [value=" + value + "]";
+	public static ByteBuf asByteBuf(String str) {
+		return Unpooled.wrappedBuffer(str.getBytes(StandardCharsets.UTF_8));
 	}
 	
 }

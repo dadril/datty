@@ -11,31 +11,30 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.unit;
+package io.datty.aerospike;
 
 /**
- * Unit property keys
+ * AerospikeConstants
  * 
  * @author Alex Shvid
  *
  */
 
-public final class UnitPropertyKeys {
+public final class AerospikeConstants {
 
-	private UnitPropertyKeys() {
+	private AerospikeConstants() {
 	}
-
+	
 	/**
-	 * CacheManager constants
+	 * Default name for the CacheManager
 	 */
 	
-	public static final String NAME = "name";
-
-	/**
-	 * Cache constants
-	 */
+	public static final String DEFAULT_NAME = "aerospike";
 	
-	public static final String MAX_ENTRIES = "maxEntries";
-
-	public static final String TTL_SECONDS = "timeToLiveSeconds";
+	public static final String DEFAULT_NAMESPACE = "test";
+	
+	public static final int MAX_HOSTS = 100;
+	
+	public static final int DEFAULT_PORT = 3000;
+	
 }

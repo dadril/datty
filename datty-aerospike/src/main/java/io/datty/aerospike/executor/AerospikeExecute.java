@@ -11,31 +11,30 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.unit;
+package io.datty.aerospike.executor;
+
+import io.datty.aerospike.AerospikeCache;
+import io.datty.api.operation.ExecuteOperation;
+import io.datty.api.result.ExecuteResult;
+import rx.Single;
 
 /**
- * Unit property keys
+ * AerospikeExecute
  * 
  * @author Alex Shvid
  *
  */
 
-public final class UnitPropertyKeys {
+public enum AerospikeExecute implements AerospikeOperation<ExecuteOperation, ExecuteResult> {
 
-	private UnitPropertyKeys() {
+	INSTANCE;
+
+	@Override
+	public Single<ExecuteResult> execute(AerospikeCache cache, ExecuteOperation operation) {
+		
+		return Single.just(new ExecuteResult().set(operation.getArguments()));
+		
 	}
 
-	/**
-	 * CacheManager constants
-	 */
 	
-	public static final String NAME = "name";
-
-	/**
-	 * Cache constants
-	 */
-	
-	public static final String MAX_ENTRIES = "maxEntries";
-
-	public static final String TTL_SECONDS = "timeToLiveSeconds";
 }

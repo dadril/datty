@@ -11,31 +11,28 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.unit;
+package io.datty.aerospike.support;
+
+import com.aerospike.client.AerospikeException;
+
+import io.datty.support.exception.DattyException;
 
 /**
- * Unit property keys
+ * Transforms exception from Aerospike to DattyException
  * 
  * @author Alex Shvid
  *
  */
 
-public final class UnitPropertyKeys {
-
-	private UnitPropertyKeys() {
-	}
-
+public interface ExceptionTransformer<E extends DattyException> {
+	
 	/**
-	 * CacheManager constants
+	 * Transforms exception to a specific DattySingleException or DattyStreamException
+	 * 
+	 * @param e - aerospike exception
+	 * @return runtime exception
 	 */
 	
-	public static final String NAME = "name";
-
-	/**
-	 * Cache constants
-	 */
+	DattyException transformException(AerospikeException e);
 	
-	public static final String MAX_ENTRIES = "maxEntries";
-
-	public static final String TTL_SECONDS = "timeToLiveSeconds";
 }

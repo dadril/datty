@@ -52,6 +52,22 @@ public class DattyStreamException extends DattyException implements DattyError {
 		this.key = key;
 	}
 	
+	public DattyStreamException(DattyError.ErrCode errCode, String message, DattyKey key) {
+		super(errCode.name());
+		this.errorCode = errCode;
+		this.errorMessage = message;
+		this.errorStackTrace = null;
+		this.key = key;
+	}
+	
+	public DattyStreamException(DattyError.ErrCode errCode, String message, DattyKey key, Throwable t) {
+		super(errCode.name());
+		this.errorCode = errCode;
+		this.errorMessage = message;
+		this.errorStackTrace = getStackTrace(t);
+		this.key = key;
+	}
+	
 	@Override
 	public ErrCode getErrorCode() {
 		return errorCode;
