@@ -11,42 +11,39 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.unit;
+package io.datty.aerospike;
 
-import java.util.Properties;
-
-import io.datty.api.CacheFactory;
-import io.datty.api.CacheManager;
+import io.datty.api.DattyKey;
+import io.datty.api.DattyStream;
+import io.netty.buffer.ByteBuf;
+import rx.Observable;
+import rx.Single;
 
 /**
- * Simple factory for unit implementation
+ * AerospikeDattyStream
  * 
  * @author Alex Shvid
  *
  */
 
-public class UnitCacheFactory implements CacheFactory {
+public class AerospikeDattyStream implements DattyStream {
 
-	@Override
-	public String getFactoryName() {
-		return "unit";
-	}
-
-	@Override
-	public CacheManager newInstance(Properties props) {
-		return new UnitCacheManager(props);
-	}
-
-	@Override
-	public CacheManager newDefaultInstance() {
-		Properties props = new Properties();
-		props.setProperty(UnitPropertyKeys.NAME, UnitConstants.DEFAULT_NAME);
-		return new UnitCacheManager(props);
-	}
-
-	@Override
-	public String toString() {
-		return "UnitCacheFactory";
-	}
+	private final AerospikeCacheManager cacheManager;
 	
+	public AerospikeDattyStream(AerospikeCacheManager cacheManager) {
+		this.cacheManager = cacheManager;
+	}
+
+	@Override
+	public Observable<ByteBuf> streamOut(DattyKey key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Single<Long> streamIn(DattyKey key, Observable<ByteBuf> value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

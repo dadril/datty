@@ -17,6 +17,13 @@ import io.datty.api.operation.TypedOperation;
 import io.datty.api.result.TypedResult;
 import rx.Single;
 
+/**
+ * DattySingle
+ * 
+ * @author Alex Shvid
+ *
+ */
+
 public interface DattySingle {
 
 	/**

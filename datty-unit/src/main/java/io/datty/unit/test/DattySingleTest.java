@@ -139,6 +139,27 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 	}
 	
 	@Test
+	public void testReplaceNull() {
+		
+		String majorKey = UUID.randomUUID().toString();
+		
+		cache.put(majorKey).addValue(minorKey, value()).execute().toBlocking();
+		
+		GetResult result = cache.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
+		Assert.assertEquals(value(), result.get(minorKey));
+		
+		cache.put(majorKey).addValue(minorKey, null).withPolicy(UpdatePolicy.REPLACE).execute().toBlocking().value();
+		
+		boolean exists = cache.exists(majorKey).execute().toBlocking().value().exists();
+		Assert.assertFalse(exists);
+		
+		result = cache.get(majorKey).execute().toBlocking().value();
+		Assert.assertFalse(result.exists());
+		Assert.assertEquals(0, result.size());
+		
+	}
+	
+	@Test
 	public void testMergeEmpty() {
 		
 		String majorKey = UUID.randomUUID().toString();

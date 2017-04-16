@@ -25,6 +25,7 @@ import io.datty.api.CacheError;
 import io.datty.api.CacheExistsAction;
 import io.datty.api.CacheManager;
 import io.datty.api.Datty;
+import io.datty.spi.DattyDriver;
 import io.datty.support.exception.DattyCacheException;
 import io.datty.support.exception.DattyFactoryException;
 
@@ -40,13 +41,10 @@ public class AerospikeCacheManager implements CacheManager {
 	private final String name;
 	private final AerospikeConfig config;
 	private final AerospikeRxClient client;
+	private boolean unitEmulation;
 	private final ConcurrentMap<String, AerospikeCache> cacheMap = new ConcurrentHashMap<String, AerospikeCache>();
 	private Datty currentDatty;
 	
-	public AerospikeCacheManager() {
-		this(new Properties());
-	}
-
 	public AerospikeCacheManager(Properties props) {
 		
 		this.name = props.getProperty(AerospikePropertyKeys.NAME, AerospikeConstants.DEFAULT_NAME);
@@ -54,8 +52,9 @@ public class AerospikeCacheManager implements CacheManager {
 		this.client = new AerospikeRxClient(instantiateClient(this.config)); 
 		
 		AerospikeDattySingle dattySingle = new AerospikeDattySingle(this);
+		AerospikeDattyStream dattyStream = new AerospikeDattyStream(this);
 		
-		this.currentDatty = null;
+		this.currentDatty = new DattyDriver(dattySingle, dattyStream);
 	}
 	
 	public AerospikeConfig getConfig() {
@@ -64,6 +63,14 @@ public class AerospikeCacheManager implements CacheManager {
 
 	public AerospikeRxClient getClient() {
 		return client;
+	}
+
+	public boolean isUnitEmulation() {
+		return unitEmulation;
+	}
+
+	public void setUnitEmulation(boolean unitEmulation) {
+		this.unitEmulation = unitEmulation;
 	}
 
 	@Override

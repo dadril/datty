@@ -26,6 +26,12 @@ public final class AerospikePropertyKeys {
 	}
 
 	/**
+	 * CacheFactory constants
+	 */
+
+	public static final String AEROSPIKE_PREFIX = "aerospike.";
+	
+	/**
 	 * CacheManager constants
 	 */
 	
@@ -36,12 +42,10 @@ public final class AerospikePropertyKeys {
 	public static final String SHARED_THREAD_POOL = "sharedThreadPool";
 	
 	/**
-	 * Hosts
+	 * Servers
 	 */
 	
-	public static final String ENDPOINT_PREFIX = "endpoint";
-	public static final String HOST_SUFFIX = ".host";
-	public static final String PORT_SUFFIX = ".port";
+	public static final String SERVER_PREFIX = "server";
 	
 	/**
 	 * Client properties

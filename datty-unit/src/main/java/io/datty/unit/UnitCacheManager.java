@@ -24,6 +24,7 @@ import io.datty.api.CacheManager;
 import io.datty.api.Datty;
 import io.datty.api.DattySingle;
 import io.datty.api.DattyStream;
+import io.datty.spi.DattyDriver;
 import io.datty.spi.DattySingleDriver;
 import io.datty.spi.DattySingleProvider;
 import io.datty.spi.DattyStreamDriver;
@@ -50,10 +51,9 @@ public class UnitCacheManager implements CacheManager {
 		this.name = props.getProperty(UnitPropertyKeys.NAME, UnitConstants.DEFAULT_NAME);
 		
 		DattySingle single = new DattySingleProvider(new DattySingleDriver(new UnitDattySingle(cacheMap)));
-		
 		DattyStream stream = new DattyStreamDriver(new UnitDattyStream(cacheMap));
 		
-		this.currentDatty = new UnitDatty(single, stream);
+		this.currentDatty = new DattyDriver(single, stream);
 	}
 
 	@Override

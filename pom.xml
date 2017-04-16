@@ -29,6 +29,14 @@
 		<url>https://github.com/datty/datty-io.git</url>
 		<tag>HEAD</tag>
 	</scm>
+	
+  <developers>
+    <developer>
+      <id>alex</id>
+      <name>Alex Shvid</name>
+      <email>alex@datty.io</email>
+    </developer>
+  </developers>
 
 	<dependencyManagement>
 		<dependencies>

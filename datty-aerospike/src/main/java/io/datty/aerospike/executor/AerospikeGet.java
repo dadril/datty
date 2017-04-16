@@ -46,13 +46,16 @@ public enum AerospikeGet implements AerospikeOperation<GetOperation, GetResult> 
 		AerospikeCacheManager cacheManager = cache.getParent();
 		QueryPolicy queryPolicy = cache.getConfig().getQueryPolicy(operation.getTimeoutMillis());
 		Key recordKey = new Key(cacheManager.getConfig().getNamespace(), cache.getCacheName(), operation.getMajorKey());
+		Set<String> minorKeys = operation.getMinorKeys();
 		
 		Single<Record> result;
 		if (operation.isAllMinorKeys()) {
 			 result = cacheManager.getClient().get(queryPolicy, recordKey, cache.singleExceptionTransformer(operation));
 		}
+		else if (minorKeys.isEmpty()) {
+			 result = cacheManager.getClient().getHeader(queryPolicy, recordKey, cache.singleExceptionTransformer(operation));
+		}		
 		else {
-			Set<String> minorKeys = operation.getMinorKeys();
 			String[] binNames = minorKeys.toArray(new String[minorKeys.size()]);
 			 result = cacheManager.getClient().get(queryPolicy, recordKey, binNames, cache.singleExceptionTransformer(operation));
 		}

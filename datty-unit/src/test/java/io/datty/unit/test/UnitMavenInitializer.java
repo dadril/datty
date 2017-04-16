@@ -11,40 +11,22 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.aerospike;
+package io.datty.unit.test;
+
+import org.junit.runner.notification.RunListener;
 
 /**
- * AerospikeConstants
+ * UnitMavenInitializer
  * 
  * @author Alex Shvid
  *
  */
 
-public final class AerospikeConstants {
+public class UnitMavenInitializer extends RunListener {
 
-	private AerospikeConstants() {
+	static {
+		System.out.println("UnitMavenInitializer");
+		System.setProperty("datty.factory", "unit");
 	}
-	
-	/**
-	 * Default name for the CacheManager
-	 */
-	
-	public static final String DEFAULT_NAME = "aerospike";
-	
-	public static final String DEFAULT_NAMESPACE = "test";
-	
-	public static final int MAX_HOSTS = 100;
-	
-	public static final int DEFAULT_PORT = 3000;
-	
-	/**
-	 *  Unit LUA parameters
-	 */
-	
-	public static final String UDF_UNIT_SERVER_PATH = "unit.lua";
-	
-	public static final String UDF_UNIT_CLASSPATH = "udf/unit.lua";
-	
-	public static final String UDF_UNIT_LOOPBACK = "loopback";
 	
 }

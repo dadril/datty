@@ -41,14 +41,21 @@ public interface CacheFactory {
 	/**
 	 * Creates new instance of the datty store manager
 	 * 
-	 * @param props
-	 *            - not null props
-	 * @return not null instance
+	 * @param props - not null props
+	 * @return not null cache manager instance
 	 * @throws IOException
 	 */
 
 	CacheManager newInstance(Properties props);
 
+	/**
+	 * Created new instance of datty store manager for unit tests
+	 * 
+	 * @return not null cache manager instance
+	 */
+	
+	CacheManager newDefaultInstance();
+	
 	/**
 	 * Locator class to search and select factories
 	 * 

@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.unit;
+package io.datty.spi;
 
 import io.datty.api.Datty;
 import io.datty.api.DattyKey;
@@ -19,24 +19,23 @@ import io.datty.api.DattySingle;
 import io.datty.api.DattyStream;
 import io.datty.api.operation.TypedOperation;
 import io.datty.api.result.TypedResult;
-import io.datty.spi.AbstractDattyAdapter;
 import io.netty.buffer.ByteBuf;
 import rx.Observable;
 import rx.Single;
 
 /**
- * UnitDatty
+ * DattyDriver
  * 
  * @author Alex Shvid
  *
  */
 
-public class UnitDatty extends AbstractDattyAdapter implements Datty {
+public class DattyDriver extends AbstractDattyAdapter implements Datty {
 
 	private final DattySingle single;
 	private final DattyStream stream;
 	
-	public UnitDatty(DattySingle single, DattyStream stream) {
+	public DattyDriver(DattySingle single, DattyStream stream) {
 		this.single = single;
 		this.stream = stream;
 	}
@@ -55,5 +54,5 @@ public class UnitDatty extends AbstractDattyAdapter implements Datty {
 	public Single<Long> streamIn(DattyKey key, Observable<ByteBuf> value) {
 		return stream.streamIn(key, value);
 	}
-
+	
 }

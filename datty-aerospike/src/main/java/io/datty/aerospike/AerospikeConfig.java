@@ -47,6 +47,10 @@ public final class AerospikeConfig {
 		this.namespace = props.getProperty(AerospikePropertyKeys.NAMESPACE, AerospikeConstants.DEFAULT_NAMESPACE);
 		this.clientPolicy = createClientPolicy(props);
 		this.hosts = createHosts(props);
+		
+		if (this.hosts.isEmpty()) {
+			throw new IllegalArgumentException("hosts are empty, please define property server1 or system property aerospike.server1 for unit tests");
+		}
 	}
 
 	public String getNamespace() {
@@ -277,18 +281,21 @@ public final class AerospikeConfig {
 		
 		List<Host> list = new ArrayList<Host>();
 		
-		for (int i = 0; i != AerospikeConstants.MAX_HOSTS; ++i) {
+		for (int i = 1; i != AerospikeConstants.MAX_HOSTS; ++i) {
 			
-			String host = props.getProperty(AerospikePropertyKeys.ENDPOINT_PREFIX + i + AerospikePropertyKeys.HOST_SUFFIX);
-			String port = props.getProperty(AerospikePropertyKeys.ENDPOINT_PREFIX + i + AerospikePropertyKeys.PORT_SUFFIX);
+			String server = props.getProperty(AerospikePropertyKeys.SERVER_PREFIX + i);
 			
-			if (host == null) {
+			if (server == null) {
 				break;
 			}
-			
+
+			String host = server;
 			int portNumber = AerospikeConstants.DEFAULT_PORT;
-			if (port == null) {
-				portNumber = Integer.parseInt(port);
+			
+			int separatorIndex = server.indexOf(':');
+			if (separatorIndex != -1) {
+				host = server.substring(0, separatorIndex);
+				portNumber = Integer.parseInt(server.substring(separatorIndex+1));
 			}
 			
 			list.add(new Host(host, portNumber));

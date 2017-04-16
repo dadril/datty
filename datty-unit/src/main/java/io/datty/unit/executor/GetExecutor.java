@@ -51,7 +51,7 @@ public enum GetExecutor implements OperationExecutor<GetOperation, GetResult> {
 				}
 				
 			}
-			else {
+			else if (!operation.getMinorKeys().isEmpty()) {
 				
 				for (String minorKey : operation.getMinorKeys()) {
 					UnitValue value = record.getColumn(minorKey);

@@ -21,7 +21,6 @@ import io.datty.api.Cache;
 import io.datty.api.CacheExistsAction;
 import io.datty.api.CacheFactory;
 import io.datty.api.CacheManager;
-import io.datty.unit.UnitPropertyKeys;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -70,10 +69,7 @@ public abstract class AbstractDattyUnitTest {
 		
 		System.out.println("Init CacheFactory = " + cacheFactory.getFactoryName());
 		
-		Properties props = new Properties();
-		props.put(UnitPropertyKeys.NAME, "test");
-		
-		cacheManager = cacheFactory.newInstance(props);
+		cacheManager = cacheFactory.newDefaultInstance();
 		
 		cache = cacheManager.getCache(CACHE_NAME, new Properties(), CacheExistsAction.CREATE_IF_NOT_EXISTS);
 		
