@@ -19,7 +19,7 @@ import com.aerospike.client.policy.QueryPolicy;
 import com.aerospike.client.policy.RecordExistsAction;
 import com.aerospike.client.policy.WritePolicy;
 
-import io.datty.api.DattyConstants;
+import io.datty.api.DattyOperation;
 import io.datty.api.operation.UpdateOperation;
 
 /**
@@ -48,33 +48,24 @@ public final class AerospikeCacheConfig {
 		return cacheProperties;
 	}
 
-	public QueryPolicy getQueryPolicy() {
-		return queryPolicy;
+	public QueryPolicy getQueryPolicy(boolean copy) {
+		return copy ? AerospikeConfig.copyQueryPolicy(queryPolicy) : queryPolicy;
 	}
 	
-	public QueryPolicy getQueryPolicy(int timeoutMillis) {
-		if (timeoutMillis != DattyConstants.UNSET_TIMEOUT) {
+	public QueryPolicy getQueryPolicy(DattyOperation operation, boolean copy) {
+		if (operation.hasTimeoutMillis()) {
 			QueryPolicy newQueryPolicy = AerospikeConfig.copyQueryPolicy(queryPolicy);
-			newQueryPolicy.timeout = timeoutMillis;
+			newQueryPolicy.timeout = operation.getTimeoutMillis();
 			return newQueryPolicy;
 		}
-		return queryPolicy;
+		return getQueryPolicy(copy);
 	}
 
-	public WritePolicy getWritePolicy() {
-		return writePolicy;
+	public WritePolicy getWritePolicy(boolean copy) {
+		return copy ? new WritePolicy() : writePolicy;
 	}
 	
-	public WritePolicy getWritePolicy(int timeoutMillis, boolean copy) {
-		if (copy || timeoutMillis != DattyConstants.UNSET_TIMEOUT) {
-			WritePolicy newWritePolicy = new WritePolicy(writePolicy);
-			newWritePolicy.timeout = timeoutMillis;
-			return newWritePolicy;
-		}
-		return writePolicy;
-	}
-	
-	public WritePolicy getWritePolicy(UpdateOperation<?, ?> operation) {
+	public WritePolicy getWritePolicy(UpdateOperation<?, ?> operation, boolean copy) {
 		
 		WritePolicy newWritePolicy = new WritePolicy(writePolicy);
 		
@@ -89,14 +80,12 @@ public final class AerospikeCacheConfig {
 				break;
 	  }
 		
-		int ttlSeconds = operation.getTtlSeconds();
-		if (ttlSeconds != DattyConstants.UNSET_TTL) {
-			newWritePolicy.expiration = ttlSeconds;
+		if (operation.hasTtlSeconds()) {
+			newWritePolicy.expiration = operation.getTtlSeconds();
 		}
 		
-		int timeoutMillis = operation.getTimeoutMillis();
-		if (timeoutMillis != DattyConstants.UNSET_TIMEOUT) {
-			newWritePolicy.timeout = timeoutMillis;
+		if (operation.hasTimeoutMillis()) {
+			newWritePolicy.timeout = operation.getTimeoutMillis();
 		}
 		
 		return newWritePolicy;

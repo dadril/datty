@@ -14,9 +14,9 @@
 package io.datty.aerospike.support;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 import com.aerospike.client.Value;
+import com.aerospike.client.Value.ByteSegmentValue;
 import com.aerospike.client.Value.BytesValue;
 import com.aerospike.client.Value.NullValue;
 
@@ -53,52 +53,27 @@ public final class AerospikeValueUtil {
 	
 	public static Value toValue(ByteBuf bufferOrNull) {
 		
-		if (bufferOrNull != null) {
-			// send arguments as Bytes
-			return new BytesValue(arrayOf(bufferOrNull));
+		if (bufferOrNull == null) {
+			return new NullValue();
 		}
-		
-		return new NullValue();
-	}
-	
-	public static byte[] arrayOf(ByteBuf buffer) {
-		return toByteArray(buffer,  buffer.readerIndex(), buffer.readableBytes(), false);
-	}
-	
-	public static byte[] arrayOf(ByteBuf buffer, int start, int length) {
-		return toByteArray(buffer, start, length, false);
-	}
-	
-	public static byte[] toByteArray(ByteBuf buffer) {
-		return toByteArray(buffer, buffer.readerIndex(), buffer.readableBytes(), true);
-	}
-	
-	public static byte[] toByteArray(ByteBuf buffer, int start, int length, boolean copy) {
-
-		if (isOutOfBounds(start, length, buffer.capacity())) {
-			throw new IndexOutOfBoundsException("expected: " + "0 <= start(" + start + ") <= start + length(" + length
-					+ ") <= " + "buf.capacity(" + buffer.capacity() + ')');
-		}
-
-		if (buffer.hasArray()) {
-			if (copy || start != 0 || length != buffer.capacity()) {
-				int baseOffset = buffer.arrayOffset() + start;
-				return Arrays.copyOfRange(buffer.array(), baseOffset, baseOffset + length);
+		else if (bufferOrNull.hasArray()) {
+			int start = bufferOrNull.readerIndex();
+			int length = bufferOrNull.readableBytes();
+			if (start != 0 || length != bufferOrNull.capacity()) {
+				int baseOffset = bufferOrNull.arrayOffset() + start;
+				return new ByteSegmentValue(bufferOrNull.array(), baseOffset, baseOffset + length);
 			} else {
-				return buffer.array();
+				return new BytesValue(bufferOrNull.array());
 			}
 		}
-
-		byte[] v = new byte[length];
-		int readerIndex = buffer.readerIndex();
-		buffer.getBytes(start, v);
-		buffer.readerIndex(readerIndex);
-		return v;
-
-	}
-	
-	public static boolean isOutOfBounds(int index, int length, int capacity) {
-		return (index | length | (index + length) | (capacity - (index + length))) < 0;
+		else {
+			byte[] bytes = new byte[bufferOrNull.readableBytes()];
+			int readerIndex = bufferOrNull.readerIndex();
+			bufferOrNull.getBytes(readerIndex, bytes);
+			bufferOrNull.readerIndex(readerIndex);
+			return new BytesValue(bytes);
+		}
+		
 	}
 	
 }

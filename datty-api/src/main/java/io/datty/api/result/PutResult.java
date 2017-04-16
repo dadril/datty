@@ -24,9 +24,24 @@ import io.datty.api.operation.PutOperation;
 
 public class PutResult extends AbstractResult<PutOperation, PutResult> {
 
+	private long writtenBytes;
+	
 	public PutResult() {
 	}
 	
+	public PutResult(long writtenBytes) {
+		this.writtenBytes = writtenBytes;
+	}
+	
+	public long getWrittenBytes() {
+		return writtenBytes;
+	}
+
+	public PutResult setWrittenBytes(long writtenBytes) {
+		this.writtenBytes = writtenBytes;
+		return this;
+	}
+
 	@Override
 	public ResCode getCode() {
 		return ResCode.PUT;
@@ -34,7 +49,7 @@ public class PutResult extends AbstractResult<PutOperation, PutResult> {
 
 	@Override
 	public String toString() {
-		return "PutResult";
+		return "PutResult [writtenBytes=" + writtenBytes + "]";
 	}
 
 }

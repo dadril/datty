@@ -58,7 +58,7 @@ public class UnitDattyStream implements DattyStream {
 		
 		UnitRecord record = cache.getRecordMap().get(majorKey);
 		if (record == null) {
-			return Observable.just(null);
+			return Observable.empty();
 		}
 				
 		UnitValue value = record.getColumn(minorKey);

@@ -44,7 +44,7 @@ public enum AerospikeGet implements AerospikeOperation<GetOperation, GetResult> 
 	public Single<GetResult> execute(AerospikeCache cache, final GetOperation operation) {
 		
 		AerospikeCacheManager cacheManager = cache.getParent();
-		QueryPolicy queryPolicy = cache.getConfig().getQueryPolicy(operation.getTimeoutMillis());
+		QueryPolicy queryPolicy = cache.getConfig().getQueryPolicy(operation, false);
 		Key recordKey = new Key(cacheManager.getConfig().getNamespace(), cache.getCacheName(), operation.getMajorKey());
 		Set<String> minorKeys = operation.getMinorKeys();
 		

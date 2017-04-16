@@ -28,6 +28,8 @@ import com.aerospike.client.policy.QueryPolicy;
 import com.aerospike.client.policy.RecordExistsAction;
 import com.aerospike.client.policy.WritePolicy;
 
+import io.datty.support.exception.DattyFactoryException;
+
 /**
  * AerospikeConfig
  * 
@@ -49,7 +51,7 @@ public final class AerospikeConfig {
 		this.hosts = createHosts(props);
 		
 		if (this.hosts.isEmpty()) {
-			throw new IllegalArgumentException("hosts are empty, please define property server1 or system property aerospike.server1 for unit tests");
+			throw new DattyFactoryException("hosts are empty, please define property server1 or system property aerospike.server1 for unit tests");
 		}
 	}
 

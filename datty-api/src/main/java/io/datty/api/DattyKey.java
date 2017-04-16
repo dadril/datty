@@ -97,6 +97,10 @@ public final class DattyKey {
 		return this;
 	}
 	
+	public boolean hasTtlSeconds() {
+		return ttlSeconds != DattyConstants.UNSET_TTL;
+	}
+	
 	public int getTtlSeconds() {
 		return ttlSeconds;
 	}

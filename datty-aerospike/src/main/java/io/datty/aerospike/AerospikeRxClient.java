@@ -13,8 +13,9 @@
  */
 package io.datty.aerospike;
 
+import java.util.Enumeration;
+
 import com.aerospike.client.AerospikeException;
-import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
 import com.aerospike.client.Record;
 import com.aerospike.client.Value;
@@ -29,9 +30,11 @@ import com.aerospike.client.policy.WritePolicy;
 
 import io.datty.aerospike.support.ExceptionTransformer;
 import io.datty.support.exception.DattyException;
+import rx.Observable;
 import rx.Single;
 import rx.Single.OnSubscribe;
 import rx.SingleSubscriber;
+import rx.Subscriber;
 
 /**
  * AerospikeRxClient
@@ -158,6 +161,55 @@ public final class AerospikeRxClient {
 	}	
 	
 	/**
+	 * Gets records by using key as a stream until null
+	 * 
+	 * @param queryPolicy - query policy
+	 * @param key - major key
+	 * @param binNames - bin names
+	 * @param exceptionTransformer - exception transformer
+	 * @return record or null
+	 */
+	
+	public Observable<Record> streamGet(final QueryPolicy queryPolicy, final Enumeration<Key> keys, final String[] binNames, final ExceptionTransformer<?> exceptionTransformer) {
+		
+		return Observable.<Record>create(new Observable.OnSubscribe<Record>() {
+
+			@Override
+			public void call(final Subscriber<? super Record> subscriber) {
+				nextGet(queryPolicy, keys, binNames, exceptionTransformer, subscriber);
+			}
+
+			
+		});
+	}	
+	
+	private void nextGet(final QueryPolicy queryPolicy, final Enumeration<Key> keys, final String[] binNames,
+			final ExceptionTransformer<?> exceptionTransformer, final Subscriber<? super Record> subscriber) {
+		
+		Key key = keys.nextElement();
+		
+		client.get(queryPolicy, new RecordListener() {
+
+			@Override
+			public void onSuccess(Key key, Record record) {
+				if (record != null) {
+					subscriber.onNext(record);
+					nextGet(queryPolicy, keys, binNames, exceptionTransformer, subscriber); 
+				}
+				else {
+					subscriber.onCompleted();
+				}
+			}
+
+			@Override
+			public void onFailure(AerospikeException exception) {
+				subscriber.onError(exceptionTransformer.transformException(exception));
+			}
+			
+		}, key, binNames);
+	}
+	
+	/**
 	 * Gets record for the specific key and required bin names
 	 * 
 	 * @param queryPolicy - query policy
@@ -200,21 +252,21 @@ public final class AerospikeRxClient {
 	 * @param key - major key
 	 * @param bins - updating or replacing bins
 	 * @param exceptionTransformer - exception transformer
-	 * @return key if success
+	 * @return writtenBytes or null
 	 */
 	
-	public Single<Key> put(final WritePolicy writePolicy, final Key key, final Bin[] bins, final ExceptionTransformer<?> exceptionTransformer) {
+	public Single<Long> put(final WritePolicy writePolicy, final Key key, final AerospikeBins bins, final ExceptionTransformer<?> exceptionTransformer) {
 		
-		return Single.<Key>create(new OnSubscribe<Key>() {
+		return Single.<Long>create(new OnSubscribe<Long>() {
 
 			@Override
-			public void call(final SingleSubscriber<? super Key> subscriber) {
+			public void call(final SingleSubscriber<? super Long> subscriber) {
 				
 				client.put(writePolicy, new WriteListener() {
 
 					@Override
 					public void onSuccess(Key key) {
-						subscriber.onSuccess(key);
+						subscriber.onSuccess(bins.getWrittableBytes());
 					}
 
 					@Override
@@ -228,7 +280,7 @@ public final class AerospikeRxClient {
 						}
 					}
 					
-				}, key, bins);
+				}, key, bins.getBins());
 
 			}
 			

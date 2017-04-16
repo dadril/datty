@@ -50,8 +50,7 @@ public class DattyStreamTest extends AbstractDattyUnitTest {
 		Iterable<ByteBuf> iter = cacheManager.getDatty().streamOut(key).toBlocking().toIterable();
 		List<ByteBuf> list = Lists.newArrayList(iter);
 		
-		Assert.assertEquals(1, list.size());
-		Assert.assertNull(list.get(0));
+		Assert.assertEquals(0, list.size());
 		
 	}
 	

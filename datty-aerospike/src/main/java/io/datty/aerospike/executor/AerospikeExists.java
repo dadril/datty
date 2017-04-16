@@ -43,7 +43,7 @@ public enum AerospikeExists implements AerospikeOperation<ExistsOperation, Exist
 	public Single<ExistsResult> execute(AerospikeCache cache, final ExistsOperation operation) {
 		
 		AerospikeCacheManager cacheManager = cache.getParent();
-		QueryPolicy queryPolicy = cache.getConfig().getQueryPolicy(operation.getTimeoutMillis());
+		QueryPolicy queryPolicy = cache.getConfig().getQueryPolicy(operation, false);
 		Key recordKey = new Key(cacheManager.getConfig().getNamespace(), cache.getCacheName(), operation.getMajorKey());
 		Set<String> minorKeys = operation.getMinorKeys();
 		

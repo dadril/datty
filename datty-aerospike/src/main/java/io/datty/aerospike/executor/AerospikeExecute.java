@@ -46,7 +46,7 @@ public enum AerospikeExecute implements AerospikeOperation<ExecuteOperation, Exe
 		}
 		
 		AerospikeCacheManager cacheManager = cache.getParent();
-		WritePolicy writePolicy = cache.getConfig().getWritePolicy(operation);
+		WritePolicy writePolicy = cache.getConfig().getWritePolicy(operation, false);
 		Key recordKey = new Key(cacheManager.getConfig().getNamespace(), cache.getCacheName(), operation.getMajorKey());
 		Value arguments = AerospikeValueUtil.toValue(operation.getArguments());
 		
