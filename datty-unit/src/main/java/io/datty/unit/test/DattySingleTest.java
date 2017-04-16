@@ -122,7 +122,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 		String majorKey = UUID.randomUUID().toString();
 		
-		cache.put(majorKey).addValue(minorKey, value()).execute().toBlocking();
+		cache.put(majorKey).addValue(minorKey, value()).execute().toBlocking().value();
 		
 		GetResult result = cache.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
 		Assert.assertEquals(value(), result.get(minorKey));
@@ -143,7 +143,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 		String majorKey = UUID.randomUUID().toString();
 		
-		cache.put(majorKey).addValue(minorKey, value()).execute().toBlocking();
+		cache.put(majorKey).addValue(minorKey, value()).execute().toBlocking().value();
 		
 		GetResult result = cache.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
 		Assert.assertEquals(value(), result.get(minorKey));
@@ -164,7 +164,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 		String majorKey = UUID.randomUUID().toString();
 		
-		cache.put(majorKey).addValue(minorKey, value()).execute().toBlocking();
+		cache.put(majorKey).addValue(minorKey, value()).execute().toBlocking().value();
 		
 		GetResult result = cache.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
 		Assert.assertEquals(value(), result.get(minorKey));
@@ -186,11 +186,11 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 		String majorKey = UUID.randomUUID().toString();
 		
-		cache.put(majorKey).addValue(minorKey, value()).execute().toBlocking();
-		
+		cache.put(majorKey).addValue(minorKey, value()).execute().toBlocking().value();
+
 		GetResult result = cache.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
 		Assert.assertEquals(value(), result.get(minorKey));
-		
+
 		cache.put(majorKey).addValue(minorKey, null).withPolicy(UpdatePolicy.MERGE).execute().toBlocking().value();
 		
 		boolean exists = cache.exists(majorKey).allMinorKeys().execute().toBlocking().value().exists();
@@ -207,7 +207,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 		String majorKey = UUID.randomUUID().toString();
 		
-		boolean updated = cache.compareAndSet(majorKey).addValue(majorKey, value()).withVersion(null).execute().toBlocking().value().get();
+		boolean updated = cache.compareAndSet(majorKey).addValue(minorKey, value()).withVersion(null).execute().toBlocking().value().get();
 		Assert.assertTrue(updated);
 		
 		boolean exists = cache.exists(majorKey).allMinorKeys().execute().toBlocking().value().exists();
@@ -220,7 +220,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 		String majorKey = UUID.randomUUID().toString();
 
-		cache.put(majorKey).addValue(minorKey, value()).execute().toBlocking();
+		cache.put(majorKey).addValue(minorKey, value()).execute().toBlocking().value();
 		
 		GetResult result = cache.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
 		

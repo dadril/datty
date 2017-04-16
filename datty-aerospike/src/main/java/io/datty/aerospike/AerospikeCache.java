@@ -120,7 +120,7 @@ public class AerospikeCache implements Cache {
 		return "AerospikeCache [name=" + cacheName + "]";
 	}
 	
-	public ExceptionTransformer<DattySingleException> singleExceptionTransformer(final DattyOperation operation) {
+	public ExceptionTransformer<DattySingleException> singleExceptionTransformer(final DattyOperation operation, final boolean filterConcurrent) {
 		return new ExceptionTransformer<DattySingleException>() {
 
 			@Override
@@ -132,10 +132,10 @@ public class AerospikeCache implements Cache {
 					return new DattySingleException(DattyError.ErrCode.TIMEOUT, operation, e);
 				
 				case ResultCode.GENERATION_ERROR:
-					return new DattySingleException(DattyError.ErrCode.CONCURRENT_UPDATE, operation, e);
+					return filterConcurrent ? null : new DattySingleException(DattyError.ErrCode.CONCURRENT_UPDATE, operation, e);
 					
 				default:
-					return new DattySingleException(DattyError.ErrCode.CONCURRENT_UPDATE, "aerospike error: " + e.getResultCode(), operation, e);
+					return new DattySingleException(DattyError.ErrCode.UNKNOWN, "aerospike error: " + ResultCode.getResultString(e.getResultCode()), operation, e);
 				}
 			}
 			
@@ -157,7 +157,7 @@ public class AerospikeCache implements Cache {
 					return new DattyStreamException(DattyError.ErrCode.CONCURRENT_UPDATE, key, e);
 					
 				default:
-					return new DattyStreamException(DattyError.ErrCode.CONCURRENT_UPDATE, "aerospike error: " + e.getResultCode(), key, e);
+					return new DattyStreamException(DattyError.ErrCode.UNKNOWN, "aerospike error: " + ResultCode.getResultString(e.getResultCode()), key, e);
 				}
 			}
 			

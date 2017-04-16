@@ -51,9 +51,9 @@ public interface DattyOperation {
 	String getMajorKey();
 	
 	/**
-	 * Returns true is defined timeout millis
+	 * Returns true if defined timeout millis
 	 * 
-	 * @return true if has timeout millis
+	 * @return flag
 	 */
 	
 	boolean hasTimeoutMillis();

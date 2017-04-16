@@ -17,14 +17,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.datty.api.UpdatePolicy;
 import io.datty.api.result.CompareAndSetResult;
 import io.netty.buffer.ByteBuf;
 
 /**
  * CompareAndSetOperation
- * 
- * Compare And Set Operation
  * 
  * @author Alex Shvid
  *
@@ -42,8 +39,6 @@ public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSe
 	 * Key is the minorKey, value is payload
 	 */
 	private Map<String, ByteBuf> newValues = null;
-	
-	private UpdatePolicy updatePolicy = UpdatePolicy.MERGE;
 
 	public CompareAndSetOperation(String cacheName) {
 		super(cacheName);
@@ -87,20 +82,6 @@ public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSe
 	
 	public Map<String, ByteBuf> getValues() {
 		return newValues != null ? newValues : Collections.<String, ByteBuf>emptyMap();
-	}
-
-	public UpdatePolicy getUpdatePolicy() {
-		return updatePolicy;
-	}
-
-	public CompareAndSetOperation setUpdatePolicy(UpdatePolicy updatePolicy) {
-		this.updatePolicy = updatePolicy;
-		return this;
-	}
-	
-	public CompareAndSetOperation withPolicy(UpdatePolicy updatePolicy) {
-		this.updatePolicy = updatePolicy;
-		return this;
 	}
 
 	@Override

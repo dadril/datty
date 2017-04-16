@@ -13,6 +13,7 @@
  */
 package io.datty.api.operation;
 
+import io.datty.api.UpdatePolicy;
 import io.datty.api.result.TypedResult;
 
 /**
@@ -24,6 +25,22 @@ import io.datty.api.result.TypedResult;
 
 public interface UpdateOperation<O extends TypedOperation<O, R>, R extends TypedResult<O>> extends TypedOperation<O, R> {
 
+	/**
+	 * Gets update policy
+	 * 
+	 * @return not null update policy
+	 */
+	
+	UpdatePolicy getUpdatePolicy();
+	
+	/**
+	 * Returns true if defined time to live in seconds
+	 * 
+	 * @return flag 
+	 */
+	
+	boolean hasTtlSeconds();
+	
 	/**
 	 * Gets TTL time to live in seconds
 	 * 

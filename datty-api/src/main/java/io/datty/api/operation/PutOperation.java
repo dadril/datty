@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.datty.api.UpdatePolicy;
 import io.datty.api.result.PutResult;
 import io.netty.buffer.ByteBuf;
 
@@ -34,8 +33,6 @@ public class PutOperation extends AbstractUpdateOperation<PutOperation, PutResul
 	 * Key is the minorKey, value is payload
 	 */
 	private Map<String, ByteBuf> newValues;
-	
-	private UpdatePolicy updatePolicy = UpdatePolicy.MERGE;
 	
 	public PutOperation(String storeName) {
 		super(storeName);
@@ -74,20 +71,6 @@ public class PutOperation extends AbstractUpdateOperation<PutOperation, PutResul
 
 	public Map<String, ByteBuf> getValues() {
 		return newValues != null ? newValues : Collections.<String, ByteBuf>emptyMap();
-	}
-
-	public UpdatePolicy getUpdatePolicy() {
-		return updatePolicy;
-	}
-
-	public PutOperation setUpdatePolicy(UpdatePolicy updatePolicy) {
-		this.updatePolicy = updatePolicy;
-		return this;
-	}
-	
-	public PutOperation withPolicy(UpdatePolicy updatePolicy) {
-		this.updatePolicy = updatePolicy;
-		return this;
 	}
 	
 	@Override

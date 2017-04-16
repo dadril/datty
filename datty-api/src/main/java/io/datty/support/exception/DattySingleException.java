@@ -45,7 +45,7 @@ public class DattySingleException extends DattyException implements DattyError {
 	}
 	
 	public DattySingleException(DattyError.ErrCode errCode, DattyOperation operation, Throwable t) {
-		super(errCode.name());
+		super(errCode.name(), t);
 		this.errorCode = errCode;
 		this.errorMessage = t.getMessage();
 		this.errorStackTrace = getStackTrace(t);
@@ -61,7 +61,7 @@ public class DattySingleException extends DattyException implements DattyError {
 	}
 	
 	public DattySingleException(DattyError.ErrCode errCode, String message, DattyOperation operation, Throwable t) {
-		super(message);
+		super(message, t);
 		this.errorCode = errCode;
 		this.errorMessage = message;
 		this.errorStackTrace = getStackTrace(t);

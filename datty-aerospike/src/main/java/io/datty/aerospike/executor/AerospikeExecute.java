@@ -46,14 +46,14 @@ public enum AerospikeExecute implements AerospikeOperation<ExecuteOperation, Exe
 		}
 		
 		AerospikeCacheManager cacheManager = cache.getParent();
-		WritePolicy writePolicy = cache.getConfig().getWritePolicy(operation.getTtlSeconds(), operation.getTimeoutMillis());
+		WritePolicy writePolicy = cache.getConfig().getWritePolicy(operation);
 		Key recordKey = new Key(cacheManager.getConfig().getNamespace(), cache.getCacheName(), operation.getMajorKey());
 		Value arguments = AerospikeValueUtil.toValue(operation.getArguments());
 		
 		Single<Object> result = cacheManager.getClient().execute(writePolicy, recordKey, 
 				operation.getPackageName(), operation.getFunctionName(), 
 				new Value[] { arguments },
-				cache.singleExceptionTransformer(operation));
+				cache.singleExceptionTransformer(operation, false));
 		
 		return result.map(new Func1<Object, ExecuteResult>() {
 

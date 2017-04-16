@@ -16,9 +16,11 @@ package io.datty.aerospike;
 import java.util.Properties;
 
 import com.aerospike.client.policy.QueryPolicy;
+import com.aerospike.client.policy.RecordExistsAction;
 import com.aerospike.client.policy.WritePolicy;
 
 import io.datty.api.DattyConstants;
+import io.datty.api.operation.UpdateOperation;
 
 /**
  * AerospikeCacheConfig
@@ -63,8 +65,8 @@ public final class AerospikeCacheConfig {
 		return writePolicy;
 	}
 	
-	public WritePolicy getWritePolicy(int timeoutMillis) {
-		if (timeoutMillis != DattyConstants.UNSET_TIMEOUT) {
+	public WritePolicy getWritePolicy(int timeoutMillis, boolean copy) {
+		if (copy || timeoutMillis != DattyConstants.UNSET_TIMEOUT) {
 			WritePolicy newWritePolicy = new WritePolicy(writePolicy);
 			newWritePolicy.timeout = timeoutMillis;
 			return newWritePolicy;
@@ -72,18 +74,32 @@ public final class AerospikeCacheConfig {
 		return writePolicy;
 	}
 	
-	public WritePolicy getWritePolicy(int ttlSeconds, int timeoutMillis) {
-		if (ttlSeconds != DattyConstants.UNSET_TTL || timeoutMillis != DattyConstants.UNSET_TIMEOUT) {
-			WritePolicy newWritePolicy = new WritePolicy(writePolicy);
-			if (ttlSeconds != DattyConstants.UNSET_TTL) {
-				newWritePolicy.expiration = ttlSeconds;
-			}
-			if (timeoutMillis != DattyConstants.UNSET_TIMEOUT) {
-				newWritePolicy.timeout = timeoutMillis;
-			}
-			return newWritePolicy;
+	public WritePolicy getWritePolicy(UpdateOperation<?, ?> operation) {
+		
+		WritePolicy newWritePolicy = new WritePolicy(writePolicy);
+		
+		switch(operation.getUpdatePolicy()) {
+		
+			case MERGE:
+				writePolicy.recordExistsAction = RecordExistsAction.UPDATE;
+				break;
+				
+			case REPLACE:
+				writePolicy.recordExistsAction = RecordExistsAction.REPLACE;
+				break;
+	  }
+		
+		int ttlSeconds = operation.getTtlSeconds();
+		if (ttlSeconds != DattyConstants.UNSET_TTL) {
+			newWritePolicy.expiration = ttlSeconds;
 		}
-		return writePolicy;
+		
+		int timeoutMillis = operation.getTimeoutMillis();
+		if (timeoutMillis != DattyConstants.UNSET_TIMEOUT) {
+			newWritePolicy.timeout = timeoutMillis;
+		}
+		
+		return newWritePolicy;
 	}
 
 	public AerospikeConfig getParent() {

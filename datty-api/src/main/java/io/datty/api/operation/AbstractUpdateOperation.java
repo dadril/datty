@@ -14,10 +14,11 @@
 package io.datty.api.operation;
 
 import io.datty.api.DattyConstants;
+import io.datty.api.UpdatePolicy;
 import io.datty.api.result.TypedResult;
 
 /**
- * Abstract update operation
+ * AbstractUpdateOperation
  * 
  * @author Alex Shvid
  *
@@ -26,7 +27,8 @@ import io.datty.api.result.TypedResult;
 public abstract class AbstractUpdateOperation<O extends TypedOperation<O, R>, R extends TypedResult<O>> 
 	extends AbstractOperation<O, R> implements UpdateOperation<O, R> {
 
-	private int ttlSeconds = DattyConstants.UNSET_TTL;
+	protected int ttlSeconds = DattyConstants.UNSET_TTL;
+	protected UpdatePolicy updatePolicy = UpdatePolicy.MERGE;
 	
 	public AbstractUpdateOperation(String cacheName) {
 		super(cacheName);
@@ -35,7 +37,12 @@ public abstract class AbstractUpdateOperation<O extends TypedOperation<O, R>, R 
 	public AbstractUpdateOperation(String cacheName, String majorKey) {
 		super(cacheName, majorKey);
 	}
-	
+
+	@Override
+	public boolean hasTtlSeconds() {
+		return ttlSeconds != DattyConstants.UNSET_TTL;
+	}
+
 	@Override
 	public int getTtlSeconds() {
 		return ttlSeconds;
@@ -48,6 +55,21 @@ public abstract class AbstractUpdateOperation<O extends TypedOperation<O, R>, R 
 	
 	public O withTimeToLive(int ttlSeconds) {
 		this.ttlSeconds = ttlSeconds;
+		return castThis();
+	}
+	
+	@Override
+	public UpdatePolicy getUpdatePolicy() {
+		return updatePolicy;
+	}
+
+	public O setUpdatePolicy(UpdatePolicy updatePolicy) {
+		this.updatePolicy = updatePolicy;
+		return castThis();
+	}
+	
+	public O withPolicy(UpdatePolicy updatePolicy) {
+		this.updatePolicy = updatePolicy;
 		return castThis();
 	}
 	

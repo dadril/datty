@@ -28,6 +28,7 @@ import com.aerospike.client.policy.QueryPolicy;
 import com.aerospike.client.policy.WritePolicy;
 
 import io.datty.aerospike.support.ExceptionTransformer;
+import io.datty.support.exception.DattyException;
 import rx.Single;
 import rx.Single.OnSubscribe;
 import rx.SingleSubscriber;
@@ -218,7 +219,13 @@ public final class AerospikeRxClient {
 
 					@Override
 					public void onFailure(AerospikeException exception) {
-						subscriber.onError(exceptionTransformer.transformException(exception));
+						DattyException e = exceptionTransformer.transformException(exception);
+						if (e != null) {
+							subscriber.onError(e);
+						}
+						else {
+							subscriber.onSuccess(null);
+						}
 					}
 					
 				}, key, bins);
@@ -249,12 +256,18 @@ public final class AerospikeRxClient {
 
 					@Override
 					public void onSuccess(Key key, boolean existed) {
-						subscriber.onSuccess(existed);
+						subscriber.onSuccess(true);
 					}
 
 					@Override
 					public void onFailure(AerospikeException exception) {
-						subscriber.onError(exceptionTransformer.transformException(exception));
+						DattyException e = exceptionTransformer.transformException(exception);
+						if (e != null) {
+							subscriber.onError(e);
+						}
+						else {
+							subscriber.onSuccess(false);
+						}
 					}
 					
 				}, key);
