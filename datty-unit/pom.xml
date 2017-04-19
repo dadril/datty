@@ -15,6 +15,14 @@
 		<guava.version>19.0</guava.version>
 	</properties>
 
+  <developers>
+    <developer>
+      <id>alex</id>
+      <name>Alex Shvid</name>
+      <email>alex@datty.io</email>
+    </developer>
+  </developers>
+
 	<dependencies>
 
 		<dependency>

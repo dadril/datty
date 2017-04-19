@@ -38,6 +38,28 @@
     </developer>
   </developers>
 
+  <repositories>
+    <repository>
+      <id>spring-libs-milestone</id>
+      <url>https://repo.spring.io/libs-milestone</url>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>spring-plugins-release</id>
+      <url>https://repo.spring.io/plugins-release</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+
+ <!--  <repositories>
+     <repository>
+       <id>alfresco</id>
+       <url>https://artifacts.alfresco.com/nexus/content/repositories/public/</url>
+     </repository>
+   </repositories>   -->  
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>datty-aerospike</artifactId>
+	<artifactId>datty-redis</artifactId>
 	<packaging>jar</packaging>
 	
 	<parent>
@@ -12,7 +12,7 @@
   </parent>
 
   <properties>
-    <aerospike.version>3.1.9</aerospike.version>
+    <lettuce.version>4.3.1.Final</lettuce.version>
   </properties>  
 
   <developers>
@@ -22,7 +22,7 @@
       <email>alex@datty.io</email>
     </developer>
   </developers>
-  
+
   <dependencies>
   
     <dependency>
@@ -45,11 +45,11 @@
     
     <!-- VENDOR -->   
   
-    <dependency>
-      <groupId>com.aerospike</groupId>
-      <artifactId>aerospike-client</artifactId>
-      <version>${aerospike.version}</version>
-    </dependency>      
+		<dependency>
+		  <groupId>biz.paluch.redis</groupId>
+		  <artifactId>lettuce</artifactId>
+		  <version>${lettuce.version}</version>
+		</dependency>    
         
     <!-- TEST -->
     <dependency>
@@ -72,7 +72,7 @@
             <properties>
               <property>
                 <name>listener</name>
-                <value>io.datty.aerospike.test.AerospikeMavenInitializer</value>
+                <value>io.datty.redis.test.RedisMavenInitializer</value>
               </property>
             </properties>               
         </configuration>        

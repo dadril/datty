@@ -11,35 +11,19 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.spring.repository;
 
-import io.datty.api.operation.TypedOperation;
-import io.datty.api.result.TypedResult;
-import rx.Single;
+import org.springframework.data.repository.reactive.RxJava1CrudRepository;
+
+import io.datty.spring.core.DattyId;
 
 /**
- * DattySingle
+ * DattyRepository
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattySingle {
+public interface DattyRepository<T> extends RxJava1CrudRepository<T, DattyId> {
 
-	/**
-	 * Executes single datty operation
-	 * 
-	 * @param operation - not null datty operation
-	 */
-
-	<O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(O operation);
-	
-	/**
-	 * Executes single datty operation
-	 * 
-	 * @param operation - not null datty operation single
-	 */
-
-	//<O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(Single<O> operation);
-	
 }

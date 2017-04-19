@@ -12,9 +12,17 @@
   </parent>
 
   <properties>
-    <spring.version>3.1.1.RELEASE</spring.version>  
-    <springdata.commons>1.6.5.RELEASE</springdata.commons>
+    <spring.version>5.0.0.M5</spring.version>  
+    <spring-data.version>2.0.0.M2</spring-data.version>
   </properties>  
+  
+  <developers>
+    <developer>
+      <id>alex</id>
+      <name>Alex Shvid</name>
+      <email>alex@datty.io</email>
+    </developer>
+  </developers>  
 
   <dependencies>
   
@@ -28,6 +36,40 @@
       <artifactId>datty-api</artifactId>
       <version>${project.version}</version>    
     </dependency>
+        
+    <!-- SPRING -->     
+   
+	  <dependency>
+	    <groupId>org.springframework</groupId>
+	    <artifactId>spring-context</artifactId>
+	    <version>${spring.version}</version>
+	  </dependency>   
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>${spring.version}</version>
+    </dependency>   
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+      <version>${spring.version}</version>
+    </dependency>   
+        
+    <!-- SPRING DATA -->    
+        
+	  <dependency>
+	    <groupId>org.springframework.data</groupId>
+	    <artifactId>spring-data-commons</artifactId>
+	    <version>${spring-data.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>jcl-over-slf4j</artifactId>
+        </exclusion>
+      </exclusions>	    
+	  </dependency>        
         
     <!-- TEST -->
     <dependency>

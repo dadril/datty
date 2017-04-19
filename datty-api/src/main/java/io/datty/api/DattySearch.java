@@ -13,33 +13,24 @@
  */
 package io.datty.api;
 
-import io.datty.api.operation.TypedOperation;
-import io.datty.api.result.TypedResult;
-import rx.Single;
+import rx.Observable;
 
 /**
- * DattySingle
+ * DattySearch
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattySingle {
+public interface DattySearch {
 
 	/**
-	 * Executes single datty operation
+	 * Searches data by using query
 	 * 
-	 * @param operation - not null datty operation
+	 * @param query - datty query
+	 * @return not null observable of results
 	 */
-
-	<O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(O operation);
 	
-	/**
-	 * Executes single datty operation
-	 * 
-	 * @param operation - not null datty operation single
-	 */
-
-	//<O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(Single<O> operation);
+	Observable<DattyResult> search(DattyQuery query);
 	
 }

@@ -11,35 +11,19 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.spring.convert;
 
-import io.datty.api.operation.TypedOperation;
-import io.datty.api.result.TypedResult;
-import rx.Single;
+import org.springframework.data.convert.EntityWriter;
+
+import io.netty.buffer.ByteBuf;
 
 /**
- * DattySingle
+ * DattyWriter
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattySingle {
+public interface DattyWriter<T> extends EntityWriter<T, ByteBuf> {
 
-	/**
-	 * Executes single datty operation
-	 * 
-	 * @param operation - not null datty operation
-	 */
-
-	<O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(O operation);
-	
-	/**
-	 * Executes single datty operation
-	 * 
-	 * @param operation - not null datty operation single
-	 */
-
-	//<O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(Single<O> operation);
-	
 }

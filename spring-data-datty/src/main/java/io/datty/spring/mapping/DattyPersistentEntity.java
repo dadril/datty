@@ -11,35 +11,41 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.spring.mapping;
 
-import io.datty.api.operation.TypedOperation;
-import io.datty.api.result.TypedResult;
-import rx.Single;
+import org.springframework.data.mapping.PersistentEntity;
 
 /**
- * DattySingle
+ * DattyPersistentEntity
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattySingle {
+public interface DattyPersistentEntity<T> extends PersistentEntity<T, DattyPersistentProperty> {
 
 	/**
-	 * Executes single datty operation
+	 * Gets the cache name defined in entity
 	 * 
-	 * @param operation - not null datty operation
+	 * @return not null cache name
 	 */
-
-	<O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(O operation);
+	
+	String getCacheName();
 	
 	/**
-	 * Executes single datty operation
+	 * Gets time to live in seconds if defined
 	 * 
-	 * @param operation - not null datty operation single
+	 * @return ttl or 0
 	 */
-
-	//<O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(Single<O> operation);
+	
+	int ttlSeconds();
+	
+	/**
+	 * Gets timeout in milliseconds if defined
+	 * 
+	 * @return timeout or 0
+	 */
+	
+	int timeoutMillis();
 	
 }

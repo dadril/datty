@@ -11,35 +11,18 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
-
-import io.datty.api.operation.TypedOperation;
-import io.datty.api.result.TypedResult;
-import rx.Single;
+package io.datty.spring;
 
 /**
- * DattySingle
+ * DattySpringConstants
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattySingle {
+public final class DattySpringConstants {
 
-	/**
-	 * Executes single datty operation
-	 * 
-	 * @param operation - not null datty operation
-	 */
-
-	<O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(O operation);
-	
-	/**
-	 * Executes single datty operation
-	 * 
-	 * @param operation - not null datty operation single
-	 */
-
-	//<O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(Single<O> operation);
+	private DattySpringConstants() {
+	}
 	
 }
