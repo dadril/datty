@@ -17,6 +17,7 @@
 	</properties>
 
 	<modules>
+    <module>msgpack-buffer</module>	
 		<module>datty-api</module>
 		<module>datty-unit</module>
     <module>datty-aerospike</module>
