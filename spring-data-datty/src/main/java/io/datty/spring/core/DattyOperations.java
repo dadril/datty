@@ -14,6 +14,7 @@
 package io.datty.spring.core;
 
 import io.datty.api.Datty;
+import io.datty.spring.convert.DattyConverter;
 import rx.Completable;
 import rx.Observable;
 import rx.Single;
@@ -39,6 +40,15 @@ public interface DattyOperations {
 	 */
 
 	<T> DattyId getId(T entity);
+	
+	/**
+	 * Gets cache name of the entity
+	 * 
+	 * @param entityClass - not null entity class
+	 * @return not null cache name
+	 */
+	
+	 String getCacheName(Class<?> entityClass);
 	
 	/**
 	 * Saves a given entity. Use the returned instance for further operations as the save operation might have changed the
@@ -186,6 +196,14 @@ public interface DattyOperations {
 	 * @param entityClass must not be {@literal null}.
 	 */
 	Completable deleteAll(Class<?> entityClass);
+	
+	/**
+	 * DattyConverter getter
+	 * 
+	 * @return not null converter
+	 */
+
+	DattyConverter getConverter();
 	
 	/**
 	 * Gets datty instance

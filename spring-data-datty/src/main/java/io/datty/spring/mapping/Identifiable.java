@@ -11,34 +11,27 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.spring.convert;
+package io.datty.spring.mapping;
 
-import org.springframework.data.convert.EntityConverter;
-import org.springframework.data.convert.EntityReader;
-
-import io.datty.api.DattyRow;
 import io.datty.spring.core.DattyId;
-import io.datty.spring.mapping.DattyPersistentEntity;
-import io.datty.spring.mapping.DattyPersistentProperty;
 
 /**
- * DattyConverter
+ * Identifiable
+ * 
+ * Base interface for entities that provides DattyId for them
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattyConverter
-		extends EntityConverter<DattyPersistentEntity<?>, DattyPersistentProperty, Object, DattyRow>, DattyWriter<Object>,
-		EntityReader<Object, DattyRow> {
+public interface Identifiable {
 
 	/**
-	 * Converts Java id object to DattyId data structure
+	 * Gets datty id
 	 * 
-	 * @param id - not null Java object id
 	 * @return not null datty id
 	 */
 	
-	DattyId toDattyId(Object id);
+	DattyId getId();
 	
 }

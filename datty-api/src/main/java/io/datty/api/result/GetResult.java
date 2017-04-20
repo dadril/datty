@@ -14,10 +14,10 @@
 package io.datty.api.result;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import io.datty.api.DattyRow;
 import io.datty.api.operation.GetOperation;
 import io.datty.api.operation.Version;
 import io.netty.buffer.ByteBuf;
@@ -37,38 +37,22 @@ public class GetResult extends AbstractResult<GetOperation, GetResult> {
 	
 	private Version version;
 	
-	/**
-	 * key is the minorKey, value is payload
-	 */
-	
-	private Map<String, ByteBuf> values;
+	private final DattyRow row = new DattyRow();
 	
 	public GetResult() {
 	}
 	
+	public DattyRow getRow() {
+		return row;
+	}
+	
 	public GetResult addValue(String minorKey, ByteBuf valueOrNull) {
-		if (this.values == null) {
-			this.values = Collections.singletonMap(minorKey, valueOrNull);
-		}
-		else {
-			if (this.values.size() == 1) {
-				this.values = new HashMap<>(this.values);
-			}
-			this.values.put(minorKey, valueOrNull);
-		}
+		row.addValue(minorKey, valueOrNull);
 		return this;
 	}
 	
 	public GetResult addValues(Map<String, ByteBuf> map) {
-		if (this.values == null) {
-			this.values = new HashMap<String, ByteBuf>(map);
-		}
-		else {
-			if (this.values.size() == 1) {
-				this.values = new HashMap<String, ByteBuf>(this.values);
-			}
-			this.values.putAll(map);
-		}
+		row.addValues(map);
 		return this;
 	}
 	
@@ -91,38 +75,38 @@ public class GetResult extends AbstractResult<GetOperation, GetResult> {
 
 	public boolean isEmpty() {
 		
-		if (this.values == null) {
+		if (!exists()) {
 			return true;
 		}
 		
-		return this.values.isEmpty();
+		return row.isEmpty();
 	}
 	
 	public int size() {
 		
-		if (this.values == null) {
+		if (!exists()) {
 			return 0;
 		}
 		
-		return this.values.size();
+		return row.size();
 	}
 	
 	public Set<String> minorKeys() {
 		
-		if (this.values == null) {
+		if (!exists()) {
 			return Collections.emptySet();
 		}
 		
-		return this.values.keySet();
+		return row.minorKeys();
 	}
 	
 	public ByteBuf get(String minorKey) {
 		
-		if (this.values == null) {
+		if (!exists()) {
 			return null;
 		}
 		
-		return this.values.get(minorKey);
+		return row.get(minorKey);
 	}
 	
 	@Override
@@ -132,7 +116,7 @@ public class GetResult extends AbstractResult<GetOperation, GetResult> {
 
 	@Override
 	public String toString() {
-		return "GetResult [version=" + version + ", values=" + values + "]";
+		return "GetResult [version=" + version + ", row=" + row + "]";
 	}
 
 }

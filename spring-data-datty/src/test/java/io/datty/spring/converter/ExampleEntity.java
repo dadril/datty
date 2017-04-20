@@ -11,19 +11,41 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.spring.convert;
+package io.datty.spring.converter;
 
-import org.springframework.data.convert.EntityWriter;
+import org.springframework.data.annotation.Id;
 
-import io.datty.api.DattyRow;
+import io.datty.spring.mapping.Entity;
 
 /**
- * DattyWriter
+ * ExampleEntity
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattyWriter<T> extends EntityWriter<T, DattyRow> {
+@Entity(cacheName="TEST_CACHE")
+public class ExampleEntity {
 
+	@Id
+	private Long id;
+	
+	private String name;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 }

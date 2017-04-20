@@ -11,19 +11,35 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.spring.convert;
+package io.datty.spring.mapping;
 
-import org.springframework.data.convert.EntityWriter;
-
-import io.datty.api.DattyRow;
+import io.datty.api.operation.Version;
 
 /**
- * DattyWriter
+ * Versionable
+ * 
+ * Interface that has ability to store information about version in the entity in transient field
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattyWriter<T> extends EntityWriter<T, DattyRow> {
+public interface Versionable {
 
+	/**
+	 * Gets version
+	 * 
+	 * @return version or null
+	 */
+	
+	Version getVersion();
+	
+	/**
+	 * Sets version
+	 * 
+	 * @param version
+	 */
+	
+	void setVersion(Version version);
+	
 }

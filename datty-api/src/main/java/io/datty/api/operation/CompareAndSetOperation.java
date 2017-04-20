@@ -13,10 +13,9 @@
  */
 package io.datty.api.operation;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
+import io.datty.api.DattyRow;
 import io.datty.api.result.CompareAndSetResult;
 import io.netty.buffer.ByteBuf;
 
@@ -35,10 +34,7 @@ public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSe
 	
 	private Version version;
 	
-	/**
-	 * Key is the minorKey, value is payload
-	 */
-	private Map<String, ByteBuf> newValues = null;
+	private final DattyRow row = new DattyRow();
 
 	public CompareAndSetOperation(String cacheName) {
 		super(cacheName);
@@ -65,23 +61,18 @@ public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSe
 		this.version = oldVersion;
 		return this;
 	}
+	
+	public DattyRow getRow() {
+		return row;
+	}
 
 	public CompareAndSetOperation addValue(String minorKey, ByteBuf valueOrNull) {
-		if (newValues == null) {
-			this.newValues = Collections.singletonMap(minorKey, valueOrNull);
-		}
-		else if (newValues.size() == 1) {
-			this.newValues = new HashMap<>(newValues);
-			this.newValues.put(minorKey, valueOrNull);
-		}
-		else {
-			this.newValues.put(minorKey, valueOrNull);
-		}
+		row.addValue(minorKey, valueOrNull);
 		return this;
 	}
 	
 	public Map<String, ByteBuf> getValues() {
-		return newValues != null ? newValues : Collections.<String, ByteBuf>emptyMap();
+		return row.getValues();
 	}
 
 	@Override
@@ -91,7 +82,7 @@ public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSe
 
 	@Override
 	public String toString() {
-		return "CompareAndSetOperation [oldVersion=" + version + ", newValues=" + newValues + ", updatePolicy="
+		return "CompareAndSetOperation [oldVersion=" + version + ", row=" + row + ", updatePolicy="
 				+ updatePolicy + ", cacheName=" + cacheName + ", superKey=" + superKey + ", majorKey=" + majorKey
 				+ ", timeoutMillis=" + timeoutMillis + "]";
 	}

@@ -16,13 +16,17 @@ package io.datty.spring.convert;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.core.convert.support.GenericConversionService;
+import org.springframework.data.mapping.PropertyHandler;
 import org.springframework.data.mapping.context.MappingContext;
+import org.springframework.data.mapping.model.MappingException;
+import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
+import io.datty.api.DattyRow;
 import io.datty.spring.core.DattyId;
 import io.datty.spring.mapping.DattyPersistentEntity;
 import io.datty.spring.mapping.DattyPersistentProperty;
-import io.netty.buffer.ByteBuf;
+import io.datty.spring.mapping.Identifiable;
 
 /**
  * DattyMappingConverter
@@ -63,19 +67,72 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 	
 	@Override
 	public DattyId toDattyId(Object id) {
-		// TODO Auto-generated method stub
-		return null;
+		Assert.notNull(id, "id is null");
+		
+		if (id instanceof Identifiable) {
+			
+			Identifiable identifiable = (Identifiable) id;
+			
+			return identifiable.getId();
+		}
+		
+		String majorKey = conversionService.convert(id, String.class);
+
+		return new DattyId().setMajorKey(majorKey);
 	}
 
 	@Override
-	public void write(Object source, ByteBuf sink) {
-		// TODO Auto-generated method stub
+	public void write(Object source, DattyRow sink) {
+		Assert.notNull(source, "source is null");
+		Assert.notNull(sink, "sink is null");
+		
+		if (source == null) {
+			sink.clear();
+			return;
+		}
+		
+		Class<?> beanClassLoaderClass = transformClassToBeanClassLoaderClass(source.getClass());
+		
+		DattyPersistentEntity<?> entity = (DattyPersistentEntity<?>) mappingContext
+				.getPersistentEntity(beanClassLoaderClass).orElse(null);
+		
+		if (entity == null) {
+			throw new MappingException("No mapping metadata found for " + source.getClass());
+		}
+
+		entity.doWithProperties(new PropertyHandler<DattyPersistentProperty>() {
+
+			@Override
+			public void doWithPersistentProperty(DattyPersistentProperty persistentProperty) {
+				
+				
+			}
+			
+		});
 		
 	}
 
 	@Override
-	public <R> R read(Class<R> type, ByteBuf source) {
-		// TODO Auto-generated method stub
+	public <R> R read(Class<R> type, DattyRow source) {
+		Assert.notNull(type, "type is null");
+		Assert.notNull(source, "source is null");
+		
+		if (source.isEmpty()) {
+			return null;
+		}
+		
+		Class<R> beanClassLoaderClass = transformClassToBeanClassLoaderClass(type);
+		
+		@SuppressWarnings("unchecked")
+		DattyPersistentEntity<R> entity = (DattyPersistentEntity<R>) mappingContext
+				.getPersistentEntity(beanClassLoaderClass).orElse(null);
+		
+		if (entity == null) {
+			throw new MappingException("No mapping metadata found for " + type);
+		}
+		
+		
+		
 		return null;
 	}
 
