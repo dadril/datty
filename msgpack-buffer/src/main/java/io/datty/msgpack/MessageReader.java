@@ -1,0 +1,68 @@
+/*
+ * Copyright (C) 2016 Datty.io Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package io.datty.msgpack;
+
+import io.netty.buffer.ByteBuf;
+
+/**
+ * MessageReader
+ * 
+ * @author Alex Shvid
+ *
+ */
+
+public interface MessageReader {
+
+	/**
+	 * Reads the header of the message
+	 * 
+	 * @param source - input buffer
+	 * @return number of entries
+	 */
+	
+	int readHeader(ByteBuf source);
+	
+	/**
+	 * Reads the key of the message entry
+	 * 
+	 * @param source - input buffer
+	 * @return usually Integer or String or null if no entries
+	 */
+	
+	Object readKey(ByteBuf source);
+	
+	/**
+	 * Reads value of the message entry
+	 * 
+	 * @param source - input buffer
+	 * @param copy - always copy content if true
+	 * @return java value object or null, could be a MessageReader object if value is the Map or Array
+	 */
+	
+	Object readValue(ByteBuf source, boolean copy);
+	
+	/**
+	 * Reads value from the source with expecting value type
+	 * 
+	 * Automatically converts value to the expecting type
+	 * 
+	 * @param type - expecting type
+	 * @param source - source
+	 * @param copy - always copy content if true
+	 * @return java object or null
+	 */
+	
+	<T> T readValue(Class<T> type, ByteBuf source, boolean copy);
+	
+}
