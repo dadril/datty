@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.msgpack.io;
+package io.datty.msgpack.core;
 
 import java.nio.charset.StandardCharsets;
 
@@ -20,15 +20,13 @@ import org.msgpack.core.MessagePack.Code;
 import io.netty.buffer.ByteBuf;
 
 /**
- * MessageWriter
+ * AbstractMessageWriter
  * 
  * @author Alex Shvid
  *
  */
 
-public enum MessageWriter {
-
-  WRITER;
+public abstract class AbstractMessageWriter {
 
   public ByteBuf writeByte(byte value, ByteBuf buffer) {
     return buffer.writeByte(value);

@@ -22,7 +22,7 @@ import io.netty.buffer.ByteBuf;
  *
  */
 
-public interface MessageReader {
+public interface MessageReader<K> {
 
 	/**
 	 * Reads the header of the message
@@ -37,13 +37,22 @@ public interface MessageReader {
 	 * Reads the key of the message entry
 	 * 
 	 * @param source - input buffer
-	 * @return usually Integer or String or null if no entries
+	 * @return Integer or String or null if no entries
 	 */
 	
-	Object readKey(ByteBuf source);
+	K readKey(ByteBuf source);
 	
 	/**
 	 * Reads value of the message entry
+	 * 
+	 * Return types:
+	 * null
+	 * Boolean
+	 * Long
+	 * Double
+	 * String
+	 * ByteBuf
+	 * MessageReader
 	 * 
 	 * @param source - input buffer
 	 * @param copy - always copy content if true
@@ -51,6 +60,16 @@ public interface MessageReader {
 	 */
 	
 	Object readValue(ByteBuf source, boolean copy);
+	
+	/**
+	 * Does not parse value, only returns ByteBuf pointing to the value
+	 * 
+	 * @param source - input buffer
+	 * @param copy - always copy content if true
+	 * @return buffer or null
+	 */
+	
+	ByteBuf skipValue(ByteBuf source, boolean copy);
 	
 	/**
 	 * Reads value from the source with expecting value type

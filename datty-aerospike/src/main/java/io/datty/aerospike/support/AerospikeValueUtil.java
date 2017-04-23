@@ -68,9 +68,7 @@ public final class AerospikeValueUtil {
 		}
 		else {
 			byte[] bytes = new byte[bufferOrNull.readableBytes()];
-			int readerIndex = bufferOrNull.readerIndex();
-			bufferOrNull.getBytes(readerIndex, bytes);
-			bufferOrNull.readerIndex(readerIndex);
+			bufferOrNull.getBytes(bufferOrNull.readerIndex(), bytes);
 			return new BytesValue(bytes);
 		}
 		
