@@ -137,6 +137,38 @@ public abstract class AbstractMessageWriter {
     }
 
   }
+  
+  public ByteBuf writeArrayHeader(int arraySize, int maxSize, ByteBuf buffer) {
+
+    if (arraySize < 0 || maxSize < 0 || arraySize > maxSize) {
+      throw new IllegalArgumentException("wrong array size: " + arraySize + " with wrong max size: " + maxSize);
+    }
+
+    if (maxSize < (1 << 4)) {
+      return writeByte((byte) (Code.FIXARRAY_PREFIX | arraySize), buffer);
+    } else if (maxSize < (1 << 16)) {
+      return writeByteAndShort(Code.ARRAY16, (short) arraySize, buffer);
+    } else {
+      return writeByteAndInt(Code.ARRAY32, arraySize, buffer);
+    }
+
+  }
+  
+  public int getArrayHeaderSize(int arraySize) {
+
+    if (arraySize < 0) {
+      throw new IllegalArgumentException("array size must be >= 0");
+    }
+
+    if (arraySize < (1 << 4)) {
+      return 1;
+    } else if (arraySize < (1 << 16)) {
+      return 3;
+    } else {
+      return 5;
+    }
+
+  }
 
   public ByteBuf writeMapHeader(int mapSize, ByteBuf buffer) {
 
@@ -152,7 +184,37 @@ public abstract class AbstractMessageWriter {
       return writeByteAndInt(Code.MAP32, mapSize, buffer);
     }
   }
+  
+  public ByteBuf writeMapHeader(int mapSize, int maxSize, ByteBuf buffer) {
 
+    if (mapSize < 0 || maxSize < 0 || mapSize > maxSize) {
+      throw new IllegalArgumentException("wrong map size: " + mapSize + " with wrong max size: " + maxSize);
+    }
+
+    if (maxSize < (1 << 4)) {
+      return writeByte((byte) (Code.FIXMAP_PREFIX | mapSize), buffer);
+    } else if (maxSize < (1 << 16)) {
+      return writeByteAndShort(Code.MAP16, (short) mapSize, buffer);
+    } else {
+      return writeByteAndInt(Code.MAP32, mapSize, buffer);
+    }
+  }
+
+  public int getMapHeaderSize(int mapSize) {
+
+    if (mapSize < 0) {
+      throw new IllegalArgumentException("map size must be >= 0");
+    }
+
+    if (mapSize < (1 << 4)) {
+      return 1;
+    } else if (mapSize < (1 << 16)) {
+      return 3;
+    } else {
+      return 5;
+    }
+  }
+  
   public ByteBuf writeBinaryHeader(int len, ByteBuf buffer) {
     if (len < (1 << 8)) {
       return writeByteAndByte(Code.BIN8, (byte) len, buffer);

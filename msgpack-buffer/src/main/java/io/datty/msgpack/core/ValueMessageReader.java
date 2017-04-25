@@ -33,7 +33,7 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 	public static final ValueMessageReader<?> INSTANCE = new ValueMessageReader<Object>();
 	
 	@Override
-	public int readHeader(ByteBuf source) {
+	public int size() {
 		throw new UnsupportedOperationException("this method must be overriden");
 	}
 

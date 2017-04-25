@@ -11,37 +11,31 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.msgpack.core;
+package io.datty.msgpack.core.writer;
 
-import io.datty.msgpack.MessageReader;
-import io.datty.msgpack.core.reader.IntegerReader;
+import io.datty.msgpack.core.AbstractMessageWriter;
 import io.netty.buffer.ByteBuf;
 
 /**
- * IntMapMessageReader
- * 
- * Keys are always Integers
+ * DoubleWriter
  * 
  * @author Alex Shvid
  *
  */
 
-public class IntMapMessageReader extends ValueMessageReader<Integer> implements MessageReader<Integer> {
+public class DoubleWriter extends AbstractMessageWriter implements ValueWriter<Double> {
 
-	private final int size;
-	
-	public IntMapMessageReader(int size) {
-		this.size = size;
-	}
-	
+	public static final DoubleWriter INSTANCE = new DoubleWriter();
+
 	@Override
-	public int size() {
-		return size;
-	}
-	
-	@Override
-	public Integer readKey(ByteBuf source) {
-		return IntegerReader.INSTANCE.read(source, true);
+	public ByteBuf write(Double value, ByteBuf sink, boolean copy) {
+		if (value == null) {
+			writeNull(sink);
+		}
+		else {
+			writeDouble(value, sink);
+		}
+		return sink;
 	}
 	
 }

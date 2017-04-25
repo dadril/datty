@@ -25,13 +25,12 @@ import io.netty.buffer.ByteBuf;
 public interface MessageReader<K> {
 
 	/**
-	 * Reads the header of the message
+	 * Gets number of entries
 	 * 
-	 * @param source - input buffer
-	 * @return number of entries
+	 * @return size
 	 */
 	
-	int readHeader(ByteBuf source);
+	int size();
 	
 	/**
 	 * Reads the key of the message entry

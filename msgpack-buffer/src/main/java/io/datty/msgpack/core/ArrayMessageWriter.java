@@ -18,39 +18,39 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.CompositeByteBuf;
 
 /**
- * MapMessageWriter
+ * ArrayMessageWriter
  * 
  * @author Alex Shvid
  *
  */
 
-public class MapMessageWriter extends ValueMessageWriter implements MessageWriter {
+public class ArrayMessageWriter extends ValueMessageWriter implements MessageWriter {
 
-	public static final MapMessageWriter INSTANCE = new MapMessageWriter();
+	public static final ArrayMessageWriter INSTANCE = new ArrayMessageWriter();
 	
 	@Override
 	public int skipHeader(int maxSize, ByteBuf sink) {
 		int headerIndex = sink.writerIndex();
-		int headerSize = getMapHeaderSize(maxSize);
+		int headerSize = getArrayHeaderSize(maxSize);
 		sink.skipBytes(headerSize);
 		return headerIndex;
 	}
 
 	@Override
-	public void writeHeader(int mapSize, int maxSize, int headerIndex, ByteBuf sink) {
+	public void writeHeader(int arraySize, int maxSize, int headerIndex, ByteBuf sink) {
 		int checkpoint = sink.writerIndex();
 		sink.writerIndex(headerIndex);
-		writeMapHeader(mapSize, maxSize, sink);
+		writeArrayHeader(arraySize, maxSize, sink);
 		sink.writerIndex(checkpoint);
 	}
 
 	@Override
-	public ByteBuf prependHeader(int mapSize, ByteBuf sink) {
+	public ByteBuf prependHeader(int arraySize, ByteBuf sink) {
 		
-		int headerSize = getMapHeaderSize(mapSize);
+		int headerSize = getArrayHeaderSize(arraySize);
 		
 		ByteBuf header = sink.alloc().buffer(headerSize);
-		writeMapHeader(mapSize, header);
+		writeMapHeader(arraySize, header);
 		
 		if (sink instanceof CompositeByteBuf) {
 			CompositeByteBuf compositeSink = (CompositeByteBuf) sink;
@@ -67,12 +67,12 @@ public class MapMessageWriter extends ValueMessageWriter implements MessageWrite
 
 	@Override
 	public void writeKey(String key, ByteBuf sink) {
-		writeString(key, sink);
+		throw new UnsupportedOperationException("this method does not support in array");
 	}
 
 	@Override
 	public void writeKey(int key, ByteBuf sink) {
-		writeVInt(key, sink);
+		throw new UnsupportedOperationException("this method does not support in array");
 	}
-
+	
 }

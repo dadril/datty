@@ -33,10 +33,10 @@ public class StringMapMessageReader extends ValueMessageReader<String> implement
 	}
 	
 	@Override
-	public int readHeader(ByteBuf source) {
+	public int size() {
 		return size;
 	}
-
+	
 	@Override
 	public String readKey(ByteBuf source) {
 		return StringReader.INSTANCE.read(source, true);

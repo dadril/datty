@@ -45,14 +45,14 @@ public interface MessageWriter {
 	void writeHeader(int size, int maxSize, int headerIndex, ByteBuf sink);
 	
 	/**
-	 * Writes message header with number of elements
+	 * Writes message header with number of elements, calls at the end of stream
 	 * 
 	 * @param size - number of entries in map
 	 * @param sink - output buffer
-	 * @return CompositeByteBuf of header and sink
+	 * @return new sink
 	 */
 	
-	ByteBuf writeHeader(int size, ByteBuf sink);
+	ByteBuf prependHeader(int size, ByteBuf sink);
 	
 	/**
 	 * Writes the key of the map as a string
@@ -114,7 +114,7 @@ public interface MessageWriter {
 	 * @param value - buffer value
 	 * @param sink - output buffer
 	 * @param copy - always copy value if true
-	 * @return sink or CompositeByteBuf
+	 * @return old sink or new sink
 	 */
 	
 	ByteBuf writeValue(ByteBuf value, ByteBuf sink, boolean copy);

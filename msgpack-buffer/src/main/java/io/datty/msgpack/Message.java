@@ -11,37 +11,41 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.msgpack.core;
+package io.datty.msgpack;
 
-import io.datty.msgpack.MessageReader;
-import io.datty.msgpack.core.reader.IntegerReader;
+import java.util.List;
+import java.util.Map;
+
 import io.netty.buffer.ByteBuf;
 
 /**
- * IntMapMessageReader
+ * Message
  * 
- * Keys are always Integers
+ * Is the key-value data structure
  * 
  * @author Alex Shvid
  *
  */
 
-public class IntMapMessageReader extends ValueMessageReader<Integer> implements MessageReader<Integer> {
+public class Message {
 
-	private final int size;
+	private Map<Object, Object> backingMap;
+	private List<Object> backingArray;
 	
-	public IntMapMessageReader(int size) {
-		this.size = size;
+	public void mergeFrom(ByteBuf source, boolean copy) {
+		
 	}
 	
-	@Override
-	public int size() {
-		return size;
+	public void writeTo(ByteBuf sink, boolean copy) {
+		
 	}
 	
-	@Override
-	public Integer readKey(ByteBuf source) {
-		return IntegerReader.INSTANCE.read(source, true);
+	public void reset() {
+		if (backingMap != null) {
+			backingMap.clear();
+		}
+		if (backingArray != null) {
+			backingArray.clear();
+		}
 	}
-	
 }

@@ -11,37 +11,28 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.msgpack.core;
+package io.datty.msgpack.core.writer;
 
-import io.datty.msgpack.MessageReader;
-import io.datty.msgpack.core.reader.IntegerReader;
 import io.netty.buffer.ByteBuf;
 
 /**
- * IntMapMessageReader
- * 
- * Keys are always Integers
+ * ValueWriter
  * 
  * @author Alex Shvid
  *
  */
 
-public class IntMapMessageReader extends ValueMessageReader<Integer> implements MessageReader<Integer> {
+public interface ValueWriter<V> {
 
-	private final int size;
+	/**
+	 * Writes value to the sink
+	 * 
+	 * @param value - java object value
+	 * @param sink - output buffer
+	 * @param copy - always copy if true
+	 * @return old sink or new sink
+	 */
 	
-	public IntMapMessageReader(int size) {
-		this.size = size;
-	}
-	
-	@Override
-	public int size() {
-		return size;
-	}
-	
-	@Override
-	public Integer readKey(ByteBuf source) {
-		return IntegerReader.INSTANCE.read(source, true);
-	}
+	ByteBuf write(V value, ByteBuf sink, boolean copy);
 	
 }

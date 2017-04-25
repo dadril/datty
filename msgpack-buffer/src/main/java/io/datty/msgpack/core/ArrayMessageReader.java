@@ -40,7 +40,7 @@ public class ArrayMessageReader extends ValueMessageReader<Integer> implements M
 	}
 	
 	@Override
-	public int readHeader(ByteBuf source) {
+	public int size() {
 		return length;
 	}
 
