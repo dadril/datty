@@ -45,6 +45,15 @@ public interface MessageWriter {
 	void writeHeader(int size, int maxSize, int headerIndex, ByteBuf sink);
 	
 	/**
+	 * Writes header at the beginning of the sink
+	 * 
+	 * @param size - actual size of the map
+	 * @param sink - output buffer
+	 */
+	
+	void writeHeader(int size, ByteBuf sink);
+	
+	/**
 	 * Writes message header with number of elements, calls at the end of stream
 	 * 
 	 * @param size - number of entries in map

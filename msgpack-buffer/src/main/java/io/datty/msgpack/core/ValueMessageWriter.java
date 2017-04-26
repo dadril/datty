@@ -41,6 +41,11 @@ public class ValueMessageWriter extends AbstractMessageWriter implements Message
 	}
 
 	@Override
+	public void writeHeader(int size, ByteBuf sink) {
+		throw new UnsupportedOperationException("this method must be overriden");
+	}
+
+	@Override
 	public ByteBuf prependHeader(int mapSize, ByteBuf sink) {
 		throw new UnsupportedOperationException("this method must be overriden");
 	}
@@ -89,8 +94,8 @@ public class ValueMessageWriter extends AbstractMessageWriter implements Message
 		}
 		else {
 			CompositeByteBuf result = sink.alloc().compositeBuffer();
-			result.addComponent(sink);
-			result.addComponent(value);
+			result.addComponent(true, sink);
+			result.addComponent(true, value);
 			return result;
 		}
 		

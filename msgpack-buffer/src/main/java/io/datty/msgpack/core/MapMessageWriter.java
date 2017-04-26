@@ -32,7 +32,9 @@ public class MapMessageWriter extends ValueMessageWriter implements MessageWrite
 	public int skipHeader(int maxSize, ByteBuf sink) {
 		int headerIndex = sink.writerIndex();
 		int headerSize = getMapHeaderSize(maxSize);
-		sink.skipBytes(headerSize);
+		for (int i = 0; i != headerSize; ++i) {
+			sink.writeByte(0);
+		}
 		return headerIndex;
 	}
 
@@ -42,6 +44,11 @@ public class MapMessageWriter extends ValueMessageWriter implements MessageWrite
 		sink.writerIndex(headerIndex);
 		writeMapHeader(mapSize, maxSize, sink);
 		sink.writerIndex(checkpoint);
+	}
+
+	@Override
+	public void writeHeader(int size, ByteBuf sink) {
+		writeMapHeader(size, sink);
 	}
 
 	@Override
@@ -59,8 +66,8 @@ public class MapMessageWriter extends ValueMessageWriter implements MessageWrite
 		}
 		else {
 			CompositeByteBuf result = sink.alloc().compositeBuffer();
-			result.addComponent(header);
-			result.addComponent(sink);
+			result.addComponent(true, header);
+			result.addComponent(true, sink);
 			return result;
 		}
 	}

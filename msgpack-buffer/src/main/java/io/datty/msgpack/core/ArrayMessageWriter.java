@@ -32,7 +32,9 @@ public class ArrayMessageWriter extends ValueMessageWriter implements MessageWri
 	public int skipHeader(int maxSize, ByteBuf sink) {
 		int headerIndex = sink.writerIndex();
 		int headerSize = getArrayHeaderSize(maxSize);
-		sink.skipBytes(headerSize);
+		for (int i = 0; i != headerSize; ++i) {
+			sink.writeByte(0);
+		}
 		return headerIndex;
 	}
 
@@ -44,6 +46,11 @@ public class ArrayMessageWriter extends ValueMessageWriter implements MessageWri
 		sink.writerIndex(checkpoint);
 	}
 
+	@Override
+	public void writeHeader(int size, ByteBuf sink) {
+		writeArrayHeader(size, sink);
+	}
+	
 	@Override
 	public ByteBuf prependHeader(int arraySize, ByteBuf sink) {
 		
@@ -59,8 +66,8 @@ public class ArrayMessageWriter extends ValueMessageWriter implements MessageWri
 		}
 		else {
 			CompositeByteBuf result = sink.alloc().compositeBuffer();
-			result.addComponent(header);
-			result.addComponent(sink);
+			result.addComponent(true, header);
+			result.addComponent(true, sink);
 			return result;
 		}
 	}

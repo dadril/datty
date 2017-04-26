@@ -49,8 +49,8 @@ public class ByteBufWriter extends AbstractMessageWriter implements ValueWriter<
 		
 		else {
 			CompositeByteBuf result = sink.alloc().compositeBuffer();
-			result.addComponent(sink);
-			result.addComponent(value);
+			result.addComponent(true, sink);
+			result.addComponent(true, value);
 			return result;
 		}
 		
