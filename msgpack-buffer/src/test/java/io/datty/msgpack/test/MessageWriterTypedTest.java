@@ -14,7 +14,9 @@
 package io.datty.msgpack.test;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -121,7 +123,7 @@ public class MessageWriterTypedTest extends MessageReaderTypedTest {
 		ByteBuf sink = Unpooled.buffer();
 
 		MessageWriter writer = MapMessageWriter.INSTANCE;
-		writer.writeHeader(3, sink);
+		writer.writeHeader(5, sink);
 		
 		// 1
 		writer.writeKey("id", sink);
@@ -135,6 +137,17 @@ public class MessageWriterTypedTest extends MessageReaderTypedTest {
 		writer.writeKey("withdrawals", sink);
 		writeDoubleList(Arrays.asList(10.45, 44.30), sink);
 		
+		// 4
+		writer.writeKey("names", sink);
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("first", "John");
+		map.put("second", "Dow");
+		writeMap(map, sink);
+		
+		// 5
+		writer.writeKey("logins", sink);
+		writer.writeValue(long[].class, new long[] { 34, 56 }, sink, true);
+
 		
 		byte[] bytes = ByteBufUtil.getBytes(sink);
 		
@@ -152,6 +165,21 @@ public class MessageWriterTypedTest extends MessageReaderTypedTest {
 		
 		for (Double value : list) {
 			writer.writeValue(value, sink);
+		}
+		
+	}
+	
+	private void writeMap(Map<String, String> map, ByteBuf sink) {
+		
+		MessageWriter writer = MapMessageWriter.INSTANCE;
+		
+		writer.writeHeader(map.size(), sink);
+		
+		for (Map.Entry<String, String> entry : map.entrySet()) {
+			
+			writer.writeKey(entry.getKey(), sink);
+			writer.writeValue(entry.getValue(), sink);
+			
 		}
 		
 	}

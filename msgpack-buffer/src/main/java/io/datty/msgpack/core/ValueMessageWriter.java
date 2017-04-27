@@ -14,8 +14,10 @@
 package io.datty.msgpack.core;
 
 import io.datty.msgpack.MessageWriter;
+import io.datty.msgpack.core.writer.ArrayWriter;
 import io.datty.msgpack.core.writer.ValueWriter;
 import io.datty.msgpack.core.writer.ValueWriters;
+import io.datty.msgpack.support.MessageParseException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.CompositeByteBuf;
 
@@ -107,11 +109,18 @@ public class ValueMessageWriter extends AbstractMessageWriter implements Message
 	@Override
 	public <V extends T, T> ByteBuf writeValue(Class<T> type, V value, ByteBuf sink, boolean copy) {
 
+		if (type.isArray()) {
+			Class<?> elementType = ArrayTypes.findElementType(type);
+			if (elementType == null) {
+				throw new MessageParseException("elementType not found for array: " + type);
+			}
+			return ArrayWriter.INSTANCE.write(elementType, value, sink, copy);
+		}
+		
 		ValueWriter<T> writer = ValueWriters.find(type);
 		
 		if (writer == null) {
-			writeNull(sink);
-			return sink;
+			throw new MessageParseException("value writer not found for class: " + type);
 		}
 		
 		return writer.write(value, sink, copy);

@@ -64,6 +64,8 @@ public class MessageReaderTypedTest {
 		ACC_SCHEMA.put("id", Long.class);
 		ACC_SCHEMA.put("balance", Double.class);
 		ACC_SCHEMA.put("withdrawals", List.class);
+		ACC_SCHEMA.put("names", Map.class);
+		ACC_SCHEMA.put("logins", long[].class);
 	}
 	
 	@Test
@@ -75,10 +77,10 @@ public class MessageReaderTypedTest {
 		
 	}
 	
-	//@Test
+	@Test
 	public void testReadComplexStringMap() {
 		
-		final byte[] example = new byte[] { -125, -94, 105, 100, -51, 3, -24, -89, 98, 97, 108, 97, 110, 99, 101, -53, 64, 64, -71, -103, -103, -103, -103, -102, -85, 119, 105, 116, 104, 100, 114, 97, 119, 97, 108, 115, -110, -53, 64, 36, -26, 102, 102, 102, 102, 102, -53, 64, 70, 38, 102, 102, 102, 102, 102 };
+		final byte[] example = new byte[] { -123, -94, 105, 100, -51, 3, -24, -89, 98, 97, 108, 97, 110, 99, 101, -53, 64, 64, -71, -103, -103, -103, -103, -102, -85, 119, 105, 116, 104, 100, 114, 97, 119, 97, 108, 115, -110, -53, 64, 36, -26, 102, 102, 102, 102, 102, -53, 64, 70, 38, 102, 102, 102, 102, 102, -91, 110, 97, 109, 101, 115, -126, -91, 102, 105, 114, 115, 116, -92, 74, 111, 104, 110, -90, 115, 101, 99, 111, 110, 100, -93, 68, 111, 119, -90, 108, 111, 103, 105, 110, 115, -110, 34, 56 };
 		
 		assertComplexStringMapExample(example);
 		

@@ -28,10 +28,8 @@ import io.netty.buffer.ByteBuf;
 
 public final class ValueReaders {
 
-	private final static Map<Class<?>, ValueReader<?>> readers = new HashMap<>();
-	
-	private final static Map<Class<?>, Class<?>> arrayToType = new HashMap<>();
-	
+	private final static Map<Class<?>, ValueReader<?>> readers = new HashMap<>();	
+
 	static {
 		readers.put(boolean.class, BooleanReader.INSTANCE);
 		readers.put(Boolean.class, BooleanReader.INSTANCE);
@@ -50,12 +48,7 @@ public final class ValueReaders {
 		readers.put(String.class, StringReader.INSTANCE);
 		readers.put(ByteBuf.class, ByteBufReader.INSTANCE);
 		readers.put(List.class, ListReader.INSTANCE);
-		
-		arrayToType.put(Boolean[].class, Boolean.class);
-		arrayToType.put(boolean[].class, Boolean.class);
-		arrayToType.put(Byte[].class, Byte.class);
-		arrayToType.put(Boolean[].class, Boolean.class);
-		arrayToType.put(Boolean[].class, Boolean.class);
+		readers.put(Map.class, MapReader.INSTANCE);
 		
 	}
 	
@@ -66,5 +59,5 @@ public final class ValueReaders {
 	public static <T> ValueReader<T> find(Class<T> type) {
 		return (ValueReader<T>) readers.get(type);
 	}
-	
+
 }

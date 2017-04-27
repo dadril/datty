@@ -13,8 +13,8 @@
  */
 package io.datty.msgpack.core.reader;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.msgpack.core.MessageFormat;
 
@@ -26,19 +26,19 @@ import io.datty.msgpack.support.MessageParseException;
 import io.netty.buffer.ByteBuf;
 
 /**
- * ListReader
+ * MapReader
  * 
  * @author Alex Shvid
  *
  */
 
-public class ListReader extends AbstractMessageReader implements ValueReader<List<Object>> {
+public class MapReader extends AbstractMessageReader implements ValueReader<Map<Object, Object>> {
 
-	public static final ListReader INSTANCE = new ListReader();
+	public static final MapReader INSTANCE = new MapReader();
 	
 	@Override
-	public List<Object> read(ByteBuf buffer, boolean copy) {
-		
+	public Map<Object, Object> read(ByteBuf buffer, boolean copy) {
+
 		if (!hasNext(buffer)) {
 			return null;
 		}
@@ -63,12 +63,12 @@ public class ListReader extends AbstractMessageReader implements ValueReader<Lis
     default:
       throw new MessageParseException("expected collection but was another type: " + f.name());	
 		
-		}
+		}		
 		
 	}
-
-	public <T> List<T> read(Class<T> elementType, ByteBuf buffer, boolean copy) {
-
+	
+	public <K, V> Map<K, V> read(Class<K> keyType, Class<V> valueType, ByteBuf buffer, boolean copy) {
+		
 		if (!hasNext(buffer)) {
 			return null;
 		}
@@ -83,80 +83,83 @@ public class ListReader extends AbstractMessageReader implements ValueReader<Lis
     case FIXARRAY:
     case ARRAY16:
     case ARRAY32:
-    	return readArray(elementType, buffer, copy);      	
+    	return readArray(keyType, valueType, buffer, copy);      	
     	
     case FIXMAP:
     case MAP16:
     case MAP32:
-    	return readMap(elementType, buffer, copy);
+    	return readMap(keyType, valueType, buffer, copy);
     	
     default:
       throw new MessageParseException("expected collection but was another type: " + f.name());	
 		
-		}
-
+		}		
+		
 	}
 
-	private List<Object> readArray(ByteBuf source, boolean copy) {
+	private Map<Object, Object> readArray(ByteBuf source, boolean copy) {
 		
 		int length = readArrayHeader(source);
 		MessageReader<Integer> reader = new ArrayMessageReader(length);
 
-		List<Object> list = new ArrayList<Object>(length);
+		Map<Object, Object> map = new HashMap<Object, Object>();
 
 		for (int i = 0; i != length; ++i) {
+			Integer key = reader.readKey(source);
 			Object value = reader.readValue(source, copy);
-			list.add(value);
+			map.put(key, value);
 		}
 		
-		return list;
+		return map;
 	}
 	
-	private <T> List<T> readArray(Class<T> elementType, ByteBuf source, boolean copy) {
+	private <K, V> Map<K, V> readArray(Class<K> keyType, Class<V> valueType, ByteBuf source, boolean copy) {
 		
 		int length = readArrayHeader(source);
 		MessageReader<Integer> reader = new ArrayMessageReader(length);
 
-		List<T> list = new ArrayList<T>(length);
+		Map<K, V> map = new HashMap<>();
 
 		for (int i = 0; i != length; ++i) {
-			T value = reader.readValue(elementType, source, copy);
-			list.add(value);
+			K key = reader.readValue(keyType, source, true);
+			V value = reader.readValue(valueType, source, copy);
+			map.put(key, value);
 		}
 		
-		return list;
+		return map;
 	}
 	
-	private List<Object> readMap(ByteBuf source, boolean copy) {
+	private Map<Object, Object> readMap(ByteBuf source, boolean copy) {
 		
 		int length = readMapHeader(source);
 		MessageReader<Object> reader = new MapMessageReader(length);
 
-		List<Object> list = new ArrayList<Object>(length);
+		Map<Object, Object> map = new HashMap<Object, Object>();
 
 		for (int i = 0; i != length; ++i) {
-			reader.readKey(source);
+			Object key = reader.readKey(source);
 			Object value = reader.readValue(source, copy);
-			list.add(value);
+			map.put(key, value);
 		}
 		
-		return list;
+		return map;
 	}
 	
-	private <T> List<T> readMap(Class<T> elementType, ByteBuf source, boolean copy) {
+	private <K, V> Map<K, V> readMap(Class<K> keyType, Class<V> valueType, ByteBuf source, boolean copy) {
 		
 		int length = readMapHeader(source);
 		MessageReader<Object> reader = new MapMessageReader(length);
 
-		List<T> list = new ArrayList<T>(length);
+		Map<K, V> map = new HashMap<>();
 
 		for (int i = 0; i != length; ++i) {
-			reader.readKey(source);
-			T value = reader.readValue(elementType, source, copy);
-			list.add(value);
+			K key = reader.readValue(keyType, source, true);
+			V value = reader.readValue(valueType, source, copy);
+			map.put(key, value);
 		}
 		
-		return list;
+		return map;
 	}
+	
 	
 }

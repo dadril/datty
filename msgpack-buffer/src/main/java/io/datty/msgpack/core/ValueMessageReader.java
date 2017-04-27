@@ -16,6 +16,7 @@ package io.datty.msgpack.core;
 import org.msgpack.core.MessageFormat;
 
 import io.datty.msgpack.MessageReader;
+import io.datty.msgpack.core.reader.ArrayReader;
 import io.datty.msgpack.core.reader.ValueReader;
 import io.datty.msgpack.core.reader.ValueReaders;
 import io.datty.msgpack.support.MessageParseException;
@@ -30,16 +31,67 @@ import io.netty.buffer.ByteBuf;
 
 public class ValueMessageReader<K> extends AbstractMessageReader implements MessageReader<K> {
 
-	public static final ValueMessageReader<?> INSTANCE = new ValueMessageReader<Object>();
+	public static final ValueMessageReader<Object> INSTANCE = new ValueMessageReader<Object>();
 	
 	@Override
 	public int size() {
 		throw new UnsupportedOperationException("this method must be overriden");
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public K readKey(ByteBuf source) {
-		throw new UnsupportedOperationException("this method must be overriden");
+	public K readKey(ByteBuf buffer) {
+		return (K) readObjectKey(buffer);
+	}
+	
+	/**
+	 * Return types:
+	 * 
+	 * null
+	 * Boolean
+	 * Long
+	 * Double
+	 * String
+	 * 
+	 */
+	
+	public Object readObjectKey(ByteBuf buffer) {
+		
+		if (!hasNext(buffer)) {
+			return null;
+		}
+		
+		MessageFormat f = getNextFormat(buffer);
+		switch(f) {
+		
+	    case NIL:
+	      return readNull(buffer);
+	      
+	    case POSFIXINT:
+	    case NEGFIXINT: 
+	    case UINT8:
+	    case UINT16:
+	    case UINT32:
+	    case UINT64:
+	    case INT8:
+	    case INT16:
+	    case INT32:
+	    case INT64:
+	    	return Long.valueOf(readVLong(buffer));
+	    	
+      case FLOAT32 :
+      case FLOAT64 :
+        return Double.valueOf(readVDouble(buffer));
+      
+      case FIXSTR: 
+      case STR8 :
+      case STR16 : 
+      case STR32 : 
+      	return readString(buffer);
+
+      default:
+  			throw new MessageParseException("reader not found for format: " + f.name());
+		}
 	}
 
 	/**
@@ -80,14 +132,14 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 	    case INT64:
 	    	return Long.valueOf(readVLong(buffer));
 	    	
-      case FLOAT32 : // float
-      case FLOAT64 : // double
+      case FLOAT32 : 
+      case FLOAT64 : 
         return Double.valueOf(readVDouble(buffer));
       
-      case FIXSTR: // fixstr
-      case STR8 : // str 8
-      case STR16 : // str 16
-      case STR32 : // str 32
+      case FIXSTR: 
+      case STR8 : 
+      case STR16 :
+      case STR32 : 
       	return readString(buffer);
         
       case BIN8:
@@ -189,9 +241,18 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 	 * This method automatically converts value to the expecting type
 	 */
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T readValue(Class<T> type, ByteBuf source, boolean copy) {
 
+		if (type.isArray()) {
+			Class<?> elementType = ArrayTypes.findElementType(type);
+			if (elementType == null) {
+				throw new MessageParseException("elementType not found for array: " + type);
+			}
+			return (T) ArrayReader.INSTANCE.read(elementType, source, copy);
+		}
+		
 		ValueReader<T> reader = ValueReaders.find(type);
 		
 		if (reader == null) {
