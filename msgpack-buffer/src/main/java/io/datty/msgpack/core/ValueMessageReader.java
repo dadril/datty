@@ -106,8 +106,7 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
       	return readMap(buffer, copy);
 
       default:
-      	skipValue(buffer);
-      	return null;
+  			throw new MessageParseException("reader not found for format: " + f.name());
 		}
 		
 	}
@@ -135,32 +134,32 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 		
 	}
 
-	private ByteBuf readBinary(ByteBuf buffer, boolean copy) {
-		int length = readBinaryHeader(buffer);
-		if (length > buffer.readableBytes()) {
-      throw new MessageParseException("insufficient buffer length: " + buffer.readableBytes() + ", required length: " + length);
+	private ByteBuf readBinary(ByteBuf source, boolean copy) {
+		int length = readBinaryHeader(source);
+		if (length > source.readableBytes()) {
+      throw new MessageParseException("insufficient buffer length: " + source.readableBytes() + ", required length: " + length);
 		}
 		if (copy) {
-			ByteBuf dst = buffer.alloc().buffer(length);
-			buffer.readBytes(dst, length);
+			ByteBuf dst = source.alloc().buffer(length);
+			source.readBytes(dst, length);
 			return dst;
 		}
 		else {
-			ByteBuf slice = buffer.slice(buffer.readerIndex(), length);
-			buffer.skipBytes(length);
+			ByteBuf slice = source.slice(source.readerIndex(), length);
+			source.skipBytes(length);
 			return slice;
 		}
 	}
 	
-	private MessageReader<?> readArray(ByteBuf buffer, boolean copy) {
-		int length = readArrayHeader(buffer);
+	private MessageReader<?> readArray(ByteBuf source, boolean copy) {
+		int length = readArrayHeader(source);
 		return new ArrayMessageReader(length);
 	}
 	
-	private MessageReader<?> readMap(ByteBuf buffer, boolean copy) {
-		int size = readMapHeader(buffer);
-		if (hasNext(buffer)) {
-			MessageFormat f = getNextFormat(buffer);
+	private MessageReader<?> readMap(ByteBuf source, boolean copy) {
+		int size = readMapHeader(source);
+		if (hasNext(source)) {
+			MessageFormat f = getNextFormat(source);
 			if (isInteger(f)) {
 				return new IntMapMessageReader(size);
 			}
@@ -192,15 +191,15 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 	
 	@Override
 	public <T> T readValue(Class<T> type, ByteBuf source, boolean copy) {
-		
+
 		ValueReader<T> reader = ValueReaders.find(type);
 		
 		if (reader == null) {
-			skipValue(source);
-			return null;
+			throw new MessageParseException("value reader not found for class: " + type);
 		}
 		
 		return reader.read(source, copy);
+		
 	}
 	
 	

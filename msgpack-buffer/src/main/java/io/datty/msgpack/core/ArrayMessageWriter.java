@@ -57,7 +57,7 @@ public class ArrayMessageWriter extends ValueMessageWriter implements MessageWri
 		int headerSize = getArrayHeaderSize(arraySize);
 		
 		ByteBuf header = sink.alloc().buffer(headerSize);
-		writeMapHeader(arraySize, header);
+		writeArrayHeader(arraySize, header);
 		
 		if (sink instanceof CompositeByteBuf) {
 			CompositeByteBuf compositeSink = (CompositeByteBuf) sink;
@@ -74,12 +74,10 @@ public class ArrayMessageWriter extends ValueMessageWriter implements MessageWri
 
 	@Override
 	public void writeKey(String key, ByteBuf sink) {
-		throw new UnsupportedOperationException("this method does not support in array");
 	}
 
 	@Override
 	public void writeKey(int key, ByteBuf sink) {
-		throw new UnsupportedOperationException("this method does not support in array");
 	}
 	
 }

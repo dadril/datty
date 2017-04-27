@@ -84,17 +84,20 @@ public class ValueMessageWriter extends AbstractMessageWriter implements Message
 	public ByteBuf writeValue(ByteBuf value, ByteBuf sink, boolean copy) {
 
 		if (copy) {
+			writeBinaryHeader(value.readableBytes(), sink);
 			sink.writeBytes(value);
 			return sink;
 		}
 		else if (sink instanceof CompositeByteBuf) {
 			CompositeByteBuf compositeSink = (CompositeByteBuf) sink;
+			writeBinaryHeader(value.readableBytes(), compositeSink);
 			compositeSink.addComponent(true, value);
 			return compositeSink;
 		}
 		else {
 			CompositeByteBuf result = sink.alloc().compositeBuffer();
 			result.addComponent(true, sink);
+			writeBinaryHeader(value.readableBytes(), result);
 			result.addComponent(true, value);
 			return result;
 		}

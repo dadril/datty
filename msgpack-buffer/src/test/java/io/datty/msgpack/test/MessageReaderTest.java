@@ -13,8 +13,6 @@
  */
 package io.datty.msgpack.test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +20,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.datty.msgpack.MessageFactory;
-import io.datty.msgpack.MessageReader;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -64,27 +61,14 @@ public class MessageReaderTest {
 		ByteBuf source = Unpooled.wrappedBuffer(example);
 		
 		Object message = MessageFactory.readValue(source, false);
-	  Assert.assertTrue(message instanceof MessageReader);
+	  Assert.assertTrue(message instanceof Map);
 		
 	  @SuppressWarnings("unchecked")
-		MessageReader<Integer> reader = (MessageReader<Integer>) message;
-
-	  Map<Integer, Object> map = new HashMap<>();
-	  
-	  for (int i = 0; i != reader.size(); ++i) {
-	  	
-	  	Integer key = reader.readKey(source);
-	  	Object value = reader.readValue(source, false);
-	  	
-	  	map.put(key, value);
-	  	
-	  }
+	  Map<Integer, Object> map = (Map<Integer, Object>) message;
 	  
 	  Assert.assertEquals(map.get(1), "123");
 	  Assert.assertEquals(map.get(2), Long.valueOf(-9));
 	  Assert.assertEquals(map.get(3), "Alex");
-
-	  Assert.assertNull(reader.readKey(source));
 		
 	}
 	
@@ -93,28 +77,15 @@ public class MessageReaderTest {
 		ByteBuf source = Unpooled.wrappedBuffer(example);
 		
 		Object message = MessageFactory.readValue(source, false);
-	  Assert.assertTrue(message instanceof MessageReader);
+	  Assert.assertTrue(message instanceof Map);
 		
 	  @SuppressWarnings("unchecked")
-		MessageReader<String> reader = (MessageReader<String>) message;
-
-	  Map<String, Object> map = new HashMap<>();
-	  
-	  for (int i = 0; i != reader.size(); ++i) {
-	  	
-	  	String key = reader.readKey(source);
-	  	Object value = reader.readValue(source, false);
-	  	
-	  	map.put(key, value);
-	  	
-	  }
+	  Map<String, Object> map = (Map<String, Object>) message;
 	  
 	  Assert.assertEquals(map.get("acc"), "123");
 	  Assert.assertEquals(map.get("logins"), Long.valueOf(-9));
 	  Assert.assertEquals(map.get("name"), "Alex");
 
-	  Assert.assertNull(reader.readKey(source));
-		
 	}
 	
 	protected void assertArrayExample(byte[] example) {
@@ -122,20 +93,11 @@ public class MessageReaderTest {
 		ByteBuf source = Unpooled.wrappedBuffer(example);
 		
 		Object message = MessageFactory.readValue(source, false);
-	  Assert.assertTrue(message instanceof MessageReader);
+	  Assert.assertTrue(message instanceof List);
 	  
 	  @SuppressWarnings("unchecked")
-		MessageReader<Integer> reader = (MessageReader<Integer>) message;
-	  
-	  List<Object> array = new ArrayList<>(reader.size());
+	  List<Object> array = (List<Object>) message;
 	 
-	  for (int i = 0; i != reader.size(); ++i) {
-	  	
-	  	Object value = reader.readValue(source, false);
-	  	array.add(value);
-	  	
-	  }
-	  
 	  Assert.assertEquals(array.get(0), "123");
 	  Assert.assertEquals(array.get(1), Long.valueOf(-9));
 	  Assert.assertEquals(array.get(2), "Alex");

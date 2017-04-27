@@ -13,6 +13,8 @@
  */
 package io.datty.msgpack.test;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 import io.datty.msgpack.MessageWriter;
@@ -158,6 +160,8 @@ public class MessageWriterTest extends MessageReaderTest {
 		sink = writer.prependHeader(FIELDS_COUNT, sink);
 		
 		byte[] bytes = ByteBufUtil.getBytes(sink);
+		
+		System.out.println(Arrays.toString(bytes));
 		
 		assertArrayExample(bytes);
 		

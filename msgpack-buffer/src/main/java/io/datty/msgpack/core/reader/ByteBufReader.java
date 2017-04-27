@@ -41,12 +41,12 @@ public class ByteBufReader extends AbstractMessageReader implements ValueReader<
 
 		byte b = getNextCode(source);
 
-		if (Code.isFixInt(b)) {
-			return wrap(Integer.toString((int) readByte(source)));
-		}
-
 		if (Code.isFixedRaw(b)) { // FixRaw
 			return readBytes(source, copy);
+		}
+		
+		if (Code.isFixInt(b)) {
+			return wrap(Integer.toString((int) readByte(source)));
 		}
 
 		switch (b) {

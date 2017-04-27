@@ -30,12 +30,19 @@ public final class ValueWriters {
 	private final static Map<Class<?>, ValueWriter<?>> writers = new HashMap<>();
 	
 	static {
+		writers.put(boolean.class, BooleanWriter.INSTANCE);
 		writers.put(Boolean.class, BooleanWriter.INSTANCE);
+		writers.put(byte.class, ByteWriter.INSTANCE);
 		writers.put(Byte.class, ByteWriter.INSTANCE);
+		writers.put(short.class, ShortWriter.INSTANCE);
 		writers.put(Short.class, ShortWriter.INSTANCE);
+		writers.put(int.class, IntegerWriter.INSTANCE);
 		writers.put(Integer.class, IntegerWriter.INSTANCE);
+		writers.put(long.class, LongWriter.INSTANCE);
 		writers.put(Long.class, LongWriter.INSTANCE);
+		writers.put(float.class, FloatWriter.INSTANCE);
 		writers.put(Float.class, FloatWriter.INSTANCE);
+		writers.put(double.class, DoubleWriter.INSTANCE);
 		writers.put(Double.class, DoubleWriter.INSTANCE);
 		writers.put(String.class, StringWriter.INSTANCE);
 		writers.put(ByteBuf.class, ByteBufWriter.INSTANCE);

@@ -13,7 +13,16 @@
  */
 package io.datty.msgpack;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import io.datty.msgpack.core.ArrayMessageReader;
+import io.datty.msgpack.core.IntMapMessageReader;
+import io.datty.msgpack.core.StringMapMessageReader;
 import io.datty.msgpack.core.ValueMessageReader;
+import io.datty.msgpack.support.MessageException;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -27,14 +36,165 @@ public final class MessageFactory {
 
 	private MessageFactory() {
 	}
+	
+	/**
+	 * Reads value from the source
+	 * 
+	 * It could be:
+	 * StringMap
+	 * IntMap
+	 * Array
+	 * 
+	 * @param reader - known reader
+	 * @param source - input buffer
+	 * @param copy - always copy if true
+	 * @return Map or List or null
+	 */
+	
+	public static Object readFrom(MessageReader<?> reader, ByteBuf source, boolean copy) {
+		
+		if (reader instanceof StringMapMessageReader) {
+			return readStringMap((StringMapMessageReader) reader, source, copy);
+		}
+		else if (reader instanceof IntMapMessageReader) {
+			return readIntMap((IntMapMessageReader) reader, source, copy);
+		}
+		else if (reader instanceof ArrayMessageReader) {
+			return readArray((ArrayMessageReader) reader, source, copy);
+		}
+		else {
+			throw new MessageException("unknown reader type: " + reader);
+		}
+	}
+	
+	/**
+	 * Reads string map from source
+	 * 
+	 * @param reader - string map reader
+	 * @param source - input buffers
+	 * @return Map or null
+	 */
+	
+	public static Map<String, Object> readStringMap(MessageReader<String> reader, ByteBuf source, boolean copy) {
+		
+		int size = reader.size();
+		
+	  Map<String, Object> map = new HashMap<>();
+	  
+	  for (int i = 0; i != size; ++i) {
+	  	
+	  	String key = reader.readKey(source);
+	  	Object value = reader.readValue(source, copy);
+	  	
+	  	if (value instanceof MessageReader) {
+	  		value = readFrom((MessageReader<?>) value, source, copy);
+	  	}
+	  	
+	  	map.put(key, value);
+	  	
+	  }
+	  
+	  return map;
+	}
+	
+	/**
+	 * Reads int map from source
+	 * 
+	 * @param reader - string int reader
+	 * @param source - input buffers
+	 * @return Map or null
+	 */
+	
+	public static Map<Integer, Object> readIntMap(MessageReader<Integer> reader, ByteBuf source, boolean copy) {
+		
+		int size = reader.size();
+		
+	  Map<Integer, Object> map = new HashMap<>();
+	  
+	  for (int i = 0; i != size; ++i) {
+	  	
+	  	Integer key = reader.readKey(source);
+	  	Object value = reader.readValue(source, copy);
+	  	
+	  	if (value instanceof MessageReader) {
+	  		value = readFrom((MessageReader<?>) value, source, copy);
+	  	}
+	  	
+	  	map.put(key, value);
+	  	
+	  }
+	  
+	  return map;
+	}
+	
+	/**
+	 * Reads array from source
+	 * 
+	 * @param reader - string int reader
+	 * @param source - input buffers
+	 * @return Map or null
+	 */
+	
+	public static List<Object> readArray(MessageReader<Integer> reader, ByteBuf source, boolean copy) {
+		
+		int size = reader.size();
+		
+	  List<Object> list = new ArrayList<>(size);
+	  
+	  for (int i = 0; i != size; ++i) {
+	  	
+	  	Object value = reader.readValue(source, copy);
+	  	
+	  	if (value instanceof MessageReader) {
+	  		value = readFrom((MessageReader<?>) value, source, copy);
+	  	}
+	  	
+	  	list.add(value);
+	  	
+	  }
+	  
+	  return list;
+	}
+	
+	/**
+	 * Reads value from the source
+	 * 
+	 * @param source - input buffer
+	 * @param copy - always copy content if true
+	 * @return value or null
+	 */
 
 	public static Object readValue(ByteBuf source, boolean copy) {
-		return ValueMessageReader.INSTANCE.readValue(source, copy);
+		
+		Object value = ValueMessageReader.INSTANCE.readValue(source, copy);
+		
+		if (value instanceof MessageReader) {
+  		value = readFrom((MessageReader<?>) value, source, copy);
+		}
+		
+		return value;
 	}
+	
+	/**
+	 * Skips value from the source
+	 * 
+	 * @param source - input buffer
+	 * @param copy - always copy content if true
+	 * @return ByteBuf of the value
+	 */
 	
 	public static ByteBuf skipValue(ByteBuf source, boolean copy) {
 		return ValueMessageReader.INSTANCE.skipValue(source, copy);
 	}
+	
+	/**
+	 * Read typed value from the source
+	 * 
+	 * @param type - expecting type
+	 * @param source - input buffer
+	 * @param copy - always copy content if true
+	 * @return value or null
+	 */
 	
 	public static <T> T readValue(Class<T> type, ByteBuf source, boolean copy) {
 		return ValueMessageReader.INSTANCE.readValue(type, source, copy);

@@ -14,6 +14,7 @@
 package io.datty.msgpack.core.reader;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.netty.buffer.ByteBuf;
@@ -29,16 +30,33 @@ public final class ValueReaders {
 
 	private final static Map<Class<?>, ValueReader<?>> readers = new HashMap<>();
 	
+	private final static Map<Class<?>, Class<?>> arrayToType = new HashMap<>();
+	
 	static {
+		readers.put(boolean.class, BooleanReader.INSTANCE);
 		readers.put(Boolean.class, BooleanReader.INSTANCE);
+		readers.put(byte.class, ByteReader.INSTANCE);
 		readers.put(Byte.class, ByteReader.INSTANCE);
+		readers.put(short.class, ShortReader.INSTANCE);
 		readers.put(Short.class, ShortReader.INSTANCE);
+		readers.put(int.class, IntegerReader.INSTANCE);
 		readers.put(Integer.class, IntegerReader.INSTANCE);
+		readers.put(long.class, LongReader.INSTANCE);
 		readers.put(Long.class, LongReader.INSTANCE);
+		readers.put(float.class, FloatReader.INSTANCE);
 		readers.put(Float.class, FloatReader.INSTANCE);
+		readers.put(double.class, DoubleReader.INSTANCE);
 		readers.put(Double.class, DoubleReader.INSTANCE);
 		readers.put(String.class, StringReader.INSTANCE);
 		readers.put(ByteBuf.class, ByteBufReader.INSTANCE);
+		readers.put(List.class, ListReader.INSTANCE);
+		
+		arrayToType.put(Boolean[].class, Boolean.class);
+		arrayToType.put(boolean[].class, Boolean.class);
+		arrayToType.put(Byte[].class, Byte.class);
+		arrayToType.put(Boolean[].class, Boolean.class);
+		arrayToType.put(Boolean[].class, Boolean.class);
+		
 	}
 	
 	private ValueReaders() {
