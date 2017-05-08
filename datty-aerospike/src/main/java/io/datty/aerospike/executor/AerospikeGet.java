@@ -23,6 +23,7 @@ import com.aerospike.client.policy.QueryPolicy;
 import io.datty.aerospike.AerospikeCache;
 import io.datty.aerospike.AerospikeCacheManager;
 import io.datty.aerospike.support.AerospikeValueUtil;
+import io.datty.api.DattyRow;
 import io.datty.api.operation.GetOperation;
 import io.datty.api.result.GetResult;
 import io.datty.support.LongVersion;
@@ -77,6 +78,9 @@ public enum AerospikeGet implements AerospikeOperation<GetOperation, GetResult> 
 		
 		if (record != null) {
 			
+			DattyRow row = new DattyRow();
+			result.setRow(row);
+			
 			result.setVersion(new LongVersion(record.generation));
 
 			if (operation.isAllMinorKeys()) {
@@ -84,7 +88,7 @@ public enum AerospikeGet implements AerospikeOperation<GetOperation, GetResult> 
 				for (Map.Entry<String, Object> e : record.bins.entrySet()) {
 					Object value = e.getValue();
 					if (value != null) {
-						result.addValue(e.getKey(), AerospikeValueUtil.toByteBuf(value));
+						row.putValue(e.getKey(), AerospikeValueUtil.toByteBuf(value));
 					}
 				}
 				
@@ -94,7 +98,7 @@ public enum AerospikeGet implements AerospikeOperation<GetOperation, GetResult> 
 				for (String minorKey : operation.getMinorKeys()) {
 					Object value = record.bins.get(minorKey);
 					if (value != null) {
-						result.addValue(minorKey, AerospikeValueUtil.toByteBuf(value));
+						row.putValue(minorKey, AerospikeValueUtil.toByteBuf(value));
 					}
 				}
 				

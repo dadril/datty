@@ -13,8 +13,6 @@
  */
 package io.datty.api.operation;
 
-import java.util.Map;
-
 import io.datty.api.DattyRow;
 import io.datty.api.result.CompareAndSetResult;
 import io.netty.buffer.ByteBuf;
@@ -34,7 +32,7 @@ public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSe
 	
 	private Version version;
 	
-	private final DattyRow row = new DattyRow();
+	private DattyRow row;
 
 	public CompareAndSetOperation(String cacheName) {
 		super(cacheName);
@@ -66,15 +64,23 @@ public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSe
 		return row;
 	}
 
-	public CompareAndSetOperation addValue(String minorKey, ByteBuf valueOrNull) {
-		row.addValue(minorKey, valueOrNull);
+	public CompareAndSetOperation setRow(DattyRow row) {
+		this.row = row;
 		return this;
 	}
 	
-	public Map<String, ByteBuf> getValues() {
-		return row.getValues();
+	public boolean hasRow() {
+		return row != null;
 	}
 
+	public CompareAndSetOperation addValue(String minorKey, ByteBuf value) {
+		if (row == null) {
+			row = new DattyRow();
+		}
+		row.putValue(minorKey, value);
+		return this;
+	}
+	
 	@Override
 	public OpCode getCode() {
 		return OpCode.COMPARE_AND_SET;

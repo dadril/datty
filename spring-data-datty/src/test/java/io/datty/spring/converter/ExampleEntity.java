@@ -24,7 +24,7 @@ import io.datty.spring.mapping.Entity;
  *
  */
 
-@Entity(cacheName="TEST_CACHE")
+@Entity(cacheName="TEST_CACHE", minorKey="def")
 public class ExampleEntity {
 
 	@Id

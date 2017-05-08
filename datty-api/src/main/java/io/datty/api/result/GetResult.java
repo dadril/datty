@@ -14,7 +14,6 @@
 package io.datty.api.result;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 
 import io.datty.api.DattyRow;
@@ -37,7 +36,7 @@ public class GetResult extends AbstractResult<GetOperation, GetResult> {
 	
 	private Version version;
 	
-	private final DattyRow row = new DattyRow();
+	private DattyRow row;
 	
 	public GetResult() {
 	}
@@ -46,13 +45,20 @@ public class GetResult extends AbstractResult<GetOperation, GetResult> {
 		return row;
 	}
 	
-	public GetResult addValue(String minorKey, ByteBuf valueOrNull) {
-		row.addValue(minorKey, valueOrNull);
+	public GetResult setRow(DattyRow row) {
+		this.row = row;
 		return this;
 	}
 	
-	public GetResult addValues(Map<String, ByteBuf> map) {
-		row.addValues(map);
+	public boolean hasRow() {
+		return row != null;
+	}
+	
+	public GetResult addValue(String minorKey, ByteBuf value) {
+		if (row == null) {
+			row = new DattyRow();
+		}
+		row.putValue(minorKey, value);
 		return this;
 	}
 	
@@ -75,25 +81,16 @@ public class GetResult extends AbstractResult<GetOperation, GetResult> {
 
 	public boolean isEmpty() {
 		
-		if (!exists()) {
+		if (!hasRow()) {
 			return true;
 		}
 		
 		return row.isEmpty();
 	}
 	
-	public int size() {
-		
-		if (!exists()) {
-			return 0;
-		}
-		
-		return row.size();
-	}
-	
 	public Set<String> minorKeys() {
 		
-		if (!exists()) {
+		if (!hasRow()) {
 			return Collections.emptySet();
 		}
 		
@@ -102,11 +99,20 @@ public class GetResult extends AbstractResult<GetOperation, GetResult> {
 	
 	public ByteBuf get(String minorKey) {
 		
-		if (!exists()) {
+		if (!hasRow()) {
 			return null;
 		}
 		
 		return row.get(minorKey);
+	}
+	
+	public int size() {
+		
+		if (!hasRow()) {
+			return 0;
+		}
+		
+		return row.size();
 	}
 	
 	@Override

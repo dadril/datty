@@ -13,15 +13,19 @@
  */
 package io.datty.unit.executor;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 import io.datty.api.DattyError;
+import io.datty.api.DattyRow;
 import io.datty.api.operation.CompareAndSetOperation;
 import io.datty.api.operation.Version;
 import io.datty.api.operation.VersionType;
 import io.datty.api.result.CompareAndSetResult;
 import io.datty.support.exception.DattySingleException;
 import io.datty.unit.UnitRecord;
+import io.netty.buffer.ByteBuf;
 import rx.Single;
 
 /**
@@ -38,12 +42,15 @@ public enum CompareAndSetExecutor implements OperationExecutor<CompareAndSetOper
 	@Override
 	public Single<CompareAndSetResult> execute(ConcurrentMap<String, UnitRecord> recordMap, CompareAndSetOperation operation) {
 		
+		DattyRow row = operation.getRow();
+		Map<String, ByteBuf> values = row != null ? row.getValues() : Collections.<String, ByteBuf>emptyMap();
+		
 		UnitRecord record = recordMap.get(operation.getMajorKey());
 		
 		if (record == null) {
 			
 			if (isZeroVersion(operation.getVersion())) {
-				record = new UnitRecord(operation.getValues());
+				record = new UnitRecord(values);
 				
 				if (record.isEmpty()) {
 					// do nothing
@@ -64,7 +71,7 @@ public enum CompareAndSetExecutor implements OperationExecutor<CompareAndSetOper
 		}
 		else if (operation.hasVersion() && operation.getVersion().equals(record.getVersion())) {
 
-			UnitRecord newRecord = new UnitRecord(record, operation.getValues(), operation.getUpdatePolicy());
+			UnitRecord newRecord = new UnitRecord(record, values, operation.getUpdatePolicy());
 			
 			boolean updated = newRecord.isEmpty() ?
 					recordMap.remove(operation.getMajorKey(), record) :

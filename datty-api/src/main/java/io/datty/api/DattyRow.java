@@ -13,12 +13,12 @@
  */
 package io.datty.api;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 
 /**
  * DattyRow
@@ -29,80 +29,86 @@ import io.netty.buffer.ByteBuf;
 
 public final class DattyRow {
 
+	private final ByteBufAllocator alloc;
+	
 	/**
 	 * key is the minorKey, value is payload
 	 */
 	
-	private Map<String, ByteBuf> values;
+	private final Map<String, ByteBuf> values = new HashMap<String, ByteBuf>();
 	
-	public DattyRow addValue(String minorKey, ByteBuf valueOrNull) {
-		if (this.values == null) {
-			this.values = Collections.singletonMap(minorKey, valueOrNull);
-		}
-		else {
-			if (this.values.size() == 1) {
-				this.values = new HashMap<>(this.values);
-			}
-			this.values.put(minorKey, valueOrNull);
-		}
-		return this;
+	public DattyRow() {
+		this(DattyConstants.ALLOC);
 	}
 	
-	public DattyRow addValues(Map<String, ByteBuf> map) {
-		if (this.values == null) {
-			this.values = new HashMap<String, ByteBuf>(map);
+	public DattyRow(ByteBufAllocator alloc) {
+		this.alloc = alloc;
+	}
+	
+	public void release() {
+		for (ByteBuf value : values.values()) {
+			value.release();
 		}
-		else {
-			if (this.values.size() == 1) {
-				this.values = new HashMap<String, ByteBuf>(this.values);
-			}
-			this.values.putAll(map);
-		}
-		return this;
+		values.clear();
 	}
 	
 	public void clear() {
-		this.values = null;
-	}
-	
-	public boolean isEmpty() {
-		
-		if (this.values == null) {
-			return true;
+		for (ByteBuf value : values.values()) {
+			value.resetReaderIndex().resetWriterIndex();
 		}
-		
-		return this.values.isEmpty();
 	}
 	
 	public int size() {
-		
-		if (this.values == null) {
-			return 0;
+		return values.size();
+	}
+	
+	public ByteBuf addValue(String minorKey) {
+		ByteBuf buffer = values.get(minorKey);
+		if (buffer == null) {
+			buffer = alloc.buffer();
+			values.put(minorKey, buffer);
 		}
-		
-		return this.values.size();
+		else {
+			buffer.resetReaderIndex().resetWriterIndex();
+		}
+		return buffer;
+	}
+	
+	public DattyRow removeValue(String minorKey) {
+		ByteBuf prev = values.remove(minorKey);
+		if (prev != null) {
+			prev.release();
+		}
+		return this;
+	}
+	
+	public DattyRow putValue(String minorKey, ByteBuf value) {
+		ByteBuf prev = values.put(minorKey, value);
+		if (prev != null) {
+			prev.release();
+		}
+		return this;
+	}
+	
+	public boolean isEmpty() {
+		for (ByteBuf value : values.values()) {
+			if (value != null && value.readableBytes() > 0) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public Set<String> minorKeys() {
-		
-		if (this.values == null) {
-			return Collections.emptySet();
-		}
-		
 		return this.values.keySet();
 	}
 	
 	public ByteBuf get(String minorKey) {
-		
-		if (this.values == null) {
-			return null;
-		}
-		
 		return this.values.get(minorKey);
 	}
 
 	public Map<String, ByteBuf> getValues() {
-		return values != null ? values : Collections.<String, ByteBuf>emptyMap();
+		return values;
 	}
 
 	@Override

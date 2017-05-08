@@ -18,6 +18,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.expression.BeanFactoryAccessor;
 import org.springframework.context.expression.BeanFactoryResolver;
+import org.springframework.data.mapping.PersistentProperty;
+import org.springframework.data.mapping.SimplePropertyHandler;
 import org.springframework.data.mapping.model.BasicPersistentEntity;
 import org.springframework.data.util.TypeInformation;
 import org.springframework.expression.Expression;
@@ -41,6 +43,7 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 	private final String minorKey;
 	private final int ttlSeconds;
 	private final int timeoutMillis;
+	private int propsCount = -1;
 	
 	private final SpelExpressionParser parser;
 	private final StandardEvaluationContext context;
@@ -67,6 +70,27 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 			this.timeoutMillis = DattyConstants.UNSET_TIMEOUT;
 		}
 
+	}
+	
+	private int doCountProperties() {
+		PropertyCounter counter = new PropertyCounter();
+		doWithProperties(counter);
+		return counter.getCounter();
+	}
+	
+	public static final class PropertyCounter implements SimplePropertyHandler {
+
+		private int counter = 0;
+		
+		public int getCounter() {
+			return counter;
+		}
+
+		@Override
+		public void doWithPersistentProperty(PersistentProperty<?> property) {
+			counter++;
+		}
+		
 	}
 	
 	@Override
@@ -99,6 +123,14 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 	@Override
 	public int getTimeoutMillis() {
 		return timeoutMillis;
+	}
+
+	@Override
+	public int getPropertiesCount() {
+		if (propsCount == -1) {
+			propsCount = doCountProperties();
+		}
+		return propsCount;
 	}
 
 	private String expression(String value) {

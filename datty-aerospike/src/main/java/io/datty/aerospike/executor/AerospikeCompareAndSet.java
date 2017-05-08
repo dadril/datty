@@ -27,6 +27,7 @@ import io.datty.aerospike.AerospikeCache;
 import io.datty.aerospike.AerospikeCacheManager;
 import io.datty.aerospike.support.AerospikeValueUtil;
 import io.datty.api.DattyError;
+import io.datty.api.DattyRow;
 import io.datty.api.operation.CompareAndSetOperation;
 import io.datty.api.operation.Version;
 import io.datty.api.result.CompareAndSetResult;
@@ -50,7 +51,9 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 	@Override
 	public Single<CompareAndSetResult> execute(AerospikeCache cache, CompareAndSetOperation operation) {
 
-		if (operation.getValues().isEmpty()) {
+		DattyRow row = operation.getRow();
+		
+		if (row == null) {
 
 			switch (operation.getUpdatePolicy()) {
 
@@ -68,7 +71,7 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 
 		}
 
-		boolean hasNullBins = hasNullBins(operation.getValues());
+		boolean hasNullBins = hasNullBins(row.getValues());
 
 		switch (operation.getUpdatePolicy()) {
 
@@ -106,6 +109,7 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 
 	private Single<CompareAndSetResult> mergeBins(final AerospikeCache cache, final CompareAndSetOperation operation) {
 
+		final DattyRow row = operation.getRow();
 		final AerospikeCacheManager cacheManager = cache.getParent();
 		QueryPolicy queryPolicy = cache.getConfig().getQueryPolicy(operation, false);
 		
@@ -128,7 +132,7 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 							return Single.just(new CompareAndSetResult(false));
 						}
 						
-						AerospikeBins mergedBins = new AerospikeBins(mergeMaps(record, operation.getValues()));
+						AerospikeBins mergedBins = new AerospikeBins(mergeMaps(record, row.getValues()));
 						return putBins(cacheManager, cache, writePolicy, recordKey, mergedBins, operation);
 					}
 
@@ -197,6 +201,7 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 
 	private Single<CompareAndSetResult> putBins(AerospikeCache cache, CompareAndSetOperation operation) {
 
+		final DattyRow row = operation.getRow();
 		AerospikeCacheManager cacheManager = cache.getParent();
 		
 		WritePolicy writePolicy = cache.getConfig().getWritePolicy(operation, true);
@@ -204,7 +209,7 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 		
 		Key recordKey = new Key(cacheManager.getConfig().getNamespace(), cache.getCacheName(), operation.getMajorKey());
 
-		return putBins(cacheManager, cache, writePolicy, recordKey, new AerospikeBins(operation.getValues()), operation);
+		return putBins(cacheManager, cache, writePolicy, recordKey, new AerospikeBins(row.getValues()), operation);
 
 	}
 

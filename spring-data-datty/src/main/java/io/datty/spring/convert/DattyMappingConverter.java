@@ -13,6 +13,8 @@
  */
 package io.datty.spring.convert;
 
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.core.convert.support.GenericConversionService;
@@ -23,10 +25,14 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 import io.datty.api.DattyRow;
+import io.datty.msgpack.MessageWriter;
+import io.datty.msgpack.core.MapMessageWriter;
+import io.datty.msgpack.core.ValueMessageWriter;
 import io.datty.spring.core.DattyId;
 import io.datty.spring.mapping.DattyPersistentEntity;
 import io.datty.spring.mapping.DattyPersistentProperty;
 import io.datty.spring.mapping.Identifiable;
+import io.netty.buffer.ByteBuf;
 
 /**
  * DattyMappingConverter
@@ -100,18 +106,105 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 			throw new MappingException("No mapping metadata found for " + source.getClass());
 		}
 
-		entity.doWithProperties(new PropertyHandler<DattyPersistentProperty>() {
-
-			@Override
-			public void doWithPersistentProperty(DattyPersistentProperty persistentProperty) {
-				
-				
-			}
-			
-		});
+		if (entity.hasMinorKey()) {
+			ByteBuf buffer = sink.addValue(entity.getMinorKey());
+			writeToMinorKey(entity, source, buffer);
+		}
+		else {
+			writeCrossMinorKeys(entity, source, sink);
+		}
 		
 	}
 
+	private void writeToMinorKey(DattyPersistentEntity<?> entity, Object source, final ByteBuf sink) {
+		
+		final MessageWriter writer = MapMessageWriter.INSTANCE;
+		
+		int headerIndex = writer.skipHeader(entity.getPropertiesCount(), sink);
+		
+		MinorKeyWriter minorKeyWriter = new MinorKeyWriter(writer, source, sink);
+		entity.doWithProperties(minorKeyWriter);
+		
+		writer.writeHeader(minorKeyWriter.size(), entity.getPropertiesCount(), headerIndex, sink);
+		
+	}
+	
+	public final class MinorKeyWriter implements PropertyHandler<DattyPersistentProperty> {
+
+		private final MessageWriter writer;
+		private final BeanWrapper wrapper;
+		private final ByteBuf sink;
+		private int size;
+		
+		public MinorKeyWriter(MessageWriter writer, Object source, ByteBuf sink) {
+			this.writer = writer;
+			this.wrapper = new BeanWrapperImpl(source);		
+			wrapper.setConversionService(conversionService);
+			this.sink = sink;
+		}
+		
+		public int size() {
+			return size;
+		}
+
+		@Override
+		public void doWithPersistentProperty(DattyPersistentProperty persistentProperty) {
+			
+			String propName = persistentProperty.getName();
+			Class<Object> propType = (Class<Object>) wrapper.getPropertyType(propName);
+			Object propValue = wrapper.getPropertyValue(propName);
+			
+			if (propValue != null) {
+				writer.writeKey(propName, sink);
+				writer.writeValue(propType, propValue, sink, false);
+			}
+			
+			size++;
+			
+		}
+		
+	}
+	
+	private void writeCrossMinorKeys(DattyPersistentEntity<?> entity, Object source, DattyRow sink) {
+		
+		entity.doWithProperties(new CrossMinorKeyWriter(source, sink));
+		
+	}	
+	
+	public final class CrossMinorKeyWriter implements PropertyHandler<DattyPersistentProperty> {
+
+		private final BeanWrapper wrapper;
+		private final DattyRow sink;
+		private int size;
+		
+		public CrossMinorKeyWriter(Object source, DattyRow sink) {
+			this.wrapper = new BeanWrapperImpl(source);		
+			wrapper.setConversionService(conversionService);
+			this.sink = sink;
+		}
+		
+		public int size() {
+			return size;
+		}
+
+		@Override
+		public void doWithPersistentProperty(DattyPersistentProperty persistentProperty) {
+			
+			String propName = persistentProperty.getName();
+			Class<Object> propType = (Class<Object>) wrapper.getPropertyType(propName);
+			Object propValue = wrapper.getPropertyValue(propName);
+			
+			if (propValue != null) {
+				ByteBuf valueBuffer = sink.addValue(propName);
+				ValueMessageWriter.INSTANCE.writeValue(propType, propValue, valueBuffer, false);
+			}
+			
+			size++;
+			
+		}
+		
+	}
+	
 	@Override
 	public <R> R read(Class<R> type, DattyRow source) {
 		Assert.notNull(type, "type is null");

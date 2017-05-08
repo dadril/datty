@@ -13,13 +13,17 @@
  */
 package io.datty.unit.executor;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 import io.datty.api.DattyError;
+import io.datty.api.DattyRow;
 import io.datty.api.operation.PutOperation;
 import io.datty.api.result.PutResult;
 import io.datty.support.exception.DattySingleException;
 import io.datty.unit.UnitRecord;
+import io.netty.buffer.ByteBuf;
 import rx.Single;
 
 /**
@@ -35,12 +39,18 @@ public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
 	
 	@Override
 	public Single<PutResult> execute(ConcurrentMap<String, UnitRecord> recordMap, PutOperation operation) {
-
+		
+		DattyRow row = operation.getRow();
+		
 		UnitRecord record = recordMap.get(operation.getMajorKey());
 		
 		if (record == null) {
 			
-			record = new UnitRecord(operation.getValues());
+			if (row == null || row.isEmpty()) {
+				return Single.just(new PutResult());
+			}
+			
+			record = new UnitRecord(row.getValues());
 			UnitRecord c = recordMap.putIfAbsent(operation.getMajorKey(), record);
 			if (c != null) {
 				return Single.error(new DattySingleException(DattyError.ErrCode.CONCURRENT_UPDATE, operation));
@@ -51,7 +61,8 @@ public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
 		}
 		else {
 			
-			UnitRecord newRecord = new UnitRecord(record, operation.getValues(), operation.getUpdatePolicy());
+			Map<String, ByteBuf> values = row != null ? row.getValues() : Collections.<String, ByteBuf>emptyMap();
+			UnitRecord newRecord = new UnitRecord(record, values, operation.getUpdatePolicy());
 			
 			boolean updated = newRecord.isEmpty() ? 
 					recordMap.remove(operation.getMajorKey(), record) :

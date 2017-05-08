@@ -27,6 +27,7 @@ import io.datty.aerospike.AerospikeCache;
 import io.datty.aerospike.AerospikeCacheManager;
 import io.datty.aerospike.support.AerospikeValueUtil;
 import io.datty.api.DattyError;
+import io.datty.api.DattyRow;
 import io.datty.api.operation.PutOperation;
 import io.datty.api.result.PutResult;
 import io.datty.support.exception.DattySingleException;
@@ -48,7 +49,9 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 	@Override
 	public Single<PutResult> execute(AerospikeCache cache, PutOperation operation) {
 
-		if (operation.getValues().isEmpty()) {
+		DattyRow row = operation.getRow();
+		
+		if (row == null) {
 
 			switch(operation.getUpdatePolicy()) {
 			
@@ -65,7 +68,7 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 			
 		}
 		
-		boolean hasNullBins = hasNullBins(operation.getValues());
+		boolean hasNullBins = hasNullBins(row.getValues());
 		
 		switch(operation.getUpdatePolicy()) {
 		
@@ -89,6 +92,7 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 		
 	private Single<PutResult> mergeBins(final AerospikeCache cache, final PutOperation operation) {
 		
+		final DattyRow row = operation.getRow();
 		final AerospikeCacheManager cacheManager = cache.getParent();
 		QueryPolicy queryPolicy = cache.getConfig().getQueryPolicy(operation, false);
 
@@ -104,7 +108,7 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 
 			@Override
 			public Single<PutResult> call(Record record) {
-				AerospikeBins mergedBins = new AerospikeBins(mergeMaps(record, operation.getValues()));
+				AerospikeBins mergedBins = new AerospikeBins(mergeMaps(record, row.getValues()));
 				return putBins(cacheManager, cache, writePolicy, recordKey, mergedBins, operation);
 			}
 			
@@ -172,11 +176,12 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 	
 	private Single<PutResult> putBins(AerospikeCache cache, PutOperation operation) {
 		
+		final DattyRow row = operation.getRow();
 		AerospikeCacheManager cacheManager = cache.getParent();
 		WritePolicy writePolicy = cache.getConfig().getWritePolicy(operation, false);
 		Key recordKey = new Key(cacheManager.getConfig().getNamespace(), cache.getCacheName(), operation.getMajorKey());
 		
-		return putBins(cacheManager, cache, writePolicy, recordKey, new AerospikeBins(operation.getValues()), operation);
+		return putBins(cacheManager, cache, writePolicy, recordKey, new AerospikeBins(row.getValues()), operation);
 		
 	}
 	

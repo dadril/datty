@@ -13,8 +13,6 @@
  */
 package io.datty.api.operation;
 
-import java.util.Map;
-
 import io.datty.api.DattyRow;
 import io.datty.api.result.PutResult;
 import io.netty.buffer.ByteBuf;
@@ -28,7 +26,7 @@ import io.netty.buffer.ByteBuf;
 
 public class PutOperation extends AbstractUpdateOperation<PutOperation, PutResult> {
 
-	private final DattyRow row = new DattyRow();
+	private DattyRow row;
 	
 	public PutOperation(String storeName) {
 		super(storeName);
@@ -43,18 +41,21 @@ public class PutOperation extends AbstractUpdateOperation<PutOperation, PutResul
 		return row;
 	}
 	
-	public PutOperation addValue(String minorKey, ByteBuf valueOrNull) {
-		row.addValue(minorKey, valueOrNull);
+	public PutOperation setRow(DattyRow row) {
+		this.row = row;
 		return this;
 	}
 	
-	public PutOperation addValues(Map<String, ByteBuf> values) {
-		row.addValues(values);
+	public PutOperation addValue(String minorKey, ByteBuf value) {
+		if (row == null) {
+			row = new DattyRow();
+		}
+		row.putValue(minorKey, value);
 		return this;
 	}
-
-	public Map<String, ByteBuf> getValues() {
-		return row.getValues();
+	
+	public boolean hasRow() {
+		return row != null;
 	}
 	
 	@Override

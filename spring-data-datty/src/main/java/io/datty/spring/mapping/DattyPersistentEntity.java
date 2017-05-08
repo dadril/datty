@@ -64,4 +64,12 @@ public interface DattyPersistentEntity<T> extends PersistentEntity<T, DattyPersi
 	
 	int getTimeoutMillis();
 	
+	/**
+	 * Gets properties count
+	 * 
+	 * @return number of properties
+	 */
+	
+	int getPropertiesCount();
+	
 }

@@ -36,6 +36,12 @@
       <artifactId>datty-api</artifactId>
       <version>${project.version}</version>    
     </dependency>
+    
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>msgpack-buffer</artifactId>
+      <version>${project.version}</version>    
+    </dependency>    
         
     <!-- SPRING -->     
    

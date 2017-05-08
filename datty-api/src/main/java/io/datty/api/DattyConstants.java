@@ -13,6 +13,8 @@
  */
 package io.datty.api;
 
+import io.netty.buffer.ByteBufAllocator;
+
 /**
  * Datty Constants
  * 
@@ -25,6 +27,12 @@ public final class DattyConstants {
 	private DattyConstants() {
 	}
 
+	/**
+	 * Default allocator
+	 */
+	
+	public static ByteBufAllocator ALLOC = ByteBufAllocator.DEFAULT;
+	
 	/**
 	 * Default/unset parameter for TimeToLive in seconds
 	 */
