@@ -85,7 +85,7 @@ public class DattyConverterTest {
 	
 	
 	@Test
-	public void testWrite() {
+	public void testWriteMinorKey() {
 		
 		ExampleEntity entity = new ExampleEntity();
 		entity.setId(777L);
@@ -103,4 +103,26 @@ public class DattyConverterTest {
 		System.out.println(Arrays.toString(bytes));
 	}
 	
+	@Test
+	public void testWriteCross() {
+		
+		ExampleCrossEntity entity = new ExampleCrossEntity();
+		entity.setId(777L);
+		entity.setName("Alex");
+		
+		DattyRow row = new DattyRow();
+		
+		DattyConverterUtil.write(entity, row);
+		
+		ByteBuf bb = row.get("id");
+		Assert.assertNotNull(bb);
+		byte[] bytes = ByteBufUtil.getBytes(bb);
+		System.out.println("id=" + Arrays.toString(bytes));
+		
+		bb = row.get("name");
+		Assert.assertNotNull(bb);
+		bytes = ByteBufUtil.getBytes(bb);
+		System.out.println("name=" + Arrays.toString(bytes));
+
+	}
 }
