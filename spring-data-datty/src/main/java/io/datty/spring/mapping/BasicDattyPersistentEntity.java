@@ -41,6 +41,7 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 
 	private final String cacheName;
 	private final String minorKey;
+	private final boolean copy;
 	private final int ttlSeconds;
 	private final int timeoutMillis;
 	private int propsCount = -1;
@@ -61,11 +62,13 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 			Entity entity = rawType.getAnnotation(Entity.class);
 			this.cacheName = expression(entity.cacheName());
 			this.minorKey = expression(entity.minorKey());
+			this.copy = entity.copy();
 			this.ttlSeconds = entity.ttlSeconds();
 			this.timeoutMillis = entity.timeoutMillis();
 		} else {
 			this.cacheName = rawType.getSimpleName();
 			this.minorKey = "";
+			this.copy = false;
 			this.ttlSeconds = DattyConstants.UNSET_TTL;
 			this.timeoutMillis = DattyConstants.UNSET_TIMEOUT;
 		}
@@ -109,10 +112,15 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 	public boolean hasMinorKey() {
 		return !minorKey.isEmpty();
 	}
-
+	
 	@Override
 	public String getMinorKey() {
 		return minorKey;
+	}
+
+	@Override
+	public boolean copy() {
+		return copy;
 	}
 
 	@Override

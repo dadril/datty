@@ -108,7 +108,10 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 
 		if (entity.hasMinorKey()) {
 			ByteBuf buffer = sink.addValue(entity.getMinorKey());
-			writeToMinorKey(entity, source, buffer);
+			ByteBuf updatedBufer = writeToMinorKey(entity, source, buffer);
+			if (updatedBufer != buffer) {
+				sink.putValue(entity.getMinorKey(), updatedBufer, false);
+			}
 		}
 		else {
 			writeCrossMinorKeys(entity, source, sink);
@@ -116,35 +119,42 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 	}
 
-	private void writeToMinorKey(DattyPersistentEntity<?> entity, Object source, final ByteBuf sink) {
+	private ByteBuf writeToMinorKey(DattyPersistentEntity<?> entity, Object source, final ByteBuf sink) {
 		
 		final MessageWriter writer = MapMessageWriter.INSTANCE;
 		
 		int headerIndex = writer.skipHeader(entity.getPropertiesCount(), sink);
 		
-		MinorKeyWriter minorKeyWriter = new MinorKeyWriter(writer, source, sink);
+		MinorKeyWriter minorKeyWriter = new MinorKeyWriter(writer, source, sink, entity.copy());
 		entity.doWithProperties(minorKeyWriter);
 		
 		writer.writeHeader(minorKeyWriter.size(), entity.getPropertiesCount(), headerIndex, sink);
 		
+		return minorKeyWriter.getSink();
 	}
 	
 	public final class MinorKeyWriter implements PropertyHandler<DattyPersistentProperty> {
 
 		private final MessageWriter writer;
 		private final BeanWrapper wrapper;
-		private final ByteBuf sink;
+		private ByteBuf sink;
 		private int size;
+		private final boolean copy;
 		
-		public MinorKeyWriter(MessageWriter writer, Object source, ByteBuf sink) {
+		public MinorKeyWriter(MessageWriter writer, Object source, ByteBuf sink, boolean copy) {
 			this.writer = writer;
 			this.wrapper = new BeanWrapperImpl(source);		
 			wrapper.setConversionService(conversionService);
 			this.sink = sink;
+			this.copy = copy;
 		}
 		
 		public int size() {
 			return size;
+		}
+		
+		public ByteBuf getSink() {
+			return sink;
 		}
 
 		@Override
@@ -156,10 +166,9 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 			
 			if (propValue != null) {
 				writer.writeKey(propName, sink);
-				writer.writeValue(propType, propValue, sink, false);
+				sink = writer.writeValue(propType, propValue, sink, copy);
+				size++;
 			}
-			
-			size++;
 			
 		}
 		
@@ -167,7 +176,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 	
 	private void writeCrossMinorKeys(DattyPersistentEntity<?> entity, Object source, DattyRow sink) {
 		
-		entity.doWithProperties(new CrossMinorKeyWriter(source, sink));
+		entity.doWithProperties(new CrossMinorKeyWriter(source, sink, entity.copy()));
 		
 	}	
 	
@@ -176,11 +185,13 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		private final BeanWrapper wrapper;
 		private final DattyRow sink;
 		private int size;
+		private final boolean copy;
 		
-		public CrossMinorKeyWriter(Object source, DattyRow sink) {
+		public CrossMinorKeyWriter(Object source, DattyRow sink, boolean copy) {
 			this.wrapper = new BeanWrapperImpl(source);		
 			wrapper.setConversionService(conversionService);
 			this.sink = sink;
+			this.copy = copy;
 		}
 		
 		public int size() {
@@ -196,10 +207,12 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 			
 			if (propValue != null) {
 				ByteBuf valueBuffer = sink.addValue(propName);
-				ValueMessageWriter.INSTANCE.writeValue(propType, propValue, valueBuffer, false);
+				ByteBuf updatedBuffer = ValueMessageWriter.INSTANCE.writeValue(propType, propValue, valueBuffer, false);
+				if (updatedBuffer != valueBuffer) {
+					sink.putValue(propName, updatedBuffer, copy);
+				}
+				size++;
 			}
-			
-			size++;
 			
 		}
 		

@@ -50,7 +50,7 @@ public class PutOperation extends AbstractUpdateOperation<PutOperation, PutResul
 		if (row == null) {
 			row = new DattyRow();
 		}
-		row.putValue(minorKey, value);
+		row.putValue(minorKey, value, true);
 		return this;
 	}
 	

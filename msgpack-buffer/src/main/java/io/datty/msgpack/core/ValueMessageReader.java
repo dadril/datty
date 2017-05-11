@@ -67,6 +67,9 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 	    case NIL:
 	      return readNull(buffer);
 	      
+	    case BOOLEAN:
+	    	return Boolean.valueOf(readBoolean(buffer));	      
+	      
 	    case POSFIXINT:
 	    case NEGFIXINT: 
 	    case UINT8:
@@ -119,6 +122,9 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 		
 	    case NIL:
 	      return readNull(buffer);
+	      
+	    case BOOLEAN:
+	    	return Boolean.valueOf(readBoolean(buffer));
 	      
 	    case POSFIXINT:
 	    case NEGFIXINT: 

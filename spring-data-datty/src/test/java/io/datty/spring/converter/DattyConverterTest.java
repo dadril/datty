@@ -13,17 +13,19 @@
  */
 package io.datty.spring.converter;
 
-import java.util.Arrays;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import io.datty.api.DattyRow;
+import io.datty.msgpack.MessageFactory;
+import io.datty.msgpack.core.reader.LongReader;
+import io.datty.msgpack.core.reader.StringReader;
 import io.datty.spring.core.DattyId;
 import io.datty.spring.mapping.Identifiable;
 import io.datty.spring.support.DattyConverterUtil;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 
 
 /**
@@ -98,9 +100,14 @@ public class DattyConverterTest {
 		ByteBuf bb = row.get("def");
 		Assert.assertNotNull(bb);
 		
-		byte[] bytes = ByteBufUtil.getBytes(bb);
+		Object value = MessageFactory.readValue(bb, true);
+		Assert.assertNotNull(value);
+		Assert.assertTrue(value instanceof Map);
 		
-		System.out.println(Arrays.toString(bytes));
+		Map<String, Object> map = (Map<String, Object>) value;
+		Assert.assertEquals(entity.getId(), map.get("id"));
+		Assert.assertEquals(entity.getName(), map.get("name"));
+		
 	}
 	
 	@Test
@@ -116,13 +123,16 @@ public class DattyConverterTest {
 		
 		ByteBuf bb = row.get("id");
 		Assert.assertNotNull(bb);
-		byte[] bytes = ByteBufUtil.getBytes(bb);
-		System.out.println("id=" + Arrays.toString(bytes));
+		
+		Long id = LongReader.INSTANCE.read(bb, true);
+		Assert.assertNotNull(id);
+		Assert.assertEquals(entity.getId(), id);
 		
 		bb = row.get("name");
 		Assert.assertNotNull(bb);
-		bytes = ByteBufUtil.getBytes(bb);
-		System.out.println("name=" + Arrays.toString(bytes));
+		String name = StringReader.INSTANCE.read(bb, true);
+		Assert.assertNotNull(name);
+		Assert.assertEquals(entity.getName(), name);
 
 	}
 }

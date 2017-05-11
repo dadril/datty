@@ -54,6 +54,14 @@ public @interface Entity {
 	 */
 	
 	String minorKey() default "";
+	
+	/**
+	 * Copy bytes from the buffers
+	 * 
+	 * @return true if copy all bytes for reads and writes
+	 */
+	
+	boolean copy() default false;
 
 	/**
 	 * Time to live in seconds

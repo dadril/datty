@@ -38,21 +38,21 @@ public class ByteBufWriter extends AbstractMessageWriter implements ValueWriter<
 		
 		else if (copy) {
 			writeBinaryHeader(value.readableBytes(), sink);
-			sink.writeBytes(value);
+			sink.writeBytes(value, value.readerIndex(), value.readableBytes());
 			return sink;
 		}
 		
 		else if (sink instanceof CompositeByteBuf) {
+			writeBinaryHeader(value.readableBytes(), sink);
 			CompositeByteBuf compositeSink = (CompositeByteBuf) sink;
-			writeBinaryHeader(value.readableBytes(), compositeSink);
 			compositeSink.addComponent(true, value);
 			return compositeSink;
 		}
 		
 		else {
+			writeBinaryHeader(value.readableBytes(), sink);
 			CompositeByteBuf result = sink.alloc().compositeBuffer();
 			result.addComponent(true, sink);
-			writeBinaryHeader(value.readableBytes(), result);
 			result.addComponent(true, value);
 			return result;
 		}

@@ -49,6 +49,14 @@ public interface DattyPersistentEntity<T> extends PersistentEntity<T, DattyPersi
 	String getMinorKey();
 	
 	/**
+	 * Get copy flag
+	 * 
+	 * @return true if copy all bytes for reads and writes
+	 */
+	
+	boolean copy();
+	
+	/**
 	 * Gets time to live in seconds if defined
 	 * 
 	 * @return ttl or 0

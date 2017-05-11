@@ -157,6 +157,36 @@ public final class MessageFactory {
 	}
 	
 	/**
+	 * Release complex object with ByteBuf values
+	 * 
+	 * @param value
+	 */
+	
+	public static void release(Object value) {
+		if (value == null) {
+			return;
+		}
+		if (value instanceof Map) {
+			Map<Object, Object> map = (Map<Object, Object>) value;
+			for (Object v : map.values()) {
+				if (v != null && v instanceof ByteBuf) {
+					ByteBuf bb = (ByteBuf) v;
+					bb.release();
+				}
+			}
+		}
+		if (value instanceof List) {
+			List<Object> list = (List<Object>) value;
+			for (Object v : list) {
+				if (v != null && v instanceof ByteBuf) {
+					ByteBuf bb = (ByteBuf) v;
+					bb.release();
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Reads value from the source
 	 * 
 	 * @param source - input buffer

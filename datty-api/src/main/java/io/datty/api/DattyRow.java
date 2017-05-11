@@ -74,17 +74,17 @@ public final class DattyRow {
 		return buffer;
 	}
 	
-	public DattyRow removeValue(String minorKey) {
+	public DattyRow removeValue(String minorKey, boolean release) {
 		ByteBuf prev = values.remove(minorKey);
-		if (prev != null) {
+		if (prev != null && release) {
 			prev.release();
 		}
 		return this;
 	}
 	
-	public DattyRow putValue(String minorKey, ByteBuf value) {
+	public DattyRow putValue(String minorKey, ByteBuf value, boolean release) {
 		ByteBuf prev = values.put(minorKey, value);
-		if (prev != null) {
+		if (prev != null && release) {
 			prev.release();
 		}
 		return this;
