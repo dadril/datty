@@ -13,31 +13,33 @@
  */
 package io.datty.msgpack.core.writer;
 
-import java.lang.reflect.Array;
+import java.util.List;
 
 import io.datty.msgpack.core.AbstractMessageWriter;
 import io.datty.msgpack.core.ArrayMessageWriter;
 import io.netty.buffer.ByteBuf;
 
 /**
- * ArrayWriter
+ * ListWriter
  * 
  * @author Alex Shvid
  *
  */
 
-public class ArrayWriter extends AbstractMessageWriter {
+public class ListWriter extends AbstractMessageWriter {
 
-	public static final ArrayWriter INSTANCE = new ArrayWriter();
+	public static final ListWriter INSTANCE = new ListWriter();
 	
-	public ByteBuf write(Class<?> elementType, Object value, ByteBuf sink, boolean copy) {
+	public ByteBuf write(Class<?> listType, Object value, ByteBuf sink, boolean copy) {
 		
 		if (value == null) {
 			writeNull(sink);
 			return null;
 		}
 		
-		int size = Array.getLength(value);
+		List<Object> list = (List<Object>) value;
+		
+		int size = list.size();
 		
 		ArrayMessageWriter writer = ArrayMessageWriter.INSTANCE;
 		
@@ -45,9 +47,16 @@ public class ArrayWriter extends AbstractMessageWriter {
 		
 		for (int i = 0; i != size; ++i) {
 			
-			Object element = Array.get(value, i);
+			Object element = list.get(i);
 			
-			sink = writer.writeValue((Class<Object>) elementType, element, sink, copy);
+			if (element != null) {
+				Class<Object> elementType = (Class<Object>) element.getClass();
+				sink = writer.writeValue((Class<Object>) elementType, element, sink, copy);
+			}
+			else {
+				writeNull(sink);
+			}
+
 		}
 		
 		return sink;

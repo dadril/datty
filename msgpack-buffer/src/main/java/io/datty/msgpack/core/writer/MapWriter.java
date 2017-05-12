@@ -13,41 +13,54 @@
  */
 package io.datty.msgpack.core.writer;
 
-import java.lang.reflect.Array;
+import java.util.Map;
 
 import io.datty.msgpack.core.AbstractMessageWriter;
-import io.datty.msgpack.core.ArrayMessageWriter;
+import io.datty.msgpack.core.MapMessageWriter;
 import io.netty.buffer.ByteBuf;
 
 /**
- * ArrayWriter
+ * MapWriter
  * 
  * @author Alex Shvid
  *
  */
 
-public class ArrayWriter extends AbstractMessageWriter {
+public class MapWriter extends AbstractMessageWriter {
 
-	public static final ArrayWriter INSTANCE = new ArrayWriter();
+	public static final MapWriter INSTANCE = new MapWriter();
 	
-	public ByteBuf write(Class<?> elementType, Object value, ByteBuf sink, boolean copy) {
+	public ByteBuf write(Class<?> listType, Object value, ByteBuf sink, boolean copy) {
 		
 		if (value == null) {
 			writeNull(sink);
 			return null;
 		}
 		
-		int size = Array.getLength(value);
+		Map<Object, Object> map = (Map<Object, Object>) value;
 		
-		ArrayMessageWriter writer = ArrayMessageWriter.INSTANCE;
+		int size = map.size();
+		
+		MapMessageWriter writer = MapMessageWriter.INSTANCE;
 		
 		writer.writeHeader(size, sink);
 		
-		for (int i = 0; i != size; ++i) {
+		for (Map.Entry<Object, Object> e : map.entrySet()) {
 			
-			Object element = Array.get(value, i);
+			Object key = e.getKey();
+			// use String as a key, because we need to be able to read Maps in LUA Table
+			writer.writeKey(String.valueOf(key), sink);
 			
-			sink = writer.writeValue((Class<Object>) elementType, element, sink, copy);
+			Object element = e.getValue();
+			
+			if (element != null) {
+				Class<Object> elementType = (Class<Object>) element.getClass();
+				sink = writer.writeValue((Class<Object>) elementType, element, sink, copy);
+			}
+			else {
+				writeNull(sink);
+			}
+
 		}
 		
 		return sink;

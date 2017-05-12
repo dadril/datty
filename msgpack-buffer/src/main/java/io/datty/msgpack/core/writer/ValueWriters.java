@@ -53,6 +53,11 @@ public final class ValueWriters {
 	
 	@SuppressWarnings("unchecked")
 	public static <T> ValueWriter<T> find(Class<T> type) {
+		
+		if (ByteBuf.class.isAssignableFrom(type)) {
+			return  (ValueWriter<T>) ByteBufWriter.INSTANCE;
+		}
+		
 		return (ValueWriter<T>) writers.get(type);
 	}
 	

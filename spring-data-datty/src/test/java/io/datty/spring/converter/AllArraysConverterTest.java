@@ -13,15 +13,10 @@
  */
 package io.datty.spring.converter;
 
-import java.util.Map;
-
-import org.junit.Assert;
 import org.junit.Test;
 
-import io.datty.api.DattyRow;
-import io.datty.msgpack.MessageFactory;
-import io.datty.spring.support.DattyConverterUtil;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * AllArraysConverterTest
@@ -34,26 +29,34 @@ public class AllArraysConverterTest extends AbstractConverterTest {
 
 	@Test
 	public void testEmpty() throws Exception {
-		
-		AllArraysEntity entity = new AllArraysEntity();
-
-		DattyRow row = new DattyRow();
-		
-		DattyConverterUtil.write(entity, row);
-		
-		ByteBuf bb = row.get("def");
-		Assert.assertNotNull(bb);
-		
-		//System.out.println(Arrays.toString(ByteBufUtil.getBytes(bb)));
-		
-		Object value = MessageFactory.readValue(bb, true);
-		Assert.assertNotNull(value);
-		Assert.assertTrue(value instanceof Map);
-		
-		Map<String, Object> map = (Map<String, Object>) value;
-		Assert.assertTrue(map.isEmpty());
-		
+		testEmpty(new AllArraysEntity());
 	}
 
+	@Test
+	public void testOnes() throws Exception {
+		
+		ByteBuf one = Unpooled.wrappedBuffer(new byte[] { 1 });
+		
+		AllArraysEntity entity = new AllArraysEntity();
+		entity.setBooleanVal(new boolean[] {true});
+		entity.setBooleanWal(new Boolean[] {true});
+		entity.setByteVal(new byte[] {1});
+		entity.setByteWal(new Byte[] {1});
+		entity.setShortVal(new short[] {1});
+		entity.setShortWal(new Short[] {1});
+		entity.setIntVal(new int[] {1});
+		entity.setIntWal(new Integer[] {1});
+		entity.setLongVal(new long[] {1});
+		entity.setLongWal(new Long[] {1L});
+		entity.setFloatVal(new float[] {1.0f});
+		entity.setFloatWal(new Float[] {1.0f});
+		entity.setDoubleVal(new double[] {1.0d});
+		entity.setDoubleWal(new Double[] {1.0d});
+		entity.setStringVal(new String[] {"1"});
+		entity.setBbVal(new ByteBuf[] {one});
+		
+		testNotEmpty(entity);
+	}
+	
 	
 }

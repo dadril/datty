@@ -240,4 +240,18 @@ public class AllArraysEntity {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "AllArraysEntity [booleanVal=" + Arrays.toString(booleanVal) + ", booleanWal=" + Arrays.toString(booleanWal)
+				+ ", byteVal=" + Arrays.toString(byteVal) + ", byteWal=" + Arrays.toString(byteWal) + ", shortVal="
+				+ Arrays.toString(shortVal) + ", shortWal=" + Arrays.toString(shortWal) + ", intVal=" + Arrays.toString(intVal)
+				+ ", intWal=" + Arrays.toString(intWal) + ", longVal=" + Arrays.toString(longVal) + ", longWal="
+				+ Arrays.toString(longWal) + ", floatVal=" + Arrays.toString(floatVal) + ", floatWal="
+				+ Arrays.toString(floatWal) + ", doubleVal=" + Arrays.toString(doubleVal) + ", doubleWal="
+				+ Arrays.toString(doubleWal) + ", stringVal=" + Arrays.toString(stringVal) + ", bbVal=" + Arrays.toString(bbVal)
+				+ "]";
+	}
+	
+	
+
 }

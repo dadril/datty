@@ -267,6 +267,15 @@ public class AllTypesEntity {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "AllTypesEntity [booleanVal=" + booleanVal + ", booleanWal=" + booleanWal + ", byteVal=" + byteVal
+				+ ", byteWal=" + byteWal + ", shortVal=" + shortVal + ", shortWal=" + shortWal + ", intVal=" + intVal
+				+ ", intWal=" + intWal + ", longVal=" + longVal + ", longWal=" + longWal + ", floatVal=" + floatVal
+				+ ", floatWal=" + floatWal + ", doubleVal=" + doubleVal + ", doubleWal=" + doubleWal + ", stringVal="
+				+ stringVal + ", bbVal=" + bbVal + "]";
+	}
+
 	
 	
 }

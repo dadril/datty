@@ -13,8 +13,14 @@
  */
 package io.datty.msgpack.core;
 
+
+import java.util.List;
+import java.util.Map;
+
 import io.datty.msgpack.MessageWriter;
 import io.datty.msgpack.core.writer.ArrayWriter;
+import io.datty.msgpack.core.writer.ListWriter;
+import io.datty.msgpack.core.writer.MapWriter;
 import io.datty.msgpack.core.writer.ValueWriter;
 import io.datty.msgpack.core.writer.ValueWriters;
 import io.datty.msgpack.support.MessageParseException;
@@ -109,12 +115,16 @@ public class ValueMessageWriter extends AbstractMessageWriter implements Message
 	@Override
 	public <V extends T, T> ByteBuf writeValue(Class<T> type, V value, ByteBuf sink, boolean copy) {
 
+		if (List.class.isAssignableFrom(type)) {
+			return ListWriter.INSTANCE.write(type, value, sink, copy);
+		}
+		
+		if (Map.class.isAssignableFrom(type)) {
+			return MapWriter.INSTANCE.write(type, value, sink, copy);
+		}
+		
 		if (type.isArray()) {
-			Class<?> elementType = ArrayTypes.findElementType(type);
-			if (elementType == null) {
-				throw new MessageParseException("elementType not found for array: " + type);
-			}
-			return ArrayWriter.INSTANCE.write(elementType, value, sink, copy);
+			return writeArray(type, value, sink, copy);
 		}
 		
 		ValueWriter<T> writer = ValueWriters.find(type);
@@ -124,6 +134,17 @@ public class ValueMessageWriter extends AbstractMessageWriter implements Message
 		}
 		
 		return writer.write(value, sink, copy);
+	}
+
+	private <V extends T, T> ByteBuf writeArray(Class<T> type, V value, ByteBuf sink, boolean copy) {
+		
+		Class<?> elementType = ArrayTypes.findElementType(type);
+		if (elementType == null) {
+			throw new MessageParseException("elementType not found for array: " + type);
+		}
+		
+		return ArrayWriter.INSTANCE.write(elementType, value, sink, copy);
+		
 	}
 	
 }

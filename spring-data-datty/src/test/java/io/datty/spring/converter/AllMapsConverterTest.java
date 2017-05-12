@@ -13,47 +13,51 @@
  */
 package io.datty.spring.converter;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.junit.Test;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 /**
- * AllTypesConverterTest
+ * AllMapsConverterTest
  * 
  * @author Alex Shvid
  *
  */
 
-public class AllTypesConverterTest extends AbstractConverterTest {
+public class AllMapsConverterTest extends AbstractConverterTest {
 
 	@Test
 	public void testEmpty() throws Exception {
-		testEmpty(new AllTypesEntity());
+		testEmpty(new AllMapsEntity());
 	}
-	
+
 	@Test
 	public void testOnes() throws Exception {
 		
-		AllTypesEntity entity = new AllTypesEntity();
-		entity.setBooleanVal(true);
-		entity.setBooleanWal(true);
-		entity.setByteVal((byte)1);
-		entity.setByteWal((byte)1);
-		entity.setShortVal((short)1);
-		entity.setShortWal((short)1);
-		entity.setIntVal(1);
-		entity.setIntWal(1);
-		entity.setLongVal(1L);
-		entity.setLongWal(1L);
-		entity.setFloatVal(1.0f);
-		entity.setFloatWal(1.0f);
-		entity.setDoubleVal(1.0d);
-		entity.setDoubleWal(1.0d);
-		entity.setStringVal("1");
-		entity.setBbVal(Unpooled.wrappedBuffer(new byte[] { 1 }));
+		ByteBuf one = Unpooled.wrappedBuffer(new byte[] { 1 });
+		
+		AllMapsEntity entity = new AllMapsEntity();
+		entity.setBooleanVal(mapOf(true));
+		entity.setByteVal(mapOf((byte)1));
+		entity.setShortVal(mapOf((short)1));
+		entity.setIntVal(mapOf(1));
+		entity.setLongVal(mapOf(1L));
+		entity.setFloatVal(mapOf(1.0f));
+		entity.setDoubleVal(mapOf(1.0d));
+		entity.setStringVal(mapOf("1"));
+		entity.setBbVal(mapOf(one));
 		
 		testNotEmpty(entity);
 		
 	}
+	
+	public static <T> Map<String, T> mapOf(T val) {
+		return Collections.singletonMap("1", val);
+	}
+	
 	
 }

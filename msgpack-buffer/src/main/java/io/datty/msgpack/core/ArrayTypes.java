@@ -16,6 +16,8 @@ package io.datty.msgpack.core;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * ArrayTypes
  * 
@@ -43,6 +45,8 @@ public final class ArrayTypes {
 		arrayToElement.put(Float[].class, Float.class);
 		arrayToElement.put(double[].class, double.class);
 		arrayToElement.put(Double[].class, Double.class);
+		arrayToElement.put(String[].class, String.class);
+		arrayToElement.put(ByteBuf[].class, ByteBuf.class);
 		
 	}
 	
@@ -51,7 +55,8 @@ public final class ArrayTypes {
 	}
 	
 	public static Class<?> findElementType(Class<?> arrayType) {
-		return arrayToElement.get(arrayType);
+		Class<?> cacheClass = arrayToElement.get(arrayType);
+		return cacheClass != null ? cacheClass : arrayType.getComponentType();
 	}
 	
 	

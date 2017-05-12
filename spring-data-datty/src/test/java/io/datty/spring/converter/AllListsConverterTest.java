@@ -13,47 +13,46 @@
  */
 package io.datty.spring.converter;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 /**
- * AllTypesConverterTest
+ * AllListsConverterTest
  * 
  * @author Alex Shvid
  *
  */
 
-public class AllTypesConverterTest extends AbstractConverterTest {
+public class AllListsConverterTest extends AbstractConverterTest {
 
 	@Test
 	public void testEmpty() throws Exception {
-		testEmpty(new AllTypesEntity());
+		testEmpty(new AllListsEntity());
 	}
-	
+
 	@Test
 	public void testOnes() throws Exception {
 		
-		AllTypesEntity entity = new AllTypesEntity();
-		entity.setBooleanVal(true);
-		entity.setBooleanWal(true);
-		entity.setByteVal((byte)1);
-		entity.setByteWal((byte)1);
-		entity.setShortVal((short)1);
-		entity.setShortWal((short)1);
-		entity.setIntVal(1);
-		entity.setIntWal(1);
-		entity.setLongVal(1L);
-		entity.setLongWal(1L);
-		entity.setFloatVal(1.0f);
-		entity.setFloatWal(1.0f);
-		entity.setDoubleVal(1.0d);
-		entity.setDoubleWal(1.0d);
-		entity.setStringVal("1");
-		entity.setBbVal(Unpooled.wrappedBuffer(new byte[] { 1 }));
+		ByteBuf one = Unpooled.wrappedBuffer(new byte[] { 1 });
+		
+		AllListsEntity entity = new AllListsEntity();
+		entity.setBooleanVal(Arrays.asList(true));
+		entity.setByteVal(Arrays.asList((byte)1));
+		entity.setShortVal(Arrays.asList((short)1));
+		entity.setIntVal(Arrays.asList(1));
+		entity.setLongVal(Arrays.asList(1L));
+		entity.setFloatVal(Arrays.asList(1.0f));
+		entity.setDoubleVal(Arrays.asList(1.0d));
+		entity.setStringVal(Arrays.asList("1"));
+		entity.setBbVal(Arrays.asList(one));
 		
 		testNotEmpty(entity);
 		
 	}
+	
 	
 }
