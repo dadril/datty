@@ -13,6 +13,9 @@
  */
 package io.datty.spring.convert;
 
+import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.BeanClassLoaderAware;
@@ -25,8 +28,11 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 import io.datty.api.DattyRow;
+import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.MessageWriter;
 import io.datty.msgpack.core.MapMessageWriter;
+import io.datty.msgpack.core.StringMapMessageReader;
+import io.datty.msgpack.core.ValueMessageReader;
 import io.datty.msgpack.core.ValueMessageWriter;
 import io.datty.spring.core.DattyId;
 import io.datty.spring.mapping.DattyPersistentEntity;
@@ -236,12 +242,85 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		if (entity == null) {
 			throw new MappingException("No mapping metadata found for " + type);
 		}
+
+		if (entity.hasMinorKey()) {
+			
+			ByteBuf buffer = source.get(entity.getMinorKey());
+			if (buffer == null) {
+				return null;
+			}
+			
+			return readFromBuffer(type, entity, buffer, entity.copy());
+		}
+		else {
+			
+			return readCross(type, entity, source, entity.copy());
+			
+		}
 		
-		
-		
-		return null;
 	}
 
+	@SuppressWarnings("unchecked")
+	private <R> R readFromBuffer(Class<R> type, DattyPersistentEntity<R> entity, ByteBuf buffer, boolean copy) {
+		
+		if (!ValueMessageReader.INSTANCE.isMap(buffer)) {
+			throw new MappingException("expected message pack string map for " + entity);
+		}
+		
+		BeanWrapper wrapper = new BeanWrapperImpl(type);
+		
+		int size = ValueMessageReader.INSTANCE.readMapHeader(buffer);
+		
+		MessageReader<String> reader = new StringMapMessageReader(size);
+		
+		for (int i = 0; i != size; ++i) {
+			
+			String propName = reader.readKey(buffer);
+			
+			Optional<DattyPersistentProperty> prop = entity.getPersistentProperty(propName);
+			if (!prop.isPresent()) {
+				throw new MappingException("property '" + propName + "' not found for " + entity);
+			}
+			
+			DattyPersistentProperty property = prop.get();
+			
+			Object value = reader.readValue(property.getType(), buffer, copy);
+			wrapper.setPropertyValue(propName, value);
+			
+		}
+		
+		return (R) wrapper.getWrappedInstance();
+	}
+	
+	@SuppressWarnings("unchecked")
+	private <R> R readCross(Class<R> type, DattyPersistentEntity<R> entity, DattyRow source, boolean copy) {
+		
+		BeanWrapper wrapper = new BeanWrapperImpl(type);
+
+		for (Map.Entry<String, ByteBuf> e : source.getValues().entrySet()) {
+			
+			String propName = e.getKey();
+			ByteBuf buffer = e.getValue();
+
+			Optional<DattyPersistentProperty> prop = entity.getPersistentProperty(propName);
+			if (!prop.isPresent()) {
+				throw new MappingException("property '" + propName + "' not found for " + entity);
+			}
+			
+			DattyPersistentProperty property = prop.get();
+			
+			Object value = null;
+			if (buffer != null) {
+				value = ValueMessageReader.INSTANCE.readValue(property.getType(), buffer, copy);
+			}
+			
+			wrapper.setPropertyValue(propName, value);
+		}
+		
+		return (R) wrapper.getWrappedInstance();
+		
+	}
+	
 	@SuppressWarnings("unchecked")
 	private <T> Class<T> transformClassToBeanClassLoaderClass(Class<T> entity) {
 		try {

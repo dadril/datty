@@ -91,12 +91,7 @@ public final class DattyRow {
 	}
 	
 	public boolean isEmpty() {
-		for (ByteBuf value : values.values()) {
-			if (value != null && value.readableBytes() > 0) {
-				return false;
-			}
-		}
-		return true;
+		return values.isEmpty();
 	}
 	
 	public Set<String> minorKeys() {

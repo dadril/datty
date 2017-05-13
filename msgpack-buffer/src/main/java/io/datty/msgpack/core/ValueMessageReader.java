@@ -192,7 +192,7 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 		
 	}
 
-	private ByteBuf readBinary(ByteBuf source, boolean copy) {
+	public ByteBuf readBinary(ByteBuf source, boolean copy) {
 		int length = readBinaryHeader(source);
 		if (length > source.readableBytes()) {
       throw new MessageParseException("insufficient buffer length: " + source.readableBytes() + ", required length: " + length);
@@ -209,12 +209,12 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 		}
 	}
 	
-	private MessageReader<?> readArray(ByteBuf source, boolean copy) {
+	public MessageReader<?> readArray(ByteBuf source, boolean copy) {
 		int length = readArrayHeader(source);
 		return new ArrayMessageReader(length);
 	}
 	
-	private MessageReader<?> readMap(ByteBuf source, boolean copy) {
+	public MessageReader<?> readMap(ByteBuf source, boolean copy) {
 		int size = readMapHeader(source);
 		if (hasNext(source)) {
 			MessageFormat f = getNextFormat(source);
@@ -243,6 +243,24 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 		}
 	}
 
+	public boolean isMap(ByteBuf source) {
+		MessageFormat f = getNextFormat(source);
+		return isMap(f);
+	}
+	
+	public boolean isMap(MessageFormat f) {
+		switch(f) {
+		
+    case FIXMAP:
+    case MAP16:
+    case MAP32:
+    	return true;
+
+    default:
+    	return false;
+		}
+	}
+	
 	/**
 	 * This method automatically converts value to the expecting type
 	 */

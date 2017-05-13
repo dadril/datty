@@ -87,7 +87,7 @@ public class DattyConverterTest {
 	
 	
 	@Test
-	public void testWriteMinorKey() {
+	public void testMinorKey() {
 		
 		ExampleEntity entity = new ExampleEntity();
 		entity.setId(777L);
@@ -100,7 +100,7 @@ public class DattyConverterTest {
 		ByteBuf bb = row.get("def");
 		Assert.assertNotNull(bb);
 		
-		Object value = MessageFactory.readValue(bb, true);
+		Object value = MessageFactory.readValue(bb.duplicate(), true);
 		Assert.assertNotNull(value);
 		Assert.assertTrue(value instanceof Map);
 		
@@ -108,10 +108,13 @@ public class DattyConverterTest {
 		Assert.assertEquals(entity.getId(), map.get("id"));
 		Assert.assertEquals(entity.getName(), map.get("name"));
 		
+		ExampleEntity actual = DattyConverterUtil.read(ExampleEntity.class, row);
+		Assert.assertEquals(entity, actual);
+		
 	}
 	
 	@Test
-	public void testWriteCross() {
+	public void testCross() {
 		
 		ExampleCrossEntity entity = new ExampleCrossEntity();
 		entity.setId(777L);
@@ -124,15 +127,18 @@ public class DattyConverterTest {
 		ByteBuf bb = row.get("id");
 		Assert.assertNotNull(bb);
 		
-		Long id = LongReader.INSTANCE.read(bb, true);
+		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
 		Assert.assertNotNull(id);
 		Assert.assertEquals(entity.getId(), id);
 		
 		bb = row.get("name");
 		Assert.assertNotNull(bb);
-		String name = StringReader.INSTANCE.read(bb, true);
+		String name = StringReader.INSTANCE.read(bb.duplicate(), true);
 		Assert.assertNotNull(name);
 		Assert.assertEquals(entity.getName(), name);
 
+		ExampleCrossEntity actual = DattyConverterUtil.read(ExampleCrossEntity.class, row);
+		Assert.assertEquals(entity, actual);
+		
 	}
 }
