@@ -88,7 +88,7 @@ public enum AerospikeGet implements AerospikeOperation<GetOperation, GetResult> 
 				for (Map.Entry<String, Object> e : record.bins.entrySet()) {
 					Object value = e.getValue();
 					if (value != null) {
-						row.putValue(e.getKey(), AerospikeValueUtil.toByteBuf(value));
+						row.putValue(e.getKey(), AerospikeValueUtil.toByteBuf(value), true);
 					}
 				}
 				
@@ -98,7 +98,7 @@ public enum AerospikeGet implements AerospikeOperation<GetOperation, GetResult> 
 				for (String minorKey : operation.getMinorKeys()) {
 					Object value = record.bins.get(minorKey);
 					if (value != null) {
-						row.putValue(minorKey, AerospikeValueUtil.toByteBuf(value));
+						row.putValue(minorKey, AerospikeValueUtil.toByteBuf(value), true);
 					}
 				}
 				
