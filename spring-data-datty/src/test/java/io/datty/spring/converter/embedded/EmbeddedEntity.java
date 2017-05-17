@@ -11,24 +11,30 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.spring.mapping;
+package io.datty.spring.converter.embedded;
 
-import org.springframework.data.mapping.PersistentProperty;
+import io.datty.spring.mapping.Embedded;
 
 /**
- * DattyPersistentProperty
+ * EmbeddedEntity
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattyPersistentProperty extends PersistentProperty<DattyPersistentProperty> {
+@Embedded
+public class EmbeddedEntity {
 
-	/**
-	 * Returns the true if the field is embedded type.
-	 * 
-	 * @return
-	 */
-	boolean isEmbeddedType();
+	private String innerField;
+
+	public String getInnerField() {
+		return innerField;
+	}
+
+	public void setInnerField(String innerField) {
+		this.innerField = innerField;
+	}
+	
+	
 	
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Datty.io Authors
+ * Copyright (C) 2017 Datty.io Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,22 +13,26 @@
  */
 package io.datty.spring.mapping;
 
-import org.springframework.data.mapping.PersistentProperty;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import org.springframework.data.annotation.Persistent;
 
 /**
- * DattyPersistentProperty
+ * Embedded
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattyPersistentProperty extends PersistentProperty<DattyPersistentProperty> {
+@Persistent
+@Inherited
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface Embedded {
 
-	/**
-	 * Returns the true if the field is embedded type.
-	 * 
-	 * @return
-	 */
-	boolean isEmbeddedType();
-	
+
 }

@@ -32,6 +32,7 @@ import org.springframework.data.mapping.model.SimpleTypeHolder;
 public class BasicDattyPersistentProperty extends AnnotationBasedPersistentProperty<DattyPersistentProperty>
 		implements DattyPersistentProperty {
 
+	private final boolean isEmbeddedType;
 	private final boolean hasTransientModifier;
 	
 	public BasicDattyPersistentProperty(Property property, DattyPersistentEntity<?> owner,
@@ -39,17 +40,36 @@ public class BasicDattyPersistentProperty extends AnnotationBasedPersistentPrope
 		super(property, owner, simpleTypeHolder);
 		
 		Optional<Field> field = property.getField();
-		this.hasTransientModifier = field.isPresent() ? Modifier.isTransient(field.get().getModifiers()) : false;
+		
+		if (field.isPresent()) {
+			this.isEmbeddedType = field.get().getType().isAnnotationPresent(Embedded.class);
+			this.hasTransientModifier = Modifier.isTransient(field.get().getModifiers());
+		}
+		else {
+			this.isEmbeddedType = false;
+			this.hasTransientModifier = false;
+		}
+		
 	}
 	
 	@Override
 	protected Association<DattyPersistentProperty> createAssociation() {
 		return new Association<DattyPersistentProperty>(this, null);
 	}
+
+	@Override
+	public boolean isEmbeddedType() {
+		return isEmbeddedType;
+	}
 	
 	@Override
 	public boolean isTransient() {
 		return hasTransientModifier || super.isTransient();
+	}
+
+	@Override
+	public String toString() {
+		return "BasicDattyPersistentProperty [" + getName() + "]";
 	}
 	
 }

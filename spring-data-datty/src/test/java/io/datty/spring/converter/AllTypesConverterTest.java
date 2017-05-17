@@ -28,7 +28,7 @@ public class AllTypesConverterTest extends AbstractConverterTest {
 
 	@Test
 	public void testEmpty() throws Exception {
-		testEmpty(new AllTypesEntity());
+		testNotEmpty(new AllTypesEntity());
 	}
 	
 	@Test

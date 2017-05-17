@@ -145,5 +145,10 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 		Expression expression = parser.parseExpression(value, ParserContext.TEMPLATE_EXPRESSION);
 		return expression.getValue(context, String.class);
 	}
-	
+
+	@Override
+	public String toString() {
+		return "BasicDattyPersistentEntity [" + getType() + "]";
+	}
+
 }

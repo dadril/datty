@@ -11,24 +11,41 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.spring.mapping;
+package io.datty.spring.converter.embedded;
 
-import org.springframework.data.mapping.PersistentProperty;
+import org.springframework.data.annotation.Id;
+
+import io.datty.spring.mapping.Entity;
 
 /**
- * DattyPersistentProperty
+ * ContainerEntity
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattyPersistentProperty extends PersistentProperty<DattyPersistentProperty> {
+@Entity(cacheName="TEST_CACHE", minorKey="def")
+public class ContainerEntity {
 
-	/**
-	 * Returns the true if the field is embedded type.
-	 * 
-	 * @return
-	 */
-	boolean isEmbeddedType();
+	@Id
+	private long id;
 	
+	private EmbeddedEntity embedded;
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public EmbeddedEntity getEmbedded() {
+		return embedded;
+	}
+
+	public void setEmbedded(EmbeddedEntity embedded) {
+		this.embedded = embedded;
+	}
+
 }
