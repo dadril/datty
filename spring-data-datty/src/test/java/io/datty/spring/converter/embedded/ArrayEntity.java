@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Datty.io Authors
+ * Copyright (C) 2017 Datty.io Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -18,19 +18,19 @@ import org.springframework.data.annotation.Id;
 import io.datty.spring.mapping.Entity;
 
 /**
- * ContainerEntity
+ * ArrayEntity
  * 
  * @author Alex Shvid
  *
  */
 
 @Entity(cacheName="TEST_CACHE", minorKey="def")
-public class ContainerEntity {
+public class ArrayEntity {
 
 	@Id
 	private long id;
 	
-	private EmbeddedEntity embedded;
+	private EmbeddedEntity[] embedded;
 
 	public long getId() {
 		return id;
@@ -40,11 +40,11 @@ public class ContainerEntity {
 		this.id = id;
 	}
 
-	public EmbeddedEntity getEmbedded() {
+	public EmbeddedEntity[] getEmbedded() {
 		return embedded;
 	}
 
-	public void setEmbedded(EmbeddedEntity embedded) {
+	public void setEmbedded(EmbeddedEntity[] embedded) {
 		this.embedded = embedded;
 	}
 
