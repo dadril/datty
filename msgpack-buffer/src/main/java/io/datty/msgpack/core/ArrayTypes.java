@@ -55,8 +55,9 @@ public final class ArrayTypes {
 	}
 	
 	public static Class<?> findElementType(Class<?> arrayType) {
-		Class<?> cacheClass = arrayToElement.get(arrayType);
-		return cacheClass != null ? cacheClass : arrayType.getComponentType();
+/*		Class<?> cacheClass = arrayToElement.get(arrayType);
+		return cacheClass != null ? cacheClass : arrayType.getComponentType();*/
+		return arrayType.getComponentType();
 	}
 	
 	

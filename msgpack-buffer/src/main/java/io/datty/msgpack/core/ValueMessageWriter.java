@@ -138,7 +138,7 @@ public class ValueMessageWriter extends AbstractMessageWriter implements Message
 
 	private <V extends T, T> ByteBuf writeArray(Class<T> type, V value, ByteBuf sink, boolean copy) {
 		
-		Class<?> elementType = ArrayTypes.findElementType(type);
+		Class<?> elementType = type.getComponentType();
 		if (elementType == null) {
 			throw new MessageParseException("elementType not found for array: " + type);
 		}

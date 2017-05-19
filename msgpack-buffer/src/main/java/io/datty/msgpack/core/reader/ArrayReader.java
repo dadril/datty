@@ -19,7 +19,6 @@ import org.msgpack.core.MessageFormat;
 
 import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.core.AbstractMessageReader;
-import io.datty.msgpack.core.ArrayMessageReader;
 import io.datty.msgpack.core.MapMessageReader;
 import io.datty.msgpack.support.MessageParseException;
 import io.netty.buffer.ByteBuf;
@@ -35,7 +34,7 @@ public class ArrayReader extends AbstractMessageReader {
 
 	public static final ArrayReader INSTANCE = new ArrayReader();
 	
-	public Object read(Class<?> elementType, ByteBuf buffer, boolean copy) {
+	public Object read(Class<?> elementType, ValueReader<?> elementReader, ByteBuf buffer, boolean copy) {
 		
 		if (!hasNext(buffer)) {
 			return null;
@@ -51,12 +50,12 @@ public class ArrayReader extends AbstractMessageReader {
     case FIXARRAY:
     case ARRAY16:
     case ARRAY32:
-    	return readArray(elementType, buffer, copy);      	
+    	return readArray(elementType, elementReader, buffer, copy);      	
     	
     case FIXMAP:
     case MAP16:
     case MAP32:
-    	return readMap(elementType, buffer, copy);
+    	return readMap(elementType, elementReader, buffer, copy);
     	
     default:
       throw new MessageParseException("expected collection but was another type: " + f.name());	
@@ -65,22 +64,21 @@ public class ArrayReader extends AbstractMessageReader {
 		
 	}
 
-	private Object readArray(Class<?> elementType, ByteBuf source, boolean copy) {
+	private Object readArray(Class<?> elementType, ValueReader<?> elementReader, ByteBuf source, boolean copy) {
 		
 		int length = readArrayHeader(source);
-		MessageReader<Integer> reader = new ArrayMessageReader(length);
 
 		Object array = Array.newInstance(elementType, length);
 
 		for (int i = 0; i != length; ++i) {
-			Object value = reader.readValue(elementType, source, copy);
+			Object value = elementReader.read(source, copy);
 			Array.set(array, i, value);
 		}
 		
 		return array;
 	}
 	
-	private Object readMap(Class<?> elementType, ByteBuf source, boolean copy) {
+	private Object readMap(Class<?> elementType, ValueReader<?> elementReader, ByteBuf source, boolean copy) {
 		
 		int length = readMapHeader(source);
 		MessageReader<Object> reader = new MapMessageReader(length);
@@ -89,7 +87,7 @@ public class ArrayReader extends AbstractMessageReader {
 
 		for (int i = 0; i != length; ++i) {
 			reader.readKey(source);
-			Object value = reader.readValue(elementType, source, copy);
+			Object value = elementReader.read(source, copy);
 			Array.set(array, i, value);
 		}
 		

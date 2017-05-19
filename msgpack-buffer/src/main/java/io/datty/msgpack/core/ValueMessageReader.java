@@ -270,11 +270,15 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 	public <T> T readValue(Class<T> type, ByteBuf source, boolean copy) {
 
 		if (type.isArray()) {
-			Class<?> elementType = ArrayTypes.findElementType(type);
+			Class<?> elementType = type.getComponentType();
 			if (elementType == null) {
 				throw new MessageParseException("elementType not found for array: " + type);
 			}
-			return (T) ArrayReader.INSTANCE.read(elementType, source, copy);
+			ValueReader<?> elementReader = ValueReaders.find(elementType);
+			if (elementReader == null) {
+				throw new MessageParseException("element reader not found for class: " + elementType);
+			}
+			return (T) ArrayReader.INSTANCE.read(elementType, elementReader, source, copy);
 		}
 		
 		ValueReader<T> reader = ValueReaders.find(type);

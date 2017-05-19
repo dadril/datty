@@ -138,6 +138,8 @@ public class ArrayEntityTest {
 		ByteBuf bb = row.get("def");
 		Assert.assertNotNull(bb);
 				
+		//System.out.println(Arrays.toString(ByteBufUtil.getBytes(bb)));
+		
 		Object value = MessageFactory.readValue(bb.duplicate(), true);
 		Assert.assertNotNull(value);
 		Assert.assertTrue(value instanceof Map);
