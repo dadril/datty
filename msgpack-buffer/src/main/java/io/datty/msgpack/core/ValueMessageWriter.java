@@ -143,7 +143,13 @@ public class ValueMessageWriter extends AbstractMessageWriter implements Message
 			throw new MessageParseException("elementType not found for array: " + type);
 		}
 		
-		return ArrayWriter.INSTANCE.write(elementType, value, sink, copy);
+		ValueWriter<?> elementWriter = ValueWriters.find(elementType);
+		
+		if (elementWriter == null) {
+			throw new MessageParseException("element writer not found for class: " + elementType);
+		}
+		
+		return ArrayWriter.INSTANCE.write(elementType, elementWriter, value, sink, copy);
 		
 	}
 	

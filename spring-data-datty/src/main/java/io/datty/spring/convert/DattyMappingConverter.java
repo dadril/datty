@@ -13,12 +13,10 @@
  */
 package io.datty.spring.convert;
 
-import java.lang.reflect.Array;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.msgpack.core.MessageFormat;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.BeanClassLoaderAware;
@@ -33,7 +31,6 @@ import org.springframework.util.ClassUtils;
 import io.datty.api.DattyRow;
 import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.MessageWriter;
-import io.datty.msgpack.core.ArrayMessageWriter;
 import io.datty.msgpack.core.MapMessageWriter;
 import io.datty.msgpack.core.StringMapMessageReader;
 import io.datty.msgpack.core.ValueMessageReader;
@@ -41,8 +38,9 @@ import io.datty.msgpack.core.ValueMessageWriter;
 import io.datty.msgpack.core.reader.ArrayReader;
 import io.datty.msgpack.core.reader.ValueReader;
 import io.datty.msgpack.core.reader.ValueReaders;
+import io.datty.msgpack.core.writer.ArrayWriter;
+import io.datty.msgpack.core.writer.ValueWriter;
 import io.datty.msgpack.core.writer.ValueWriters;
-import io.datty.msgpack.support.MessageParseException;
 import io.datty.spring.core.DattyId;
 import io.datty.spring.mapping.DattyPersistentEntity;
 import io.datty.spring.mapping.DattyPersistentProperty;
@@ -140,7 +138,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 		int headerIndex = writer.skipHeader(entity.getPropertiesCount(), sink);
 		
-		EntityWriter entityWriter = new EntityWriter(writer, source, sink, copy);
+		WriteEntityHandler entityWriter = new WriteEntityHandler(writer, source, sink, copy);
 		entity.doWithProperties(entityWriter);
 		
 		writer.writeHeader(entityWriter.size(), entity.getPropertiesCount(), headerIndex, sink);
@@ -148,7 +146,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		return entityWriter.getSink();
 	}
 	
-	public final class EntityWriter implements PropertyHandler<DattyPersistentProperty> {
+	public final class WriteEntityHandler implements PropertyHandler<DattyPersistentProperty> {
 
 		private final MessageWriter writer;
 		private final BeanWrapper wrapper;
@@ -156,7 +154,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		private int size;
 		private final boolean copy;
 		
-		public EntityWriter(MessageWriter writer, Object source, ByteBuf sink, boolean copy) {
+		public WriteEntityHandler(MessageWriter writer, Object source, ByteBuf sink, boolean copy) {
 			this.writer = writer;
 			this.wrapper = new BeanWrapperImpl(source);		
 			wrapper.setConversionService(conversionService);
@@ -237,11 +235,11 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 			throw new MappingException("component type not found for: " + property);
 		}
 		
-		DattyPersistentEntity<?> elementEntity = null;
+		ValueWriter<?> elementWriter = ValueWriters.find(elementType);
 		
-		if (ValueWriters.find(elementType) == null) {
+		if (elementWriter == null) {
 			
-			elementEntity = mappingContext.getPersistentEntity(elementType)
+			DattyPersistentEntity<?> elementEntity = mappingContext.getPersistentEntity(elementType)
 					.orElseThrow(new Supplier<MappingException>() {
 
 						@Override
@@ -251,37 +249,32 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 						
 					});
 			
-		}
-		
-		int size = Array.getLength(propValue);
-		
-		ArrayMessageWriter writer = ArrayMessageWriter.INSTANCE;
-		
-		writer.writeHeader(size, sink);
-		
-		for (int i = 0; i != size; ++i) {
-			
-			Object elementValue = Array.get(propValue, i);
-			
-			if (elementValue == null) {
-				writer.writeNull(sink);
-			}
-			else if (elementEntity != null) {
-				sink = writeEntity(elementEntity, elementValue, sink, copy);
-			}
-			else {
-				sink = writer.writeValue((Class<Object>)elementType, elementValue, sink, copy);
-			}
+			elementWriter = new EntityWriter(elementEntity);
 			
 		}
 		
-		return sink;
+		return ArrayWriter.INSTANCE.write(elementType, elementWriter, propValue, sink, copy);
+		
 	}
 		
+	public final class EntityWriter<T> implements ValueWriter<T> {
+
+		private final DattyPersistentEntity<?> entity;
+		
+		public EntityWriter(DattyPersistentEntity<?> entity) {
+			this.entity = entity;
+		}
+		
+		@Override
+		public ByteBuf write(T value, ByteBuf sink, boolean copy) {
+			return writeEntity(entity, value, sink, copy);
+		}
+		
+	}
 	
 	private void writeCrossEntity(DattyPersistentEntity<?> entity, Object source, DattyRow sink, boolean copy) {
 		
-		entity.doWithProperties(new CrossEntityWriter(source, sink, copy));
+		entity.doWithProperties(new CrossWriteEntityHandler(source, sink, copy));
 		
 	}	
 	
@@ -342,14 +335,14 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 
 	}
 	
-	public final class CrossEntityWriter implements PropertyHandler<DattyPersistentProperty> {
+	public final class CrossWriteEntityHandler implements PropertyHandler<DattyPersistentProperty> {
 
 		private final BeanWrapper wrapper;
 		private final DattyRow sink;
 		private int size;
 		private final boolean copy;
 		
-		public CrossEntityWriter(Object source, DattyRow sink, boolean copy) {
+		public CrossWriteEntityHandler(Object source, DattyRow sink, boolean copy) {
 			this.wrapper = new BeanWrapperImpl(source);		
 			wrapper.setConversionService(conversionService);
 			this.sink = sink;

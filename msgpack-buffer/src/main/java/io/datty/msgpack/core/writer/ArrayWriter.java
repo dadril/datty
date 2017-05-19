@@ -30,7 +30,8 @@ public class ArrayWriter extends AbstractMessageWriter {
 
 	public static final ArrayWriter INSTANCE = new ArrayWriter();
 	
-	public ByteBuf write(Class<?> elementType, Object value, ByteBuf sink, boolean copy) {
+	@SuppressWarnings("unchecked")
+	public ByteBuf write(Class<?> elementType, ValueWriter<?> elementWriter, Object value, ByteBuf sink, boolean copy) {
 		
 		if (value == null) {
 			writeNull(sink);
@@ -47,7 +48,7 @@ public class ArrayWriter extends AbstractMessageWriter {
 			
 			Object element = Array.get(value, i);
 			
-			sink = writer.writeValue((Class<Object>) elementType, element, sink, copy);
+			sink = ((ValueWriter<Object>)elementWriter).write(element, sink, copy);
 		}
 		
 		return sink;
