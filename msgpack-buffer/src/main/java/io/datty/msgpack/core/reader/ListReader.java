@@ -67,7 +67,7 @@ public class ListReader extends AbstractMessageReader implements ValueReader<Lis
 		
 	}
 
-	public <T> List<T> read(Class<T> elementType, ByteBuf buffer, boolean copy) {
+	public <T> List<T> read(ValueReader<T> elementReader, ByteBuf buffer, boolean copy) {
 
 		if (!hasNext(buffer)) {
 			return null;
@@ -83,12 +83,12 @@ public class ListReader extends AbstractMessageReader implements ValueReader<Lis
     case FIXARRAY:
     case ARRAY16:
     case ARRAY32:
-    	return readArray(elementType, buffer, copy);      	
+    	return readArray(elementReader, buffer, copy);      	
     	
     case FIXMAP:
     case MAP16:
     case MAP32:
-    	return readMap(elementType, buffer, copy);
+    	return readMap(elementReader, buffer, copy);
     	
     default:
       throw new MessageParseException("expected collection but was another type: " + f.name());	
@@ -112,15 +112,14 @@ public class ListReader extends AbstractMessageReader implements ValueReader<Lis
 		return list;
 	}
 	
-	private <T> List<T> readArray(Class<T> elementType, ByteBuf source, boolean copy) {
+	private <T> List<T> readArray(ValueReader<T> elementReader, ByteBuf source, boolean copy) {
 		
 		int length = readArrayHeader(source);
-		MessageReader<Integer> reader = new ArrayMessageReader(length);
 
 		List<T> list = new ArrayList<T>(length);
 
 		for (int i = 0; i != length; ++i) {
-			T value = reader.readValue(elementType, source, copy);
+			T value = elementReader.read(source, copy);
 			list.add(value);
 		}
 		
@@ -143,7 +142,7 @@ public class ListReader extends AbstractMessageReader implements ValueReader<Lis
 		return list;
 	}
 	
-	private <T> List<T> readMap(Class<T> elementType, ByteBuf source, boolean copy) {
+	private <T> List<T> readMap(ValueReader<T> elementReader, ByteBuf source, boolean copy) {
 		
 		int length = readMapHeader(source);
 		MessageReader<Object> reader = new MapMessageReader(length);
@@ -152,7 +151,7 @@ public class ListReader extends AbstractMessageReader implements ValueReader<Lis
 
 		for (int i = 0; i != length; ++i) {
 			reader.readKey(source);
-			T value = reader.readValue(elementType, source, copy);
+			T value = elementReader.read(source, copy);
 			list.add(value);
 		}
 		

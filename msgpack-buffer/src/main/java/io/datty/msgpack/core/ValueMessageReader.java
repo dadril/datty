@@ -13,10 +13,15 @@
  */
 package io.datty.msgpack.core;
 
+import java.util.List;
+import java.util.Map;
+
 import org.msgpack.core.MessageFormat;
 
 import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.core.reader.ArrayReader;
+import io.datty.msgpack.core.reader.ListReader;
+import io.datty.msgpack.core.reader.MapReader;
 import io.datty.msgpack.core.reader.ValueReader;
 import io.datty.msgpack.core.reader.ValueReaders;
 import io.datty.msgpack.support.MessageParseException;
@@ -32,6 +37,24 @@ import io.netty.buffer.ByteBuf;
 public class ValueMessageReader<K> extends AbstractMessageReader implements MessageReader<K> {
 
 	public static final ValueMessageReader<Object> INSTANCE = new ValueMessageReader<Object>();
+	
+	public static final ValueReader<Object> KEY_OBJECT_READER = new ValueReader<Object>() {
+
+		@Override
+		public Object read(ByteBuf source, boolean copy) {
+			return INSTANCE.readObjectKey(source);
+		}
+		
+	};
+	
+	public static final ValueReader<Object> VALUE_OBJECT_READER = new ValueReader<Object>() {
+
+		@Override
+		public Object read(ByteBuf source, boolean copy) {
+			return INSTANCE.readValue(source, copy);
+		}
+		
+	};
 	
 	@Override
 	public int size() {
@@ -270,6 +293,7 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 	public <T> T readValue(Class<T> type, ByteBuf source, boolean copy) {
 
 		if (type.isArray()) {
+			
 			Class<?> elementType = type.getComponentType();
 			if (elementType == null) {
 				throw new MessageParseException("elementType not found for array: " + type);
@@ -278,7 +302,16 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 			if (elementReader == null) {
 				throw new MessageParseException("element reader not found for class: " + elementType);
 			}
+			
 			return (T) ArrayReader.INSTANCE.read(elementType, elementReader, source, copy);
+		}
+		
+		if (List.class.isAssignableFrom(type)) {
+			return (T) ListReader.INSTANCE.read(VALUE_OBJECT_READER, source, copy);
+		}
+		
+		if (Map.class.isAssignableFrom(type)) {
+			return (T) MapReader.INSTANCE.read(KEY_OBJECT_READER, VALUE_OBJECT_READER, source, copy);
 		}
 		
 		ValueReader<T> reader = ValueReaders.find(type);
@@ -290,6 +323,7 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 		return reader.read(source, copy);
 		
 	}
+	
 	
 	
 }

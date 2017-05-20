@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.msgpack.core.MessageFormat;
 
+import io.datty.msgpack.MessageConstants;
 import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.core.AbstractMessageReader;
 import io.datty.msgpack.core.ArrayMessageReader;
@@ -67,7 +68,7 @@ public class MapReader extends AbstractMessageReader implements ValueReader<Map<
 		
 	}
 	
-	public <K, V> Map<K, V> read(Class<K> keyType, Class<V> valueType, ByteBuf buffer, boolean copy) {
+	public <K, V> Map<K, V> read(ValueReader<K> keyReader, ValueReader<V> valueReader, ByteBuf buffer, boolean copy) {
 		
 		if (!hasNext(buffer)) {
 			return null;
@@ -83,12 +84,12 @@ public class MapReader extends AbstractMessageReader implements ValueReader<Map<
     case FIXARRAY:
     case ARRAY16:
     case ARRAY32:
-    	return readArray(keyType, valueType, buffer, copy);      	
+    	return (Map<K, V>) readArray(valueReader, buffer, copy);      	
     	
     case FIXMAP:
     case MAP16:
     case MAP32:
-    	return readMap(keyType, valueType, buffer, copy);
+    	return readMap(keyReader, valueReader, buffer, copy);
     	
     default:
       throw new MessageParseException("expected collection but was another type: " + f.name());	
@@ -113,17 +114,15 @@ public class MapReader extends AbstractMessageReader implements ValueReader<Map<
 		return map;
 	}
 	
-	private <K, V> Map<K, V> readArray(Class<K> keyType, Class<V> valueType, ByteBuf source, boolean copy) {
+	private <V> Map<Integer, V> readArray(ValueReader<V> valueReader, ByteBuf source, boolean copy) {
 		
 		int length = readArrayHeader(source);
-		MessageReader<Integer> reader = new ArrayMessageReader(length);
 
-		Map<K, V> map = new HashMap<>();
+		Map<Integer, V> map = new HashMap<>();
 
 		for (int i = 0; i != length; ++i) {
-			K key = reader.readValue(keyType, source, true);
-			V value = reader.readValue(valueType, source, copy);
-			map.put(key, value);
+			V value = valueReader.read(source, copy);
+			map.put(i +  MessageConstants.ARRAY_START_INDEX, value);
 		}
 		
 		return map;
@@ -145,16 +144,15 @@ public class MapReader extends AbstractMessageReader implements ValueReader<Map<
 		return map;
 	}
 	
-	private <K, V> Map<K, V> readMap(Class<K> keyType, Class<V> valueType, ByteBuf source, boolean copy) {
+	private <K, V> Map<K, V> readMap(ValueReader<K> keyReader, ValueReader<V> valueReader, ByteBuf source, boolean copy) {
 		
 		int length = readMapHeader(source);
-		MessageReader<Object> reader = new MapMessageReader(length);
 
 		Map<K, V> map = new HashMap<>();
 
 		for (int i = 0; i != length; ++i) {
-			K key = reader.readValue(keyType, source, true);
-			V value = reader.readValue(valueType, source, copy);
+			K key = keyReader.read(source, true);
+			V value = valueReader.read(source, copy);
 			map.put(key, value);
 		}
 		

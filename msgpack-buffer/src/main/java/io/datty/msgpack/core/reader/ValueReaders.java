@@ -47,8 +47,6 @@ public final class ValueReaders {
 		readers.put(Double.class, DoubleReader.INSTANCE);
 		readers.put(String.class, StringReader.INSTANCE);
 		readers.put(ByteBuf.class, ByteBufReader.INSTANCE);
-		readers.put(List.class, ListReader.INSTANCE);
-		readers.put(Map.class, MapReader.INSTANCE);
 		
 	}
 	
