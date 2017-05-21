@@ -16,6 +16,7 @@ package io.datty.msgpack.core.writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.datty.msgpack.support.MessageParseException;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -60,5 +61,25 @@ public final class ValueWriters {
 		
 		return (ValueWriter<T>) writers.get(type);
 	}
+	
+	/**
+	 * Default value writer provider
+	 */
+	
+	public static final ValueWriterProvider DEFAULT_PROVIDER = new ValueWriterProvider() {
+
+		@Override
+		public <T> ValueWriter<T> find(Class<T> type) {
+			
+			ValueWriter<T> writer = ValueWriters.find(type);
+			
+			if (writer == null) {
+				throw new MessageParseException("value writer not found for type: " + type);
+			}
+			
+			return writer;
+		}
+		
+	};
 	
 }

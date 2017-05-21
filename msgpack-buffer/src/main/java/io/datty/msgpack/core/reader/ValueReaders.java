@@ -14,9 +14,9 @@
 package io.datty.msgpack.core.reader;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import io.datty.msgpack.support.MessageParseException;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -58,4 +58,23 @@ public final class ValueReaders {
 		return (ValueReader<T>) readers.get(type);
 	}
 
+	/**
+	 * Default value reader provider
+	 */
+	
+	public static final ValueReaderProvider DEFAULT_PROVIDER = new ValueReaderProvider() {
+
+		@Override
+		public <T> ValueReader<T> find(Class<T> type) {
+			
+			ValueReader<T> reader = ValueReaders.find(type);
+			
+			if (reader == null) {
+				throw new MessageParseException("value reader not found for type: " + type);
+			}
+			
+			return reader;
+		}
+		
+	};
 }
