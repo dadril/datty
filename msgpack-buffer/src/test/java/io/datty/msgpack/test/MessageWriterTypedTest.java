@@ -46,67 +46,67 @@ public class MessageWriterTypedTest extends MessageReaderTypedTest {
 		int fields = 0;
 		
 		writer.writeKey("boolean", sink);
-		writer.writeValue(boolean.class, true, sink, true);
+		writer.writeValue(typeOf(boolean.class), true, sink, true);
 		fields++;
 
 		writer.writeKey("Boolean", sink);
-		writer.writeValue(Boolean.class, true, sink, true);
+		writer.writeValue(typeOf(Boolean.class), true, sink, true);
 		fields++;
 		
 		writer.writeKey("byte", sink);
-		writer.writeValue(byte.class, (byte)1, sink, true);
+		writer.writeValue(typeOf(byte.class), (byte)1, sink, true);
 		fields++;
 		
 		writer.writeKey("Byte", sink);
-		writer.writeValue(Byte.class, (byte)1, sink, true);
+		writer.writeValue(typeOf(Byte.class), (byte)1, sink, true);
 		fields++;
 		
 		writer.writeKey("short", sink);
-		writer.writeValue(short.class, (short)1, sink, true);
+		writer.writeValue(typeOf(short.class), (short)1, sink, true);
 		fields++;
 		
 		writer.writeKey("Short", sink);
-		writer.writeValue(Short.class, (short)1, sink, true);
+		writer.writeValue(typeOf(Short.class), (short)1, sink, true);
 		fields++;
 		
 		writer.writeKey("int", sink);
-		writer.writeValue(int.class, (int)1, sink, true);
+		writer.writeValue(typeOf(int.class), (int)1, sink, true);
 		fields++;
 		
 		writer.writeKey("Integer", sink);
-		writer.writeValue(Integer.class, (int)1, sink, true);
+		writer.writeValue(typeOf(Integer.class), (int)1, sink, true);
 		fields++;
 		
 		writer.writeKey("long", sink);
-		writer.writeValue(long.class, (long)1, sink, true);
+		writer.writeValue(typeOf(long.class), (long)1, sink, true);
 		fields++;
 		
 		writer.writeKey("Long", sink);
-		writer.writeValue(Long.class, (long)1, sink, true);
+		writer.writeValue(typeOf(Long.class), (long)1, sink, true);
 		fields++;
 		
 		writer.writeKey("float", sink);
-		writer.writeValue(float.class, (float)1, sink, true);
+		writer.writeValue(typeOf(float.class), (float)1, sink, true);
 		fields++;
 		
 		writer.writeKey("Float", sink);
-		writer.writeValue(Float.class, (float)1, sink, true);
+		writer.writeValue(typeOf(Float.class), (float)1, sink, true);
 		fields++;
 		
 		writer.writeKey("double", sink);
-		writer.writeValue(double.class, (double)1, sink, true);
+		writer.writeValue(typeOf(double.class), (double)1, sink, true);
 		fields++;
 		
 		writer.writeKey("Double", sink);
-		writer.writeValue(Double.class, (double)1, sink, true);
+		writer.writeValue(typeOf(Double.class), (double)1, sink, true);
 		fields++;
 		
 		writer.writeKey("String", sink);
-		writer.writeValue(String.class, "1", sink, true);
+		writer.writeValue(typeOf(String.class), "1", sink, true);
 		fields++;
 		
 		writer.writeKey("ByteBuf", sink);
-		writer.writeValue(ByteBuf.class, Unpooled.wrappedBuffer(new byte[] { 1 }), sink, true);
+		writer.writeValue(typeOf(ByteBuf.class), Unpooled.wrappedBuffer(new byte[] { 1 }), sink, true);
 		fields++;
 		
 		sink = writer.prependHeader(fields, sink);
@@ -127,11 +127,11 @@ public class MessageWriterTypedTest extends MessageReaderTypedTest {
 		
 		// 1
 		writer.writeKey("id", sink);
-		writer.writeValue(Long.class, Long.valueOf(1000), sink, true);
+		writer.writeValue(typeOf(Long.class), Long.valueOf(1000), sink, true);
 		
 		// 2
 		writer.writeKey("balance", sink);
-		writer.writeValue(Double.class, Double.valueOf(33.45), sink, true);
+		writer.writeValue(typeOf(Double.class), Double.valueOf(33.45), sink, true);
 		
 		// 3
 		writer.writeKey("withdrawals", sink);
@@ -146,7 +146,7 @@ public class MessageWriterTypedTest extends MessageReaderTypedTest {
 		
 		// 5
 		writer.writeKey("logins", sink);
-		writer.writeValue(long[].class, new long[] { 34, 56 }, sink, true);
+		writer.writeValue(typeOf(long[].class), new long[] { 34, 56 }, sink, true);
 
 		
 		byte[] bytes = ByteBufUtil.getBytes(sink);

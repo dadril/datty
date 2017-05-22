@@ -14,15 +14,17 @@
 package io.datty.msgpack.core;
 
 
-import java.util.List;
-import java.util.Map;
-
 import io.datty.msgpack.MessageWriter;
+import io.datty.msgpack.core.type.ArrayTypeInfo;
+import io.datty.msgpack.core.type.DefaultTypeInfoProvider;
+import io.datty.msgpack.core.type.ListTypeInfo;
+import io.datty.msgpack.core.type.MapTypeInfo;
+import io.datty.msgpack.core.type.SimpleTypeInfo;
+import io.datty.msgpack.core.type.TypeInfo;
 import io.datty.msgpack.core.writer.ArrayWriter;
 import io.datty.msgpack.core.writer.ListWriter;
 import io.datty.msgpack.core.writer.MapWriter;
 import io.datty.msgpack.core.writer.ValueWriter;
-import io.datty.msgpack.core.writer.ValueWriters;
 import io.datty.msgpack.support.MessageParseException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.CompositeByteBuf;
@@ -37,6 +39,25 @@ import io.netty.buffer.CompositeByteBuf;
 public class ValueMessageWriter extends AbstractMessageWriter implements MessageWriter {
 
 	public static final ValueMessageWriter INSTANCE = new ValueMessageWriter();
+	
+	public static final ValueWriter<Object> OBJECT_VALUE_WRITER = new ValueWriter<Object>() {
+
+		@Override
+		public ByteBuf write(Object value, ByteBuf sink, boolean copy) {
+			
+			if (value == null) {
+				return INSTANCE.writeNull(sink);
+			}
+			else {
+				Class<?> type = value.getClass();
+				TypeInfo<?> typeInfo = DefaultTypeInfoProvider.INSTANCE.getTypeInfo(type);
+				return INSTANCE.writeValue((TypeInfo<Object>) typeInfo, value, sink, copy);
+			}
+			
+		}
+
+		
+	};
 	
 	@Override
 	public int skipHeader(int maxSize, ByteBuf sink) {
@@ -113,44 +134,45 @@ public class ValueMessageWriter extends AbstractMessageWriter implements Message
 	}
 
 	@Override
-	public <V extends T, T> ByteBuf writeValue(Class<T> type, V value, ByteBuf sink, boolean copy) {
+	public <V extends T, T> ByteBuf writeValue(TypeInfo<T> type, V value, ByteBuf sink, boolean copy) {
 
-		if (List.class.isAssignableFrom(type)) {
-			return ListWriter.INSTANCE.write(type, value, sink, copy);
+		if (type instanceof SimpleTypeInfo) {
+			
+			SimpleTypeInfo<T> simpleType = (SimpleTypeInfo<T>) type;
+			
+			return simpleType.getValueWriter().write(value, sink, copy);
+			
 		}
 		
-		if (Map.class.isAssignableFrom(type)) {
-			return MapWriter.INSTANCE.write(type, value, sink, copy);
+		else if (type instanceof ArrayTypeInfo) {
+			
+			ArrayTypeInfo<Object, T> arrayType = (ArrayTypeInfo<Object, T>) type;
+			
+			return ArrayWriter.INSTANCE.write(arrayType.getComponentValueWriter(), value, sink, copy);
+			
 		}
 		
-		if (type.isArray()) {
-			return writeArray(type, value, sink, copy);
+		else if (type instanceof ListTypeInfo) {
+			
+			ListTypeInfo<Object, T> listType = (ListTypeInfo<Object, T>) type;
+			
+			return ListWriter.INSTANCE.write(listType.getComponentValueWriter(), value, sink, copy);
+			
 		}
 		
-		ValueWriter<T> writer = ValueWriters.find(type);
-		
-		if (writer == null) {
-			throw new MessageParseException("value writer not found for class: " + type);
+		else if (type instanceof MapTypeInfo) {
+			
+			MapTypeInfo<Object, Object, T> mapType = (MapTypeInfo<Object, Object, T>) type;
+			
+			return MapWriter.INSTANCE.write(mapType.getKeyValueWriter(), mapType.getComponentValueWriter(), value, sink, copy);
+			
 		}
 		
-		return writer.write(value, sink, copy);
+		else {
+			throw new MessageParseException("unknown type info: " + type);
+		}
+		
 	}
 
-	private <V extends T, T> ByteBuf writeArray(Class<T> type, V value, ByteBuf sink, boolean copy) {
-		
-		Class<?> elementType = type.getComponentType();
-		if (elementType == null) {
-			throw new MessageParseException("elementType not found for array: " + type);
-		}
-		
-		ValueWriter<?> elementWriter = ValueWriters.find(elementType);
-		
-		if (elementWriter == null) {
-			throw new MessageParseException("element writer not found for class: " + elementType);
-		}
-		
-		return ArrayWriter.INSTANCE.write(elementType, elementWriter, value, sink, copy);
-		
-	}
 	
 }

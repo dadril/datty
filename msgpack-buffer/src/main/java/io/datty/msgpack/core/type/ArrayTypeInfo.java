@@ -11,36 +11,45 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.spring.mapping;
+package io.datty.msgpack.core.type;
 
-import org.springframework.data.mapping.PersistentProperty;
-
-import io.datty.msgpack.core.type.TypeInfo;
-import io.datty.msgpack.core.type.TypeInfoProvider;
+import io.datty.msgpack.core.reader.ValueReader;
+import io.datty.msgpack.core.writer.ValueWriter;
+import io.datty.msgpack.support.MessageException;
 
 /**
- * DattyPersistentProperty
+ * ArrayTypeInfo
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattyPersistentProperty extends PersistentProperty<DattyPersistentProperty> {
+public interface ArrayTypeInfo<E, T> extends TypeInfo<T> {
 
 	/**
-	 * Returns the true if the field is embedded type.
+	 * Gets component type
 	 * 
-	 * @return
+	 * @return not null component type
 	 */
-	boolean isEmbeddedType();
+	
+	Class<E> getComponentType();
 	
 	/**
-	 * Returns type info of the property
+	 * Gets component value reader
 	 * 
-	 * @param provider - is using for embedded entity discovery
-	 * @return not null type info
+	 * @return not null value reader
+	 * @throws MessageException if not found
 	 */
 	
-	TypeInfo<?> getTypeInfo(TypeInfoProvider provider);
+	ValueReader<E> getComponentValueReader();
+
+	/**
+	 * Gets component value writer
+	 * 
+	 * @return not null value reader
+	 * @throws MessageException if not found
+	 */
+	
+	ValueWriter<E> getComponentValueWriter();
 	
 }

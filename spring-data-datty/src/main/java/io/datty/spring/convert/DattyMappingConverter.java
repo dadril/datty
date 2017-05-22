@@ -35,12 +35,12 @@ import io.datty.msgpack.core.MapMessageWriter;
 import io.datty.msgpack.core.StringMapMessageReader;
 import io.datty.msgpack.core.ValueMessageReader;
 import io.datty.msgpack.core.ValueMessageWriter;
-import io.datty.msgpack.core.reader.ArrayReader;
 import io.datty.msgpack.core.reader.ValueReader;
-import io.datty.msgpack.core.reader.ValueReaders;
-import io.datty.msgpack.core.writer.ArrayWriter;
+import io.datty.msgpack.core.type.SimpleTypeInfo;
+import io.datty.msgpack.core.type.TypeInfo;
+import io.datty.msgpack.core.type.TypeInfoProvider;
+import io.datty.msgpack.core.type.TypeRegistry;
 import io.datty.msgpack.core.writer.ValueWriter;
-import io.datty.msgpack.core.writer.ValueWriters;
 import io.datty.spring.core.DattyId;
 import io.datty.spring.mapping.DattyPersistentEntity;
 import io.datty.spring.mapping.DattyPersistentProperty;
@@ -181,31 +181,10 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 			final Class<?> propType = property.getRawType();
 			Object propValue = wrapper.getPropertyValue(propName);
 			
-			if (propValue == null) {
-				return;
-			}
-
-			if (property.isEmbeddedType()) {
-				
-				final DattyPersistentEntity<?> propEntity = mappingContext.getPersistentEntity(propType)
-						.orElseThrow(new Supplier<MappingException>() {
-
-							@Override
-							public MappingException get() {
-								return new MappingException("unknown embedded entity type: " + propType);
-							}
-							
-						});
-				
-				writer.writeKey(propName, sink);
-				sink = writeEntity(propEntity, propValue, sink, copy);
-				size++;
-				
-			}
-			else if (!property.isTransient()) {
+			if (propValue != null && !property.isTransient()) {
 							
 				writer.writeKey(propName, sink);
-				sink = writeValue(writer, property, propType, propValue, sink, copy);
+				sink = writeProperty(property, propType, propValue, sink, copy);
 				size++;
 				
 			}
@@ -214,108 +193,20 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 	}
 	
-	private ByteBuf writeValue(MessageWriter writer, DattyPersistentProperty property, Class<?> propType,
+	private ByteBuf writeProperty(DattyPersistentProperty property, final Class<?> propType,
 			Object propValue, ByteBuf sink, boolean copy) {
 		
-		if (property.isArray()) {
-			return writeArrayValue(property, propType, propValue, sink, copy);
-		}
-		else {
-			return writer.writeValue((Class<Object>)propType, propValue, sink, copy);
-		}
-		
-	}
-	
-	private ByteBuf writeArrayValue(DattyPersistentProperty property, Class<?> propType,
-			Object propValue, ByteBuf sink, boolean copy) {
-		
-		final Class<?> elementType = property.getComponentType().orElse(null);
-		
-		if (elementType == null) {
-			throw new MappingException("component type not found for: " + property);
-		}
-		
-		ValueWriter<?> elementWriter = ValueWriters.find(elementType);
-		
-		if (elementWriter == null) {
-			
-			DattyPersistentEntity<?> elementEntity = mappingContext.getPersistentEntity(elementType)
-					.orElseThrow(new Supplier<MappingException>() {
-
-						@Override
-						public MappingException get() {
-							return new MappingException("unknown embedded entity type: " + elementType);
-						}
-						
-					});
-			
-			elementWriter = new EntityWriter(elementEntity);
-			
-		}
-		
-		return ArrayWriter.INSTANCE.write(elementType, elementWriter, propValue, sink, copy);
-		
+		return ValueMessageWriter.INSTANCE.writeValue((TypeInfo<Object>)property.getTypeInfo(ENTITY_DISCOVERY), propValue, sink, copy);
 	}
 		
-	public final class EntityWriter<T> implements ValueWriter<T> {
-
-		private final DattyPersistentEntity<?> entity;
-		
-		public EntityWriter(DattyPersistentEntity<?> entity) {
-			this.entity = entity;
-		}
-		
-		@Override
-		public ByteBuf write(T value, ByteBuf sink, boolean copy) {
-			return writeEntity(entity, value, sink, copy);
-		}
-		
-	}
-	
 	private void writeCrossEntity(DattyPersistentEntity<?> entity, Object source, DattyRow sink, boolean copy) {
 		
 		entity.doWithProperties(new CrossWriteEntityHandler(source, sink, copy));
 		
 	}	
 	
-	private Object readValue(DattyPersistentProperty property, Class<?> propType, ByteBuf buffer, boolean copy) {
-		
-		if (property.isArray()) {
-			return readArrayValue(property, propType, buffer, copy);
-		}
-		else {
-			return ValueMessageReader.INSTANCE.readValue(propType, buffer, copy);
-		}
-		
-	}
-	
-	private Object readArrayValue(DattyPersistentProperty property, Class<?> propType, ByteBuf buffer, boolean copy) {
-		
-		final Class<?> elementType = property.getComponentType().orElse(null);
-		
-		if (elementType == null) {
-			throw new MappingException("component type not found for: " + property);
-		}
-		
-		ValueReader<?> elementReader = ValueReaders.find(elementType);
-		if (elementReader == null) {
-
-			DattyPersistentEntity<?> elementEntity = mappingContext.getPersistentEntity(elementType)
-					.orElseThrow(new Supplier<MappingException>() {
-
-						@Override
-						public MappingException get() {
-							return new MappingException("unknown embedded entity type: " + elementType);
-						}
-						
-					});
-			
-			elementReader = new EntityReader(elementType, elementEntity);
-			
-		}
-		
-		return ArrayReader.INSTANCE.read(elementType, elementReader, buffer, copy);
-		
+	private Object readProperty(DattyPersistentProperty property, Class<?> propType, ByteBuf buffer, boolean copy) {
+		return ValueMessageReader.INSTANCE.readValue(property.getTypeInfo(ENTITY_DISCOVERY), buffer, copy);
 	}
 	
 	public final class EntityReader<T> implements ValueReader<T> {
@@ -334,6 +225,80 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		}
 
 	}
+	
+	public final class EntityWriter<T> implements ValueWriter<T> {
+
+		private final DattyPersistentEntity<?> entity;
+		
+		public EntityWriter(DattyPersistentEntity<?> entity) {
+			this.entity = entity;
+		}
+		
+		@Override
+		public ByteBuf write(T value, ByteBuf sink, boolean copy) {
+			return writeEntity(entity, value, sink, copy);
+		}
+		
+	}
+	
+	public final class EntityTypeInfo<T> implements SimpleTypeInfo<T> {
+
+		private final Class<T> type;
+		private final ValueReader<T> reader;
+		private final ValueWriter<T> writer;
+		
+		public EntityTypeInfo(DattyPersistentEntity<T> entity) {
+			this.type = entity.getType();
+			this.reader = new EntityReader<T>(this.type, entity);
+			this.writer = new EntityWriter<T>(entity);
+		}
+		
+		@Override
+		public Class<T> getType() {
+			return type;
+		}
+
+		@Override
+		public ValueReader<T> getValueReader() {
+			return reader;
+		}
+
+		@Override
+		public ValueWriter<T> getValueWriter() {
+			return writer;
+		}
+
+		
+	}
+	
+	public final TypeInfoProvider ENTITY_DISCOVERY = new TypeInfoProvider() {
+
+		@Override
+		public <T> TypeInfo<T> getTypeInfo(final Class<T> type) {
+
+			TypeInfo<T> typeInfo = TypeRegistry.findSimple(type);
+			
+			if (typeInfo == null) {
+
+				DattyPersistentEntity<?> entity = mappingContext.getPersistentEntity(type)
+						.orElseThrow(new Supplier<MappingException>() {
+
+							@Override
+							public MappingException get() {
+								return new MappingException("unknown entity type: " + type);
+							}
+							
+						});
+				
+				return new EntityTypeInfo(entity);
+				
+			}
+			
+			return typeInfo;
+			
+		}
+		
+	};
 	
 	public final class CrossWriteEntityHandler implements PropertyHandler<DattyPersistentProperty> {
 
@@ -360,33 +325,9 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 			final Class<?> propType = property.getRawType();
 			Object propValue = wrapper.getPropertyValue(propName);
 			
-			if (propValue == null) {
-				return;
-			}
-			
-			if (property.isEmbeddedType()) {
-				
-				final DattyPersistentEntity<?> propEntity = mappingContext.getPersistentEntity(propType)
-						.orElseThrow(new Supplier<MappingException>() {
-
-							@Override
-							public MappingException get() {
-								return new MappingException("unknown embedded entity type: " + propType);
-							}
-							
-						});
-				
+			if (propValue != null && !property.isTransient()) {
 				ByteBuf valueBuffer = sink.addValue(propName);
-				ByteBuf updatedBufer = writeEntity(propEntity, propValue, valueBuffer, copy);
-				if (updatedBufer != valueBuffer) {
-					sink.putValue(propName, updatedBufer, false);
-				}
-				size++;
-				
-			}
-			else if (!property.isTransient()) {
-				ByteBuf valueBuffer = sink.addValue(propName);
-				ByteBuf updatedBuffer = writeValue(ValueMessageWriter.INSTANCE, property, propType, propValue, valueBuffer, copy);
+				ByteBuf updatedBuffer = writeProperty(property, propType, propValue, valueBuffer, copy);
 				if (updatedBuffer != valueBuffer) {
 					sink.putValue(propName, updatedBuffer, copy);
 				}
@@ -478,7 +419,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 				value = readFromBuffer((Class<Object>)propEntity.getType(), (DattyPersistentEntity<Object>) propEntity, buffer, copy);
 			}
 			else {
-				value = readValue(property, propType, buffer, copy);
+				value = readProperty(property, propType, buffer, copy);
 			}
 			
 			wrapper.setPropertyValue(propName, value);
@@ -525,7 +466,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 					
 				}
 				else {
-					value = readValue(property, propType, buffer, copy);
+					value = readProperty(property, propType, buffer, copy);
 				}
 				
 			}
@@ -537,6 +478,8 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 	}
 	
+
+
 	@SuppressWarnings("unchecked")
 	private <T> Class<T> transformClassToBeanClassLoaderClass(Class<T> entity) {
 		try {

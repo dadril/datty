@@ -13,6 +13,7 @@
  */
 package io.datty.msgpack;
 
+import io.datty.msgpack.core.type.TypeInfo;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -140,6 +141,6 @@ public interface MessageWriter {
 	 * @return sink or CompositeByteBuf
 	 */
 	
-	<V extends T, T> ByteBuf writeValue(Class<T> type, V value, ByteBuf sink, boolean copy);
+	<V extends T, T> ByteBuf writeValue(TypeInfo<T> type, V value, ByteBuf sink, boolean copy);
 	
 }

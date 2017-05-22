@@ -19,8 +19,17 @@ import java.util.Optional;
 
 import org.springframework.data.mapping.Association;
 import org.springframework.data.mapping.model.AnnotationBasedPersistentProperty;
+import org.springframework.data.mapping.model.MappingException;
 import org.springframework.data.mapping.model.Property;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
+
+import io.datty.msgpack.core.type.ArrayTypeInfoAdapter;
+import io.datty.msgpack.core.type.ListTypeInfoAdapter;
+import io.datty.msgpack.core.type.MapTypeInfoAdapter;
+import io.datty.msgpack.core.type.SimpleTypeInfo;
+import io.datty.msgpack.core.type.TypeInfo;
+import io.datty.msgpack.core.type.TypeInfoProvider;
+import io.datty.msgpack.core.type.TypeRegistry;
 
 /**
  * BasicDattyPersistentProperty
@@ -34,6 +43,7 @@ public class BasicDattyPersistentProperty extends AnnotationBasedPersistentPrope
 
 	private final boolean isEmbeddedType;
 	private final boolean hasTransientModifier;
+	private volatile TypeInfo<?> typeInfo;
 	
 	public BasicDattyPersistentProperty(Property property, DattyPersistentEntity<?> owner,
 			SimpleTypeHolder simpleTypeHolder) {
@@ -66,7 +76,86 @@ public class BasicDattyPersistentProperty extends AnnotationBasedPersistentPrope
 	public boolean isTransient() {
 		return hasTransientModifier || super.isTransient();
 	}
+	
+	@Override
+	public TypeInfo<?> getTypeInfo(TypeInfoProvider provider) {
+		TypeInfo<?> cache = this.typeInfo;
+		if (cache == null) {
+			cache = discoveryType(provider);
+			this.typeInfo = cache;
+		}
+		return cache;
+	}
 
+	private TypeInfo<?> discoveryType(TypeInfoProvider provider) {
+		
+		if (isArray()) {
+			
+			final Class<?> componentType = getComponentType().orElse(null);
+			
+			if (componentType == null) {
+				throw new MappingException("component type not found for: " + this);
+			}
+			
+			SimpleTypeInfo<?> simpleType = (SimpleTypeInfo<?>) provider.getTypeInfo(componentType);
+			
+			return new ArrayTypeInfoAdapter(getRawType(), simpleType);
+			
+		}
+		
+		else if (isCollectionLike()) {
+			
+			final Class<?> componentType = getComponentType().orElse(null);
+			
+			if (componentType == null) {
+				throw new MappingException("component type not found for: " + this);
+			}
+			
+			SimpleTypeInfo<?> simpleType = (SimpleTypeInfo<?>) provider.getTypeInfo(componentType);
+			
+			return new ListTypeInfoAdapter(getRawType(), simpleType);
+			
+		}
+		
+		else if (isMap()) {
+			
+			final Class<?> keyType = getComponentType().orElse(null);
+			final Class<?> valueType = this.getMapValueType().orElse(null);
+			
+			if (keyType == null) {
+				throw new MappingException("component type not found for: " + this);
+			}
+			
+			if (valueType == null) {
+				throw new MappingException("map value type not found for: " + this);
+			}
+			
+			SimpleTypeInfo<?> simpleKeyType = (SimpleTypeInfo<?>) provider.getTypeInfo(keyType);
+			SimpleTypeInfo<?> simplValueType = (SimpleTypeInfo<?>) provider.getTypeInfo(valueType);
+			
+			return new MapTypeInfoAdapter(getRawType(), simpleKeyType, simplValueType);
+			
+		}
+		
+		else if (isEmbeddedType()) {
+			
+			return provider.getTypeInfo(getRawType());
+			
+		}
+		
+		else {
+			
+			TypeInfo<?> typeInfo = TypeRegistry.findSimple(getRawType());
+			
+			if (typeInfo == null) {
+				throw new MappingException("simple type not found for: " + this);
+			}
+			
+			return typeInfo;
+		}
+		
+	}
+	
 	@Override
 	public String toString() {
 		return "BasicDattyPersistentProperty [" + getName() + "]";

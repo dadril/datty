@@ -30,7 +30,7 @@ public class MapWriter extends AbstractMessageWriter {
 
 	public static final MapWriter INSTANCE = new MapWriter();
 	
-	public ByteBuf write(Class<?> listType, Object value, ByteBuf sink, boolean copy) {
+	public ByteBuf write(ValueWriter<?> keyWriter, ValueWriter<?> componentWriter, Object value, ByteBuf sink, boolean copy) {
 		
 		if (value == null) {
 			writeNull(sink);
@@ -48,14 +48,18 @@ public class MapWriter extends AbstractMessageWriter {
 		for (Map.Entry<Object, Object> e : map.entrySet()) {
 			
 			Object key = e.getKey();
-			// use String as a key, because we need to be able to read Maps in LUA Table
-			writer.writeKey(String.valueOf(key), sink);
+			
+			if (key != null) {
+				sink = ((ValueWriter<Object>) keyWriter).write(key, sink, true);
+			}
+			else {
+				writeNull(sink);
+			}
 			
 			Object element = e.getValue();
 			
 			if (element != null) {
-				Class<Object> elementType = (Class<Object>) element.getClass();
-				sink = writer.writeValue((Class<Object>) elementType, element, sink, copy);
+				sink = ((ValueWriter<Object>) componentWriter).write(element, sink, copy);
 			}
 			else {
 				writeNull(sink);

@@ -11,36 +11,23 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.spring.mapping;
-
-import org.springframework.data.mapping.PersistentProperty;
-
-import io.datty.msgpack.core.type.TypeInfo;
-import io.datty.msgpack.core.type.TypeInfoProvider;
+package io.datty.msgpack.core.type;
 
 /**
- * DattyPersistentProperty
+ * TypeInfo
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattyPersistentProperty extends PersistentProperty<DattyPersistentProperty> {
+public interface TypeInfo<T> {
+	
+	/**
+	 * Gets type
+	 * 
+	 * @return not null type
+	 */
+	
+	Class<T> getType();
 
-	/**
-	 * Returns the true if the field is embedded type.
-	 * 
-	 * @return
-	 */
-	boolean isEmbeddedType();
-	
-	/**
-	 * Returns type info of the property
-	 * 
-	 * @param provider - is using for embedded entity discovery
-	 * @return not null type info
-	 */
-	
-	TypeInfo<?> getTypeInfo(TypeInfoProvider provider);
-	
 }

@@ -24,6 +24,8 @@ import org.junit.Test;
 import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.core.StringMapMessageReader;
 import io.datty.msgpack.core.ValueMessageReader;
+import io.datty.msgpack.core.type.DefaultTypeInfoProvider;
+import io.datty.msgpack.core.type.TypeInfo;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -131,7 +133,7 @@ public class MessageReaderTypedTest {
 			Class<?> type = schema.get(key);
 			Assert.assertNotNull(type);
 			
-			Object field = reader.readValue(type, source, false);
+			Object field = reader.readValue(typeOf(type), source, false);
 			Assert.assertNotNull(key, field);
 			
 			map.put(key, field);
@@ -150,6 +152,10 @@ public class MessageReaderTypedTest {
 	  Assert.assertEquals(map.get("withdrawals"), Arrays.asList(10.45, 44.30));
 	  
 		
+	}
+	
+	protected static <T> TypeInfo<T> typeOf(Class<T> type) {
+		return DefaultTypeInfoProvider.INSTANCE.getTypeInfo(type);
 	}
 	
 }

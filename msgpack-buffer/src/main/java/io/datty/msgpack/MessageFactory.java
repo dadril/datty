@@ -22,6 +22,7 @@ import io.datty.msgpack.core.ArrayMessageReader;
 import io.datty.msgpack.core.IntMapMessageReader;
 import io.datty.msgpack.core.StringMapMessageReader;
 import io.datty.msgpack.core.ValueMessageReader;
+import io.datty.msgpack.core.type.TypeInfo;
 import io.datty.msgpack.support.MessageException;
 import io.netty.buffer.ByteBuf;
 
@@ -226,7 +227,7 @@ public final class MessageFactory {
 	 * @return value or null
 	 */
 	
-	public static <T> T readValue(Class<T> type, ByteBuf source, boolean copy) {
+	public static <T> T readValue(TypeInfo<T> type, ByteBuf source, boolean copy) {
 		return ValueMessageReader.INSTANCE.readValue(type, source, copy);
 	}
 	

@@ -13,6 +13,7 @@
  */
 package io.datty.msgpack;
 
+import io.datty.msgpack.core.type.TypeInfo;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -81,6 +82,6 @@ public interface MessageReader<K> {
 	 * @return java object or null
 	 */
 	
-	<T> T readValue(Class<T> type, ByteBuf source, boolean copy);
+	<T> T readValue(TypeInfo<T> type, ByteBuf source, boolean copy);
 	
 }

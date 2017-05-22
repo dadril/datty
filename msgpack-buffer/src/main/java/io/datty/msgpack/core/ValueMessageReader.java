@@ -13,9 +13,6 @@
  */
 package io.datty.msgpack.core;
 
-import java.util.List;
-import java.util.Map;
-
 import org.msgpack.core.MessageFormat;
 
 import io.datty.msgpack.MessageReader;
@@ -23,7 +20,11 @@ import io.datty.msgpack.core.reader.ArrayReader;
 import io.datty.msgpack.core.reader.ListReader;
 import io.datty.msgpack.core.reader.MapReader;
 import io.datty.msgpack.core.reader.ValueReader;
-import io.datty.msgpack.core.reader.ValueReaders;
+import io.datty.msgpack.core.type.ArrayTypeInfo;
+import io.datty.msgpack.core.type.ListTypeInfo;
+import io.datty.msgpack.core.type.MapTypeInfo;
+import io.datty.msgpack.core.type.SimpleTypeInfo;
+import io.datty.msgpack.core.type.TypeInfo;
 import io.datty.msgpack.support.MessageParseException;
 import io.netty.buffer.ByteBuf;
 
@@ -38,16 +39,16 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 
 	public static final ValueMessageReader<Object> INSTANCE = new ValueMessageReader<Object>();
 	
-	public static final ValueReader<Object> KEY_OBJECT_READER = new ValueReader<Object>() {
+	public static final ValueReader<Object> OBJECT_KEY_READER = new ValueReader<Object>() {
 
 		@Override
 		public Object read(ByteBuf source, boolean copy) {
-			return INSTANCE.readObjectKey(source);
+			return INSTANCE.readKeyAsObject(source);
 		}
 		
 	};
 	
-	public static final ValueReader<Object> VALUE_OBJECT_READER = new ValueReader<Object>() {
+	public static final ValueReader<Object> OBJECT_VALUE_READER = new ValueReader<Object>() {
 
 		@Override
 		public Object read(ByteBuf source, boolean copy) {
@@ -64,7 +65,7 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 	@SuppressWarnings("unchecked")
 	@Override
 	public K readKey(ByteBuf buffer) {
-		return (K) readObjectKey(buffer);
+		return (K) readKeyAsObject(buffer);
 	}
 	
 	/**
@@ -78,7 +79,7 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 	 * 
 	 */
 	
-	public Object readObjectKey(ByteBuf buffer) {
+	public Object readKeyAsObject(ByteBuf buffer) {
 		
 		if (!hasNext(buffer)) {
 			return null;
@@ -290,37 +291,39 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T readValue(Class<T> type, ByteBuf source, boolean copy) {
+	public <T> T readValue(TypeInfo<T> type, ByteBuf source, boolean copy) {
 
-		if (type.isArray()) {
+		if (type instanceof SimpleTypeInfo) {
 			
-			Class<?> elementType = type.getComponentType();
-			if (elementType == null) {
-				throw new MessageParseException("elementType not found for array: " + type);
-			}
-			ValueReader<?> elementReader = ValueReaders.find(elementType);
-			if (elementReader == null) {
-				throw new MessageParseException("element reader not found for class: " + elementType);
-			}
+			SimpleTypeInfo<T> simpleType = (SimpleTypeInfo<T>) type;
 			
-			return (T) ArrayReader.INSTANCE.read(elementType, elementReader, source, copy);
+			return simpleType.getValueReader().read(source, copy);
 		}
 		
-		if (List.class.isAssignableFrom(type)) {
-			return (T) ListReader.INSTANCE.read(VALUE_OBJECT_READER, source, copy);
+	  else if (type instanceof ArrayTypeInfo) {
+			
+			ArrayTypeInfo<Object, T> arrayType = (ArrayTypeInfo<Object, T>) type;
+			
+			return (T) ArrayReader.INSTANCE.read(arrayType.getComponentType(), arrayType.getComponentValueReader(), source, copy);
 		}
 		
-		if (Map.class.isAssignableFrom(type)) {
-			return (T) MapReader.INSTANCE.read(KEY_OBJECT_READER, VALUE_OBJECT_READER, source, copy);
+		else if (type instanceof ListTypeInfo) {
+			
+			ListTypeInfo<Object, T> listType = (ListTypeInfo<Object, T>) type;
+			
+			return (T) ListReader.INSTANCE.read(listType.getComponentValueReader(), source, copy);
 		}
 		
-		ValueReader<T> reader = ValueReaders.find(type);
-		
-		if (reader == null) {
-			throw new MessageParseException("value reader not found for class: " + type);
+		else if (type instanceof MapTypeInfo) {
+			
+			MapTypeInfo<Object, Object, T> mapType = (MapTypeInfo<Object, Object, T>) type;
+			
+			return (T) MapReader.INSTANCE.read(mapType.getKeyValueReader(), mapType.getComponentValueReader(), source, copy);
 		}
 		
-		return reader.read(source, copy);
+		else {
+			throw new MessageParseException("unknown type info: " + type);
+		}
 		
 	}
 	
