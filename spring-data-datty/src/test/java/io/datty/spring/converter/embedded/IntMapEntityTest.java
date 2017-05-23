@@ -25,18 +25,18 @@ import io.datty.spring.support.DattyConverterUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * StringMapEntityTest
+ * IntMapEntityTest
  * 
  * @author Alex Shvid
  *
  */
 
-public class StringMapEntityTest {
+public class IntMapEntityTest {
 
 	@Test
 	public void testNull() {
 		
-		StringMapEntity entity = new StringMapEntity();
+		IntMapEntity entity = new IntMapEntity();
 		entity.setId(123L);
 		
 		DattyRow row = new DattyRow();
@@ -53,7 +53,7 @@ public class StringMapEntityTest {
 		Map<String, Object> map = (Map<String, Object>) value;
 		Assert.assertEquals(entity.getId(), map.get("id"));
 
-		StringMapEntity actual = DattyConverterUtil.read(StringMapEntity.class, row);
+		IntMapEntity actual = DattyConverterUtil.read(IntMapEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNull(actual.getEmbedded());
 		
@@ -62,9 +62,9 @@ public class StringMapEntityTest {
 	@Test
 	public void testEmbeddedEmpty() {
 		
-		StringMapEntity entity = new StringMapEntity();
+		IntMapEntity entity = new IntMapEntity();
 		entity.setId(123L);
-		entity.setEmbedded(Collections.<String, EmbeddedEntity>emptyMap());
+		entity.setEmbedded(Collections.<Integer, EmbeddedEntity>emptyMap());
 		
 		DattyRow row = new DattyRow();
 		
@@ -79,10 +79,10 @@ public class StringMapEntityTest {
 		Assert.assertNotNull(value);
 		Assert.assertTrue(value instanceof Map);
 		
-		Map<String, Object> map = (Map<String, Object>) value;
+		Map<Integer, Object> map = (Map<Integer, Object>) value;
 		Assert.assertEquals(entity.getId(), map.get("id"));
 
-		StringMapEntity actual = DattyConverterUtil.read(StringMapEntity.class, row);
+		IntMapEntity actual = DattyConverterUtil.read(IntMapEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNotNull(actual.getEmbedded());
 		Assert.assertEquals(0, actual.getEmbedded().size());
@@ -92,11 +92,11 @@ public class StringMapEntityTest {
 	@Test
 	public void testEmbeddedNull() {
 		
-		StringMapEntity entity = new StringMapEntity();
+		IntMapEntity entity = new IntMapEntity();
 		entity.setId(123L);
 		
 		EmbeddedEntity embedded = new EmbeddedEntity();
-		entity.setEmbedded(Collections.singletonMap("k", embedded));
+		entity.setEmbedded(Collections.singletonMap(555, embedded));
 		
 		DattyRow row = new DattyRow();
 		
@@ -111,26 +111,26 @@ public class StringMapEntityTest {
 		Assert.assertNotNull(value);
 		Assert.assertTrue(value instanceof Map);
 		
-		Map<String, Object> map = (Map<String, Object>) value;
+		Map<Integer, Object> map = (Map<Integer, Object>) value;
 		Assert.assertEquals(entity.getId(), map.get("id"));
 
-		StringMapEntity actual = DattyConverterUtil.read(StringMapEntity.class, row);
+		IntMapEntity actual = DattyConverterUtil.read(IntMapEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNotNull(actual.getEmbedded());
 		Assert.assertEquals(1, actual.getEmbedded().size());
-		Assert.assertNull(actual.getEmbedded().get("k").getInnerField());
+		Assert.assertNull(actual.getEmbedded().get(555).getInnerField());
 		
 	}
 		
 	@Test
 	public void testEmbedded() {
 		
-		StringMapEntity entity = new StringMapEntity();
+		IntMapEntity entity = new IntMapEntity();
 		entity.setId(123L);
 		
 		EmbeddedEntity embedded = new EmbeddedEntity();
 		embedded.setInnerField("inner");
-		entity.setEmbedded(Collections.singletonMap("k", embedded));
+		entity.setEmbedded(Collections.singletonMap(555, embedded));
 		
 		DattyRow row = new DattyRow();
 		
@@ -148,11 +148,11 @@ public class StringMapEntityTest {
 		Map<String, Object> map = (Map<String, Object>) value;
 		Assert.assertEquals(entity.getId(), map.get("id"));
 
-		StringMapEntity actual = DattyConverterUtil.read(StringMapEntity.class, row);
+		IntMapEntity actual = DattyConverterUtil.read(IntMapEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNotNull(actual.getEmbedded());
 		Assert.assertEquals(1, actual.getEmbedded().size());
-		Assert.assertEquals(embedded.getInnerField(), actual.getEmbedded().get("k").getInnerField());
+		Assert.assertEquals(embedded.getInnerField(), actual.getEmbedded().get(555).getInnerField());
 		
 	}
 	

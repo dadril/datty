@@ -21,39 +21,40 @@ import org.junit.Test;
 
 import io.datty.api.DattyRow;
 import io.datty.msgpack.MessageFactory;
+import io.datty.msgpack.core.reader.LongReader;
 import io.datty.spring.support.DattyConverterUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * StringMapEntityTest
+ * IntMapCrossEntityTest
  * 
  * @author Alex Shvid
  *
  */
 
-public class StringMapEntityTest {
+public class IntMapCrossEntityTest {
 
 	@Test
 	public void testNull() {
 		
-		StringMapEntity entity = new StringMapEntity();
+		IntMapCrossEntity entity = new IntMapCrossEntity();
 		entity.setId(123L);
 		
 		DattyRow row = new DattyRow();
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("def");
+		ByteBuf bb = row.get("id");
 		Assert.assertNotNull(bb);
 		
-		Object value = MessageFactory.readValue(bb.duplicate(), true);
-		Assert.assertNotNull(value);
-		Assert.assertTrue(value instanceof Map);
+		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
+		Assert.assertNotNull(id);
+		Assert.assertEquals(123L, id.longValue());
 		
-		Map<String, Object> map = (Map<String, Object>) value;
-		Assert.assertEquals(entity.getId(), map.get("id"));
+		bb = row.get("embedded");
+		Assert.assertNull(bb);
 
-		StringMapEntity actual = DattyConverterUtil.read(StringMapEntity.class, row);
+		IntMapCrossEntity actual = DattyConverterUtil.read(IntMapCrossEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNull(actual.getEmbedded());
 		
@@ -62,27 +63,32 @@ public class StringMapEntityTest {
 	@Test
 	public void testEmbeddedEmpty() {
 		
-		StringMapEntity entity = new StringMapEntity();
+		IntMapCrossEntity entity = new IntMapCrossEntity();
 		entity.setId(123L);
-		entity.setEmbedded(Collections.<String, EmbeddedEntity>emptyMap());
+		entity.setEmbedded(Collections.<Integer, EmbeddedEntity>emptyMap());
 		
 		DattyRow row = new DattyRow();
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("def");
+		ByteBuf bb = row.get("id");
 		Assert.assertNotNull(bb);
 		
-		//System.out.println(StringMaps.toString(ByteBufUtil.getBytes(bb)));
+		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
+		Assert.assertNotNull(id);
+		Assert.assertEquals(123L, id.longValue());
+		
+		bb = row.get("embedded");
+		Assert.assertNotNull(bb);
 		
 		Object value = MessageFactory.readValue(bb.duplicate(), true);
 		Assert.assertNotNull(value);
 		Assert.assertTrue(value instanceof Map);
 		
-		Map<String, Object> map = (Map<String, Object>) value;
-		Assert.assertEquals(entity.getId(), map.get("id"));
+		Map<Integer, Map> map = (Map<Integer, Map>) value;
+		Assert.assertEquals(0, map.size());
 
-		StringMapEntity actual = DattyConverterUtil.read(StringMapEntity.class, row);
+		IntMapCrossEntity actual = DattyConverterUtil.read(IntMapCrossEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNotNull(actual.getEmbedded());
 		Assert.assertEquals(0, actual.getEmbedded().size());
@@ -92,17 +98,24 @@ public class StringMapEntityTest {
 	@Test
 	public void testEmbeddedNull() {
 		
-		StringMapEntity entity = new StringMapEntity();
+		IntMapCrossEntity entity = new IntMapCrossEntity();
 		entity.setId(123L);
 		
 		EmbeddedEntity embedded = new EmbeddedEntity();
-		entity.setEmbedded(Collections.singletonMap("k", embedded));
+		entity.setEmbedded(Collections.singletonMap(555, embedded));
 		
 		DattyRow row = new DattyRow();
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("def");
+		ByteBuf bb = row.get("id");
+		Assert.assertNotNull(bb);
+		
+		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
+		Assert.assertNotNull(id);
+		Assert.assertEquals(123L, id.longValue());
+		
+		bb = row.get("embedded");
 		Assert.assertNotNull(bb);
 		
 		//System.out.println(StringMaps.toString(ByteBufUtil.getBytes(bb)));
@@ -111,48 +124,59 @@ public class StringMapEntityTest {
 		Assert.assertNotNull(value);
 		Assert.assertTrue(value instanceof Map);
 		
-		Map<String, Object> map = (Map<String, Object>) value;
-		Assert.assertEquals(entity.getId(), map.get("id"));
+		Map<Integer, Map> map = (Map<Integer, Map>) value;
+		Assert.assertEquals(1, map.size());
+		Assert.assertNotNull(map.get(555));
+		Assert.assertNull(map.get(555).get("innerField"));
 
-		StringMapEntity actual = DattyConverterUtil.read(StringMapEntity.class, row);
+		IntMapCrossEntity actual = DattyConverterUtil.read(IntMapCrossEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNotNull(actual.getEmbedded());
 		Assert.assertEquals(1, actual.getEmbedded().size());
-		Assert.assertNull(actual.getEmbedded().get("k").getInnerField());
+		Assert.assertNull(actual.getEmbedded().get(555).getInnerField());
 		
 	}
 		
 	@Test
 	public void testEmbedded() {
 		
-		StringMapEntity entity = new StringMapEntity();
+		IntMapCrossEntity entity = new IntMapCrossEntity();
 		entity.setId(123L);
 		
 		EmbeddedEntity embedded = new EmbeddedEntity();
 		embedded.setInnerField("inner");
-		entity.setEmbedded(Collections.singletonMap("k", embedded));
+		entity.setEmbedded(Collections.singletonMap(555, embedded));
 		
 		DattyRow row = new DattyRow();
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("def");
+		ByteBuf bb = row.get("id");
 		Assert.assertNotNull(bb);
-				
+		
+		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
+		Assert.assertNotNull(id);
+		Assert.assertEquals(123L, id.longValue());
+		
+		bb = row.get("embedded");
+		Assert.assertNotNull(bb);
+		
 		//System.out.println(StringMaps.toString(ByteBufUtil.getBytes(bb)));
 		
 		Object value = MessageFactory.readValue(bb.duplicate(), true);
 		Assert.assertNotNull(value);
 		Assert.assertTrue(value instanceof Map);
 		
-		Map<String, Object> map = (Map<String, Object>) value;
-		Assert.assertEquals(entity.getId(), map.get("id"));
+		Map<Integer, Map> map = (Map<Integer, Map>) value;
+		Assert.assertEquals(1, map.size());
+		Assert.assertNotNull(map.get(555));
+		Assert.assertEquals("inner", map.get(555).get("innerField"));
 
-		StringMapEntity actual = DattyConverterUtil.read(StringMapEntity.class, row);
+		IntMapCrossEntity actual = DattyConverterUtil.read(IntMapCrossEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNotNull(actual.getEmbedded());
 		Assert.assertEquals(1, actual.getEmbedded().size());
-		Assert.assertEquals(embedded.getInnerField(), actual.getEmbedded().get("k").getInnerField());
+		Assert.assertEquals("inner", actual.getEmbedded().get(555).getInnerField());
 		
 	}
 	
