@@ -40,6 +40,8 @@ public abstract class AbstractOperation<O extends TypedOperation<O, R>, R extend
 	
 	protected R fallback;
 	
+	protected Object upstreamContext;
+	
 	public AbstractOperation(String cacheName) {
 		this.cacheName = cacheName;
 	}
@@ -117,6 +119,19 @@ public abstract class AbstractOperation<O extends TypedOperation<O, R>, R extend
 	
 	public O withFallback(R fallback) {
 		return onFallback(fallback);
+	}
+
+	public boolean hasUpstreamContext() {
+		return upstreamContext != null;
+	}
+	
+	public Object getUpstreamContext() {
+		return upstreamContext;
+	}
+
+	public O setUpstreamContext(Object upstreamContext) {
+		this.upstreamContext = upstreamContext;
+		return castThis();
 	}
 
 	@Override
