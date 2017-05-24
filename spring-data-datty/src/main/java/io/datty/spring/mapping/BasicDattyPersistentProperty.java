@@ -61,7 +61,7 @@ public class BasicDattyPersistentProperty extends AnnotationBasedPersistentPrope
 			Field fieldInstance = field.get();
 			Class<?> fieldType = fieldInstance.getType();
 
-			Name nameAnnotation = fieldType.getAnnotation(Name.class);
+			Name nameAnnotation = fieldInstance.getAnnotation(Name.class);
 			if (nameAnnotation != null) {
 				this.primaryName = nameAnnotation.value();
 				this.otherNames = nameAnnotation.otherNames();
@@ -71,7 +71,7 @@ public class BasicDattyPersistentProperty extends AnnotationBasedPersistentPrope
 				this.otherNames = EMPTY;
 			}
 			
-			Tag tagAnnotation = fieldType.getAnnotation(Tag.class);
+			Tag tagAnnotation = fieldInstance.getAnnotation(Tag.class);
 			
 			if (owner.useTags() && tagAnnotation == null) {
 				throw new MappingException("entity tags enabled by property has no @Tag " + property);
