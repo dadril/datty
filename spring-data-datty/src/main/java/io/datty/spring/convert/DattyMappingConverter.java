@@ -454,6 +454,8 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 	@SuppressWarnings("unchecked")
 	private <R> R readCross(Class<R> type, DattyPersistentEntity<R> entity, DattyRow source, boolean copy) {
 		
+		boolean useTags = entity.useTags();
+		
 		BeanWrapper wrapper = new BeanWrapperImpl(type);
 
 		for (Map.Entry<String, ByteBuf> e : source.getValues().entrySet()) {
@@ -461,9 +463,25 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 			String name = e.getKey();
 			ByteBuf buffer = e.getValue();
 
-			Optional<DattyPersistentProperty> prop = entity.findPropertyByName(name);
-			if (!prop.isPresent()) {
-				throw new MappingException("property '" + name + "' not found for " + entity);
+			Optional<DattyPersistentProperty> prop;
+			if (useTags) {
+				int tagNumber;
+				try {
+					tagNumber = Integer.parseInt(name);
+				}
+				catch(NumberFormatException nfe) {
+					throw new MappingException("invalid tag number for property '" + name + "' in payload for entity" + entity);
+				}
+				prop = entity.findPropertyByTag(tagNumber);
+				if (!prop.isPresent()) {
+					throw new MappingException("property with tag '" + tagNumber + "' not found for " + entity);
+				}
+			}
+			else {
+				prop = entity.findPropertyByName(name);
+				if (!prop.isPresent()) {
+					throw new MappingException("property '" + name + "' not found for " + entity);
+				}
 			}
 			
 			DattyPersistentProperty property = prop.get();
