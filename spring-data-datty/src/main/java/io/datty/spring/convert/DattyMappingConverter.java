@@ -45,7 +45,6 @@ import io.datty.spring.core.DattyId;
 import io.datty.spring.mapping.DattyPersistentEntity;
 import io.datty.spring.mapping.DattyPersistentProperty;
 import io.datty.spring.mapping.Identifiable;
-import io.datty.support.exception.DattyException;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -425,25 +424,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 			DattyPersistentProperty property = prop.get();
 			final Class<?> propType = property.getRawType();
 			
-			Object value = null;
-			if (property.isEmbeddedType()) {
-				
-				final DattyPersistentEntity<?> propEntity = mappingContext.getPersistentEntity(propType)
-						.orElseThrow(new Supplier<DattyException>() {
-
-							@Override
-							public DattyException get() {
-								return new DattyException("unknown embedded entity type: " + propType);
-							}
-							
-						});
-				
-				value = readFromBuffer((Class<Object>)propEntity.getType(), (DattyPersistentEntity<Object>) propEntity, buffer, copy);
-			}
-			else {
-				value = readProperty(property, propType, buffer, copy);
-			}
-			
+			Object value = readProperty(property, propType, buffer, copy);
 			wrapper.setPropertyValue(property.getName(), value);
 			
 		}
@@ -489,26 +470,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 			
 			Object value = null;
 			if (buffer != null) {
-				
-				if (property.isEmbeddedType()) {
-					
-					final DattyPersistentEntity<?> propEntity = mappingContext.getPersistentEntity(propType)
-							.orElseThrow(new Supplier<DattyException>() {
-
-								@Override
-								public DattyException get() {
-									return new DattyException("unknown embedded entity type: " + propType);
-								}
-								
-							});
-					
-					value = readFromBuffer((Class<Object>)propEntity.getType(), (DattyPersistentEntity<Object>) propEntity, buffer, copy);
-					
-				}
-				else {
-					value = readProperty(property, propType, buffer, copy);
-				}
-				
+				value = readProperty(property, propType, buffer, copy);
 			}
 			
 			wrapper.setPropertyValue(property.getName(), value);
