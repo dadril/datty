@@ -13,6 +13,8 @@
  */
 package io.datty.spring.mapping;
 
+import java.util.Optional;
+
 import org.springframework.data.mapping.PersistentEntity;
 
 /**
@@ -49,6 +51,14 @@ public interface DattyPersistentEntity<T> extends PersistentEntity<T, DattyPersi
 	String getMinorKey();
 	
 	/**
+	 * Use tags of properties instead of names
+	 *  
+	 * @return true if use tags
+	 */
+	
+	boolean useTags();
+	
+	/**
 	 * Get copy flag
 	 * 
 	 * @return true if copy all bytes for reads and writes
@@ -79,5 +89,23 @@ public interface DattyPersistentEntity<T> extends PersistentEntity<T, DattyPersi
 	 */
 	
 	int getPropertiesCount();
+	
+	/**
+	 * Search property by name
+	 * 
+	 * @param name - primary or other name
+	 * @return property
+	 */
+	
+	Optional<DattyPersistentProperty> findPropertyByName(String name);
+	
+	/**
+	 * Search property by tag
+	 * 
+	 * @param tag - tag number
+	 * @return property
+	 */
+	
+	Optional<DattyPersistentProperty> findPropertyByTag(int tagNumber);
 	
 }

@@ -41,21 +41,56 @@ import io.datty.msgpack.core.type.TypeRegistry;
 public class BasicDattyPersistentProperty extends AnnotationBasedPersistentProperty<DattyPersistentProperty>
 		implements DattyPersistentProperty {
 
+	private static final String[] EMPTY = new String[] {};
+	
+	private final String primaryName;
+	private final String[] otherNames;
+	private final int tag;
 	private final boolean isEmbeddedType;
 	private final boolean hasTransientModifier;
 	private volatile TypeInfo<?> typeInfo;
 	
 	public BasicDattyPersistentProperty(Property property, DattyPersistentEntity<?> owner,
 			SimpleTypeHolder simpleTypeHolder) {
+		
 		super(property, owner, simpleTypeHolder);
 		
 		Optional<Field> field = property.getField();
 		
 		if (field.isPresent()) {
-			this.isEmbeddedType = field.get().getType().isAnnotationPresent(Embedded.class);
+			Field fieldInstance = field.get();
+			Class<?> fieldType = fieldInstance.getType();
+
+			Name nameAnnotation = fieldType.getAnnotation(Name.class);
+			if (nameAnnotation != null) {
+				this.primaryName = nameAnnotation.value();
+				this.otherNames = nameAnnotation.otherNames();
+			}
+			else {
+				this.primaryName = getName();
+				this.otherNames = EMPTY;
+			}
+			
+			Tag tagAnnotation = fieldType.getAnnotation(Tag.class);
+			
+			if (owner.useTags() && tagAnnotation == null) {
+				throw new MappingException("entity tags enabled by property has no @Tag " + property);
+			}
+			
+			this.tag = tagAnnotation != null ? tagAnnotation.value() : 0;
+			
+			this.isEmbeddedType = fieldType.isAnnotationPresent(Embedded.class);
 			this.hasTransientModifier = Modifier.isTransient(field.get().getModifiers());
 		}
 		else {
+			this.primaryName = getName();
+			this.otherNames = EMPTY;
+			
+			if (owner.useTags()) {
+				throw new MappingException("entity tags enabled by property has no @Tag " + property);
+			}
+			
+			this.tag = 0;		
 			this.isEmbeddedType = false;
 			this.hasTransientModifier = false;
 		}
@@ -65,6 +100,21 @@ public class BasicDattyPersistentProperty extends AnnotationBasedPersistentPrope
 	@Override
 	protected Association<DattyPersistentProperty> createAssociation() {
 		return new Association<DattyPersistentProperty>(this, null);
+	}
+
+	@Override
+	public String getPrimaryName() {
+		return primaryName;
+	}
+
+	@Override
+	public String[] getOtherNames() {
+		return otherNames;
+	}
+
+	@Override
+	public int getTag() {
+		return tag;
 	}
 
 	@Override

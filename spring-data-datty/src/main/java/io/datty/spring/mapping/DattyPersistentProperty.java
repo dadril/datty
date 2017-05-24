@@ -28,6 +28,30 @@ import io.datty.msgpack.core.type.TypeInfoProvider;
 public interface DattyPersistentProperty extends PersistentProperty<DattyPersistentProperty> {
 
 	/**
+	 * Gets primary property name
+	 * 
+	 * @return not null name
+	 */
+	
+	String getPrimaryName();
+	
+	/**
+	 * Gets other property names
+	 * 
+	 * @return not null array of names
+	 */
+	
+	String[] getOtherNames();
+	
+	/**
+	 * Gets property tag number
+	 * 
+	 * @return not null tag number
+	 */
+	
+	int getTag();
+	
+	/**
 	 * Returns the true if the field is embedded type.
 	 * 
 	 * @return

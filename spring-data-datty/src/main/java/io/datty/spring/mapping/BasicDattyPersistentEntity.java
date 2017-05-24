@@ -13,6 +13,10 @@
  */
 package io.datty.spring.mapping;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -41,10 +45,14 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 
 	private final String cacheName;
 	private final String minorKey;
+	private final boolean tags;
 	private final boolean copy;
 	private final int ttlSeconds;
 	private final int timeoutMillis;
 	private int propsCount = -1;
+	
+	private Map<String, DattyPersistentProperty> propertyIndex;
+	private Map<Integer, DattyPersistentProperty> tagIndex;
 	
 	private final SpelExpressionParser parser;
 	private final StandardEvaluationContext context;
@@ -62,18 +70,68 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 			Entity entity = rawType.getAnnotation(Entity.class);
 			this.cacheName = expression(entity.cacheName());
 			this.minorKey = expression(entity.minorKey());
+			this.tags = entity.tags();
 			this.copy = entity.copy();
 			this.ttlSeconds = entity.ttlSeconds();
 			this.timeoutMillis = entity.timeoutMillis();
 		} else {
 			this.cacheName = rawType.getSimpleName();
 			this.minorKey = "";
+			this.tags = false;
 			this.copy = false;
 			this.ttlSeconds = DattyConstants.UNSET_TTL;
 			this.timeoutMillis = DattyConstants.UNSET_TIMEOUT;
 		}
 
 	}
+	
+	private Map<String, DattyPersistentProperty> buildPropertyIndex() {
+		PropertyIndexer indexer = new PropertyIndexer();
+		doWithProperties(indexer);
+		return indexer.getIndex();
+	}
+	
+	public static final class PropertyIndexer implements SimplePropertyHandler {
+		
+		private final Map<String, DattyPersistentProperty> map = new HashMap<>();
+		
+		@Override
+		public void doWithPersistentProperty(PersistentProperty<?> property) {
+			DattyPersistentProperty prop = (DattyPersistentProperty) property;
+			map.put(prop.getPrimaryName(), prop);
+			String[] otherNames = prop.getOtherNames();
+			int length = otherNames.length;
+			for (int i = 0; i != length; ++i) {
+				map.put(otherNames[i], prop);
+			}
+		}
+
+		public Map<String, DattyPersistentProperty> getIndex() {
+			return map;
+		}
+	}
+	
+	private Map<Integer, DattyPersistentProperty> buildTagIndex() {
+		TagIndexer indexer = new TagIndexer();
+		doWithProperties(indexer);
+		return indexer.getIndex();
+	}
+	
+	public static final class TagIndexer implements SimplePropertyHandler {
+		
+		private final Map<Integer, DattyPersistentProperty> map = new HashMap<>();
+		
+		@Override
+		public void doWithPersistentProperty(PersistentProperty<?> property) {
+			DattyPersistentProperty prop = (DattyPersistentProperty) property;
+			map.put(prop.getTag(), prop);
+		}
+
+		public Map<Integer, DattyPersistentProperty> getIndex() {
+			return map;
+		}
+	}
+	
 	
 	private int doCountProperties() {
 		PropertyCounter counter = new PropertyCounter();
@@ -117,6 +175,11 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 	public String getMinorKey() {
 		return minorKey;
 	}
+	
+	@Override
+	public boolean useTags() {
+		return tags;
+	}
 
 	@Override
 	public boolean copy() {
@@ -141,6 +204,22 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 		return propsCount;
 	}
 
+	@Override
+	public Optional<DattyPersistentProperty> findPropertyByName(String name) {
+		if (propertyIndex == null) {
+			propertyIndex = buildPropertyIndex();
+		}
+		return Optional.ofNullable(propertyIndex.get(name));
+	}
+
+	@Override
+	public Optional<DattyPersistentProperty> findPropertyByTag(int tagNumber) {
+		if (tagIndex == null) {
+			tagIndex = buildTagIndex();
+		}
+		return Optional.ofNullable(tagIndex.get(tagNumber));
+	}
+	
 	private String expression(String value) {
 		Expression expression = parser.parseExpression(value, ParserContext.TEMPLATE_EXPRESSION);
 		return expression.getValue(context, String.class);

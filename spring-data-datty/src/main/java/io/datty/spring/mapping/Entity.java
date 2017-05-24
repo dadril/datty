@@ -56,6 +56,18 @@ public @interface Entity {
 	String minorKey() default "";
 	
 	/**
+	 * Flag that is using to enable Tags of the properties.
+	 * In this case entity will be serialized in to integer map whereas all properties will be defined as tag numbers,
+	 * the same like in protobuf.
+	 * 
+	 * Otherwise it will be used propertyName as a key
+	 * 
+	 * @return true if tags mode enabled.
+	 */
+	
+	boolean tags() default false;
+	
+	/**
 	 * Copy bytes from the buffers
 	 * 
 	 * @return true if copy all bytes for reads and writes

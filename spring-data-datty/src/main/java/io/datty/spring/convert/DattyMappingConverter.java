@@ -183,7 +183,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 			
 			if (propValue != null && !property.isTransient()) {
 							
-				writer.writeKey(propName, sink);
+				writer.writeKey(property.getPrimaryName(), sink);
 				sink = writeProperty(property, propType, propValue, sink, copy);
 				size++;
 				
@@ -326,7 +326,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 			Object propValue = wrapper.getPropertyValue(propName);
 			
 			if (propValue != null && !property.isTransient()) {
-				ByteBuf valueBuffer = sink.addValue(propName);
+				ByteBuf valueBuffer = sink.addValue(property.getPrimaryName());
 				ByteBuf updatedBuffer = writeProperty(property, propType, propValue, valueBuffer, copy);
 				if (updatedBuffer != valueBuffer) {
 					sink.putValue(propName, updatedBuffer, copy);
@@ -393,11 +393,11 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 		for (int i = 0; i != size; ++i) {
 			
-			String propName = reader.readKey(buffer);
+			String name = reader.readKey(buffer);
 			
-			Optional<DattyPersistentProperty> prop = entity.getPersistentProperty(propName);
+			Optional<DattyPersistentProperty> prop = entity.findPropertyByName(name);
 			if (!prop.isPresent()) {
-				throw new MappingException("property '" + propName + "' not found for " + entity);
+				throw new MappingException("property '" + name + "' not found for " + entity);
 			}
 			
 			DattyPersistentProperty property = prop.get();
@@ -422,7 +422,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 				value = readProperty(property, propType, buffer, copy);
 			}
 			
-			wrapper.setPropertyValue(propName, value);
+			wrapper.setPropertyValue(property.getName(), value);
 			
 		}
 		
@@ -436,12 +436,12 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 
 		for (Map.Entry<String, ByteBuf> e : source.getValues().entrySet()) {
 			
-			String propName = e.getKey();
+			String name = e.getKey();
 			ByteBuf buffer = e.getValue();
 
-			Optional<DattyPersistentProperty> prop = entity.getPersistentProperty(propName);
+			Optional<DattyPersistentProperty> prop = entity.findPropertyByName(name);
 			if (!prop.isPresent()) {
-				throw new MappingException("property '" + propName + "' not found for " + entity);
+				throw new MappingException("property '" + name + "' not found for " + entity);
 			}
 			
 			DattyPersistentProperty property = prop.get();
@@ -471,7 +471,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 				
 			}
 			
-			wrapper.setPropertyValue(propName, value);
+			wrapper.setPropertyValue(property.getName(), value);
 		}
 		
 		return (R) wrapper.getWrappedInstance();
