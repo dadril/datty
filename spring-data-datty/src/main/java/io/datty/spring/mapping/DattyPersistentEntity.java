@@ -106,6 +106,6 @@ public interface DattyPersistentEntity<T> extends PersistentEntity<T, DattyPersi
 	 * @return property
 	 */
 	
-	Optional<DattyPersistentProperty> findPropertyByTag(int tagNumber);
+	Optional<DattyPersistentProperty> findPropertyByTag(Integer tagNumber);
 	
 }

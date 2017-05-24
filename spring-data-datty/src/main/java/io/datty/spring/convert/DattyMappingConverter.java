@@ -29,12 +29,12 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 import io.datty.api.DattyRow;
-import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.MessageWriter;
 import io.datty.msgpack.core.MapMessageWriter;
-import io.datty.msgpack.core.StringMapMessageReader;
 import io.datty.msgpack.core.ValueMessageReader;
 import io.datty.msgpack.core.ValueMessageWriter;
+import io.datty.msgpack.core.reader.IntegerReader;
+import io.datty.msgpack.core.reader.StringReader;
 import io.datty.msgpack.core.reader.ValueReader;
 import io.datty.msgpack.core.type.SimpleTypeInfo;
 import io.datty.msgpack.core.type.TypeInfo;
@@ -138,7 +138,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 		int headerIndex = writer.skipHeader(entity.getPropertiesCount(), sink);
 		
-		WriteEntityHandler entityWriter = new WriteEntityHandler(writer, source, sink, copy);
+		WriteEntityHandler entityWriter = new WriteEntityHandler(writer, source, entity.useTags(), sink, copy);
 		entity.doWithProperties(entityWriter);
 		
 		writer.writeHeader(entityWriter.size(), entity.getPropertiesCount(), headerIndex, sink);
@@ -150,14 +150,16 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 
 		private final MessageWriter writer;
 		private final BeanWrapper wrapper;
+		private final boolean useTags;
 		private ByteBuf sink;
 		private int size;
 		private final boolean copy;
 		
-		public WriteEntityHandler(MessageWriter writer, Object source, ByteBuf sink, boolean copy) {
+		public WriteEntityHandler(MessageWriter writer, Object source, boolean useTags, ByteBuf sink, boolean copy) {
 			this.writer = writer;
 			this.wrapper = new BeanWrapperImpl(source);		
 			wrapper.setConversionService(conversionService);
+			this.useTags = useTags;
 			this.sink = sink;
 			this.copy = copy;
 		}
@@ -183,7 +185,12 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 			
 			if (propValue != null && !property.isTransient()) {
 							
-				writer.writeKey(property.getPrimaryName(), sink);
+				if (useTags) {
+					writer.writeKey(property.getTag(), sink);
+				}
+				else {
+					writer.writeKey(property.getPrimaryName(), sink);
+				}
 				sink = writeProperty(property, propType, propValue, sink, copy);
 				size++;
 				
@@ -201,7 +208,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 	private void writeCrossEntity(DattyPersistentEntity<?> entity, Object source, DattyRow sink, boolean copy) {
 		
-		entity.doWithProperties(new CrossWriteEntityHandler(source, sink, copy));
+		entity.doWithProperties(new CrossWriteEntityHandler(source, entity.useTags(), sink, copy));
 		
 	}	
 	
@@ -303,13 +310,15 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 	public final class CrossWriteEntityHandler implements PropertyHandler<DattyPersistentProperty> {
 
 		private final BeanWrapper wrapper;
+		private final boolean useTags;
 		private final DattyRow sink;
 		private int size;
 		private final boolean copy;
 		
-		public CrossWriteEntityHandler(Object source, DattyRow sink, boolean copy) {
+		public CrossWriteEntityHandler(Object source, boolean useTags, DattyRow sink, boolean copy) {
 			this.wrapper = new BeanWrapperImpl(source);		
 			wrapper.setConversionService(conversionService);
+			this.useTags = useTags;
 			this.sink = sink;
 			this.copy = copy;
 		}
@@ -326,10 +335,13 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 			Object propValue = wrapper.getPropertyValue(propName);
 			
 			if (propValue != null && !property.isTransient()) {
-				ByteBuf valueBuffer = sink.addValue(property.getPrimaryName());
+				
+				String minorKey = useTags ? Integer.toString(property.getTag()) : property.getPrimaryName();
+				
+				ByteBuf valueBuffer = sink.addValue(minorKey);
 				ByteBuf updatedBuffer = writeProperty(property, propType, propValue, valueBuffer, copy);
 				if (updatedBuffer != valueBuffer) {
-					sink.putValue(propName, updatedBuffer, copy);
+					sink.putValue(minorKey, updatedBuffer, copy);
 				}
 				size++;
 			}
@@ -377,6 +389,8 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 	@SuppressWarnings("unchecked")
 	private <R> R readFromBuffer(Class<R> type, DattyPersistentEntity<R> entity, ByteBuf buffer, boolean copy) {
 		
+		boolean useTags = entity.useTags();
+		
 		BeanWrapper wrapper = new BeanWrapperImpl(type);
 		
 		if (!ValueMessageReader.INSTANCE.hasNext(buffer)) {
@@ -389,15 +403,23 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 		int size = ValueMessageReader.INSTANCE.readMapHeader(buffer);
 		
-		MessageReader<String> reader = new StringMapMessageReader(size);
-		
 		for (int i = 0; i != size; ++i) {
 			
-			String name = reader.readKey(buffer);
+			Optional<DattyPersistentProperty> prop;
 			
-			Optional<DattyPersistentProperty> prop = entity.findPropertyByName(name);
-			if (!prop.isPresent()) {
-				throw new MappingException("property '" + name + "' not found for " + entity);
+			if (useTags) {
+				Integer tagNumber = IntegerReader.INSTANCE.read(buffer, true);
+				prop = entity.findPropertyByTag(tagNumber);
+				if (!prop.isPresent()) {
+					throw new MappingException("property with tag '" + tagNumber + "' not found for " + entity);
+				}
+			}
+			else {
+				String name = StringReader.INSTANCE.read(buffer, true);
+				prop = entity.findPropertyByName(name);
+				if (!prop.isPresent()) {
+					throw new MappingException("property '" + name + "' not found for " + entity);
+				}
 			}
 			
 			DattyPersistentProperty property = prop.get();

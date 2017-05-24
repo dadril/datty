@@ -213,7 +213,7 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 	}
 
 	@Override
-	public Optional<DattyPersistentProperty> findPropertyByTag(int tagNumber) {
+	public Optional<DattyPersistentProperty> findPropertyByTag(Integer tagNumber) {
 		if (tagIndex == null) {
 			tagIndex = buildTagIndex();
 		}
