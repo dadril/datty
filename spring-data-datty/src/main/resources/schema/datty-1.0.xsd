@@ -16,7 +16,52 @@ Defines the configuration elements for the Datty support.
     ]]></xsd:documentation>
 	</xsd:annotation>	
 	
-	<xsd:element name="datty-converter" type="dattyConveterType">
+	 <xsd:element name="datty" type="dattyType">
+    <xsd:annotation>
+      <xsd:documentation
+        source="io.datty.spring.config.DattyFactoryBean"><![CDATA[
+Defines a Datty instance based on CacheManager serializer.
+      ]]></xsd:documentation>
+      <xsd:appinfo>
+        <tool:annotation>
+          <tool:exports type="io.datty.api.Datty" />
+        </tool:annotation>
+      </xsd:appinfo>
+    </xsd:annotation>
+  </xsd:element>  
+  
+  <xsd:complexType name="dattyType">
+    <xsd:attribute name="id" type="xsd:ID" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>
+          The bean name of the Datty definition (by default
+          'datty')
+        </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="cache-manager-ref" type="cacheManagerRef"
+      use="optional">
+      <xsd:annotation>
+        <xsd:documentation><![CDATA[
+The reference to a CacheManager instance. Will default to 'cache-manager'.
+                                        ]]>
+        </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>        
+  </xsd:complexType>    
+  
+   <xsd:simpleType name="cacheManagerRef" final="union">
+    <xsd:annotation>
+      <xsd:appinfo>
+        <tool:annotation kind="ref">
+          <tool:assignable-to type="io.datty.api.CacheManager" />
+        </tool:annotation>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:union memberTypes="xsd:string" />
+  </xsd:simpleType>     
+  
+	<xsd:element name="converter" type="dattyConveterType">
 		<xsd:annotation>
 			<xsd:documentation
 				source="io.datty.spring.config.DattyConveterFactoryBean"><![CDATA[
