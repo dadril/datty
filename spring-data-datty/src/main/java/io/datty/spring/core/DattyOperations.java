@@ -13,6 +13,8 @@
  */
 package io.datty.spring.core;
 
+import java.util.Optional;
+
 import io.datty.api.Datty;
 import io.datty.spring.convert.DattyConverter;
 import rx.Completable;
@@ -39,7 +41,7 @@ public interface DattyOperations {
 	 * @return the datty id
 	 */
 
-	<T> DattyId getId(T entity);
+	<T> Optional<DattyId> getId(T entity);
 	
 	/**
 	 * Gets cache name of the entity

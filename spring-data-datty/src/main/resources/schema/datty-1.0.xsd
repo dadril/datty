@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns="http://datty.io/schema/datty" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:tool="http://www.springframework.org/schema/tool"
+	xmlns:repository="http://www.springframework.org/schema/data/repository"
+	targetNamespace="http://datty.io/schema/datty" 
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+			
+	<xsd:import namespace="http://www.springframework.org/schema/data/repository"
+		schemaLocation="http://www.springframework.org/schema/data/repository/spring-repository.xsd" />
+		
+	<xsd:annotation>
+		<xsd:documentation><![CDATA[
+Defines the configuration elements for the Datty support.
+    ]]></xsd:documentation>
+	</xsd:annotation>	
+	
+	<xsd:element name="datty-converter" type="dattyConveterType">
+		<xsd:annotation>
+			<xsd:documentation
+				source="io.datty.spring.config.DattyConveterFactoryBean"><![CDATA[
+Defines a DattyConverter instance based on MessagePack serializer.
+			]]></xsd:documentation>
+			<xsd:appinfo>
+				<tool:annotation>
+					<tool:exports type="io.datty.spring.convert.DattyConverter" />
+				</tool:annotation>
+			</xsd:appinfo>
+		</xsd:annotation>
+	</xsd:element>	
+	
+	<xsd:complexType name="dattyConveterType">
+		<xsd:attribute name="id" type="xsd:ID" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>
+					The bean name of the DattyConveter definition (by default
+					'datty-converter')
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>			
+	
+	<xsd:element name="template" type="dattyTemplateType">
+		<xsd:annotation>
+			<xsd:documentation
+				source="io.datty.spring.config.DattyTemplateFactoryBean"><![CDATA[
+Defines a DattyTemplate instance.
+			]]></xsd:documentation>
+			<xsd:appinfo>
+				<tool:annotation>
+					<tool:exports type="io.datty.spring.core.DattyTemplate" />
+				</tool:annotation>
+			</xsd:appinfo>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:complexType name="dattyTemplateType">
+		<xsd:attribute name="id" type="xsd:ID" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>
+					The bean name of the component status definition (by default
+					'datty-template')
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="datty-ref" type="dattyRef"
+			use="optional">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[
+The reference to a Datty instance. Will default to 'datty'.
+                                        ]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="datty-converter-ref" type="dattyConverterRef"
+			use="optional">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[
+The reference to a DattyConveter instance. Will default to 'datty-converter'.
+                                        ]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>		
+	</xsd:complexType>		
+	
+	 <xsd:simpleType name="dattyRef" final="union">
+    <xsd:annotation>
+      <xsd:appinfo>
+        <tool:annotation kind="ref">
+          <tool:assignable-to type="io.datty.api.Datty" />
+        </tool:annotation>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:union memberTypes="xsd:string" />
+  </xsd:simpleType> 
+	
+	<xsd:simpleType name="dattyConverterRef" final="union">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<tool:annotation kind="ref">
+					<tool:assignable-to type="io.datty.spring.convert.DattyConverter" />
+				</tool:annotation>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:union memberTypes="xsd:string" />
+	</xsd:simpleType>		
+	
+	<xsd:element name="repositories">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="repository:repositories">
+					<xsd:attributeGroup ref="repository:repository-attributes"/>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>	
+	
+</xsd:schema>	

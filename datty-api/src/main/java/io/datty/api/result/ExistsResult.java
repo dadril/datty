@@ -31,7 +31,11 @@ import io.datty.api.operation.Version;
 public class ExistsResult extends AbstractResult<ExistsOperation, ExistsResult> {
 
 	/**
-	 * Record version if exists
+	 * Record exists only if version exists too
+	 * 
+	 * For anyMinorKey returns only version
+	 * For allMinorKeys returns version and all minorKeys set
+	 * For selected minorKeys returns version and only existing minorKeys set
 	 */
 	
 	private Version version;

@@ -29,7 +29,23 @@ import io.datty.api.result.ExistsResult;
 
 public class ExistsOperation extends AbstractOperation<ExistsOperation, ExistsResult> {
 
+	/**
+	 * If anyMinorKey flag set, then retrieve only version of record
+	 * does not get list of minorKeys
+	 */
+	
+	private boolean anyMinorKey;
+	
+	/**
+	 * If allMinorKeys flag set, then retrieve all list of minor keys in record
+	 */
+	
 	private boolean allMinorKeys;
+	
+	/**
+	 * Retrieve a specific list of minor keys (checks them for existance)
+	 */
+	
 	private Set<String> minorKeys;
 	
 	public ExistsOperation(String storeName) {
@@ -39,22 +55,64 @@ public class ExistsOperation extends AbstractOperation<ExistsOperation, ExistsRe
 	public ExistsOperation(String storeName, String majorKey) {
 		super(storeName, majorKey);
 	}
+	
+	public boolean isAnyMinorKey() {
+		return anyMinorKey;
+	}
+
+	/**
+	 * If anyMinorKey flag set, then retrieve only version of record
+	 * does not get list of minorKeys
+	 */
+	
+	public ExistsOperation anyMinorKey(boolean any) {
+		this.anyMinorKey = any;
+		if (any) {
+			this.allMinorKeys = false;
+		}
+		return this;
+	}
+	
+	/**
+	 * If anyMinorKey flag set, then retrieve only version of record
+	 * does not get list of minorKeys
+	 */
+	
+	public ExistsOperation anyMinorKey() {
+		this.anyMinorKey = true;
+		this.allMinorKeys = false;
+		return this;
+	}
 
 	public boolean isAllMinorKeys() {
 		return allMinorKeys;
 	}
 
+	/**
+	 * If allMinorKeys flag set, then retrieve all list of minor keys in record
+	 */
+	
 	public ExistsOperation allMinorKeys(boolean all) {
 		this.allMinorKeys = all;
+		if (all) {
+			this.anyMinorKey = false;
+		}
 		return this;
 	}
 	
+	/**
+	 * If allMinorKeys flag set, then retrieve all list of minor keys in record
+	 */
+	
 	public ExistsOperation allMinorKeys() {
 		this.allMinorKeys = true;
+		this.anyMinorKey = false;
 		return this;
 	}
 
 	public ExistsOperation addMinorKey(String minorKey) {
+		this.allMinorKeys = false;
+		this.anyMinorKey = false;
 		if (this.minorKeys == null) {
 			this.minorKeys = Collections.singleton(minorKey);
 		}
@@ -68,6 +126,8 @@ public class ExistsOperation extends AbstractOperation<ExistsOperation, ExistsRe
 	}
 	
 	public ExistsOperation addMinorKeys(Collection<String> minorKeys) {
+		this.allMinorKeys = false;
+		this.anyMinorKey = false;
 		if (this.minorKeys == null) {
 			this.minorKeys = new HashSet<String>(minorKeys);
 		}

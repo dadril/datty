@@ -68,7 +68,7 @@ public class DattyTemplate implements DattyOperations {
 	}
 
 	@Override
-	public <T> DattyId getId(T entity) {
+	public <T> Optional<DattyId> getId(T entity) {
 		Assert.notNull(entity, "entity is null");
 
 		@SuppressWarnings("unchecked")
@@ -99,7 +99,11 @@ public class DattyTemplate implements DattyOperations {
 
 	protected PutOperation toPutOperation(DattyPersistentEntity<?> entityMetadata, Object entity) {
 		
-		DattyId id = getId(entityMetadata, entity);
+		DattyId id = getId(entityMetadata, entity).orElse(null);
+		
+		if (id == null) {
+			throw new MappingException("id property not found for " + entityMetadata);
+		}
 		
 		DattyRow row = new DattyRow();
 		converter.write(entity, row);
@@ -235,7 +239,7 @@ public class DattyTemplate implements DattyOperations {
 			op.addMinorKey(id.getMinorKey());
 		}
 		else {
-			op.allMinorKeys();
+			op.anyMinorKey();
 		}
 		
 		op.withTimeoutMillis(entityMetadata.getTimeoutMillis());
@@ -439,7 +443,11 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		DattyId id = getId(entityMetadata, entity);
+		DattyId id = getId(entityMetadata, entity).orElse(null);
+		
+		if (id == null) {
+			throw new MappingException("id property not found for " + entityMetadata);
+		}
 		
 		RemoveOperation removeOp = toRemoveOperation(entityMetadata, id);
 		
@@ -465,7 +473,10 @@ public class DattyTemplate implements DattyOperations {
 
 					@Override
 					public DattyOperation call(T entity) {
-						DattyId id = getId(entityMetadata, entity);
+						DattyId id = getId(entityMetadata, entity).orElse(null);
+						if (id == null) {
+							throw new MappingException("id property not found for " + entityMetadata);
+						}
 						return toRemoveOperation(entityMetadata, id);
 					}
 					
@@ -509,7 +520,7 @@ public class DattyTemplate implements DattyOperations {
 		return datty;
 	}
 
-	protected DattyId getId(DattyPersistentEntity<?> entityMetadata, Object entity) {
+	protected Optional<DattyId> getId(DattyPersistentEntity<?> entityMetadata, Object entity) {
 		
 		Optional<DattyPersistentProperty> idProperty = entityMetadata.getIdProperty();
 
@@ -525,7 +536,7 @@ public class DattyTemplate implements DattyOperations {
 		}
 		else {
 			
-			id = entity;
+			return Optional.empty();
 			
 		}
 		
@@ -535,7 +546,7 @@ public class DattyTemplate implements DattyOperations {
 			dattyId.setMinorKey(entityMetadata.getMinorKey());
 		}
 		
-		return dattyId;
+		return Optional.of(dattyId);
 		
 	}
 	
