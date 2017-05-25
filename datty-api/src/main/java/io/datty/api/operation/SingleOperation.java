@@ -11,27 +11,25 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.api.operation;
 
-import io.datty.api.operation.QueryOperation;
-import rx.Observable;
+import io.datty.api.DattyOperation;
 
 /**
- * DattyQuery
+ * SingleOperation
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattyQuery {
+public interface SingleOperation extends DattyOperation {
 
 	/**
-	 * Retrieve or update data by using query
+	 * Gets major key (partition key)
 	 * 
-	 * @param query - datty query operation
-	 * @return not null observable of results
+	 * @return major key
 	 */
 	
-	Observable<DattyResult> executeQuery(QueryOperation query);
+	String getMajorKey();
 	
 }

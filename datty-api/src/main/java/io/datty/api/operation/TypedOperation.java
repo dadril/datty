@@ -13,7 +13,6 @@
  */
 package io.datty.api.operation;
 
-import io.datty.api.DattyOperation;
 import io.datty.api.result.TypedResult;
 import rx.Single;
 
@@ -26,7 +25,7 @@ import rx.Single;
  * @param <R> - datty return type
  */
 
-public interface TypedOperation<O extends TypedOperation<O, R>, R extends TypedResult<O>> extends DattyOperation {
+public interface TypedOperation<O extends TypedOperation<O, R>, R extends TypedResult<O>> extends SingleOperation {
 
 	/**
 	 * Gets fallback result if exists

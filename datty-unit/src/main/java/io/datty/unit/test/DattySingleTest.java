@@ -22,7 +22,7 @@ import io.datty.api.UpdatePolicy;
 import io.datty.api.operation.GetOperation;
 import io.datty.api.result.ExistsResult;
 import io.datty.api.result.GetResult;
-import io.datty.support.exception.DattySingleException;
+import io.datty.support.exception.DattyOperationException;
 
 /**
  * DattySingleTest
@@ -40,7 +40,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 	}
 	
-	@Test(expected=DattySingleException.class)
+	@Test(expected=DattyOperationException.class)
 	public void testCacheNotFound() {
 		
 		cacheManager.getDatty().execute(new GetOperation("unknownCache", "majorKey")).toBlocking().value();

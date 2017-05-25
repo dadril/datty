@@ -32,7 +32,7 @@ import io.datty.api.operation.CompareAndSetOperation;
 import io.datty.api.operation.Version;
 import io.datty.api.result.CompareAndSetResult;
 import io.datty.support.LongVersion;
-import io.datty.support.exception.DattySingleException;
+import io.datty.support.exception.DattyOperationException;
 import io.netty.buffer.ByteBuf;
 import rx.Single;
 import rx.functions.Func1;
@@ -65,7 +65,7 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 
 			default:
 				return Single
-						.error(new DattySingleException(DattyError.ErrCode.BAD_ARGUMENTS, "unknown updatePolicy", operation));
+						.error(new DattyOperationException(DattyError.ErrCode.BAD_ARGUMENTS, "unknown updatePolicy", operation));
 
 			}
 
@@ -87,7 +87,7 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 
 		default:
 			return Single
-					.error(new DattySingleException(DattyError.ErrCode.BAD_ARGUMENTS, "unknown updatePolicy", operation));
+					.error(new DattyOperationException(DattyError.ErrCode.BAD_ARGUMENTS, "unknown updatePolicy", operation));
 
 		}
 

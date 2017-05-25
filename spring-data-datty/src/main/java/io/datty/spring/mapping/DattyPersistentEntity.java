@@ -14,6 +14,7 @@
 package io.datty.spring.mapping;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.mapping.PersistentEntity;
 
@@ -91,6 +92,14 @@ public interface DattyPersistentEntity<T> extends PersistentEntity<T, DattyPersi
 	int getPropertiesCount();
 	
 	/**
+	 * Gets all property names of the entity
+	 * 
+	 * @return set of property names
+	 */
+	
+	Set<String> getPropertyNames();
+	
+	/**
 	 * Search property by name
 	 * 
 	 * @param name - primary or other name
@@ -98,6 +107,14 @@ public interface DattyPersistentEntity<T> extends PersistentEntity<T, DattyPersi
 	 */
 	
 	Optional<DattyPersistentProperty> findPropertyByName(String name);
+	
+	/**
+	 * Gets all property names of the entity
+	 * 
+	 * @return set of property names
+	 */
+	
+	Set<Integer> getPropertyTags();
 	
 	/**
 	 * Search property by tag

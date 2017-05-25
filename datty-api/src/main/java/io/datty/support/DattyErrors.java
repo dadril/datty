@@ -16,7 +16,7 @@ package io.datty.support;
 import io.datty.api.DattyError;
 import io.datty.api.operation.TypedOperation;
 import io.datty.api.result.TypedResult;
-import io.datty.support.exception.DattySingleException;
+import io.datty.support.exception.DattyOperationException;
 
 /**
  * DattyErrors
@@ -36,7 +36,7 @@ public final class DattyErrors {
 			
 			DattyError error = (DattyError) result;
 			
-			throw new DattySingleException(error, result.getOperation());
+			throw new DattyOperationException(error, result.getOperation());
 			
 		}
 		

@@ -26,7 +26,7 @@ import io.datty.api.DattyOperation;
  *
  */
 
-public class DattySingleException extends DattyException implements DattyError {
+public class DattyOperationException extends DattyException implements DattyError {
 
 	private static final long serialVersionUID = 5237472769279645794L;
 	
@@ -36,7 +36,7 @@ public class DattySingleException extends DattyException implements DattyError {
 	
 	private final DattyOperation operation;
 	
-	public DattySingleException(DattyError.ErrCode errCode, DattyOperation operation) {
+	public DattyOperationException(DattyError.ErrCode errCode, DattyOperation operation) {
 		super(errCode.name());
 		this.errorCode = errCode;
 		this.errorMessage = errCode.name();
@@ -44,7 +44,7 @@ public class DattySingleException extends DattyException implements DattyError {
 		this.operation = operation;
 	}
 	
-	public DattySingleException(DattyError.ErrCode errCode, DattyOperation operation, Throwable t) {
+	public DattyOperationException(DattyError.ErrCode errCode, DattyOperation operation, Throwable t) {
 		super(errCode.name(), t);
 		this.errorCode = errCode;
 		this.errorMessage = t.getMessage();
@@ -52,7 +52,7 @@ public class DattySingleException extends DattyException implements DattyError {
 		this.operation = operation;
 	}
 	
-	public DattySingleException(DattyError.ErrCode errCode, String message, DattyOperation operation) {
+	public DattyOperationException(DattyError.ErrCode errCode, String message, DattyOperation operation) {
 		super(message);
 		this.errorCode = errCode;
 		this.errorMessage = errCode.name();
@@ -60,7 +60,7 @@ public class DattySingleException extends DattyException implements DattyError {
 		this.operation = operation;
 	}
 	
-	public DattySingleException(DattyError.ErrCode errCode, String message, DattyOperation operation, Throwable t) {
+	public DattyOperationException(DattyError.ErrCode errCode, String message, DattyOperation operation, Throwable t) {
 		super(message, t);
 		this.errorCode = errCode;
 		this.errorMessage = message;
@@ -68,7 +68,7 @@ public class DattySingleException extends DattyException implements DattyError {
 		this.operation = operation;
 	}
 	
-	public DattySingleException(DattyError error, DattyOperation operation) {
+	public DattyOperationException(DattyError error, DattyOperation operation) {
 		super(error.getErrorMessage());
 		this.errorCode = error.getErrorCode();
 		this.errorMessage = error.getErrorMessage();

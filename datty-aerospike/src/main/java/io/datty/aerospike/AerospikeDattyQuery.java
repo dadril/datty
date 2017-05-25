@@ -11,27 +11,32 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.aerospike;
 
+import io.datty.api.DattyResult;
+import io.datty.api.DattyQuery;
 import io.datty.api.operation.QueryOperation;
 import rx.Observable;
 
 /**
- * DattyQuery
+ * AerospikeDattyQuery
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattyQuery {
 
-	/**
-	 * Retrieve or update data by using query
-	 * 
-	 * @param query - datty query operation
-	 * @return not null observable of results
-	 */
+public class AerospikeDattyQuery implements DattyQuery {
+
+	private final AerospikeCacheManager cacheManager;
 	
-	Observable<DattyResult> executeQuery(QueryOperation query);
+	public AerospikeDattyQuery(AerospikeCacheManager cacheManager) {
+		this.cacheManager = cacheManager;
+	}
+	
+	@Override
+	public Observable<DattyResult> executeQuery(QueryOperation operation) {
+		return Observable.just(null);
+	}
 	
 }

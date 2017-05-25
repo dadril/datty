@@ -25,8 +25,8 @@ import rx.Single;
  *
  */
 
-public interface Datty extends DattySingle, DattyStream {
-	
+public interface Datty extends DattySingle, DattyStream, DattyQuery {
+
 	/**
 	 * Executes sequence of datty operations
 	 * 

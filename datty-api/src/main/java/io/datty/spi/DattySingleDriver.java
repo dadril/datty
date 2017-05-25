@@ -20,9 +20,10 @@ import io.datty.api.DattyError;
 import io.datty.api.DattySingle;
 import io.datty.api.operation.TypedOperation;
 import io.datty.api.result.TypedResult;
-import io.datty.support.exception.DattySingleException;
+import io.datty.support.exception.DattyOperationException;
 import rx.Single;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.functions.Func2;
 
 /**
@@ -53,10 +54,17 @@ public class DattySingleDriver implements DattySingle {
 		
 		Single<R> result = single.execute(operation);
 		
+		return addPostProcessing(operation, result);
+		
+	}
+
+	private <O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> addPostProcessing(final O operation,
+			Single<R> result) {
+		
 		if (operation.hasTimeoutMillis()) {
 			
 			result = result.timeout(operation.getTimeoutMillis(), TimeUnit.MILLISECONDS, 
-					Single.<R>error(new DattySingleException(DattyError.ErrCode.TIMEOUT, operation)));
+					Single.<R>error(new DattyOperationException(DattyError.ErrCode.TIMEOUT, operation)));
 			
 		}
 
@@ -78,8 +86,8 @@ public class DattySingleDriver implements DattySingle {
 			@Override
 			public void call(Throwable t) {
 
-				if (!(t instanceof DattySingleException)) {
-					throw new DattySingleException(DattyError.ErrCode.UNKNOWN, operation, t);
+				if (!(t instanceof DattyOperationException)) {
+					throw new DattyOperationException(DattyError.ErrCode.UNKNOWN, operation, t);
 				}
 				
 			}
@@ -87,7 +95,22 @@ public class DattySingleDriver implements DattySingle {
 		});
 		
 		return result;
+	}
+
+	@Override
+	public <O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(Single<O> operation) {
+
+		return operation.flatMap(new Func1<O, Single<R>>() {
+
+			@Override
+			public Single<R> call(O op) {
+				return execute(op);
+			}
+			
+		});
 		
 	}
+	
+	
 	
 }

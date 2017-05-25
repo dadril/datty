@@ -43,14 +43,6 @@ public interface DattyOperation {
 	String getSuperKey();
 	
 	/**
-	 * Gets major key (partition key)
-	 * 
-	 * @return major key
-	 */
-	
-	String getMajorKey();
-	
-	/**
 	 * Returns true if defined timeout millis
 	 * 
 	 * @return flag
@@ -86,8 +78,12 @@ public interface DattyOperation {
 		EXISTS(1),
 		GET(2),
 		PUT(3),
-		COMPARE_AND_SET(4),
-		EXECUTE(5);
+		REMOVE(4),
+		COMPARE_AND_SET(5),
+		EXECUTE(6),
+		SCAN(7),
+		COUNT(8),
+		DELETE(9);
 		
 		private final int opcode;
 		

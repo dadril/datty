@@ -25,8 +25,19 @@ import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
 import io.datty.api.DattyRow;
 import io.datty.api.UpdatePolicy;
+import io.datty.api.operation.AbstractQueryOperation;
+import io.datty.api.operation.CountOperation;
+import io.datty.api.operation.DeleteOperation;
+import io.datty.api.operation.ExistsOperation;
+import io.datty.api.operation.GetOperation;
 import io.datty.api.operation.PutOperation;
+import io.datty.api.operation.RemoveOperation;
+import io.datty.api.operation.ScanOperation;
+import io.datty.api.result.ExistsResult;
+import io.datty.api.result.GetResult;
+import io.datty.api.result.LongResult;
 import io.datty.api.result.PutResult;
+import io.datty.api.result.QueryResult;
 import io.datty.spring.convert.DattyConverter;
 import io.datty.spring.mapping.DattyPersistentEntity;
 import io.datty.spring.mapping.DattyPersistentProperty;
@@ -99,7 +110,8 @@ public class DattyTemplate implements DattyOperations {
 		.setTtlSeconds(entityMetadata.getTtlSeconds())
 		.setRow(row)
 		.setUpdatePolicy(UpdatePolicy.MERGE)
-		.setUpstreamContext(entity);
+		.setUpstreamContext(entity)
+		.withTimeoutMillis(entityMetadata.getTimeoutMillis());
 		
 	}
 	
@@ -143,92 +155,348 @@ public class DattyTemplate implements DattyOperations {
 		
 	}
 
+	
+	protected GetOperation toGetOperation(DattyPersistentEntity<?> entityMetadata, DattyId id) {
+		
+		return new GetOperation(entityMetadata.getCacheName())
+		.setSuperKey(id.getSuperKey())
+		.setMajorKey(id.getMajorKey())
+		.withTimeoutMillis(entityMetadata.getTimeoutMillis());
+		
+	}
+	
 	@Override
-	public <T> Observable<T> findOne(Class<T> entityClass, DattyId id) {
+	public <T> Single<T> findOne(final Class<T> entityClass, DattyId id) {
 		Assert.notNull(entityClass, "entityClass is null");
 		Assert.notNull(id, "id is null");
-		return null;
+		
+		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
+		
+		GetOperation getOp = toGetOperation(entityMetadata, id);
+		
+		return datty.execute(getOp).map(new Func1<GetResult, T>() {
+
+			@Override
+			public T call(GetResult res) {
+				
+				DattyRow row = res.getRow();
+				if (row != null) {
+					return (T) converter.read(entityClass, row);
+					
+				}
+				
+				return null;
+			}
+			
+		});
+		
 	}
 
 	@Override
-	public <T> Observable<T> findOne(Class<T> entityClass, Single<DattyId> id) {
+	public <T> Single<T> findOne(final Class<T> entityClass, Single<DattyId> id) {
 		Assert.notNull(entityClass, "entityClass is null");
 		Assert.notNull(id, "id is null");
-		return null;
+		
+		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
+		
+		Single<GetOperation> getOp = id.map(new Func1<DattyId, GetOperation>() {
+
+			@Override
+			public GetOperation call(DattyId dattyId) {
+				return toGetOperation(entityMetadata, dattyId);
+			}
+			
+		});
+		
+		return datty.execute(getOp).map(new Func1<GetResult, T>() {
+
+			@Override
+			public T call(GetResult res) {
+				
+				DattyRow row = res.getRow();
+				if (row != null) {
+					return (T) converter.read(entityClass, row);
+				}
+				
+				return null;
+			}
+			
+		});
+		
 	}
 
+	protected ExistsOperation toExistsOperation(DattyPersistentEntity<?> entityMetadata, DattyId id) {
+		
+		ExistsOperation op = new ExistsOperation(entityMetadata.getCacheName())
+		.setSuperKey(id.getSuperKey())
+		.setMajorKey(id.getMajorKey());
+		
+		if (id.hasMinorKey()) {
+			op.addMinorKey(id.getMinorKey());
+		}
+		else {
+			op.allMinorKeys();
+		}
+		
+		op.withTimeoutMillis(entityMetadata.getTimeoutMillis());
+		
+		return op;
+	}
+	
 	@Override
-	public Single<Boolean> exists(Class<?> entityClass, DattyId id) {
+	public Single<Boolean> exists(final Class<?> entityClass, DattyId id) {
 		Assert.notNull(entityClass, "entityClass is null");
 		Assert.notNull(id, "id is null");
-		return null;
+		
+		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
+		
+		ExistsOperation existsOp = toExistsOperation(entityMetadata, id);
+		
+		return datty.execute(existsOp).map(new Func1<ExistsResult, Boolean>() {
+
+			@Override
+			public Boolean call(ExistsResult res) {
+				return res.exists();
+			}
+			
+		});
+		
 	}
 
 	@Override
 	public Single<Boolean> exists(Class<?> entityClass, Single<DattyId> id) {
 		Assert.notNull(entityClass, "entityClass is null");
 		Assert.notNull(id, "id is null");
-		return null;
+		
+		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
+		
+		Single<ExistsOperation> existsOp = id.map(new Func1<DattyId, ExistsOperation>() {
+
+			@Override
+			public ExistsOperation call(DattyId dattyId) {
+				return toExistsOperation(entityMetadata, dattyId);
+			}
+			
+		});
+		
+		return datty.execute(existsOp).map(new Func1<ExistsResult, Boolean>() {
+
+			@Override
+			public Boolean call(ExistsResult res) {
+				return res.exists();
+			}
+			
+		});
 	}
 
 	@Override
-	public <T> Observable<T> findAll(Class<T> entityClass) {
+	public <T> Observable<T> findAll(final Class<T> entityClass) {
 		Assert.notNull(entityClass, "entityClass is null");
-		return null;
+		
+		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
+		
+		ScanOperation scanOp = new ScanOperation(entityMetadata.getCacheName());
+		addParametersToQuery(scanOp, entityMetadata);
+		
+		return datty.executeQuery(scanOp).map(new Func1<DattyResult, T>() {
+
+			@Override
+			public T call(DattyResult res) {
+
+				QueryResult queryRes = (QueryResult) res;
+				
+				DattyRow row = queryRes.getRow();
+				if (row != null) {
+					return (T) converter.read(entityClass, row);
+				}
+				
+				return null;
+			}
+			
+		});
+		
+	}
+
+	private void addParametersToQuery(AbstractQueryOperation<?> queryOp, final DattyPersistentEntity<?> entityMetadata) {
+		
+		if (entityMetadata.hasMinorKey()) {
+			queryOp.addMinorKey(entityMetadata.getMinorKey());
+		}
+		else if (entityMetadata.useTags()) {
+			for (Integer tag : entityMetadata.getPropertyTags()) {
+				queryOp.addMinorKey(tag.toString());
+			}
+		}
+		else {
+			queryOp.addMinorKeys(entityMetadata.getPropertyNames());
+		}
+		
+		queryOp.withTimeoutMillis(entityMetadata.getTimeoutMillis());
 	}
 
 	@Override
 	public <T> Observable<T> findAll(Class<T> entityClass, Iterable<DattyId> ids) {
 		Assert.notNull(entityClass, "entityClass is null");
 		Assert.notNull(ids, "ids is null");
-		return null;
+		return findAll(entityClass, Observable.from(ids));
 	}
 
 	@Override
-	public <T> Observable<T> findAll(Class<T> entityClass, Observable<DattyId> idStream) {
+	public <T> Observable<T> findAll(final Class<T> entityClass, Observable<DattyId> idStream) {
 		Assert.notNull(entityClass, "entityClass is null");
 		Assert.notNull(idStream, "idStream is null");
-		return null;
+		
+		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
+		
+		Observable<DattyOperation> operations = idStream.map(new Func1<DattyId, DattyOperation>() {
+
+			@Override
+			public DattyOperation call(DattyId dattyId) {
+				return toGetOperation(entityMetadata, dattyId);
+			}
+			
+		});
+		
+		return datty.executeSequence(operations).map(new Func1<DattyResult, T>() {
+
+			@Override
+			public T call(DattyResult res) {
+				
+				GetResult getRes = (GetResult) res;
+				
+				DattyRow row = getRes.getRow();
+				if (row != null) {
+					return (T) converter.read(entityClass, row);
+				}
+				
+				return null;
+			}
+			
+		});
+		
 	}
 
 	@Override
 	public Single<Long> count(Class<?> entityClass) {
 		Assert.notNull(entityClass, "entityClass is null");
-		return null;
+		
+		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
+		
+		CountOperation countOp = new CountOperation(entityMetadata.getCacheName());
+		addParametersToQuery(countOp, entityMetadata);
+
+		return datty.executeQuery(countOp).map(new Func1<DattyResult, Long>() {
+
+			@Override
+			public Long call(DattyResult res) {
+				LongResult countRes = (LongResult) res;
+				return countRes.getValue();
+			}
+			
+		}).toSingle();
+		
+	}
+	
+	protected RemoveOperation toRemoveOperation(DattyPersistentEntity<?> entityMetadata, DattyId id) {
+		
+		RemoveOperation removeOp = new RemoveOperation(entityMetadata.getCacheName())
+		.setSuperKey(id.getSuperKey())
+		.setMajorKey(id.getMajorKey())
+		.withTimeoutMillis(entityMetadata.getTimeoutMillis());
+
+		if (entityMetadata.hasMinorKey()) {
+			removeOp.addMinorKey(entityMetadata.getMinorKey());
+		}
+		else if (entityMetadata.useTags()) {
+			for (Integer tag : entityMetadata.getPropertyTags()) {
+				removeOp.addMinorKey(tag.toString());
+			}
+		}
+		else {
+			removeOp.addMinorKeys(entityMetadata.getPropertyNames());
+		}
+		
+		return removeOp;
+		
 	}
 
 	@Override
 	public Completable delete(Class<?> entityClass, DattyId id) {
 		Assert.notNull(entityClass, "entityClass is null");
 		Assert.notNull(id, "id is null");
-		return null;
+		
+		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
+		
+		RemoveOperation removeOp = toRemoveOperation(entityMetadata, id);
+		
+		return datty.execute(removeOp).toCompletable();
 	}
 
 	@Override
 	public <T> Completable delete(Class<T> entityClass, T entity) {
 		Assert.notNull(entityClass, "entityClass is null");
 		Assert.notNull(entity, "entity is null");
-		return null;
+		
+		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
+		
+		DattyId id = getId(entityMetadata, entity);
+		
+		RemoveOperation removeOp = toRemoveOperation(entityMetadata, id);
+		
+		return datty.execute(removeOp).toCompletable();
 	}
 
 	@Override
 	public <T> Completable delete(Class<T> entityClass, Iterable<? extends T> entities) {
 		Assert.notNull(entityClass, "entityClass is null");
 		Assert.notNull(entities, "entities is null");
-		return null;
+		return delete(entityClass, Observable.from(entities));
 	}
 
 	@Override
 	public <T> Completable delete(Class<T> entityClass, Observable<? extends T> entityStream) {
 		Assert.notNull(entityClass, "entityClass is null");
 		Assert.notNull(entityStream, "entityStream is null");
-		return null;
+		
+		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
+		
+		Observable<DattyOperation> operations = entityStream
+				.map(new Func1<T, DattyOperation>() {
+
+					@Override
+					public DattyOperation call(T entity) {
+						DattyId id = getId(entityMetadata, entity);
+						return toRemoveOperation(entityMetadata, id);
+					}
+					
+				});
+		
+		
+		return datty.executeSequence(operations).toCompletable();
 	}
 
 	@Override
 	public Completable deleteAll(Class<?> entityClass) {
 		Assert.notNull(entityClass, "entityClass is null");
-		return null;
+		
+		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
+		
+		DeleteOperation deleteOp = new DeleteOperation(entityMetadata.getCacheName())
+		.withTimeoutMillis(entityMetadata.getTimeoutMillis());
+
+		if (entityMetadata.hasMinorKey()) {
+			deleteOp.addMinorKey(entityMetadata.getMinorKey());
+		}
+		else if (entityMetadata.useTags()) {
+			for (Integer tag : entityMetadata.getPropertyTags()) {
+				deleteOp.addMinorKey(tag.toString());
+			}
+		}
+		else {
+			deleteOp.addMinorKeys(entityMetadata.getPropertyNames());
+		}
+		
+		return datty.executeQuery(deleteOp).toCompletable();
 	}
 
 	@Override

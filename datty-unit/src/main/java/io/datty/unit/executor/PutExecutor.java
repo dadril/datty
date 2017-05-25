@@ -21,7 +21,7 @@ import io.datty.api.DattyError;
 import io.datty.api.DattyRow;
 import io.datty.api.operation.PutOperation;
 import io.datty.api.result.PutResult;
-import io.datty.support.exception.DattySingleException;
+import io.datty.support.exception.DattyOperationException;
 import io.datty.unit.UnitRecord;
 import io.netty.buffer.ByteBuf;
 import rx.Single;
@@ -53,7 +53,7 @@ public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
 			record = new UnitRecord(row.getValues());
 			UnitRecord c = recordMap.putIfAbsent(operation.getMajorKey(), record);
 			if (c != null) {
-				return Single.error(new DattySingleException(DattyError.ErrCode.CONCURRENT_UPDATE, operation));
+				return Single.error(new DattyOperationException(DattyError.ErrCode.CONCURRENT_UPDATE, operation));
 			}
 			else {
 				return Single.just(new PutResult());
@@ -69,7 +69,7 @@ public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
 					recordMap.replace(operation.getMajorKey(), record, newRecord);
 			
 			if (!updated) {
-				return Single.error(new DattySingleException(DattyError.ErrCode.CONCURRENT_UPDATE, operation));
+				return Single.error(new DattyOperationException(DattyError.ErrCode.CONCURRENT_UPDATE, operation));
 			}
 			
 			return Single.just(new PutResult());

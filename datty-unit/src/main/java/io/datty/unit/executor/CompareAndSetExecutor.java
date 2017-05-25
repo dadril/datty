@@ -23,7 +23,7 @@ import io.datty.api.operation.CompareAndSetOperation;
 import io.datty.api.operation.Version;
 import io.datty.api.operation.VersionType;
 import io.datty.api.result.CompareAndSetResult;
-import io.datty.support.exception.DattySingleException;
+import io.datty.support.exception.DattyOperationException;
 import io.datty.unit.UnitRecord;
 import io.netty.buffer.ByteBuf;
 import rx.Single;
@@ -60,7 +60,7 @@ public enum CompareAndSetExecutor implements OperationExecutor<CompareAndSetOper
 				boolean updated = null == recordMap.putIfAbsent(operation.getMajorKey(), record);
 				
 				if (!updated) {
-					return Single.error(new DattySingleException(DattyError.ErrCode.CONCURRENT_UPDATE, operation));
+					return Single.error(new DattyOperationException(DattyError.ErrCode.CONCURRENT_UPDATE, operation));
 				}
 				else {
 					return Single.just(new CompareAndSetResult().set(updated));
@@ -78,7 +78,7 @@ public enum CompareAndSetExecutor implements OperationExecutor<CompareAndSetOper
 					recordMap.replace(operation.getMajorKey(), record, newRecord);
 			
 			if (!updated) {
-				return Single.error(new DattySingleException(DattyError.ErrCode.CONCURRENT_UPDATE, operation));
+				return Single.error(new DattyOperationException(DattyError.ErrCode.CONCURRENT_UPDATE, operation));
 			}
 			else {
 				return Single.just(new CompareAndSetResult().set(updated));

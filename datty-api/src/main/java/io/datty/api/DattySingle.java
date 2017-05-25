@@ -40,6 +40,6 @@ public interface DattySingle {
 	 * @param operation - not null datty operation single
 	 */
 
-	//<O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(Single<O> operation);
+	<O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(Single<O> operation);
 	
 }

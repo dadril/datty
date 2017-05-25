@@ -40,5 +40,5 @@ public interface DattyConverter
 	 */
 	
 	DattyId toDattyId(Object id);
-	
+
 }

@@ -88,7 +88,7 @@ public interface DattyOperations {
 	 * @return the entity with the given id or {@link Observable#empty()} if none found.
 	 * @throws IllegalArgumentException if {@code id} is {@literal null}.
 	 */
-	<T> Observable<T> findOne(Class<T> entityClass, DattyId id);
+	<T> Single<T> findOne(Class<T> entityClass, DattyId id);
 	
 	/**
 	 * Retrieves an entity by its id supplied by a {@link Single}.
@@ -98,7 +98,7 @@ public interface DattyOperations {
 	 * @return the entity with the given id or {@link Observable#empty()} if none found.
 	 * @throws IllegalArgumentException if {@code id} is {@literal null}.
 	 */
-	<T> Observable<T> findOne(Class<T> entityClass, Single<DattyId> id);
+	<T> Single<T> findOne(Class<T> entityClass, Single<DattyId> id);
 	
 	/**
 	 * Returns whether an entity with the given id exists.

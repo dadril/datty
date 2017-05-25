@@ -19,8 +19,9 @@ import io.datty.api.DattyError.ErrCode;
 import io.datty.api.DattySingle;
 import io.datty.api.operation.TypedOperation;
 import io.datty.api.result.TypedResult;
-import io.datty.support.exception.DattySingleException;
+import io.datty.support.exception.DattyOperationException;
 import rx.Single;
+import rx.functions.Func1;
 
 /**
  * AerospikeDattySingle
@@ -44,21 +45,35 @@ public class AerospikeDattySingle implements DattySingle {
 		AerospikeCache cache = cacheManager.getAerospikeCache(cacheName);
 		
 		if (cache == null) {
-			return Single.error(new DattySingleException(ErrCode.CACHE_NOT_FOUND, cacheName, operation));
+			return Single.error(new DattyOperationException(ErrCode.CACHE_NOT_FOUND, cacheName, operation));
 		}
 		
 		String majorKey = operation.getMajorKey();
 		if (majorKey == null) {
-			return Single.error(new DattySingleException(ErrCode.BAD_ARGUMENTS, "empty majorKey", operation));
+			return Single.error(new DattyOperationException(ErrCode.BAD_ARGUMENTS, "empty majorKey", operation));
 		}
 		
 		AerospikeOperation<O, R> aerospikeOperation = AerospikeOperations.find(operation.getCode());
 		
 		if (aerospikeOperation == null) {
-			return Single.error(new DattySingleException(ErrCode.UNKNOWN_OPERATION, "unknown operation: " + operation.getCode().name(), operation));
+			return Single.error(new DattyOperationException(ErrCode.UNKNOWN_OPERATION, "unknown operation: " + operation.getCode().name(), operation));
 		}
 		
 		return aerospikeOperation.execute(cache, operation);
+		
+	}
+	
+	@Override
+	public <O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(Single<O> operation) {
+		
+		return operation.flatMap(new Func1<O, Single<R>>() {
+
+			@Override
+			public Single<R> call(O op) {
+				return execute(op);
+			}
+			
+		});
 		
 	}
 

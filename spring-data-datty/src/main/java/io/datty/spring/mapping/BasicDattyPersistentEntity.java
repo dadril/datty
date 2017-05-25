@@ -16,6 +16,7 @@ package io.datty.spring.mapping;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -205,11 +206,27 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 	}
 
 	@Override
+	public Set<String> getPropertyNames() {
+		if (propertyIndex == null) {
+			propertyIndex = buildPropertyIndex();
+		}
+		return propertyIndex.keySet();
+	}
+
+	@Override
 	public Optional<DattyPersistentProperty> findPropertyByName(String name) {
 		if (propertyIndex == null) {
 			propertyIndex = buildPropertyIndex();
 		}
 		return Optional.ofNullable(propertyIndex.get(name));
+	}
+	
+	@Override
+	public Set<Integer> getPropertyTags() {
+		if (tagIndex == null) {
+			tagIndex = buildTagIndex();
+		}
+		return tagIndex.keySet();
 	}
 
 	@Override

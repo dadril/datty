@@ -79,5 +79,20 @@ public class DattySingleProvider implements DattySingle {
 		}
 	}
 
+	@Override
+	public <O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(Single<O> operation) {
+		
+		return operation.flatMap(new Func1<O, Single<R>>() {
+
+			@Override
+			public Single<R> call(O op) {
+				return execute(op);
+			}
+			
+		});
+		
+	}
+
+	
 
 }

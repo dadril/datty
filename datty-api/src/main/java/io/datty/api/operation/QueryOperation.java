@@ -11,27 +11,44 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.api.operation;
 
-import io.datty.api.operation.QueryOperation;
-import rx.Observable;
+import java.util.Set;
+
+import io.datty.api.DattyOperation;
+import io.datty.api.result.QueryResult;
 
 /**
- * DattyQuery
+ * QueryOperation
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattyQuery {
+public interface QueryOperation extends DattyOperation {
 
 	/**
-	 * Retrieve or update data by using query
+	 * Is all keys are requested
 	 * 
-	 * @param query - datty query operation
-	 * @return not null observable of results
+	 * @return true if all keys
 	 */
 	
-	Observable<DattyResult> executeQuery(QueryOperation query);
+	boolean isAllMinorKeys();
+	
+	/**
+	 * Gets set of minor keys
+	 * 
+	 * @return not null set of minor keys to querys
+	 */
+	
+	Set<String> getMinorKeys();
+	
+	/**
+	 * Gets fallback result if exists
+	 * 
+	 * @return null or fallback
+	 */
+	
+	QueryResult getFallback();
 	
 }

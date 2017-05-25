@@ -42,8 +42,11 @@ public interface DattyResult {
 		EXISTS(1),
 		GET(2),
 		PUT(3),
-		COMPARE_AND_SET(4),
-		EXECUTE(5);
+		REMOVE(4),
+		COMPARE_AND_SET(5),
+		EXECUTE(6),
+		QUERY(7),
+		LONG(8);
 		
 		private final int rescode;
 		

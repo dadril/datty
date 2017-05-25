@@ -11,27 +11,33 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.unit;
 
+import java.util.concurrent.ConcurrentMap;
+
+import io.datty.api.DattyResult;
+import io.datty.api.DattyQuery;
 import io.datty.api.operation.QueryOperation;
 import rx.Observable;
 
 /**
- * DattyQuery
+ * UnitDattyQuery
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattyQuery {
+public class UnitDattyQuery implements DattyQuery {
 
-	/**
-	 * Retrieve or update data by using query
-	 * 
-	 * @param query - datty query operation
-	 * @return not null observable of results
-	 */
+	private final ConcurrentMap<String, UnitCache> cacheMap;
 	
-	Observable<DattyResult> executeQuery(QueryOperation query);
+	public UnitDattyQuery(ConcurrentMap<String, UnitCache> cacheMap) {
+		this.cacheMap = cacheMap;
+	}
 	
+	@Override
+	public Observable<DattyResult> executeQuery(QueryOperation operation) {
+		return Observable.just(null);
+	}
+
 }

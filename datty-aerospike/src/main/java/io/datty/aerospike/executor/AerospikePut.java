@@ -30,7 +30,7 @@ import io.datty.api.DattyError;
 import io.datty.api.DattyRow;
 import io.datty.api.operation.PutOperation;
 import io.datty.api.result.PutResult;
-import io.datty.support.exception.DattySingleException;
+import io.datty.support.exception.DattyOperationException;
 import io.netty.buffer.ByteBuf;
 import rx.Single;
 import rx.functions.Func1;
@@ -62,7 +62,7 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 				return removeRecord(cache, operation);
 				
 			default:
-				return Single.error(new DattySingleException(DattyError.ErrCode.BAD_ARGUMENTS, "unknown updatePolicy", operation));
+				return Single.error(new DattyOperationException(DattyError.ErrCode.BAD_ARGUMENTS, "unknown updatePolicy", operation));
 				
 			}
 			
@@ -84,7 +84,7 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 				return putBins(cache, operation);
 				
 			default:
-				return Single.error(new DattySingleException(DattyError.ErrCode.BAD_ARGUMENTS, "unknown updatePolicy", operation));
+				return Single.error(new DattyOperationException(DattyError.ErrCode.BAD_ARGUMENTS, "unknown updatePolicy", operation));
 				
 		}
 		

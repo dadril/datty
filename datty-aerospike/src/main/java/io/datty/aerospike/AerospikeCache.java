@@ -32,7 +32,7 @@ import io.datty.api.operation.ExecuteOperation;
 import io.datty.api.operation.ExistsOperation;
 import io.datty.api.operation.GetOperation;
 import io.datty.api.operation.PutOperation;
-import io.datty.support.exception.DattySingleException;
+import io.datty.support.exception.DattyOperationException;
 import io.datty.support.exception.DattyStreamException;
 
 /**
@@ -120,22 +120,22 @@ public class AerospikeCache implements Cache {
 		return "AerospikeCache [name=" + cacheName + "]";
 	}
 	
-	public ExceptionTransformer<DattySingleException> singleExceptionTransformer(final DattyOperation operation, final boolean filterConcurrent) {
-		return new ExceptionTransformer<DattySingleException>() {
+	public ExceptionTransformer<DattyOperationException> singleExceptionTransformer(final DattyOperation operation, final boolean filterConcurrent) {
+		return new ExceptionTransformer<DattyOperationException>() {
 
 			@Override
-			public DattySingleException transformException(AerospikeException e) {
+			public DattyOperationException transformException(AerospikeException e) {
 				
 				switch(e.getResultCode()) {
 				
 				case ResultCode.TIMEOUT:
-					return new DattySingleException(DattyError.ErrCode.TIMEOUT, operation, e);
+					return new DattyOperationException(DattyError.ErrCode.TIMEOUT, operation, e);
 				
 				case ResultCode.GENERATION_ERROR:
-					return filterConcurrent ? null : new DattySingleException(DattyError.ErrCode.CONCURRENT_UPDATE, operation, e);
+					return filterConcurrent ? null : new DattyOperationException(DattyError.ErrCode.CONCURRENT_UPDATE, operation, e);
 					
 				default:
-					return new DattySingleException(DattyError.ErrCode.UNKNOWN, "aerospike error: " + ResultCode.getResultString(e.getResultCode()), operation, e);
+					return new DattyOperationException(DattyError.ErrCode.UNKNOWN, "aerospike error: " + ResultCode.getResultString(e.getResultCode()), operation, e);
 				}
 			}
 			

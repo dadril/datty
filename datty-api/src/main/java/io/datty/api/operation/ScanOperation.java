@@ -11,26 +11,31 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
-
-import rx.Observable;
+package io.datty.api.operation;
 
 /**
- * DattySearch
+ * Scan operation
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattySearch {
+public class ScanOperation extends AbstractQueryOperation<ScanOperation> {
 
-	/**
-	 * Searches data by using query
-	 * 
-	 * @param query - datty query
-	 * @return not null observable of results
-	 */
+	public ScanOperation(String cacheName) {
+		super(cacheName);
+	}
 	
-	Observable<DattyResult> search(DattyQuery query);
-	
+	@Override
+	public OpCode getCode() {
+		return OpCode.SCAN;
+	}
+
+	@Override
+	public String toString() {
+		return "ScanOperation [cacheName=" + cacheName + ", superKey=" + superKey + ", timeoutMillis=" + timeoutMillis
+				+ ", fallback=" + fallback + ", getCode()=" + getCode() + "]";
+	}
+
+
 }
