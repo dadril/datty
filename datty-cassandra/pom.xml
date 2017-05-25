@@ -66,7 +66,7 @@
             <properties>
               <property>
                 <name>listener</name>
-                <value>io.datty.redis.test.RedisMavenInitializer</value>
+                <value>io.datty.cassandra.test.CassandraMavenInitializer</value>
               </property>
             </properties>               
         </configuration>        

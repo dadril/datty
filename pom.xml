@@ -21,6 +21,21 @@
 		<module>datty-api</module>
 		<module>datty-unit</module>
     <module>datty-aerospike</module>
+    <module>datty-redis</module>
+    <module>datty-memcache</module>    
+    <module>datty-memsql</module>
+    <module>datty-mysql</module>
+    <module>datty-postgresql</module>
+    <module>datty-http</module>    
+    <module>datty-kafka</module>
+    <module>datty-cassandra</module>
+    <module>datty-hbase</module>
+    <module>datty-dynamodb</module>
+    <module>datty-mongodb</module>    
+    <module>datty-couchbase</module>   
+    <module>datty-elasticsearch</module>  
+    <module>datty-highavailability</module>
+    <module>datty-benchmark</module>
     <module>spring-data-datty</module>		
 	</modules>
 
