@@ -13,11 +13,20 @@
  */
 package io.datty.unit;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
+import io.datty.api.DattyError.ErrCode;
 import io.datty.api.DattyQuery;
+import io.datty.api.operation.CountOperation;
+import io.datty.api.operation.DeleteOperation;
 import io.datty.api.operation.QueryOperation;
+import io.datty.api.operation.ScanOperation;
 import io.datty.api.result.QueryResult;
+import io.datty.support.exception.DattyOperationException;
 import rx.Observable;
 
 /**
@@ -30,14 +39,104 @@ import rx.Observable;
 public class UnitDattyQuery implements DattyQuery {
 
 	private final ConcurrentMap<String, UnitCache> cacheMap;
-	
+
 	public UnitDattyQuery(ConcurrentMap<String, UnitCache> cacheMap) {
 		this.cacheMap = cacheMap;
 	}
-	
+
 	@Override
 	public Observable<QueryResult> executeQuery(QueryOperation operation) {
-		return Observable.just(new QueryResult());
+
+		String cacheName = operation.getCacheName();
+		if (cacheName == null) {
+			return Observable.error(new DattyOperationException(ErrCode.BAD_ARGUMENTS, "empty cacheName", operation));
+		}
+
+		UnitCache cache = cacheMap.get(operation.getCacheName());
+
+		if (cache == null) {
+			return Observable.error(new DattyOperationException(ErrCode.CACHE_NOT_FOUND, cacheName, operation));
+		}
+
+		if (operation instanceof CountOperation) {
+			return doCount(cache, (CountOperation) operation);
+		}
+		else {
+			return Observable.error(new DattyOperationException(ErrCode.UNKNOWN_OPERATION, cacheName, operation));
+		}
+
+	}
+
+	protected Observable<QueryResult> doScan(UnitCache cache, ScanOperation operation) {
+
+		ConcurrentMap<String, UnitRecord> recordMap = cache.getRecordMap();
+		List<QueryResult> list = new ArrayList<>(recordMap.size());
+		
+		for (Map.Entry<String, UnitRecord> entry : recordMap.entrySet()) {
+			
+			UnitRecord record = entry.getValue();
+			
+			QueryResult result = new QueryResult();
+			result.setVersion(record.getVersion());
+			
+			if (operation.isAllMinorKeys()) {
+				for (Map.Entry<String, UnitValue> e : record.getColumnMap().entrySet()) {
+					result.addValue(e.getKey(), e.getValue().asByteBuf());
+				}
+			}
+			else {
+				for (String minorKey : operation.getMinorKeys()) {
+					UnitValue value = record.getColumn(minorKey);
+					if (value != null) {
+						result.addValue(minorKey, value.asByteBuf());
+					}
+				}
+			}
+			
+			list.add(result);
+			
+		}
+
+		return Observable.from(list);
+		
+	}
+	
+	protected Observable<QueryResult> doCount(UnitCache cache, CountOperation operation) {
+
+		QueryResult result = new QueryResult();
+		result.setCount(cache.getRecordMap().size());
+
+		return Observable.just(result);
+	}
+	
+	protected Observable<QueryResult> doDelete(UnitCache cache, DeleteOperation operation) {
+
+		QueryResult result = new QueryResult();
+		
+		if (operation.isAllMinorKeys()) {
+			result.setCount(cache.getRecordMap().size());
+			cache.getRecordMap().clear();
+		}
+		else {
+			int count = 0;
+			Map<String, UnitRecord> recordMap = new HashMap<>(cache.getRecordMap());
+			for (Map.Entry<String, UnitRecord> entry : recordMap.entrySet()) {
+				UnitRecord record = entry.getValue();
+				UnitRecord newRecord = new UnitRecord(record, operation.getMinorKeys());
+				if (newRecord.isEmpty()) {
+					cache.getRecordMap().remove(entry.getKey());
+					count++;
+				}
+				else if (newRecord.columns() != record.columns()) {
+					cache.getRecordMap().put(entry.getKey(), newRecord);
+					count++;
+				}
+			}
+			result.setCount(count);
+		}
+		
+		
+		return Observable.just(result);
 	}
 
 }

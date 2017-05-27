@@ -70,18 +70,18 @@ public final class UnitRecord {
 		this.version = 1L;
 	}
 	
-	public UnitRecord(UnitRecord previous, Map<String, ByteBuf> map, UpdatePolicy updatePolicy) {
+	public UnitRecord(UnitRecord previous, Map<String, ByteBuf> addMap, UpdatePolicy updatePolicy) {
 		
 		switch(updatePolicy) {
 		
 		case REPLACE:
-			this.columnMap = toImmutableBuilder(map).build();
+			this.columnMap = toImmutableBuilder(addMap).build();
 			break;
 			
 		case MERGE:
-			ImmutableMap.Builder<String, UnitValue> builder = toImmutableBuilder(map);
+			ImmutableMap.Builder<String, UnitValue> builder = toImmutableBuilder(addMap);
 			for (Map.Entry<String, UnitValue> e : previous.columnMap.entrySet()) {
-				if (!map.containsKey(e.getKey())) {
+				if (!addMap.containsKey(e.getKey())) {
 					builder.put(e);
 				}
 			}
@@ -92,6 +92,17 @@ public final class UnitRecord {
 			throw new IllegalArgumentException("unknown update policy: " + updatePolicy);	
 		}
 				
+		this.version = previous.version + 1;
+	}
+	
+	public UnitRecord(UnitRecord previous, Set<String> removeSet) {
+		ImmutableMap.Builder<String, UnitValue> builder = ImmutableMap.builder();
+		for (Map.Entry<String, UnitValue> e : previous.columnMap.entrySet()) {
+			if (!removeSet.contains(e.getKey())) {
+				builder.put(e);
+			}
+		}
+		this.columnMap = builder.build();
 		this.version = previous.version + 1;
 	}
 	
@@ -120,6 +131,10 @@ public final class UnitRecord {
 	
 	public Map<String, UnitValue> getColumnMap() {
 		return columnMap;
+	}
+	
+	public int columns() {
+		return columnMap.size();
 	}
 	
 	public Set<String> columnSet() {

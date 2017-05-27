@@ -44,6 +44,10 @@ public final class UnitDattySingle implements DattySingle {
 	public <O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(O operation) {
 		
 		String cacheName = operation.getCacheName();
+		if (cacheName == null) {
+			return Single.error(new DattyOperationException(ErrCode.BAD_ARGUMENTS, "empty cacheName", operation));
+		}
+		
 		UnitCache cache = cacheMap.get(cacheName);
 		
 		if (cache == null) {
