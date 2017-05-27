@@ -17,9 +17,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.datty.api.Datty;
+import io.datty.api.DattyBatch;
 import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
+import io.datty.api.DattySingle;
 import io.datty.api.operation.TypedOperation;
 import rx.Completable;
 import rx.Observable;
@@ -28,15 +29,19 @@ import rx.functions.Func0;
 import rx.functions.Func1;
 
 /**
- * AbstractDattyAdapter
- * 
- * Abstract adaptor class that is using DattySingle to execute batch and sequence operations
+ * DattyBatchDriver
  * 
  * @author Alex Shvid
  *
  */
 
-public abstract class AbstractDattyAdapter implements Datty {
+public class DattyBatchDriver implements DattyBatch {
+	
+	private final DattySingle single;
+	
+	public DattyBatchDriver(DattySingle single) {
+		this.single = single;
+	}
 	
 	@Override
 	public Single<List<DattyResult>> executeBatch(List<DattyOperation> operations) {
@@ -102,7 +107,7 @@ public abstract class AbstractDattyAdapter implements Datty {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private Single<DattyResult> doExecute(DattyOperation operation) {
 		TypedOperation op = (TypedOperation) operation;
-		return (Single<DattyResult>) execute(op);
+		return (Single<DattyResult>) single.execute(op);
 	}
 	
 }

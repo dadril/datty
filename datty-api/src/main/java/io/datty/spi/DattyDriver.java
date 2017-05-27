@@ -13,10 +13,14 @@
  */
 package io.datty.spi;
 
+import java.util.List;
+
 import io.datty.api.Datty;
+import io.datty.api.DattyBatch;
 import io.datty.api.DattyKey;
-import io.datty.api.DattyResult;
+import io.datty.api.DattyOperation;
 import io.datty.api.DattyQuery;
+import io.datty.api.DattyResult;
 import io.datty.api.DattySingle;
 import io.datty.api.DattyStream;
 import io.datty.api.operation.QueryOperation;
@@ -33,16 +37,22 @@ import rx.Single;
  *
  */
 
-public class DattyDriver extends AbstractDattyAdapter implements Datty {
+public class DattyDriver implements Datty {
 
 	private final DattySingle single;
+	private final DattyBatch batch;
 	private final DattyStream stream;
 	private final DattyQuery query;
-	
-	public DattyDriver(DattySingle single, DattyStream stream, DattyQuery query) {
+
+	public DattyDriver(DattySingle single, DattyBatch batch, DattyStream stream, DattyQuery query) {
 		this.single = single;
+		this.batch = batch;
 		this.stream = stream;
 		this.query = query;
+	}
+
+	public static Builder newBuilder() {
+		return new Builder();
 	}
 	
 	@Override
@@ -61,6 +71,16 @@ public class DattyDriver extends AbstractDattyAdapter implements Datty {
 	}
 
 	@Override
+	public Single<List<DattyResult>> executeBatch(List<DattyOperation> operations) {
+		return batch.executeBatch(operations);
+	}
+
+	@Override
+	public Observable<DattyResult> executeSequence(Observable<DattyOperation> operations) {
+		return batch.executeSequence(operations);
+	}
+
+	@Override
 	public Observable<ByteBuf> streamOut(DattyKey key) {
 		return stream.streamOut(key);
 	}
@@ -69,5 +89,71 @@ public class DattyDriver extends AbstractDattyAdapter implements Datty {
 	public Single<Long> streamIn(DattyKey key, Observable<ByteBuf> value) {
 		return stream.streamIn(key, value);
 	}
-	
+
+	public static final class Builder {
+
+		private DattySingle single;
+		private DattyBatch batch;
+		private DattyStream stream;
+		private DattyQuery query;
+
+		public DattySingle getSingle() {
+			return single;
+		}
+
+		public Builder setSingle(DattySingle single) {
+			this.single = single;
+			return this;			
+		}
+
+		public DattyBatch getBatch() {
+			return batch;
+		}
+
+		public Builder setBatch(DattyBatch batch) {
+			this.batch = batch;
+			return this;
+		}
+
+		public DattyStream getStream() {
+			return stream;
+		}
+
+		public Builder setStream(DattyStream stream) {
+			this.stream = stream;
+			return this;			
+		}
+
+		public DattyQuery getQuery() {
+			return query;
+		}
+
+		public Builder setQuery(DattyQuery query) {
+			this.query = query;
+			return this;
+		}
+
+		public DattyDriver build() {
+
+			if (single == null) {
+				throw new IllegalArgumentException("empty single");
+			}
+
+			if (batch == null) {
+				throw new IllegalArgumentException("empty batch");
+			}
+
+			if (stream == null) {
+				throw new IllegalArgumentException("empty stream");
+			}
+
+			if (query == null) {
+				throw new IllegalArgumentException("empty query");
+			}
+
+			return new DattyDriver(single, batch, stream, query);
+		}
+
+	}
+
 }

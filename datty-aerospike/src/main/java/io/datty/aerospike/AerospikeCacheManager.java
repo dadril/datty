@@ -25,9 +25,11 @@ import io.datty.api.CacheError;
 import io.datty.api.CacheExistsAction;
 import io.datty.api.CacheManager;
 import io.datty.api.Datty;
+import io.datty.api.DattyBatch;
 import io.datty.api.DattyQuery;
 import io.datty.api.DattySingle;
 import io.datty.api.DattyStream;
+import io.datty.spi.DattyBatchDriver;
 import io.datty.spi.DattyDriver;
 import io.datty.spi.DattyQueryDriver;
 import io.datty.spi.DattySingleDriver;
@@ -58,11 +60,17 @@ public class AerospikeCacheManager implements CacheManager {
 		this.config = new AerospikeConfig(props);
 		this.client = new AerospikeRxClient(instantiateClient(this.config)); 
 		
-		DattySingle dattySingle = new DattySingleProvider(new DattySingleDriver(new AerospikeDattySingle(this)));
-		DattyStream dattyStream = new DattyStreamDriver(new AerospikeDattyStream(this));
-		DattyQuery dattyQuery = new DattyQueryDriver(new AerospikeDattyQuery(this));
+		DattySingle single = new DattySingleProvider(new DattySingleDriver(new AerospikeDattySingle(this)));
+		DattyBatch batch = new DattyBatchDriver(single);
+		DattyStream stream = new DattyStreamDriver(new AerospikeDattyStream(this));
+		DattyQuery query = new DattyQueryDriver(new AerospikeDattyQuery(this));
 		
-		this.currentDatty = new DattyDriver(dattySingle, dattyStream, dattyQuery);
+		this.currentDatty = DattyDriver.newBuilder()
+				.setSingle(single)
+				.setBatch(batch)
+				.setStream(stream)
+				.setQuery(query)
+				.build();
 	}
 	
 	public AerospikeConfig getConfig() {

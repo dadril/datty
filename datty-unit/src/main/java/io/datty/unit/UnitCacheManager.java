@@ -22,9 +22,11 @@ import io.datty.api.CacheError;
 import io.datty.api.CacheExistsAction;
 import io.datty.api.CacheManager;
 import io.datty.api.Datty;
+import io.datty.api.DattyBatch;
 import io.datty.api.DattyQuery;
 import io.datty.api.DattySingle;
 import io.datty.api.DattyStream;
+import io.datty.spi.DattyBatchDriver;
 import io.datty.spi.DattyDriver;
 import io.datty.spi.DattyQueryDriver;
 import io.datty.spi.DattySingleDriver;
@@ -53,10 +55,17 @@ public class UnitCacheManager implements CacheManager {
 		this.name = props.getProperty(UnitPropertyKeys.NAME, UnitConstants.DEFAULT_NAME);
 		
 		DattySingle single = new DattySingleProvider(new DattySingleDriver(new UnitDattySingle(cacheMap)));
+		DattyBatch batch = new DattyBatchDriver(single);
 		DattyStream stream = new DattyStreamDriver(new UnitDattyStream(cacheMap));
 		DattyQuery query = new DattyQueryDriver(new UnitDattyQuery(cacheMap));
 		
-		this.currentDatty = new DattyDriver(single, stream, query);
+		this.currentDatty = DattyDriver.newBuilder()
+				.setSingle(single)
+				.setBatch(batch)
+				.setStream(stream)
+				.setQuery(query)
+				.build();
+				
 	}
 
 	@Override

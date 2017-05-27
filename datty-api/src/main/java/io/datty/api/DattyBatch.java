@@ -13,13 +13,38 @@
  */
 package io.datty.api;
 
+import java.util.List;
+
+import rx.Observable;
+import rx.Single;
+
 /**
- * Base interface to execute asynchronous operations
+ * DattyBatch
+ * 
+ * Batch or bulk operations
  * 
  * @author Alex Shvid
  *
  */
 
-public interface Datty extends DattySingle, DattyBatch, DattyStream, DattyQuery {
+public interface DattyBatch {
+
+	/**
+	 * Executes sequence of datty operations
+	 * 
+	 * @param operations - sequence of operations
+	 * @return sequence of results
+	 */
+	
+	Single<List<DattyResult>> executeBatch(List<DattyOperation> operations);
+	
+	/**
+	 * Executes sequence of datty operations
+	 * 
+	 * @param operations - sequence of operations
+	 * @return sequence of results
+	 */
+	
+	Observable<DattyResult> executeSequence(Observable<DattyOperation> operations);
 	
 }
