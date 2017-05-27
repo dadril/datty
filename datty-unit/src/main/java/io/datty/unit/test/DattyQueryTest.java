@@ -11,28 +11,29 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.unit.test;
 
-import io.datty.api.operation.QueryOperation;
-import io.datty.api.result.QueryResult;
-import rx.Observable;
+import org.junit.Assert;
+import org.junit.Test;
+
+import io.datty.api.operation.CountOperation;
 
 /**
- * DattyQuery
+ * DattyQueryTest
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattyQuery {
+public class DattyQueryTest extends AbstractDattyUnitTest {
 
-	/**
-	 * Retrieve or update data by using query
-	 * 
-	 * @param query - datty query operation
-	 * @return not null observable of results
-	 */
-	
-	Observable<QueryResult> executeQuery(QueryOperation query);
+	@Test
+	public void testEmptyCount() {
+		
+		long count = cacheManager.getDatty().executeQuery(new CountOperation("CACHE_NAME")).toBlocking().single().count();
+		
+		Assert.assertEquals(0, count);
+		
+	}
 	
 }

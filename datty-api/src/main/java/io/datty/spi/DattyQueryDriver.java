@@ -16,7 +16,6 @@ package io.datty.spi;
 import java.util.concurrent.TimeUnit;
 
 import io.datty.api.DattyError;
-import io.datty.api.DattyResult;
 import io.datty.api.DattyQuery;
 import io.datty.api.operation.QueryOperation;
 import io.datty.api.result.QueryResult;
@@ -41,9 +40,9 @@ public class DattyQueryDriver implements DattyQuery {
 	
 
 	@Override
-	public Observable<DattyResult> executeQuery(final QueryOperation operation) {
+	public Observable<QueryResult> executeQuery(final QueryOperation operation) {
 		
-		Observable<DattyResult> result = delegate.executeQuery(operation);
+		Observable<QueryResult> result = delegate.executeQuery(operation);
 		
 		if (operation.hasTimeoutMillis()) {
 			

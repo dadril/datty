@@ -43,6 +43,13 @@ public class QueryResult implements DattyResult {
 	
 	private DattyRow row;
 	
+	/**
+	 * Count records in result
+	 * Valid for CountOperation and DeleteOperation
+	 */
+	
+	private long count;
+	
 	public QueryResult() {
 	}
 	
@@ -98,6 +105,18 @@ public class QueryResult implements DattyResult {
 		return this;
 	}
 	
+	public long count() {
+		return count;
+	}
+
+	public long getCount() {
+		return count;
+	}
+	
+	public void setCount(long count) {
+		this.count = count;
+	}
+
 	public boolean exists() {
 		return this.version != null;
 	}

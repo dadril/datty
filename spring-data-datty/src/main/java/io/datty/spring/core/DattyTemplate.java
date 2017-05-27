@@ -35,7 +35,6 @@ import io.datty.api.operation.RemoveOperation;
 import io.datty.api.operation.ScanOperation;
 import io.datty.api.result.ExistsResult;
 import io.datty.api.result.GetResult;
-import io.datty.api.result.LongResult;
 import io.datty.api.result.PutResult;
 import io.datty.api.result.QueryResult;
 import io.datty.spring.convert.DattyConverter;
@@ -389,12 +388,11 @@ public class DattyTemplate implements DattyOperations {
 		CountOperation countOp = new CountOperation(entityMetadata.getCacheName());
 		addParametersToQuery(countOp, entityMetadata);
 
-		return datty.executeQuery(countOp).map(new Func1<DattyResult, Long>() {
+		return datty.executeQuery(countOp).map(new Func1<QueryResult, Long>() {
 
 			@Override
-			public Long call(DattyResult res) {
-				LongResult countRes = (LongResult) res;
-				return countRes.getValue();
+			public Long call(QueryResult res) {
+				return res.count();
 			}
 			
 		}).toSingle();

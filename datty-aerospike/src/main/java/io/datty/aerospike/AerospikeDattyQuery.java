@@ -13,9 +13,9 @@
  */
 package io.datty.aerospike;
 
-import io.datty.api.DattyResult;
 import io.datty.api.DattyQuery;
 import io.datty.api.operation.QueryOperation;
+import io.datty.api.result.QueryResult;
 import rx.Observable;
 
 /**
@@ -35,8 +35,8 @@ public class AerospikeDattyQuery implements DattyQuery {
 	}
 	
 	@Override
-	public Observable<DattyResult> executeQuery(QueryOperation operation) {
-		return Observable.just(null);
+	public Observable<QueryResult> executeQuery(QueryOperation operation) {
+		return Observable.just(new QueryResult());
 	}
 	
 }

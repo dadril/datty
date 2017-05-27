@@ -25,6 +25,7 @@ import io.datty.api.DattySingle;
 import io.datty.api.DattyStream;
 import io.datty.api.operation.QueryOperation;
 import io.datty.api.operation.TypedOperation;
+import io.datty.api.result.QueryResult;
 import io.datty.api.result.TypedResult;
 import io.netty.buffer.ByteBuf;
 import rx.Observable;
@@ -56,7 +57,7 @@ public class DattyDriver implements Datty {
 	}
 	
 	@Override
-	public Observable<DattyResult> executeQuery(QueryOperation operation) {
+	public Observable<QueryResult> executeQuery(QueryOperation operation) {
 		return query.executeQuery(operation);
 	}
 

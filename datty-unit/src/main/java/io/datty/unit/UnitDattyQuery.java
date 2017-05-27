@@ -15,9 +15,9 @@ package io.datty.unit;
 
 import java.util.concurrent.ConcurrentMap;
 
-import io.datty.api.DattyResult;
 import io.datty.api.DattyQuery;
 import io.datty.api.operation.QueryOperation;
+import io.datty.api.result.QueryResult;
 import rx.Observable;
 
 /**
@@ -36,8 +36,8 @@ public class UnitDattyQuery implements DattyQuery {
 	}
 	
 	@Override
-	public Observable<DattyResult> executeQuery(QueryOperation operation) {
-		return Observable.just(null);
+	public Observable<QueryResult> executeQuery(QueryOperation operation) {
+		return Observable.just(new QueryResult());
 	}
 
 }
