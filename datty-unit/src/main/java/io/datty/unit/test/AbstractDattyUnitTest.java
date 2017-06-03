@@ -13,6 +13,8 @@
  */
 package io.datty.unit.test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.junit.BeforeClass;
@@ -45,9 +47,9 @@ public abstract class AbstractDattyUnitTest {
 	
 	static protected  final String minorKey = "def";
 	
-	static private  final ByteBuf value = Unpooled.wrappedBuffer("value".getBytes());
+	static protected  final ByteBuf value = Unpooled.wrappedBuffer("value".getBytes());
 
-	static private  final ByteBuf newValue = Unpooled.wrappedBuffer("newValue".getBytes());
+	static protected  final ByteBuf newValue = Unpooled.wrappedBuffer("newValue".getBytes());
 
 	static protected ByteBuf value() {
 		return value.resetReaderIndex();
@@ -73,6 +75,17 @@ public abstract class AbstractDattyUnitTest {
 		
 		cache = cacheManager.getCache(CACHE_NAME, new Properties(), CacheExistsAction.CREATE_IF_NOT_EXISTS);
 		
+	}
+	
+	public static <T> List<T> toList(Iterable<T> iterable) {
+		
+		List<T> list = new ArrayList<>();
+		
+		for (T item : iterable) {
+			list.add(item);
+		}
+		
+		return list;
 	}
 	
 }

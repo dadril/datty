@@ -61,6 +61,12 @@ public class UnitDattyQuery implements DattyQuery {
 		if (operation instanceof CountOperation) {
 			return doCount(cache, (CountOperation) operation);
 		}
+		if (operation instanceof ScanOperation) {
+			return doScan(cache, (ScanOperation) operation);
+		}
+		if (operation instanceof DeleteOperation) {
+			return doDelete(cache, (DeleteOperation) operation);
+		}
 		else {
 			return Observable.error(new DattyOperationException(ErrCode.UNKNOWN_OPERATION, cacheName, operation));
 		}
@@ -78,10 +84,14 @@ public class UnitDattyQuery implements DattyQuery {
 			
 			QueryResult result = new QueryResult();
 			result.setVersion(record.getVersion());
+			result.setMajorKey(entry.getKey());
 			
 			if (operation.isAllMinorKeys()) {
 				for (Map.Entry<String, UnitValue> e : record.getColumnMap().entrySet()) {
-					result.addValue(e.getKey(), e.getValue().asByteBuf());
+					UnitValue value = e.getValue();
+					if (value != null) {
+						result.addValue(e.getKey(), value.asByteBuf());
+					}
 				}
 			}
 			else {
@@ -117,7 +127,7 @@ public class UnitDattyQuery implements DattyQuery {
 			result.setCount(cache.getRecordMap().size());
 			cache.getRecordMap().clear();
 		}
-		else {
+		else if (!operation.getMinorKeys().isEmpty()) {
 			int count = 0;
 			Map<String, UnitRecord> recordMap = new HashMap<>(cache.getRecordMap());
 			for (Map.Entry<String, UnitRecord> entry : recordMap.entrySet()) {

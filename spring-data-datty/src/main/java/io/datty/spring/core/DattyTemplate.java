@@ -491,7 +491,7 @@ public class DattyTemplate implements DattyOperations {
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
 		DeleteOperation deleteOp = new DeleteOperation(entityMetadata.getCacheName())
-		.withTimeoutMillis(entityMetadata.getTimeoutMillis());
+			.withTimeoutMillis(entityMetadata.getTimeoutMillis());
 
 		if (entityMetadata.hasMinorKey()) {
 			deleteOp.addMinorKey(entityMetadata.getMinorKey());
