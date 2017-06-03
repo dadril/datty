@@ -15,7 +15,7 @@
 
     <context:annotation-config />
 	
-    <bean id="cache-manager" class="io.datty.unit.UnitDattyManager" />
+    <bean id="datty-manager" class="io.datty.unit.UnitDattyManager" />
 
     <datty:datty />
 

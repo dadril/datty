@@ -33,18 +33,18 @@ public class MappingDattyEntityInformation<T> extends AbstractEntityInformation<
 
 	private final DattyTemplate template;
 	private final DattyPersistentEntity<T> entityMetadata;
-	private final String customCacheName;
+	private final String customSetName;
 
 	public MappingDattyEntityInformation(DattyTemplate template, DattyPersistentEntity<T> entity) {
 		this(template, entity, null);
 	}
 
 	public MappingDattyEntityInformation(DattyTemplate template, DattyPersistentEntity<T> entity,
-			String customCacheName) {
+			String customSetName) {
 		super(entity.getType());
 		this.template = template;
 		this.entityMetadata = entity;
-		this.customCacheName = customCacheName;
+		this.customSetName = customSetName;
 	}
 
 	@Override
@@ -58,8 +58,8 @@ public class MappingDattyEntityInformation<T> extends AbstractEntityInformation<
 	}
 
 	@Override
-	public String getCacheName() {
-		return customCacheName != null ? customCacheName : entityMetadata.getCacheName();
+	public String getSetName() {
+		return customSetName != null ? customSetName : entityMetadata.getSetName();
 	}
 
 	@Override

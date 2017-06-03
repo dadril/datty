@@ -24,7 +24,7 @@ import io.datty.spring.mapping.Entity;
  *
  */
 
-@Entity(cacheName="TEST_CACHE")
+@Entity(setName="TEST_CACHE")
 public class ExampleCrossEntity {
 
 	@Id

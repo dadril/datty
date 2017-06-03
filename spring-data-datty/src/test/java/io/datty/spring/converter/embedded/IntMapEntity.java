@@ -26,7 +26,7 @@ import io.datty.spring.mapping.Entity;
  *
  */
 
-@Entity(cacheName="TEST_CACHE", minorKey="def")
+@Entity(setName="TEST_CACHE", minorKey="def")
 public class IntMapEntity {
 
 	@Id

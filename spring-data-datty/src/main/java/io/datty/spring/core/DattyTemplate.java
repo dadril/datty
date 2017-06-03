@@ -107,7 +107,7 @@ public class DattyTemplate implements DattyOperations {
 		DattyRow row = new DattyRow();
 		converter.write(entity, row);
 		
-		return new PutOperation(entityMetadata.getCacheName())
+		return new PutOperation(entityMetadata.getSetName())
 		.setSuperKey(id.getSuperKey())
 		.setMajorKey(id.getMajorKey())
 		.setTtlSeconds(entityMetadata.getTtlSeconds())
@@ -161,7 +161,7 @@ public class DattyTemplate implements DattyOperations {
 	
 	protected GetOperation toGetOperation(DattyPersistentEntity<?> entityMetadata, DattyId id) {
 		
-		return new GetOperation(entityMetadata.getCacheName())
+		return new GetOperation(entityMetadata.getSetName())
 		.setSuperKey(id.getSuperKey())
 		.setMajorKey(id.getMajorKey())
 		.withTimeoutMillis(entityMetadata.getTimeoutMillis());
@@ -230,7 +230,7 @@ public class DattyTemplate implements DattyOperations {
 
 	protected ExistsOperation toExistsOperation(DattyPersistentEntity<?> entityMetadata, DattyId id) {
 		
-		ExistsOperation op = new ExistsOperation(entityMetadata.getCacheName())
+		ExistsOperation op = new ExistsOperation(entityMetadata.getSetName())
 		.setSuperKey(id.getSuperKey())
 		.setMajorKey(id.getMajorKey());
 		
@@ -298,7 +298,7 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		ScanOperation scanOp = new ScanOperation(entityMetadata.getCacheName());
+		ScanOperation scanOp = new ScanOperation(entityMetadata.getSetName());
 		addParametersToQuery(scanOp, entityMetadata);
 		
 		return datty.executeQuery(scanOp).map(new Func1<DattyResult, T>() {
@@ -385,7 +385,7 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		CountOperation countOp = new CountOperation(entityMetadata.getCacheName());
+		CountOperation countOp = new CountOperation(entityMetadata.getSetName());
 		addParametersToQuery(countOp, entityMetadata);
 
 		return datty.executeQuery(countOp).map(new Func1<QueryResult, Long>() {
@@ -401,7 +401,7 @@ public class DattyTemplate implements DattyOperations {
 	
 	protected RemoveOperation toRemoveOperation(DattyPersistentEntity<?> entityMetadata, DattyId id) {
 		
-		RemoveOperation removeOp = new RemoveOperation(entityMetadata.getCacheName())
+		RemoveOperation removeOp = new RemoveOperation(entityMetadata.getSetName())
 		.setSuperKey(id.getSuperKey())
 		.setMajorKey(id.getMajorKey())
 		.withTimeoutMillis(entityMetadata.getTimeoutMillis());
@@ -490,7 +490,7 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		DeleteOperation deleteOp = new DeleteOperation(entityMetadata.getCacheName())
+		DeleteOperation deleteOp = new DeleteOperation(entityMetadata.getSetName())
 			.withTimeoutMillis(entityMetadata.getTimeoutMillis());
 
 		if (entityMetadata.hasMinorKey()) {
@@ -549,8 +549,8 @@ public class DattyTemplate implements DattyOperations {
 	}
 	
 	@Override
-	public  String getCacheName(Class<?> entityClass) {
-		return getPersistentEntity(entityClass).getCacheName();
+	public  String getSetName(Class<?> entityClass) {
+		return getPersistentEntity(entityClass).getSetName();
 	}
 	
 	protected DattyPersistentEntity<?> getPersistentEntity(Class<?> entityClass) {

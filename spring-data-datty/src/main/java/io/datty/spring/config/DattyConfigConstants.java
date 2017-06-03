@@ -28,7 +28,7 @@ public final class DattyConfigConstants {
 	public static final String DATTY_DEFAULT_ID = "datty";
 	public static final String DATTY_DEFAULT_ELEMENT = "datty";
 	
-	public static final String CACHE_MANAGER_DEFAULT_ID = "cache-manager";
+	public static final String DATTY_MANAGER_DEFAULT_ID = "datty-manager";
 	
 	public static final String DATTY_CONVERTER_DEFAULT_ID = "datty-converter";
 	public static final String DATTY_CONVERTER_ELEMENT = "converter";

@@ -49,11 +49,11 @@ public class DattyParser extends AbstractSimpleBeanDefinitionParser {
 	@Override
 	protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
 
-		String cacheManagerRef = element.getAttribute("cache-manager-ref");
-		if (!StringUtils.hasText(cacheManagerRef)) {
-			cacheManagerRef = DattyConfigConstants.CACHE_MANAGER_DEFAULT_ID;
+		String managerRef = element.getAttribute("datty-manager-ref");
+		if (!StringUtils.hasText(managerRef)) {
+			managerRef = DattyConfigConstants.DATTY_MANAGER_DEFAULT_ID;
 		}
-		builder.addPropertyReference("cacheManager", cacheManagerRef);
+		builder.addPropertyReference("manager", managerRef);
 
 		postProcess(builder, element);
 	}

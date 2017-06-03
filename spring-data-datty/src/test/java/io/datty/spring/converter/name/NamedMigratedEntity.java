@@ -25,7 +25,7 @@ import io.datty.spring.mapping.Name;
  *
  */
 
-@Entity(cacheName="TEST_CACHE", minorKey="def")
+@Entity(setName="TEST_CACHE", minorKey="def")
 public class NamedMigratedEntity {
 
 	@Id

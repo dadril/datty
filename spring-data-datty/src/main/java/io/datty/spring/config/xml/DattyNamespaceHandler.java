@@ -14,6 +14,11 @@
 package io.datty.spring.config.xml;
 
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
+import org.springframework.data.repository.config.RepositoryBeanDefinitionParser;
+import org.springframework.data.repository.config.RepositoryConfigurationExtension;
+
+import io.datty.spring.config.DattyConfigConstants;
+import io.datty.spring.repository.config.DattyRepositoryConfigurationExtension;
 
 /**
  * DattyNamespaceHandler
@@ -25,14 +30,14 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 public class DattyNamespaceHandler extends NamespaceHandlerSupport {
 
 	public void init() {
-/**
-		RepositoryConfigurationExtension extension = new BasicDataRepositoryConfigurationExtension();
-		RepositoryBeanDefinitionParser repositoryBeanDefinitionParser = new RepositoryBeanDefinitionParser(extension);
-		registerBeanDefinitionParser(ConfigConstants.REPOSITORIES_ELEMENT, repositoryBeanDefinitionParser);
 
-		registerBeanDefinitionParser(ConfigConstants.PROTOSTUFF_CONVERTER_ELEMENT, new ProtostuffConverterParser());
-		registerBeanDefinitionParser(ConfigConstants.BASIC_DATA_TEMPLATE_ELEMENT, new BasicDataTemplateParser());
-**/
+		RepositoryConfigurationExtension extension = new DattyRepositoryConfigurationExtension();
+		RepositoryBeanDefinitionParser repositoryBeanDefinitionParser = new RepositoryBeanDefinitionParser(extension);
+		registerBeanDefinitionParser(DattyConfigConstants.DATTY_REPOSITORIES_ELEMENT, repositoryBeanDefinitionParser);
+
+		registerBeanDefinitionParser(DattyConfigConstants.DATTY_CONVERTER_ELEMENT, new DattyConverterParser());
+		registerBeanDefinitionParser(DattyConfigConstants.DATTY_TEMPLATE_ELEMENT, new DattyTemplateParser());
+
 	}
 	
 }

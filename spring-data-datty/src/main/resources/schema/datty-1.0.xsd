@@ -39,18 +39,18 @@ Defines a Datty instance based on CacheManager serializer.
         </xsd:documentation>
       </xsd:annotation>
     </xsd:attribute>
-    <xsd:attribute name="cache-manager-ref" type="cacheManagerRef"
+    <xsd:attribute name="datty-manager-ref" type="dattyManagerRef"
       use="optional">
       <xsd:annotation>
         <xsd:documentation><![CDATA[
-The reference to a CacheManager instance. Will default to 'cache-manager'.
+The reference to a DattyManager instance. Will default to 'datty-manager'.
                                         ]]>
         </xsd:documentation>
       </xsd:annotation>
     </xsd:attribute>        
   </xsd:complexType>    
   
-   <xsd:simpleType name="cacheManagerRef" final="union">
+   <xsd:simpleType name="dattyManagerRef" final="union">
     <xsd:annotation>
       <xsd:appinfo>
         <tool:annotation kind="ref">

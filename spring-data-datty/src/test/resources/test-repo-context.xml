@@ -16,7 +16,7 @@
     <context:annotation-config />
     <context:component-scan base-package="io.datty.spring.test.repository" />
 	
-    <bean id="cache-manager" class="io.datty.unit.UnitDattyManager" />
+    <bean id="datty-manager" class="io.datty.unit.UnitDattyManager" />
     
     <datty:datty />
     

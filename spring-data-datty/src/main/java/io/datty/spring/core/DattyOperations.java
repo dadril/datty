@@ -50,7 +50,7 @@ public interface DattyOperations {
 	 * @return not null cache name
 	 */
 	
-	 String getCacheName(Class<?> entityClass);
+	 String getSetName(Class<?> entityClass);
 	
 	/**
 	 * Saves a given entity. Use the returned instance for further operations as the save operation might have changed the

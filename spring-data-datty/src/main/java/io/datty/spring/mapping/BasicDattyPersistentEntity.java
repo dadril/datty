@@ -44,7 +44,7 @@ import io.datty.api.DattyConstants;
 public class BasicDattyPersistentEntity<T> extends BasicPersistentEntity<T, DattyPersistentProperty> implements
 DattyPersistentEntity<T>, ApplicationContextAware {
 
-	private final String cacheName;
+	private final String setName;
 	private final String minorKey;
 	private final boolean tags;
 	private final boolean copy;
@@ -69,14 +69,14 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 
 		if (rawType.isAnnotationPresent(Entity.class)) {
 			Entity entity = rawType.getAnnotation(Entity.class);
-			this.cacheName = expression(entity.cacheName());
+			this.setName = expression(entity.setName());
 			this.minorKey = expression(entity.minorKey());
 			this.tags = entity.tags();
 			this.copy = entity.copy();
 			this.ttlSeconds = entity.ttlSeconds();
 			this.timeoutMillis = entity.timeoutMillis();
 		} else {
-			this.cacheName = rawType.getSimpleName();
+			this.setName = rawType.getSimpleName();
 			this.minorKey = "";
 			this.tags = false;
 			this.copy = false;
@@ -163,8 +163,8 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 	}
 
 	@Override
-	public String getCacheName() {
-		return cacheName;
+	public String getSetName() {
+		return setName;
 	}
 
 	@Override

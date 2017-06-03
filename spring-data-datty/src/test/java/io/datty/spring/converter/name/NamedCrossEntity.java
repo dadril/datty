@@ -25,7 +25,7 @@ import io.datty.spring.mapping.Name;
  *
  */
 
-@Entity(cacheName="TEST_CACHE")
+@Entity(setName="TEST_CACHE")
 public class NamedCrossEntity {
 
 	@Id

@@ -27,12 +27,12 @@ import io.datty.spring.core.DattyId;
 public interface DattyEntityInformation<T> extends EntityInformation<T, DattyId> {
 
 	/**
-	 * Gets cache name of the entity
+	 * Gets set name of the entity
 	 * 
-	 * @return not null cache name
+	 * @return not null set name
 	 */
 	
-	String getCacheName();
+	String getSetName();
 	
 	/**
 	 * Checks if entity has minorKey

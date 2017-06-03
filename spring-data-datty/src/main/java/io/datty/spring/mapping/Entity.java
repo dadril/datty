@@ -37,12 +37,12 @@ import io.datty.api.DattyConstants;
 public @interface Entity {
 
 	/**
-	 * Name of the cache. 
+	 * Name of the set. 
 	 * 
-	 * @return cache name or empty string
+	 * @return set name or empty string
 	 */
 
-	String cacheName() default "";
+	String setName() default "";
 	
 	/**
 	 * Minor Key if defined.

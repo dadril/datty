@@ -25,7 +25,7 @@ import io.datty.spring.mapping.Tag;
  *
  */
 
-@Entity(cacheName="TEST_CACHE", minorKey="def", tags=true)
+@Entity(setName="TEST_CACHE", minorKey="def", tags=true)
 public class TaggedMigratedEntity {
 
 	@Id

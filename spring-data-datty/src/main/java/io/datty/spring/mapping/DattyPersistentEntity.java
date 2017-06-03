@@ -28,12 +28,12 @@ import org.springframework.data.mapping.PersistentEntity;
 public interface DattyPersistentEntity<T> extends PersistentEntity<T, DattyPersistentProperty> {
 
 	/**
-	 * Gets the cache name defined in entity
+	 * Gets the set name defined in entity
 	 * 
-	 * @return not null cache name
+	 * @return not null set name
 	 */
 	
-	String getCacheName();
+	String getSetName();
 	
 	/**
 	 * Using to detect if minor key present in empty definition

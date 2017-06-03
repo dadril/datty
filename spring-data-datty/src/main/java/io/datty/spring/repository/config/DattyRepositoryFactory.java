@@ -21,8 +21,6 @@ import org.springframework.data.repository.core.EntityInformation;
 import org.springframework.data.repository.core.RepositoryInformation;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
-import org.springframework.data.repository.query.QueryLookupStrategy;
-import org.springframework.data.repository.query.QueryLookupStrategy.Key;
 import org.springframework.util.Assert;
 
 import io.datty.spring.core.DattyTemplate;
@@ -57,8 +55,6 @@ public class DattyRepositoryFactory extends RepositoryFactorySupport {
 		return SimpleDattyRepository.class;
 	}
 	
-	
-
 	@Override
 	protected Object getTargetRepository(RepositoryInformation metadata) {
 		

@@ -36,7 +36,7 @@ public class DattyFactoryBean implements FactoryBean<Datty>, InitializingBean {
 	@Override
 	public void afterPropertiesSet() {
 
-		Assert.notNull(dattyManager, "cacheManager property must be set");
+		Assert.notNull(dattyManager, "dattyManager property must be set");
 
 		datty = dattyManager.getDatty();
 
@@ -57,8 +57,8 @@ public class DattyFactoryBean implements FactoryBean<Datty>, InitializingBean {
 		return true;
 	}
 
-	public void setCacheManager(DattyManager dattyManager) {
-		this.dattyManager = dattyManager;
+	public void setManager(DattyManager manager) {
+		this.dattyManager = manager;
 	}
 
 }

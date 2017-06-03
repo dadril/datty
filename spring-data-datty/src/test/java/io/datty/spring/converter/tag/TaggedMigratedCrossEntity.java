@@ -25,7 +25,7 @@ import io.datty.spring.mapping.Tag;
  *
  */
 
-@Entity(cacheName="TEST_CACHE", tags=true)
+@Entity(setName="TEST_CACHE", tags=true)
 public class TaggedMigratedCrossEntity {
 
 	@Id
