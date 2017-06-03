@@ -56,7 +56,7 @@ public interface DattyError {
 	public enum ErrCode {
 		
 		UNKNOWN(1),
-		CACHE_NOT_FOUND(2),
+		SET_NOT_FOUND(2),
 		TIMEOUT(3),
 		CONCURRENT_UPDATE(4),
 		BAD_ARGUMENTS(5),

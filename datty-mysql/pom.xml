@@ -62,7 +62,7 @@
             <properties>
               <property>
                 <name>listener</name>
-                <value>io.datty.mysql.test.MySQLMavenInitializer</value>
+                <value>io.datty.mysql.test.MysqlMavenInitializer</value>
               </property>
             </properties>               
         </configuration>        

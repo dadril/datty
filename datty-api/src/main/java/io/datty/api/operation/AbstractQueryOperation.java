@@ -30,7 +30,7 @@ import io.datty.api.result.QueryResult;
 
 public abstract class AbstractQueryOperation<O extends QueryOperation> implements QueryOperation {
 
-	protected String cacheName;
+	protected String setName;
 
 	protected String superKey;
 
@@ -42,8 +42,8 @@ public abstract class AbstractQueryOperation<O extends QueryOperation> implement
 	
 	protected QueryResult fallback;
 	
-	public AbstractQueryOperation(String cacheName) {
-		this.cacheName = cacheName;
+	public AbstractQueryOperation(String setName) {
+		this.setName = setName;
 	}
 	
 	@Override
@@ -52,8 +52,8 @@ public abstract class AbstractQueryOperation<O extends QueryOperation> implement
 	}
 	
 	@Override
-	public String getCacheName() {
-		return cacheName;
+	public String getSetName() {
+		return setName;
 	}
 
 	@Override

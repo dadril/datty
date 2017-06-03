@@ -32,12 +32,12 @@ public class RemoveOperation extends AbstractOperation<RemoveOperation, RemoveRe
 	private boolean allMinorKeys;
 	private Set<String> minorKeys;
 	
-	public RemoveOperation(String storeName) {
-		super(storeName);
+	public RemoveOperation(String setName) {
+		super(setName);
 	}
 
-	public RemoveOperation(String storeName, String majorKey) {
-		super(storeName, majorKey);
+	public RemoveOperation(String setName, String majorKey) {
+		super(setName, majorKey);
 	}
 
 	public boolean isAllMinorKeys() {

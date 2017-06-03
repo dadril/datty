@@ -25,12 +25,12 @@ package io.datty.api;
 public interface DattyOperation {
 
 	/**
-	 * Gets cache name
+	 * Gets set name
 	 * 
-	 * @return not null cache name
+	 * @return not null set name
 	 */
 	
-	String getCacheName();
+	String getSetName();
 	
 	/**
 	 * Gets super key (cross database routing key) if exists

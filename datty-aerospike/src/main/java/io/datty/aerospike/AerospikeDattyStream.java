@@ -41,18 +41,18 @@ import rx.functions.Func2;
 
 public class AerospikeDattyStream implements DattyStream {
 
-	private final AerospikeCacheManager cacheManager;
+	private final AerospikeDattyManager manager;
 	
-	public AerospikeDattyStream(AerospikeCacheManager cacheManager) {
-		this.cacheManager = cacheManager;
+	public AerospikeDattyStream(AerospikeDattyManager manager) {
+		this.manager = manager;
 	}
 
 	@Override
 	public Observable<ByteBuf> streamOut(DattyKey key) {
 		
-		AerospikeCache cache = cacheManager.getAerospikeCache(key.getCacheName());
+		AerospikeSet cache = manager.getAerospikeSet(key.getSetName());
 		if (cache == null) {
-			return Observable.error(new DattyStreamException(DattyError.ErrCode.CACHE_NOT_FOUND, key.getCacheName(), key));
+			return Observable.error(new DattyStreamException(DattyError.ErrCode.SET_NOT_FOUND, key.getSetName(), key));
 		}
 		
 		String majorKey = key.getMajorKey();
@@ -65,8 +65,8 @@ public class AerospikeDattyStream implements DattyStream {
 		
 		final QueryPolicy queryPolicy = cache.getConfig().getQueryPolicy(false);
 		
-		ChunkEnumeration chunkEnumeration = new ChunkEnumeration(cacheManager.getConfig().getNamespace(), cache.getCacheName(), majorKey);
-		Observable<Record> stream = cacheManager.getClient().streamGet(queryPolicy, chunkEnumeration, binNames, cache.streamExceptionTransformer(key));
+		ChunkEnumeration chunkEnumeration = new ChunkEnumeration(manager.getConfig().getNamespace(), cache.getName(), majorKey);
+		Observable<Record> stream = manager.getClient().streamGet(queryPolicy, chunkEnumeration, binNames, cache.streamExceptionTransformer(key));
 
 		return stream.map(new Func1<Record, ByteBuf>() {
 
@@ -117,9 +117,9 @@ public class AerospikeDattyStream implements DattyStream {
 	@Override
 	public Single<Long> streamIn(final DattyKey key, Observable<ByteBuf> value) {
 
-		final AerospikeCache cache = cacheManager.getAerospikeCache(key.getCacheName());
+		final AerospikeSet cache = manager.getAerospikeSet(key.getSetName());
 		if (cache == null) {
-			return Single.error(new DattyStreamException(DattyError.ErrCode.CACHE_NOT_FOUND, key.getCacheName(), key));
+			return Single.error(new DattyStreamException(DattyError.ErrCode.SET_NOT_FOUND, key.getSetName(), key));
 		}
 		
 		final String majorKey = key.getMajorKey();
@@ -137,7 +137,7 @@ public class AerospikeDattyStream implements DattyStream {
 		
 		writePolicy.recordExistsAction = RecordExistsAction.REPLACE;
 		
-		final ChunkEnumeration chunkEnumeration = new ChunkEnumeration(cacheManager.getConfig().getNamespace(), cache.getCacheName(), majorKey);
+		final ChunkEnumeration chunkEnumeration = new ChunkEnumeration(manager.getConfig().getNamespace(), cache.getName(), majorKey);
 		
 		Observable<Long> stream = value.flatMap(new Func1<ByteBuf, Observable<Long>>() {
 
@@ -145,7 +145,7 @@ public class AerospikeDattyStream implements DattyStream {
 			public Observable<Long> call(ByteBuf buffer) {
 
 				AerospikeBins bins = new AerospikeBins(minorKey, buffer);
-				return cacheManager.getClient().put(writePolicy, chunkEnumeration.nextElement(), bins, cache.streamExceptionTransformer(key)).toObservable();
+				return manager.getClient().put(writePolicy, chunkEnumeration.nextElement(), bins, cache.streamExceptionTransformer(key)).toObservable();
 				
 			}
 			
@@ -157,7 +157,7 @@ public class AerospikeDattyStream implements DattyStream {
 					@Override
 					public Single<Long> call(final Long writtenBytes) {
 
-						return cacheManager.getClient().remove(writePolicy, chunkEnumeration.nextElement(), cache.streamExceptionTransformer(key))
+						return manager.getClient().remove(writePolicy, chunkEnumeration.nextElement(), cache.streamExceptionTransformer(key))
 						.map(new Func1<Boolean, Long>() {
 
 							@Override

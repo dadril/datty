@@ -41,12 +41,12 @@ public class ExistsOperation extends AbstractOperation<ExistsOperation, ExistsRe
 	
 	private Set<String> minorKeys;
 	
-	public ExistsOperation(String storeName) {
-		super(storeName);
+	public ExistsOperation(String setName) {
+		super(setName);
 	}
 
-	public ExistsOperation(String storeName, String majorKey) {
-		super(storeName, majorKey);
+	public ExistsOperation(String setName, String majorKey) {
+		super(setName, majorKey);
 	}
 	
 	public boolean isAnyMinorKey() {
@@ -127,7 +127,7 @@ public class ExistsOperation extends AbstractOperation<ExistsOperation, ExistsRe
 
 	@Override
 	public String toString() {
-		return "ExistsOperation [allMinorKeys=" + allMinorKeys + ", minorKeys=" + minorKeys + ", cacheName=" + cacheName
+		return "ExistsOperation [allMinorKeys=" + allMinorKeys + ", minorKeys=" + minorKeys + ", setName=" + setName
 				+ ", superKey=" + superKey + ", majorKey=" + majorKey + ", timeoutMillis=" + timeoutMillis + "]";
 	}
 

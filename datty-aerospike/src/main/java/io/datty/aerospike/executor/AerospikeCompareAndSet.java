@@ -23,8 +23,8 @@ import com.aerospike.client.policy.RecordExistsAction;
 import com.aerospike.client.policy.WritePolicy;
 
 import io.datty.aerospike.AerospikeBins;
-import io.datty.aerospike.AerospikeCache;
-import io.datty.aerospike.AerospikeCacheManager;
+import io.datty.aerospike.AerospikeSet;
+import io.datty.aerospike.AerospikeDattyManager;
 import io.datty.aerospike.support.AerospikeValueUtil;
 import io.datty.api.DattyError;
 import io.datty.api.DattyRow;
@@ -49,7 +49,7 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 	INSTANCE;
 
 	@Override
-	public Single<CompareAndSetResult> execute(AerospikeCache cache, CompareAndSetOperation operation) {
+	public Single<CompareAndSetResult> execute(AerospikeSet set, CompareAndSetOperation operation) {
 
 		DattyRow row = operation.getRow();
 		
@@ -61,7 +61,7 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 				return Single.just(new CompareAndSetResult(true));
 
 			case REPLACE:
-				return removeRecord(cache, operation);
+				return removeRecord(set, operation);
 
 			default:
 				return Single
@@ -77,13 +77,13 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 
 		case MERGE:
 			if (hasNullBins) {
-				return mergeBins(cache, operation);
+				return mergeBins(set, operation);
 			} else {
-				return putBins(cache, operation);
+				return putBins(set, operation);
 			}
 
 		case REPLACE:
-			return putBins(cache, operation);
+			return putBins(set, operation);
 
 		default:
 			return Single
@@ -107,21 +107,21 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 		return 0;
 	}
 
-	private Single<CompareAndSetResult> mergeBins(final AerospikeCache cache, final CompareAndSetOperation operation) {
+	private Single<CompareAndSetResult> mergeBins(final AerospikeSet set, final CompareAndSetOperation operation) {
 
 		final DattyRow row = operation.getRow();
-		final AerospikeCacheManager cacheManager = cache.getParent();
-		QueryPolicy queryPolicy = cache.getConfig().getQueryPolicy(operation, false);
+		final AerospikeDattyManager manager = set.getParent();
+		QueryPolicy queryPolicy = set.getConfig().getQueryPolicy(operation, false);
 		
-		final WritePolicy writePolicy = cache.getConfig().getWritePolicy(operation, true);
+		final WritePolicy writePolicy = set.getConfig().getWritePolicy(operation, true);
 		writePolicy.recordExistsAction = RecordExistsAction.REPLACE;
 		writePolicy.generation = getGenerationNumber(operation);
 
-		final Key recordKey = new Key(cacheManager.getConfig().getNamespace(), cache.getCacheName(),
+		final Key recordKey = new Key(manager.getConfig().getNamespace(), set.getName(),
 				operation.getMajorKey());
 
-		return cacheManager.getClient()
-				.get(queryPolicy, recordKey, cache.singleExceptionTransformer(operation, false))
+		return manager.getClient()
+				.get(queryPolicy, recordKey, set.singleExceptionTransformer(operation, false))
 
 				.flatMap(new Func1<Record, Single<CompareAndSetResult>>() {
 
@@ -133,7 +133,7 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 						}
 						
 						AerospikeBins mergedBins = new AerospikeBins(mergeMaps(record, row.getValues()));
-						return putBins(cacheManager, cache, writePolicy, recordKey, mergedBins, operation);
+						return putBins(manager, set, writePolicy, recordKey, mergedBins, operation);
 					}
 
 				});
@@ -141,16 +141,16 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 
 	}
 	
-	private Single<CompareAndSetResult> putBins(AerospikeCacheManager cacheManager, AerospikeCache cache, WritePolicy writePolicy, 
+	private Single<CompareAndSetResult> putBins(AerospikeDattyManager manager, AerospikeSet set, WritePolicy writePolicy, 
 			final Key recordKey, final AerospikeBins bins, final CompareAndSetOperation operation) {
 		
 		Single<Long> result;
 		
 		if (!bins.isEmpty()) {
-			result = cacheManager.getClient().put(writePolicy, recordKey, bins, cache.singleExceptionTransformer(operation, true));
+			result = manager.getClient().put(writePolicy, recordKey, bins, set.singleExceptionTransformer(operation, true));
 		}
 		else {
-			result = cacheManager.getClient().remove(writePolicy, recordKey, cache.singleExceptionTransformer(operation, true))
+			result = manager.getClient().remove(writePolicy, recordKey, set.singleExceptionTransformer(operation, true))
 					.map(new Func1<Boolean, Long>() {
 
 						@Override
@@ -199,34 +199,34 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 
 	}
 
-	private Single<CompareAndSetResult> putBins(AerospikeCache cache, CompareAndSetOperation operation) {
+	private Single<CompareAndSetResult> putBins(AerospikeSet set, CompareAndSetOperation operation) {
 
 		final DattyRow row = operation.getRow();
-		AerospikeCacheManager cacheManager = cache.getParent();
+		AerospikeDattyManager manager = set.getParent();
 		
-		WritePolicy writePolicy = cache.getConfig().getWritePolicy(operation, true);
+		WritePolicy writePolicy = set.getConfig().getWritePolicy(operation, true);
 		writePolicy.generation = getGenerationNumber(operation);
 		
-		Key recordKey = new Key(cacheManager.getConfig().getNamespace(), cache.getCacheName(), operation.getMajorKey());
+		Key recordKey = new Key(manager.getConfig().getNamespace(), set.getName(), operation.getMajorKey());
 
-		return putBins(cacheManager, cache, writePolicy, recordKey, new AerospikeBins(row.getValues()), operation);
+		return putBins(manager, set, writePolicy, recordKey, new AerospikeBins(row.getValues()), operation);
 
 	}
 
-	private Single<CompareAndSetResult> removeRecord(AerospikeCache cache, CompareAndSetOperation operation) {
+	private Single<CompareAndSetResult> removeRecord(AerospikeSet set, CompareAndSetOperation operation) {
 
-		AerospikeCacheManager cacheManager = cache.getParent();
+		AerospikeDattyManager cacheManager = set.getParent();
 		
-		WritePolicy writePolicy = cache.getConfig().getWritePolicy(true);
+		WritePolicy writePolicy = set.getConfig().getWritePolicy(true);
 		if (operation.hasTimeoutMillis()) {
 			writePolicy.timeout = operation.getTimeoutMillis();
 		}
 		writePolicy.generation = getGenerationNumber(operation);
 		
-		Key recordKey = new Key(cacheManager.getConfig().getNamespace(), cache.getCacheName(), operation.getMajorKey());
+		Key recordKey = new Key(cacheManager.getConfig().getNamespace(), set.getName(), operation.getMajorKey());
 
 		Single<Boolean> result = cacheManager.getClient().remove(writePolicy, recordKey,
-				cache.singleExceptionTransformer(operation, true));
+				set.singleExceptionTransformer(operation, true));
 
 		return result.map(new Func1<Boolean, CompareAndSetResult>() {
 

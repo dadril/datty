@@ -66,7 +66,7 @@
             <properties>
               <property>
                 <name>listener</name>
-                <value>io.datty.dynamodb.test.DynamoDBMavenInitializer</value>
+                <value>io.datty.dynamodb.test.DynamoMavenInitializer</value>
               </property>
             </properties>               
         </configuration>        

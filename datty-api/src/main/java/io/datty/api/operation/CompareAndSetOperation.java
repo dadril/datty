@@ -34,12 +34,12 @@ public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSe
 	
 	private DattyRow row;
 
-	public CompareAndSetOperation(String cacheName) {
-		super(cacheName);
+	public CompareAndSetOperation(String setName) {
+		super(setName);
 	}
 
-	public CompareAndSetOperation(String cacheName, String majorKey) {
-		super(cacheName, majorKey);
+	public CompareAndSetOperation(String setName, String majorKey) {
+		super(setName, majorKey);
 	}
 
 	public boolean hasVersion() {
@@ -89,7 +89,7 @@ public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSe
 	@Override
 	public String toString() {
 		return "CompareAndSetOperation [oldVersion=" + version + ", row=" + row + ", updatePolicy="
-				+ updatePolicy + ", cacheName=" + cacheName + ", superKey=" + superKey + ", majorKey=" + majorKey
+				+ updatePolicy + ", setName=" + setName + ", superKey=" + superKey + ", majorKey=" + majorKey
 				+ ", timeoutMillis=" + timeoutMillis + "]";
 	}
 	

@@ -9,8 +9,8 @@ package io.datty.api.operation;
 
 public class DeleteOperation extends AbstractQueryOperation<DeleteOperation> {
 
-	public DeleteOperation(String cacheName) {
-		super(cacheName);
+	public DeleteOperation(String setName) {
+		super(setName);
 	}
 	
 	@Override
@@ -20,7 +20,7 @@ public class DeleteOperation extends AbstractQueryOperation<DeleteOperation> {
 
 	@Override
 	public String toString() {
-		return "DeleteOperation [cacheName=" + cacheName + ", superKey=" + superKey + ", timeoutMillis=" + timeoutMillis
+		return "DeleteOperation [setName=" + setName + ", superKey=" + superKey + ", timeoutMillis=" + timeoutMillis
 				+ ", fallback=" + fallback + ", getCode()=" + getCode() + "]";
 	}
 	

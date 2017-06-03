@@ -17,7 +17,7 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
-import io.datty.api.CacheManager;
+import io.datty.api.DattyManager;
 import io.datty.api.Datty;
 
 /**
@@ -29,16 +29,16 @@ import io.datty.api.Datty;
 
 public class DattyFactoryBean implements FactoryBean<Datty>, InitializingBean {
 
-	private CacheManager cacheManager;
+	private DattyManager dattyManager;
 
 	private Datty datty;
 
 	@Override
 	public void afterPropertiesSet() {
 
-		Assert.notNull(cacheManager, "cacheManager property must be set");
+		Assert.notNull(dattyManager, "cacheManager property must be set");
 
-		datty = cacheManager.getDatty();
+		datty = dattyManager.getDatty();
 
 	}
 
@@ -57,8 +57,8 @@ public class DattyFactoryBean implements FactoryBean<Datty>, InitializingBean {
 		return true;
 	}
 
-	public void setCacheManager(CacheManager cacheManager) {
-		this.cacheManager = cacheManager;
+	public void setCacheManager(DattyManager dattyManager) {
+		this.dattyManager = dattyManager;
 	}
 
 }

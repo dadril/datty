@@ -28,12 +28,12 @@ public class PutOperation extends AbstractUpdateOperation<PutOperation, PutResul
 
 	private DattyRow row;
 	
-	public PutOperation(String storeName) {
-		super(storeName);
+	public PutOperation(String setName) {
+		super(setName);
 	}
 
-	public PutOperation(String storeName, String majorKey) {
-		super(storeName);
+	public PutOperation(String setName, String majorKey) {
+		super(setName);
 		setMajorKey(majorKey);
 	}
 
@@ -65,7 +65,7 @@ public class PutOperation extends AbstractUpdateOperation<PutOperation, PutResul
 
 	@Override
 	public String toString() {
-		return "PutOperation [row=" + row + ", updatePolicy=" + updatePolicy + ", cacheName=" + cacheName
+		return "PutOperation [row=" + row + ", updatePolicy=" + updatePolicy + ", setName=" + setName
 				+ ", superKey=" + superKey + ", majorKey=" + majorKey + ", timeoutMillis=" + timeoutMillis + "]";
 	}
 

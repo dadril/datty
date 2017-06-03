@@ -32,12 +32,12 @@ public class GetOperation extends AbstractOperation<GetOperation, GetResult> {
 	private boolean allMinorKeys;
 	private Set<String> minorKeys;
 	
-	public GetOperation(String cacheName) {
-		super(cacheName);
+	public GetOperation(String setName) {
+		super(setName);
 	}
 
-	public GetOperation(String cacheName, String majorKey) {
-		super(cacheName, majorKey);
+	public GetOperation(String setName, String majorKey) {
+		super(setName, majorKey);
 	}
 
 	public boolean isAllMinorKeys() {
@@ -91,7 +91,7 @@ public class GetOperation extends AbstractOperation<GetOperation, GetResult> {
 
 	@Override
 	public String toString() {
-		return "GetOperation [minorKeys=" + minorKeys + ", allMinorKeys=" + allMinorKeys + ", cacheName=" + cacheName
+		return "GetOperation [minorKeys=" + minorKeys + ", allMinorKeys=" + allMinorKeys + ", setName=" + setName
 				+ ", superKey=" + superKey + ", majorKey=" + majorKey + ", timeoutMillis=" + timeoutMillis + "]";
 	}
 

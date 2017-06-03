@@ -13,7 +13,7 @@
  */
 package io.datty.aerospike.executor;
 
-import io.datty.aerospike.AerospikeCache;
+import io.datty.aerospike.AerospikeSet;
 import io.datty.api.operation.TypedOperation;
 import io.datty.api.result.TypedResult;
 import rx.Single;
@@ -32,10 +32,11 @@ public interface AerospikeOperation<O extends TypedOperation<O, R>, R extends Ty
 	/**
 	 * Executes operation
 	 * 
+	 * @param set - datty set
 	 * @param operation - datty operation
 	 * @return result
 	 */
 	
-	Single<R> execute(AerospikeCache cache, O operation);
+	Single<R> execute(AerospikeSet set, O operation);
 	
 }

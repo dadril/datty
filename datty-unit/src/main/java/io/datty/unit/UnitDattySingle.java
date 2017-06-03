@@ -34,24 +34,24 @@ import rx.functions.Func1;
 
 public final class UnitDattySingle implements DattySingle {
 
-	private final ConcurrentMap<String, UnitCache> cacheMap;
+	private final ConcurrentMap<String, UnitSet> setMap;
 	
-	public UnitDattySingle(ConcurrentMap<String, UnitCache> cacheMap) {
-		this.cacheMap = cacheMap;
+	public UnitDattySingle(ConcurrentMap<String, UnitSet> setMap) {
+		this.setMap = setMap;
 	}
 	
 	@Override
 	public <O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(O operation) {
 		
-		String cacheName = operation.getCacheName();
-		if (cacheName == null) {
-			return Single.error(new DattyOperationException(ErrCode.BAD_ARGUMENTS, "empty cacheName", operation));
+		String setName = operation.getSetName();
+		if (setName == null) {
+			return Single.error(new DattyOperationException(ErrCode.BAD_ARGUMENTS, "empty setName", operation));
 		}
 		
-		UnitCache cache = cacheMap.get(cacheName);
+		UnitSet set = setMap.get(setName);
 		
-		if (cache == null) {
-			return Single.error(new DattyOperationException(ErrCode.CACHE_NOT_FOUND, cacheName, operation));
+		if (set == null) {
+			return Single.error(new DattyOperationException(ErrCode.SET_NOT_FOUND, setName, operation));
 		}
 		
 		String majorKey = operation.getMajorKey();
@@ -65,7 +65,7 @@ public final class UnitDattySingle implements DattySingle {
 			return Single.error(new DattyOperationException(ErrCode.UNKNOWN_OPERATION, "unknown operation: " + operation.getCode().name(), operation));
 		}
 		
-		return executor.execute(cache.getRecordMap(), operation);
+		return executor.execute(set.getRecordMap(), operation);
 
 	}
 

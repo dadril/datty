@@ -29,12 +29,12 @@ public class ExecuteOperation extends AbstractUpdateOperation<ExecuteOperation, 
 	private String functionName;
 	private ByteBuf arguments;
 	
-	public ExecuteOperation(String storeName) {
-		super(storeName);
+	public ExecuteOperation(String setName) {
+		super(setName);
 	}
 
-	public ExecuteOperation(String storeName, String majorKey) {
-		super(storeName, majorKey);
+	public ExecuteOperation(String setName, String majorKey) {
+		super(setName, majorKey);
 	}
 
 	public String getPackageName() {
@@ -72,7 +72,7 @@ public class ExecuteOperation extends AbstractUpdateOperation<ExecuteOperation, 
 	@Override
 	public String toString() {
 		return "ExecuteOperation [packageName=" + packageName + ", functionName=" + functionName + ", arguments="
-				+ arguments + ", cacheName=" + cacheName + ", superKey=" + superKey + ", majorKey=" + majorKey
+				+ arguments + ", setName=" + setName + ", superKey=" + superKey + ", majorKey=" + majorKey
 				+ ", timeoutMillis=" + timeoutMillis + "]";
 	}	
 	

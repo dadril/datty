@@ -38,44 +38,44 @@ import rx.Observable;
 
 public class UnitDattyQuery implements DattyQuery {
 
-	private final ConcurrentMap<String, UnitCache> cacheMap;
+	private final ConcurrentMap<String, UnitSet> setMap;
 
-	public UnitDattyQuery(ConcurrentMap<String, UnitCache> cacheMap) {
-		this.cacheMap = cacheMap;
+	public UnitDattyQuery(ConcurrentMap<String, UnitSet> setMap) {
+		this.setMap = setMap;
 	}
 
 	@Override
 	public Observable<QueryResult> executeQuery(QueryOperation operation) {
 
-		String cacheName = operation.getCacheName();
-		if (cacheName == null) {
-			return Observable.error(new DattyOperationException(ErrCode.BAD_ARGUMENTS, "empty cacheName", operation));
+		String setName = operation.getSetName();
+		if (setName == null) {
+			return Observable.error(new DattyOperationException(ErrCode.BAD_ARGUMENTS, "empty setName", operation));
 		}
 
-		UnitCache cache = cacheMap.get(operation.getCacheName());
+		UnitSet set = setMap.get(operation.getSetName());
 
-		if (cache == null) {
-			return Observable.error(new DattyOperationException(ErrCode.CACHE_NOT_FOUND, cacheName, operation));
+		if (set == null) {
+			return Observable.error(new DattyOperationException(ErrCode.SET_NOT_FOUND, setName, operation));
 		}
 
 		if (operation instanceof CountOperation) {
-			return doCount(cache, (CountOperation) operation);
+			return doCount(set, (CountOperation) operation);
 		}
 		if (operation instanceof ScanOperation) {
-			return doScan(cache, (ScanOperation) operation);
+			return doScan(set, (ScanOperation) operation);
 		}
 		if (operation instanceof DeleteOperation) {
-			return doDelete(cache, (DeleteOperation) operation);
+			return doDelete(set, (DeleteOperation) operation);
 		}
 		else {
-			return Observable.error(new DattyOperationException(ErrCode.UNKNOWN_OPERATION, cacheName, operation));
+			return Observable.error(new DattyOperationException(ErrCode.UNKNOWN_OPERATION, setName, operation));
 		}
 
 	}
 
-	protected Observable<QueryResult> doScan(UnitCache cache, ScanOperation operation) {
+	protected Observable<QueryResult> doScan(UnitSet set, ScanOperation operation) {
 
-		ConcurrentMap<String, UnitRecord> recordMap = cache.getRecordMap();
+		ConcurrentMap<String, UnitRecord> recordMap = set.getRecordMap();
 		List<QueryResult> list = new ArrayList<>(recordMap.size());
 		
 		for (Map.Entry<String, UnitRecord> entry : recordMap.entrySet()) {
@@ -111,34 +111,34 @@ public class UnitDattyQuery implements DattyQuery {
 		
 	}
 	
-	protected Observable<QueryResult> doCount(UnitCache cache, CountOperation operation) {
+	protected Observable<QueryResult> doCount(UnitSet set, CountOperation operation) {
 
 		QueryResult result = new QueryResult();
-		result.setCount(cache.getRecordMap().size());
+		result.setCount(set.getRecordMap().size());
 
 		return Observable.just(result);
 	}
 	
-	protected Observable<QueryResult> doDelete(UnitCache cache, DeleteOperation operation) {
+	protected Observable<QueryResult> doDelete(UnitSet set, DeleteOperation operation) {
 
 		QueryResult result = new QueryResult();
 		
 		if (operation.isAllMinorKeys()) {
-			result.setCount(cache.getRecordMap().size());
-			cache.getRecordMap().clear();
+			result.setCount(set.getRecordMap().size());
+			set.getRecordMap().clear();
 		}
 		else if (!operation.getMinorKeys().isEmpty()) {
 			int count = 0;
-			Map<String, UnitRecord> recordMap = new HashMap<>(cache.getRecordMap());
+			Map<String, UnitRecord> recordMap = new HashMap<>(set.getRecordMap());
 			for (Map.Entry<String, UnitRecord> entry : recordMap.entrySet()) {
 				UnitRecord record = entry.getValue();
 				UnitRecord newRecord = new UnitRecord(record, operation.getMinorKeys());
 				if (newRecord.isEmpty()) {
-					cache.getRecordMap().remove(entry.getKey());
+					set.getRecordMap().remove(entry.getKey());
 					count++;
 				}
 				else if (newRecord.columns() != record.columns()) {
-					cache.getRecordMap().put(entry.getKey(), newRecord);
+					set.getRecordMap().put(entry.getKey(), newRecord);
 					count++;
 				}
 			}

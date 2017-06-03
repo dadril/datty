@@ -35,18 +35,18 @@ import rx.functions.Func2;
 
 public class UnitDattyStream implements DattyStream {
 
-	private final ConcurrentMap<String, UnitCache> cacheMap;
+	private final ConcurrentMap<String, UnitSet> setMap;
 	
-	public UnitDattyStream(ConcurrentMap<String, UnitCache> cacheMap) {
-		this.cacheMap = cacheMap;
+	public UnitDattyStream(ConcurrentMap<String, UnitSet> setMap) {
+		this.setMap = setMap;
 	}
 
 	@Override
 	public Observable<ByteBuf> streamOut(DattyKey key) {
 		
-		UnitCache cache = cacheMap.get(key.getCacheName());
-		if (cache == null) {
-			return Observable.error(new DattyStreamException(DattyError.ErrCode.CACHE_NOT_FOUND, key));
+		UnitSet set = setMap.get(key.getSetName());
+		if (set == null) {
+			return Observable.error(new DattyStreamException(DattyError.ErrCode.SET_NOT_FOUND, key));
 		}
 		
 		String majorKey = key.getMajorKey();
@@ -56,7 +56,7 @@ public class UnitDattyStream implements DattyStream {
 			return Observable.error(new DattyStreamException(DattyError.ErrCode.BAD_ARGUMENTS, key));
 		}
 		
-		UnitRecord record = cache.getRecordMap().get(majorKey);
+		UnitRecord record = set.getRecordMap().get(majorKey);
 		if (record == null) {
 			return Observable.empty();
 		}
@@ -73,9 +73,9 @@ public class UnitDattyStream implements DattyStream {
 	@Override
 	public Single<Long> streamIn(DattyKey key, Observable<ByteBuf> value) {
 		
-		UnitCache cache = cacheMap.get(key.getCacheName());
-		if (cache == null) {
-			return Single.error(new DattyStreamException(DattyError.ErrCode.CACHE_NOT_FOUND, key));
+		UnitSet set = setMap.get(key.getSetName());
+		if (set == null) {
+			return Single.error(new DattyStreamException(DattyError.ErrCode.SET_NOT_FOUND, key));
 		}
 		
 		String majorKey = key.getMajorKey();
@@ -85,11 +85,11 @@ public class UnitDattyStream implements DattyStream {
 			return Single.error(new DattyStreamException(DattyError.ErrCode.BAD_ARGUMENTS, key));
 		}
 				
-		UnitRecord record = cache.getRecordMap().get(majorKey);
+		UnitRecord record = set.getRecordMap().get(majorKey);
 		if (record == null) {
 			
 			record = new UnitRecord(minorKey, new UnitValue());
-			UnitRecord c = cache.getRecordMap().putIfAbsent(majorKey, record);
+			UnitRecord c = set.getRecordMap().putIfAbsent(majorKey, record);
 			if (c != null) {
 				record = c;
 			}
@@ -98,7 +98,7 @@ public class UnitDattyStream implements DattyStream {
 		if (!record.hasColumn(minorKey)) {
 			
 			UnitRecord newRecord = new UnitRecord(record, minorKey, new UnitValue(), UpdatePolicy.MERGE);
-			if (!cache.getRecordMap().replace(majorKey, record, newRecord)) {
+			if (!set.getRecordMap().replace(majorKey, record, newRecord)) {
 				return Single.error(new DattyStreamException(DattyError.ErrCode.CONCURRENT_UPDATE, key));
 			}
 			

@@ -54,7 +54,7 @@ The reference to a CacheManager instance. Will default to 'cache-manager'.
     <xsd:annotation>
       <xsd:appinfo>
         <tool:annotation kind="ref">
-          <tool:assignable-to type="io.datty.api.CacheManager" />
+          <tool:assignable-to type="io.datty.api.DattyManager" />
         </tool:annotation>
       </xsd:appinfo>
     </xsd:annotation>

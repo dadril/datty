@@ -30,12 +30,12 @@ public abstract class AbstractUpdateOperation<O extends TypedOperation<O, R>, R 
 	protected int ttlSeconds = DattyConstants.UNSET_TTL;
 	protected UpdatePolicy updatePolicy = UpdatePolicy.MERGE;
 	
-	public AbstractUpdateOperation(String cacheName) {
-		super(cacheName);
+	public AbstractUpdateOperation(String setName) {
+		super(setName);
 	}
 	
-	public AbstractUpdateOperation(String cacheName, String majorKey) {
-		super(cacheName, majorKey);
+	public AbstractUpdateOperation(String setName, String majorKey) {
+		super(setName, majorKey);
 	}
 
 	@Override

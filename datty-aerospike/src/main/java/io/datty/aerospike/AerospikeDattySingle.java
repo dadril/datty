@@ -32,20 +32,24 @@ import rx.functions.Func1;
 
 public class AerospikeDattySingle implements DattySingle {
 
-	private final AerospikeCacheManager cacheManager;
+	private final AerospikeDattyManager manager;
 	
-	public AerospikeDattySingle(AerospikeCacheManager cacheManager) {
-		this.cacheManager = cacheManager;
+	public AerospikeDattySingle(AerospikeDattyManager manager) {
+		this.manager = manager;
 	}
 	
 	@Override
 	public <O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(O operation) {
 
-		String cacheName = operation.getCacheName();
-		AerospikeCache cache = cacheManager.getAerospikeCache(cacheName);
+		String setName = operation.getSetName();
+		if (setName == null) {
+			return Single.error(new DattyOperationException(ErrCode.BAD_ARGUMENTS, "empty setName", operation));
+		}
 		
-		if (cache == null) {
-			return Single.error(new DattyOperationException(ErrCode.CACHE_NOT_FOUND, cacheName, operation));
+		AerospikeSet set = manager.getAerospikeSet(setName);
+		
+		if (set == null) {
+			return Single.error(new DattyOperationException(ErrCode.SET_NOT_FOUND, setName, operation));
 		}
 		
 		String majorKey = operation.getMajorKey();
@@ -59,7 +63,7 @@ public class AerospikeDattySingle implements DattySingle {
 			return Single.error(new DattyOperationException(ErrCode.UNKNOWN_OPERATION, "unknown operation: " + operation.getCode().name(), operation));
 		}
 		
-		return aerospikeOperation.execute(cache, operation);
+		return aerospikeOperation.execute(set, operation);
 		
 	}
 	

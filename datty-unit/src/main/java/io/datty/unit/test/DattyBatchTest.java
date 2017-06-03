@@ -40,7 +40,7 @@ public class DattyBatchTest extends AbstractDattyUnitTest {
 	@Test
 	public void testEmpty() {
 		
-		List<DattyResult> result = cacheManager.getDatty().executeBatch(Collections.<DattyOperation>emptyList()).toBlocking().value();
+		List<DattyResult> result = dattyManager.getDatty().executeBatch(Collections.<DattyOperation>emptyList()).toBlocking().value();
 		
 		Assert.assertTrue(result.isEmpty());
 		
@@ -52,9 +52,9 @@ public class DattyBatchTest extends AbstractDattyUnitTest {
 		String majorKey = UUID.randomUUID().toString();
 		
 		List<DattyOperation> batch = new ArrayList<DattyOperation>();
-		batch.add(new GetOperation(CACHE_NAME, majorKey).allMinorKeys());
+		batch.add(new GetOperation(SET_NAME, majorKey).allMinorKeys());
 		
-		List<DattyResult> results = cacheManager.getDatty().executeBatch(batch).toBlocking().value();
+		List<DattyResult> results = dattyManager.getDatty().executeBatch(batch).toBlocking().value();
 		
 		Assert.assertFalse(results.isEmpty());
 		Assert.assertEquals(1, results.size());
@@ -76,10 +76,10 @@ public class DattyBatchTest extends AbstractDattyUnitTest {
 		 */
 		
 		List<DattyOperation> batch = new ArrayList<DattyOperation>();
-		batch.add(new PutOperation(CACHE_NAME, majorKey).addValue(minorKey, value()));
-		batch.add(new PutOperation(CACHE_NAME, majorKeyOther).addValue(minorKey, value()));
+		batch.add(new PutOperation(SET_NAME, majorKey).addValue(minorKey, value()));
+		batch.add(new PutOperation(SET_NAME, majorKeyOther).addValue(minorKey, value()));
 		
-		List<DattyResult> results = cacheManager.getDatty().executeBatch(batch).toBlocking().value();
+		List<DattyResult> results = dattyManager.getDatty().executeBatch(batch).toBlocking().value();
 		
 		Assert.assertFalse(results.isEmpty());
 		Assert.assertEquals(2, results.size());
@@ -95,10 +95,10 @@ public class DattyBatchTest extends AbstractDattyUnitTest {
 		 */
 		
 		batch = new ArrayList<DattyOperation>();
-		batch.add(new GetOperation(CACHE_NAME, majorKey).addMinorKey(minorKey));
-		batch.add(new GetOperation(CACHE_NAME, majorKeyOther).addMinorKey(minorKey));
+		batch.add(new GetOperation(SET_NAME, majorKey).addMinorKey(minorKey));
+		batch.add(new GetOperation(SET_NAME, majorKeyOther).addMinorKey(minorKey));
 		
-		results = cacheManager.getDatty().executeBatch(batch).toBlocking().value();
+		results = dattyManager.getDatty().executeBatch(batch).toBlocking().value();
 		
 		Assert.assertFalse(results.isEmpty());
 		Assert.assertEquals(2, results.size());

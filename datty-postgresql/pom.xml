@@ -62,7 +62,7 @@
             <properties>
               <property>
                 <name>listener</name>
-                <value>io.datty.postgresql.test.PostgreSQLMavenInitializer</value>
+                <value>io.datty.postgresql.test.PostgresqlMavenInitializer</value>
               </property>
             </properties>               
         </configuration>        

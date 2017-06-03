@@ -43,7 +43,7 @@ public class DattySequenceTest extends AbstractDattyUnitTest {
 		
 		Observable<DattyOperation> input = Observable.empty();
 		
-		Iterable<DattyResult> result = cacheManager.getDatty().executeSequence(input).toBlocking().toIterable();
+		Iterable<DattyResult> result = dattyManager.getDatty().executeSequence(input).toBlocking().toIterable();
 		
 		List<DattyResult> list = Lists.newArrayList(result);
 		
@@ -56,11 +56,11 @@ public class DattySequenceTest extends AbstractDattyUnitTest {
 		
 		String majorKey = UUID.randomUUID().toString();
 		
-		DattyOperation getOp = new GetOperation(CACHE_NAME, majorKey).allMinorKeys();
+		DattyOperation getOp = new GetOperation(SET_NAME, majorKey).allMinorKeys();
 		
 		Observable<DattyOperation> input = Observable.just(getOp);
 		
-		Iterable<DattyResult> results = cacheManager.getDatty().executeSequence(input).toBlocking().toIterable();
+		Iterable<DattyResult> results = dattyManager.getDatty().executeSequence(input).toBlocking().toIterable();
 		List<DattyResult> list = Lists.newArrayList(results);
 		
 		Assert.assertFalse(list.isEmpty());
@@ -82,12 +82,12 @@ public class DattySequenceTest extends AbstractDattyUnitTest {
 		 * Put
 		 */
 		
-		DattyOperation put1 = new PutOperation(CACHE_NAME, majorKey).addValue(minorKey, value());
-		DattyOperation put2 = new PutOperation(CACHE_NAME, majorKeyOther).addValue(minorKey, value());
+		DattyOperation put1 = new PutOperation(SET_NAME, majorKey).addValue(minorKey, value());
+		DattyOperation put2 = new PutOperation(SET_NAME, majorKeyOther).addValue(minorKey, value());
 		
 		Observable<DattyOperation> input = Observable.just(put1, put2);
 		
-		Iterable<DattyResult> iterable = cacheManager.getDatty().executeSequence(input).toBlocking().toIterable();
+		Iterable<DattyResult> iterable = dattyManager.getDatty().executeSequence(input).toBlocking().toIterable();
 		List<DattyResult> results = Lists.newArrayList(iterable);
 		
 		Assert.assertFalse(results.isEmpty());
@@ -103,12 +103,12 @@ public class DattySequenceTest extends AbstractDattyUnitTest {
 		 * Get
 		 */
 		
-		DattyOperation get1 = new GetOperation(CACHE_NAME, majorKey).addMinorKey(minorKey);
-		DattyOperation get2 = new GetOperation(CACHE_NAME, majorKeyOther).addMinorKey(minorKey);
+		DattyOperation get1 = new GetOperation(SET_NAME, majorKey).addMinorKey(minorKey);
+		DattyOperation get2 = new GetOperation(SET_NAME, majorKeyOther).addMinorKey(minorKey);
 		
 		input = Observable.just(get1, get2);
 		
-		iterable = cacheManager.getDatty().executeSequence(input).toBlocking().toIterable();
+		iterable = dattyManager.getDatty().executeSequence(input).toBlocking().toIterable();
 		results = Lists.newArrayList(iterable);
 		
 		Assert.assertFalse(results.isEmpty());

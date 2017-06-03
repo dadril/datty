@@ -22,8 +22,8 @@ package io.datty.api.operation;
 
 public class ScanOperation extends AbstractQueryOperation<ScanOperation> {
 
-	public ScanOperation(String cacheName) {
-		super(cacheName);
+	public ScanOperation(String setName) {
+		super(setName);
 	}
 	
 	@Override
@@ -33,7 +33,7 @@ public class ScanOperation extends AbstractQueryOperation<ScanOperation> {
 
 	@Override
 	public String toString() {
-		return "ScanOperation [cacheName=" + cacheName + ", superKey=" + superKey + ", timeoutMillis=" + timeoutMillis
+		return "ScanOperation [setName=" + setName + ", superKey=" + superKey + ", timeoutMillis=" + timeoutMillis
 				+ ", fallback=" + fallback + ", getCode()=" + getCode() + "]";
 	}
 

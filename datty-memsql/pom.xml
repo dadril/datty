@@ -62,7 +62,7 @@
             <properties>
               <property>
                 <name>listener</name>
-                <value>io.datty.memsql.test.MemSQLMavenInitializer</value>
+                <value>io.datty.memsql.test.MemsqlMavenInitializer</value>
               </property>
             </properties>               
         </configuration>        

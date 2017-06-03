@@ -9,8 +9,8 @@ package io.datty.api.operation;
 
 public class CountOperation extends AbstractQueryOperation<CountOperation> {
 
-	public CountOperation(String cacheName) {
-		super(cacheName);
+	public CountOperation(String setName) {
+		super(setName);
 	}
 	
 	@Override
@@ -20,7 +20,7 @@ public class CountOperation extends AbstractQueryOperation<CountOperation> {
 
 	@Override
 	public String toString() {
-		return "CountOperation [cacheName=" + cacheName + ", superKey=" + superKey + ", timeoutMillis=" + timeoutMillis
+		return "CountOperation [setName=" + setName + ", superKey=" + superKey + ", timeoutMillis=" + timeoutMillis
 				+ ", fallback=" + fallback + ", getCode()=" + getCode() + "]";
 	}
 	

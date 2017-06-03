@@ -24,7 +24,7 @@ package io.datty.api;
 
 public final class DattyKey {
 
-	private String cacheName;
+	private String setName;
 	
 	private String superKey;
 
@@ -37,36 +37,36 @@ public final class DattyKey {
 	public DattyKey() {
 	}
 	
-	public DattyKey(String cacheName) {
+	public DattyKey(String setName) {
 		
-		if (cacheName == null) {
-			throw new IllegalArgumentException("empty cache name");
+		if (setName == null) {
+			throw new IllegalArgumentException("empty set name");
 		}
 		
-		this.cacheName = cacheName;
+		this.setName = setName;
 	}
 
-	public DattyKey(String cacheName, String majorKey) {
+	public DattyKey(String setName, String majorKey) {
 		
-		if (cacheName == null) {
-			throw new IllegalArgumentException("empty cache name");
+		if (setName == null) {
+			throw new IllegalArgumentException("empty set name");
 		}
 		
-		this.cacheName = cacheName;
+		this.setName = setName;
 		this.majorKey = majorKey;
 	}
 
-	public String getCacheName() {
-		return cacheName;
+	public String getSetName() {
+		return setName;
 	}
 
-	public DattyKey setCacheName(String cacheName) {
+	public DattyKey setSetName(String setName) {
 		
-		if (cacheName == null) {
-			throw new IllegalArgumentException("empty cache name");
+		if (setName == null) {
+			throw new IllegalArgumentException("empty set name");
 		}
 		
-		this.cacheName = cacheName;
+		this.setName = setName;
 		return this;
 	}
 
@@ -119,7 +119,7 @@ public final class DattyKey {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((cacheName == null) ? 0 : cacheName.hashCode());
+		result = prime * result + ((setName == null) ? 0 : setName.hashCode());
 		result = prime * result + ((majorKey == null) ? 0 : majorKey.hashCode());
 		result = prime * result + ((minorKey == null) ? 0 : minorKey.hashCode());
 		result = prime * result + ((superKey == null) ? 0 : superKey.hashCode());
@@ -135,10 +135,10 @@ public final class DattyKey {
 		if (getClass() != obj.getClass())
 			return false;
 		DattyKey other = (DattyKey) obj;
-		if (cacheName == null) {
-			if (other.cacheName != null)
+		if (setName == null) {
+			if (other.setName != null)
 				return false;
-		} else if (!cacheName.equals(other.cacheName))
+		} else if (!setName.equals(other.setName))
 			return false;
 		if (majorKey == null) {
 			if (other.majorKey != null)
@@ -160,7 +160,7 @@ public final class DattyKey {
 
 	@Override
 	public String toString() {
-		return "DattyKey [cacheName=" + cacheName + ", superKey=" + superKey + ", majorKey=" + majorKey + ", minorKey="
+		return "DattyKey [setName=" + setName + ", superKey=" + superKey + ", majorKey=" + majorKey + ", minorKey="
 				+ minorKey + "]";
 	}
 	

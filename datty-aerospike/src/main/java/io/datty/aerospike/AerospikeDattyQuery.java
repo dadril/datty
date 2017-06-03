@@ -28,10 +28,10 @@ import rx.Observable;
 
 public class AerospikeDattyQuery implements DattyQuery {
 
-	private final AerospikeCacheManager cacheManager;
+	private final AerospikeDattyManager manager;
 	
-	public AerospikeDattyQuery(AerospikeCacheManager cacheManager) {
-		this.cacheManager = cacheManager;
+	public AerospikeDattyQuery(AerospikeDattyManager manager) {
+		this.manager = manager;
 	}
 	
 	@Override

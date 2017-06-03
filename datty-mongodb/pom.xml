@@ -62,7 +62,7 @@
             <properties>
               <property>
                 <name>listener</name>
-                <value>io.datty.mongodb.test.MongoDBMavenInitializer</value>
+                <value>io.datty.mongodb.test.MongoMavenInitializer</value>
               </property>
             </properties>               
         </configuration>        

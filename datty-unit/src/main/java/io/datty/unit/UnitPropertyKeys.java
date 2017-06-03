@@ -26,7 +26,7 @@ public final class UnitPropertyKeys {
 	}
 
 	/**
-	 * CacheManager constants
+	 * DattyManager constants
 	 */
 	
 	public static final String NAME = "name";

@@ -30,7 +30,7 @@ public abstract class AbstractOperation<O extends TypedOperation<O, R>, R extend
 
 	protected DattySingle datty;
 	
-	protected String cacheName;
+	protected String setName;
 
 	protected String superKey;
 
@@ -42,18 +42,18 @@ public abstract class AbstractOperation<O extends TypedOperation<O, R>, R extend
 	
 	protected Object upstreamContext;
 	
-	public AbstractOperation(String cacheName) {
-		this.cacheName = cacheName;
+	public AbstractOperation(String setName) {
+		this.setName = setName;
 	}
 	
-	public AbstractOperation(String cacheName, String majorKey) {
-		this.cacheName = cacheName;
+	public AbstractOperation(String setName, String majorKey) {
+		this.setName = setName;
 		this.majorKey = majorKey;
 	}
 
 	@Override
-	public String getCacheName() {
-		return cacheName;
+	public String getSetName() {
+		return setName;
 	}
 
 	@Override

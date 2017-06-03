@@ -23,8 +23,8 @@ import com.aerospike.client.policy.RecordExistsAction;
 import com.aerospike.client.policy.WritePolicy;
 
 import io.datty.aerospike.AerospikeBins;
-import io.datty.aerospike.AerospikeCache;
-import io.datty.aerospike.AerospikeCacheManager;
+import io.datty.aerospike.AerospikeSet;
+import io.datty.aerospike.AerospikeDattyManager;
 import io.datty.aerospike.support.AerospikeValueUtil;
 import io.datty.api.DattyError;
 import io.datty.api.DattyRow;
@@ -47,7 +47,7 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 	INSTANCE;
 	
 	@Override
-	public Single<PutResult> execute(AerospikeCache cache, PutOperation operation) {
+	public Single<PutResult> execute(AerospikeSet set, PutOperation operation) {
 
 		DattyRow row = operation.getRow();
 		
@@ -59,7 +59,7 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 				return Single.just(new PutResult());
 				
 			case REPLACE:
-				return removeRecord(cache, operation);
+				return removeRecord(set, operation);
 				
 			default:
 				return Single.error(new DattyOperationException(DattyError.ErrCode.BAD_ARGUMENTS, "unknown updatePolicy", operation));
@@ -74,14 +74,14 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 		
 			case MERGE:
 				if (hasNullBins) {
-					return mergeBins(cache, operation);
+					return mergeBins(set, operation);
 				}
 				else {
-					return putBins(cache, operation);
+					return putBins(set, operation);
 				}
 				
 			case REPLACE:
-				return putBins(cache, operation);
+				return putBins(set, operation);
 				
 			default:
 				return Single.error(new DattyOperationException(DattyError.ErrCode.BAD_ARGUMENTS, "unknown updatePolicy", operation));
@@ -90,41 +90,41 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 		
 	}
 		
-	private Single<PutResult> mergeBins(final AerospikeCache cache, final PutOperation operation) {
+	private Single<PutResult> mergeBins(final AerospikeSet set, final PutOperation operation) {
 		
 		final DattyRow row = operation.getRow();
-		final AerospikeCacheManager cacheManager = cache.getParent();
-		QueryPolicy queryPolicy = cache.getConfig().getQueryPolicy(operation, false);
+		final AerospikeDattyManager manager = set.getParent();
+		QueryPolicy queryPolicy = set.getConfig().getQueryPolicy(operation, false);
 
-		final WritePolicy writePolicy = cache.getConfig().getWritePolicy(operation, true);
+		final WritePolicy writePolicy = set.getConfig().getWritePolicy(operation, true);
 		writePolicy.recordExistsAction = RecordExistsAction.REPLACE;
 		
-		final Key recordKey = new Key(cacheManager.getConfig().getNamespace(), cache.getCacheName(), operation.getMajorKey());
+		final Key recordKey = new Key(manager.getConfig().getNamespace(), set.getName(), operation.getMajorKey());
 		
 
-		return cacheManager.getClient().get(queryPolicy, recordKey, cache.singleExceptionTransformer(operation, false))
+		return manager.getClient().get(queryPolicy, recordKey, set.singleExceptionTransformer(operation, false))
 		
 		.flatMap(new Func1<Record, Single<PutResult>>() {
 
 			@Override
 			public Single<PutResult> call(Record record) {
 				AerospikeBins mergedBins = new AerospikeBins(mergeMaps(record, row.getValues()));
-				return putBins(cacheManager, cache, writePolicy, recordKey, mergedBins, operation);
+				return putBins(manager, set, writePolicy, recordKey, mergedBins, operation);
 			}
 			
 		});
 		
 	}
 	
-	private Single<PutResult> putBins(AerospikeCacheManager cacheManager, AerospikeCache cache, WritePolicy writePolicy, final Key recordKey, final AerospikeBins bins, final PutOperation operation) {
+	private Single<PutResult> putBins(AerospikeDattyManager manager, AerospikeSet set, WritePolicy writePolicy, final Key recordKey, final AerospikeBins bins, final PutOperation operation) {
 		
 		Single<Long> result;
 		
 		if (!bins.isEmpty()) {
-			result = cacheManager.getClient().put(writePolicy, recordKey, bins, cache.singleExceptionTransformer(operation, false));
+			result = manager.getClient().put(writePolicy, recordKey, bins, set.singleExceptionTransformer(operation, false));
 		}
 		else {
-			result = cacheManager.getClient().remove(writePolicy, recordKey, cache.singleExceptionTransformer(operation, false))
+			result = manager.getClient().remove(writePolicy, recordKey, set.singleExceptionTransformer(operation, false))
 					.map(new Func1<Boolean, Long>() {
 
 						@Override
@@ -174,27 +174,27 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 		
 	}
 	
-	private Single<PutResult> putBins(AerospikeCache cache, PutOperation operation) {
+	private Single<PutResult> putBins(AerospikeSet set, PutOperation operation) {
 		
 		final DattyRow row = operation.getRow();
-		AerospikeCacheManager cacheManager = cache.getParent();
-		WritePolicy writePolicy = cache.getConfig().getWritePolicy(operation, false);
-		Key recordKey = new Key(cacheManager.getConfig().getNamespace(), cache.getCacheName(), operation.getMajorKey());
+		AerospikeDattyManager manager = set.getParent();
+		WritePolicy writePolicy = set.getConfig().getWritePolicy(operation, false);
+		Key recordKey = new Key(manager.getConfig().getNamespace(), set.getName(), operation.getMajorKey());
 		
-		return putBins(cacheManager, cache, writePolicy, recordKey, new AerospikeBins(row.getValues()), operation);
+		return putBins(manager, set, writePolicy, recordKey, new AerospikeBins(row.getValues()), operation);
 		
 	}
 	
-	private Single<PutResult> removeRecord(AerospikeCache cache, PutOperation operation) {
+	private Single<PutResult> removeRecord(AerospikeSet set, PutOperation operation) {
 		
-		AerospikeCacheManager cacheManager = cache.getParent();
-		WritePolicy writePolicy = cache.getConfig().getWritePolicy(operation.hasTimeoutMillis());
+		AerospikeDattyManager manager = set.getParent();
+		WritePolicy writePolicy = set.getConfig().getWritePolicy(operation.hasTimeoutMillis());
 		if (operation.hasTimeoutMillis()) {
 			writePolicy.timeout = operation.getTimeoutMillis();
 		}
-		Key recordKey = new Key(cacheManager.getConfig().getNamespace(), cache.getCacheName(), operation.getMajorKey());
+		Key recordKey = new Key(manager.getConfig().getNamespace(), set.getName(), operation.getMajorKey());
 
-		Single<Boolean> result = cacheManager.getClient().remove(writePolicy, recordKey, cache.singleExceptionTransformer(operation, false));
+		Single<Boolean> result = manager.getClient().remove(writePolicy, recordKey, set.singleExceptionTransformer(operation, false));
 		
 		return result.map(new Func1<Boolean, PutResult>() {
 

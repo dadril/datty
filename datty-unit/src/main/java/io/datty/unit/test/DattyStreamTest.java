@@ -43,11 +43,11 @@ public class DattyStreamTest extends AbstractDattyUnitTest {
 		String majorKey = UUID.randomUUID().toString();
 		
 		DattyKey key = new DattyKey()
-				.setCacheName(CACHE_NAME)
+				.setSetName(SET_NAME)
 				.setMajorKey(majorKey)
 				.setMinorKey(minorKey);
 		
-		Iterable<ByteBuf> iter = cacheManager.getDatty().streamOut(key).toBlocking().toIterable();
+		Iterable<ByteBuf> iter = dattyManager.getDatty().streamOut(key).toBlocking().toIterable();
 		List<ByteBuf> list = Lists.newArrayList(iter);
 		
 		Assert.assertEquals(0, list.size());
@@ -60,19 +60,19 @@ public class DattyStreamTest extends AbstractDattyUnitTest {
 		String majorKey = UUID.randomUUID().toString();
 		
 		DattyKey key = new DattyKey()
-				.setCacheName(CACHE_NAME)
+				.setSetName(SET_NAME)
 				.setMajorKey(majorKey)
 				.setMinorKey(minorKey);
 		
 		Observable<ByteBuf> input = Observable.just(value());
 		
-		Long written = cacheManager.getDatty().streamIn(key, input).toBlocking().value();
+		Long written = dattyManager.getDatty().streamIn(key, input).toBlocking().value();
 		
 		Assert.assertEquals(written, Long.valueOf(value().readableBytes()));
 		
 		final ByteBuf destBuffer = UnitConstants.ALLOC.buffer();
 		
-		cacheManager.getDatty().streamOut(key)
+		dattyManager.getDatty().streamOut(key)
 				.reduce(destBuffer, new Func2<ByteBuf, ByteBuf, ByteBuf>() {
 
 			@Override
@@ -93,19 +93,19 @@ public class DattyStreamTest extends AbstractDattyUnitTest {
 		String majorKey = UUID.randomUUID().toString();
 		
 		DattyKey key = new DattyKey()
-				.setCacheName(CACHE_NAME)
+				.setSetName(SET_NAME)
 				.setMajorKey(majorKey)
 				.setMinorKey(minorKey);
 		
 		Observable<ByteBuf> input = Observable.just(value(), newValue());
 		
-		Long written = cacheManager.getDatty().streamIn(key, input).toBlocking().value();
+		Long written = dattyManager.getDatty().streamIn(key, input).toBlocking().value();
 		
 		Assert.assertEquals(written, Long.valueOf(value().readableBytes() + newValue().readableBytes()));
 		
 		final ByteBuf destBuffer = UnitConstants.ALLOC.buffer();
 		
-		cacheManager.getDatty().streamOut(key)
+		dattyManager.getDatty().streamOut(key)
 				.reduce(destBuffer, new Func2<ByteBuf, ByteBuf, ByteBuf>() {
 
 			@Override

@@ -20,8 +20,8 @@ import com.aerospike.client.Key;
 import com.aerospike.client.Record;
 import com.aerospike.client.policy.QueryPolicy;
 
-import io.datty.aerospike.AerospikeCache;
-import io.datty.aerospike.AerospikeCacheManager;
+import io.datty.aerospike.AerospikeSet;
+import io.datty.aerospike.AerospikeDattyManager;
 import io.datty.api.operation.ExistsOperation;
 import io.datty.api.result.ExistsResult;
 import io.datty.support.LongVersion;
@@ -40,23 +40,23 @@ public enum AerospikeExists implements AerospikeOperation<ExistsOperation, Exist
 	INSTANCE;
 	
 	@Override
-	public Single<ExistsResult> execute(AerospikeCache cache, final ExistsOperation operation) {
+	public Single<ExistsResult> execute(AerospikeSet set, final ExistsOperation operation) {
 		
-		AerospikeCacheManager cacheManager = cache.getParent();
-		QueryPolicy queryPolicy = cache.getConfig().getQueryPolicy(operation, false);
-		Key recordKey = new Key(cacheManager.getConfig().getNamespace(), cache.getCacheName(), operation.getMajorKey());
+		AerospikeDattyManager manager = set.getParent();
+		QueryPolicy queryPolicy = set.getConfig().getQueryPolicy(operation, false);
+		Key recordKey = new Key(manager.getConfig().getNamespace(), set.getName(), operation.getMajorKey());
 		Set<String> minorKeys = operation.getMinorKeys();
 		
 		Single<Record> result;
 		if (operation.isAllMinorKeys()) {
-			 result = cacheManager.getClient().get(queryPolicy, recordKey, cache.singleExceptionTransformer(operation, false));
+			 result = manager.getClient().get(queryPolicy, recordKey, set.singleExceptionTransformer(operation, false));
 		}
 		else if (minorKeys.isEmpty()) {
-			 result = cacheManager.getClient().getHeader(queryPolicy, recordKey, cache.singleExceptionTransformer(operation, false));
+			 result = manager.getClient().getHeader(queryPolicy, recordKey, set.singleExceptionTransformer(operation, false));
 		}
 		else {	
 			 String[] binNames = minorKeys.toArray(new String[minorKeys.size()]);
-			 result = cacheManager.getClient().get(queryPolicy, recordKey, binNames, cache.singleExceptionTransformer(operation, false));
+			 result = manager.getClient().get(queryPolicy, recordKey, binNames, set.singleExceptionTransformer(operation, false));
 		}
 		
 		return result.map(new Func1<Record, ExistsResult>() {
