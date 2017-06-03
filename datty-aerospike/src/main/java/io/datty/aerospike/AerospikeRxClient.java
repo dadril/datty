@@ -24,15 +24,16 @@ import com.aerospike.client.listener.DeleteListener;
 import com.aerospike.client.listener.ExecuteListener;
 import com.aerospike.client.listener.ExistsListener;
 import com.aerospike.client.listener.RecordListener;
+import com.aerospike.client.listener.RecordSequenceListener;
 import com.aerospike.client.listener.WriteListener;
 import com.aerospike.client.policy.QueryPolicy;
+import com.aerospike.client.policy.ScanPolicy;
 import com.aerospike.client.policy.WritePolicy;
 
 import io.datty.aerospike.support.ExceptionTransformer;
 import io.datty.support.exception.DattyException;
 import rx.Observable;
 import rx.Single;
-import rx.Single.OnSubscribe;
 import rx.SingleSubscriber;
 import rx.Subscriber;
 
@@ -54,7 +55,95 @@ public final class AerospikeRxClient {
 	public AsyncClient getClient() {
 		return client;
 	}
+	
+	/**
+	 * Scans records
+	 * 
+	 * @param scanPolicy - scan policy
+	 * @param namespace - namespace
+	 * @param setName - set name
+	 * @param binNames - bin names
+	 * @param exceptionTransformer - exception transformer
+	 * @return record or null
+	 */
+	
+	public Observable<AerospikeRecord> scan(final ScanPolicy scanPolicy, final String namespace, final String setName, final String[] binNames, final ExceptionTransformer<?> exceptionTransformer) {
+		
+		return Observable.<AerospikeRecord>create(new Observable.OnSubscribe<AerospikeRecord>() {
 
+			@Override
+			public void call(final Subscriber<? super AerospikeRecord> subscriber) {
+
+				client.scanAll(scanPolicy, new RecordSequenceListener() {
+
+					@Override
+					public void onRecord(Key key, Record record) throws AerospikeException {
+						subscriber.onNext(new AerospikeRecord(key, record));
+					}
+
+					@Override
+					public void onSuccess() {
+						subscriber.onCompleted();
+					}
+
+						@Override
+					public void onFailure(AerospikeException exception) {
+						subscriber.onError(exceptionTransformer.transformException(exception));
+					}
+					
+				}, namespace, setName, binNames);
+
+			}
+			
+		});
+	}	
+	
+	/**
+	 * Scan and delete all records
+	 * 
+	 * @param scanPolicy - scan policy	 
+	 * @param deletePolicy - delete policy
+	 * @param namespace - namespace
+	 * @param setName - set name
+	 * @param exceptionTransformer - exception transformer
+	 * @return record or null
+	 */
+	
+	public Observable<Long> scanAndDelete(final ScanPolicy scanPolicy, final WritePolicy deletePolicy, final String namespace, final String setName, final ExceptionTransformer<?> exceptionTransformer) {
+		
+		return Observable.<Long>create(new Observable.OnSubscribe<Long>() {
+
+			@Override
+			public void call(final Subscriber<? super Long> subscriber) {
+
+				client.scanAll(scanPolicy, new RecordSequenceListener() {
+
+					private long counter = 0;
+					
+					@Override
+					public void onRecord(Key key, Record record) throws AerospikeException {
+						client.delete(deletePolicy, null, key);
+						counter++;
+					}
+
+					@Override
+					public void onSuccess() {
+						subscriber.onNext(counter);
+						subscriber.onCompleted();
+					}
+
+						@Override
+					public void onFailure(AerospikeException exception) {
+						subscriber.onError(exceptionTransformer.transformException(exception));
+					}
+					
+				}, namespace, setName, new String[] {});
+
+			}
+			
+		});
+	}	
+	
 	/**
 	 * Checks if record exists or not
 	 * 
@@ -66,7 +155,7 @@ public final class AerospikeRxClient {
 	
 	public Single<Boolean> exists(final QueryPolicy queryPolicy, final Key key, final ExceptionTransformer<?> exceptionTransformer) {
 		
-		return Single.<Boolean>create(new OnSubscribe<Boolean>() {
+		return Single.<Boolean>create(new Single.OnSubscribe<Boolean>() {
 
 			@Override
 			public void call(final SingleSubscriber<? super Boolean> subscriber) {
@@ -101,7 +190,7 @@ public final class AerospikeRxClient {
 	
 	public Single<Record> get(final QueryPolicy queryPolicy, final Key key, final ExceptionTransformer<?> exceptionTransformer) {
 		
-		return Single.<Record>create(new OnSubscribe<Record>() {
+		return Single.<Record>create(new Single.OnSubscribe<Record>() {
 
 			@Override
 			public void call(final SingleSubscriber<? super Record> subscriber) {
@@ -136,7 +225,7 @@ public final class AerospikeRxClient {
 	
 	public Single<Record> getHeader(final QueryPolicy queryPolicy, final Key key, final ExceptionTransformer<?> exceptionTransformer) {
 		
-		return Single.<Record>create(new OnSubscribe<Record>() {
+		return Single.<Record>create(new Single.OnSubscribe<Record>() {
 
 			@Override
 			public void call(final SingleSubscriber<? super Record> subscriber) {
@@ -221,7 +310,7 @@ public final class AerospikeRxClient {
 	
 	public Single<Record> get(final QueryPolicy queryPolicy, final Key key, final String[] binNames, final ExceptionTransformer<?> exceptionTransformer) {
 		
-		return Single.<Record>create(new OnSubscribe<Record>() {
+		return Single.<Record>create(new Single.OnSubscribe<Record>() {
 
 			@Override
 			public void call(final SingleSubscriber<? super Record> subscriber) {
@@ -257,7 +346,7 @@ public final class AerospikeRxClient {
 	
 	public Single<Long> put(final WritePolicy writePolicy, final Key key, final AerospikeBins bins, final ExceptionTransformer<?> exceptionTransformer) {
 		
-		return Single.<Long>create(new OnSubscribe<Long>() {
+		return Single.<Long>create(new Single.OnSubscribe<Long>() {
 
 			@Override
 			public void call(final SingleSubscriber<? super Long> subscriber) {
@@ -299,7 +388,7 @@ public final class AerospikeRxClient {
 	
 	public Single<Boolean> remove(final WritePolicy writePolicy, final Key key, final ExceptionTransformer<?> exceptionTransformer) {
 		
-		return Single.<Boolean>create(new OnSubscribe<Boolean>() {
+		return Single.<Boolean>create(new Single.OnSubscribe<Boolean>() {
 
 			@Override
 			public void call(final SingleSubscriber<? super Boolean> subscriber) {
@@ -344,7 +433,7 @@ public final class AerospikeRxClient {
 	
 	public Single<Object> execute(final WritePolicy writePolicy, final Key key, final String packageName, final String functionName, final Value[] arguments, final ExceptionTransformer<?> exceptionTransformer) {
 		
-		return Single.<Object>create(new OnSubscribe<Object>() {
+		return Single.<Object>create(new Single.OnSubscribe<Object>() {
 
 			@Override
 			public void call(final SingleSubscriber<? super Object> subscriber) {

@@ -37,6 +37,10 @@ public final class AerospikeConstants {
 	
 	public static final int DEFAULT_PORT = 3000;
 	
+	public static final boolean DEFAULT_SEND_KEY = true;
+	
+	public static final boolean DEFAULT_SCAN_AND_DELELTE = true;
+	
 	/**
 	 *  Unit LUA parameters
 	 */

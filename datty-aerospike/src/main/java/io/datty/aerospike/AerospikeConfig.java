@@ -41,12 +41,14 @@ public final class AerospikeConfig {
 
 	private final Properties props;
 	private final String namespace;
+	private final boolean scanAndDelete;
 	private final AsyncClientPolicy clientPolicy;
 	private final List<Host> hosts;
 	
 	public AerospikeConfig(Properties props) {
 		this.props = props;
 		this.namespace = props.getProperty(AerospikePropertyKeys.NAMESPACE, AerospikeConstants.DEFAULT_NAMESPACE);
+		this.scanAndDelete = getBooleanProperty(props, AerospikePropertyKeys.SCAN_AND_DELETE, AerospikeConstants.DEFAULT_SCAN_AND_DELELTE);
 		this.clientPolicy = createClientPolicy(props);
 		this.hosts = createHosts(props);
 		
@@ -57,6 +59,10 @@ public final class AerospikeConfig {
 
 	public String getNamespace() {
 		return namespace;
+	}
+
+	public boolean isScanAndDelete() {
+		return scanAndDelete;
 	}
 
 	public Properties getProperties() {
@@ -276,6 +282,9 @@ public final class AerospikeConfig {
 		if (val != null) {
 			policy.sendKey = Boolean.parseBoolean(val);
 		}
+		else {
+			policy.sendKey = AerospikeConstants.DEFAULT_SEND_KEY;
+		}
 		
 	}
 	
@@ -306,4 +315,12 @@ public final class AerospikeConfig {
 		return list;
 	}
 
+	private static boolean getBooleanProperty(Properties props, String key, boolean defaultValue) {
+		String val = props.getProperty(key);
+		if (val == null) {
+			return defaultValue;
+		}
+		return Boolean.parseBoolean(val);
+	}
+	
 }

@@ -26,17 +26,19 @@ public final class AerospikePropertyKeys {
 	}
 
 	/**
-	 * CacheFactory constants
+	 * DattyFactory constants
 	 */
 
 	public static final String AEROSPIKE_PREFIX = "aerospike.";
 	
 	/**
-	 * CacheManager constants
+	 * DattyManager constants
 	 */
 	
 	public static final String NAME = "name";
 	public static final String NAMESPACE = "namespace";
+	
+	public static final String SCAN_AND_DELETE = "scanAndDelete";
 	
 	// this property has ExecutorService
 	public static final String SHARED_THREAD_POOL = "sharedThreadPool";

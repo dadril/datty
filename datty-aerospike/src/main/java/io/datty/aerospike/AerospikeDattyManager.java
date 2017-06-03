@@ -18,25 +18,28 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import com.aerospike.client.AerospikeException;
+import com.aerospike.client.Info;
 import com.aerospike.client.async.AsyncClient;
+import com.aerospike.client.cluster.Node;
 
-import io.datty.api.DattySet;
-import io.datty.api.DattySetError;
-import io.datty.api.SetExistsAction;
-import io.datty.api.DattyManager;
+import io.datty.aerospike.support.RandomUtil;
 import io.datty.api.Datty;
 import io.datty.api.DattyBatch;
+import io.datty.api.DattyManager;
 import io.datty.api.DattyQuery;
+import io.datty.api.DattySet;
+import io.datty.api.DattySetError;
 import io.datty.api.DattySingle;
 import io.datty.api.DattyStream;
+import io.datty.api.SetExistsAction;
 import io.datty.spi.DattyBatchDriver;
 import io.datty.spi.DattyDriver;
 import io.datty.spi.DattyQueryDriver;
 import io.datty.spi.DattySingleDriver;
 import io.datty.spi.DattySingleProvider;
 import io.datty.spi.DattyStreamDriver;
-import io.datty.support.exception.DattySetException;
 import io.datty.support.exception.DattyFactoryException;
+import io.datty.support.exception.DattySetException;
 
 /**
  * AerospikeDattyManager
@@ -53,6 +56,7 @@ public class AerospikeDattyManager implements DattyManager {
 	private boolean unitEmulation;
 	private final ConcurrentMap<String, AerospikeSet> setMap = new ConcurrentHashMap<String, AerospikeSet>();
 	private Datty currentDatty;
+	private AerospikeVersion version;
 	
 	public AerospikeDattyManager(Properties props) {
 		
@@ -71,6 +75,9 @@ public class AerospikeDattyManager implements DattyManager {
 				.setStream(stream)
 				.setQuery(query)
 				.build();
+		
+		this.version = requestVersion();
+		System.out.println("version =  " + version);
 	}
 	
 	public AerospikeConfig getConfig() {
@@ -79,6 +86,10 @@ public class AerospikeDattyManager implements DattyManager {
 
 	public AerospikeRxClient getClient() {
 		return client;
+	}
+
+	public AerospikeVersion getVersion() {
+		return version;
 	}
 
 	public boolean isUnitEmulation() {
@@ -168,9 +179,16 @@ public class AerospikeDattyManager implements DattyManager {
 		}
 	}
 	
+	private AerospikeVersion requestVersion() {
+		Node[] nodes = client.getClient().getNodes();
+		Node node = RandomUtil.selectRandom(nodes);
+		String response = Info.request(config.getClientPolicy().infoPolicyDefault, node, "build");
+		return AerospikeVersion.parse(response);
+	}
+	
 	@Override
 	public String toString() {
-		return "AerospikeDattyManager [name=" + managerName + "]";
+		return "AerospikeDattyManager [name=" + managerName + ", version=" + version + "]";
 	}
 	
 }

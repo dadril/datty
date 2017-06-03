@@ -47,7 +47,6 @@ public class AerospikeDattySingle implements DattySingle {
 		}
 		
 		AerospikeSet set = manager.getAerospikeSet(setName);
-		
 		if (set == null) {
 			return Single.error(new DattyOperationException(ErrCode.SET_NOT_FOUND, setName, operation));
 		}

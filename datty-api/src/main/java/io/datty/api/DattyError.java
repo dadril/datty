@@ -60,7 +60,8 @@ public interface DattyError {
 		TIMEOUT(3),
 		CONCURRENT_UPDATE(4),
 		BAD_ARGUMENTS(5),
-		UNKNOWN_OPERATION(6);
+		UNKNOWN_OPERATION(6),
+		UNSUPPORTED_OPERATION(7);
 		
 		private final int errcode;
 		
