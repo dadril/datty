@@ -77,7 +77,6 @@ public class AerospikeDattyManager implements DattyManager {
 				.build();
 		
 		this.version = requestVersion();
-		System.out.println("version =  " + version);
 	}
 	
 	public AerospikeConfig getConfig() {

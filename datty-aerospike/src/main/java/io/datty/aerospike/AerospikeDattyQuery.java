@@ -18,6 +18,7 @@ import java.util.Set;
 
 import com.aerospike.client.Key;
 import com.aerospike.client.Record;
+import com.aerospike.client.policy.WritePolicy;
 
 import io.datty.aerospike.info.AerospikeCommandCallable;
 import io.datty.aerospike.info.AerospikeDeleteSetRequest;
@@ -218,9 +219,12 @@ public class AerospikeDattyQuery implements DattyQuery {
 	
 	protected Observable<QueryResult> doScanAndDelete(AerospikeSet set, DeleteOperation operation) {
 				
+		WritePolicy deletePolity = set.getConfig().getWritePolicy(true);
+		deletePolity.sendKey = false;
+		
 		Observable<Long> result = manager.getClient().scanAndDelete(
 				manager.getConfig().getClientPolicy().scanPolicyDefault, 
-				set.getConfig().getWritePolicy(false), 
+				deletePolity, 
 				manager.getConfig().getNamespace(),
 				set.getName(), 
 				set.singleExceptionTransformer(operation, false));

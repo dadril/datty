@@ -37,6 +37,7 @@
     <module>datty-elasticsearch</module>  
     <module>datty-highavailability</module>
     <module>datty-benchmark</module>
+    <module>datty-blockchain</module>
     <module>spring-data-datty</module>		
 	</modules>
 
