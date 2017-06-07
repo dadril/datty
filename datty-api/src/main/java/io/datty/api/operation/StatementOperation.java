@@ -13,24 +13,31 @@
  */
 package io.datty.api.operation;
 
-import io.datty.api.DattyOperation;
-import io.datty.api.result.QueryResult;
+import java.util.Set;
 
 /**
- * QueryOperation
+ * StatementOperation
  * 
  * @author Alex Shvid
  *
  */
 
-public interface QueryOperation extends DattyOperation {
+public interface StatementOperation extends QueryOperation {
 
 	/**
-	 * Gets fallback result if exists
+	 * Is all keys are requested
 	 * 
-	 * @return null or fallback
+	 * @return true if all keys
 	 */
 	
-	QueryResult getFallback();
+	boolean isAllMinorKeys();
+	
+	/**
+	 * Gets set of minor keys
+	 * 
+	 * @return not null set of minor keys to queries
+	 */
+	
+	Set<String> getMinorKeys();
 	
 }

@@ -14,7 +14,6 @@
 package io.datty.aerospike;
 
 import java.util.Map;
-import java.util.Set;
 
 import com.aerospike.client.Key;
 import com.aerospike.client.Record;
@@ -30,8 +29,8 @@ import io.datty.aerospike.support.AerospikeValueUtil;
 import io.datty.api.DattyError.ErrCode;
 import io.datty.api.DattyQuery;
 import io.datty.api.DattyRow;
-import io.datty.api.operation.CountOperation;
-import io.datty.api.operation.DeleteOperation;
+import io.datty.api.operation.SizeOperation;
+import io.datty.api.operation.ClearOperation;
 import io.datty.api.operation.QueryOperation;
 import io.datty.api.operation.ScanOperation;
 import io.datty.api.result.QueryResult;
@@ -73,14 +72,14 @@ public class AerospikeDattyQuery implements DattyQuery {
 			return Observable.error(new DattyOperationException(ErrCode.SET_NOT_FOUND, setName, operation));
 		}
 		
-		if (operation instanceof CountOperation) {
-			return doCount(set, (CountOperation) operation);
+		if (operation instanceof SizeOperation) {
+			return doCount(set, (SizeOperation) operation);
 		}
 		if (operation instanceof ScanOperation) {
 			return doScan(set, (ScanOperation) operation);
 		}
-		if (operation instanceof DeleteOperation) {
-			return doDelete(set, (DeleteOperation) operation);
+		if (operation instanceof ClearOperation) {
+			return doDelete(set, (ClearOperation) operation);
 		}
 		else {
 			return Observable.error(new DattyOperationException(ErrCode.UNKNOWN_OPERATION, setName, operation));
@@ -90,19 +89,10 @@ public class AerospikeDattyQuery implements DattyQuery {
 	
 	protected Observable<QueryResult> doScan(AerospikeSet set, ScanOperation operation) {
 		
-		String[] binNames = null;
-		if (operation.isAllMinorKeys()) {
-			binNames = EMPTY_BIN_NAMES;
-		}
-		else {
-			Set<String> minorKeys = operation.getMinorKeys();
-			binNames = minorKeys.toArray(new String[minorKeys.size()]);
-		}
-		
 		Observable<AerospikeRecord> result = manager.getClient().scan(
 				manager.getConfig().getClientPolicy().scanPolicyDefault, 
 				manager.getConfig().getNamespace(),
-				set.getName(), binNames, 
+				set.getName(), EMPTY_BIN_NAMES, 
 				set.singleExceptionTransformer(operation, false));
 		
 		return result.map(new Func1<AerospikeRecord, QueryResult>() {
@@ -145,7 +135,7 @@ public class AerospikeDattyQuery implements DattyQuery {
 	}
 	
 	
-	protected Observable<QueryResult> doCount(AerospikeSet set, CountOperation operation) {
+	protected Observable<QueryResult> doCount(AerospikeSet set, SizeOperation operation) {
 		
 		AerospikeInfoRequest request = new AerospikeInfoRequest(manager.getConfig().getNamespace(), set.getName());
 		Observable<AerospikeInfoResponse> response = new AerospikeInfoCallable(manager, request).toOservable();
@@ -162,25 +152,18 @@ public class AerospikeDattyQuery implements DattyQuery {
 		});
 	}
 	
-	protected Observable<QueryResult> doDelete(AerospikeSet set, DeleteOperation operation) {
+	protected Observable<QueryResult> doDelete(AerospikeSet set, ClearOperation operation) {
 		
 		if (manager.getConfig().isScanAndDelete()) {
 			return doScanAndDelete(set, operation);
 		}
 		
-		if (operation.isAllMinorKeys()) {
-		
-			AerospikeVersion version = manager.getVersion();
-			if (version.compareTo(VERSION_3_12) >= 0) {
-				return doTruncate(set);
-			}
-			else {				
-				return doDeleteAll(set);
-			}
-			
+		AerospikeVersion version = manager.getVersion();
+		if (version.compareTo(VERSION_3_12) >= 0) {
+			return doTruncate(set);
 		}
-		else {
-			return doScanAndDelete(set, operation);
+		else {				
+			return doDeleteAll(set);
 		}
 		
 	}
@@ -217,7 +200,7 @@ public class AerospikeDattyQuery implements DattyQuery {
 		
 	}
 	
-	protected Observable<QueryResult> doScanAndDelete(AerospikeSet set, DeleteOperation operation) {
+	protected Observable<QueryResult> doScanAndDelete(AerospikeSet set, ClearOperation operation) {
 				
 		WritePolicy deletePolity = set.getConfig().getWritePolicy(true);
 		deletePolity.sendKey = false;

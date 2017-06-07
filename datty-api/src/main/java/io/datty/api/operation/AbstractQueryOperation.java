@@ -13,11 +13,6 @@
  */
 package io.datty.api.operation;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import io.datty.api.DattyConstants;
 import io.datty.api.result.QueryResult;
 
@@ -33,10 +28,6 @@ public abstract class AbstractQueryOperation<O extends QueryOperation> implement
 	protected String setName;
 
 	protected String superKey;
-
-	private boolean allMinorKeys;
-	
-	private Set<String> minorKeys;
 	
 	protected int timeoutMillis = DattyConstants.UNSET_TIMEOUT;
 	
@@ -64,50 +55,6 @@ public abstract class AbstractQueryOperation<O extends QueryOperation> implement
 	public O setSuperKey(String superKey) {
 		this.superKey = superKey;
 		return castThis();
-	}
-	
-	public boolean isAllMinorKeys() {
-		return allMinorKeys;
-	}
-
-	public O allMinorKeys(boolean all) {
-		this.allMinorKeys = all;
-		return castThis();
-	}
-	
-	public O allMinorKeys() {
-		this.allMinorKeys = true;
-		return castThis();
-	}
-	
-	public O addMinorKey(String minorKey) {
-		if (this.minorKeys == null) {
-			this.minorKeys = Collections.singleton(minorKey);
-		}
-		else {
-			if (this.minorKeys.size() == 1) {
-				this.minorKeys = new HashSet<String>(this.minorKeys);
-			}			
-			this.minorKeys.add(minorKey);
-		}
-		return castThis();
-	}
-	
-	public O addMinorKeys(Collection<String> minorKeys) {
-		if (this.minorKeys == null) {
-			this.minorKeys = new HashSet<String>(minorKeys);
-		}
-		else {
-			if (this.minorKeys.size() == 1) {
-				this.minorKeys = new HashSet<String>(this.minorKeys);
-			}
-			this.minorKeys.addAll(minorKeys);
-		}
-		return castThis();
-	}
-	
-	public Set<String> getMinorKeys() {
-		return minorKeys != null ? minorKeys : Collections.<String>emptySet();
 	}
 	
 	@Override

@@ -55,7 +55,7 @@ public class DattyDriver implements Datty {
 	public static Builder newBuilder() {
 		return new Builder();
 	}
-	
+
 	@Override
 	public Observable<QueryResult> executeQuery(QueryOperation operation) {
 		return query.executeQuery(operation);

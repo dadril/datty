@@ -13,23 +13,29 @@
  */
 package io.datty.api.operation;
 
-import io.datty.api.DattyOperation;
-
 /**
- * SingleOperation
+ * ClearOperation
  * 
  * @author Alex Shvid
  *
  */
 
-public interface SingleOperation extends DattyOperation {
+public class ClearOperation extends AbstractQueryOperation<ClearOperation> {
 
-	/**
-	 * Gets major key (partition key)
-	 * 
-	 * @return major key
-	 */
+	public ClearOperation(String setName) {
+		super(setName);
+	}
 	
-	String getMajorKey();
+	@Override
+	public OpCode getCode() {
+		return OpCode.CLEAR;
+	}
+
+	@Override
+	public String toString() {
+		return "ClearOperation [setName=" + setName + ", superKey=" + superKey + ", timeoutMillis=" + timeoutMillis
+				+ ", fallback=" + fallback + ", getCode()=" + getCode() + "]";
+	}
+	
 	
 }

@@ -16,22 +16,22 @@ package io.datty.api.result;
 import java.util.Collections;
 import java.util.Set;
 
+import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
 import io.datty.api.DattyRow;
-import io.datty.api.operation.QueryOperation;
 import io.datty.api.operation.Version;
 import io.netty.buffer.ByteBuf;
 
 /**
- * QueryResult
+ * AbstractQueryResult
  * 
  * @author Alex Shvid
  *
  */
 
-public class QueryResult implements DattyResult {
+public class AbstractQueryResult<O extends DattyOperation, R extends AbstractQueryResult<O, R>> implements DattyResult {
 
-	private QueryOperation operation;
+	private O operation;
 	
 	private String majorKey;
 	
@@ -50,46 +50,46 @@ public class QueryResult implements DattyResult {
 	
 	private long count;
 	
-	public QueryResult() {
+	public AbstractQueryResult() {
 	}
 	
-	public QueryOperation getOperation() {
+	public O getOperation() {
 		return operation;
 	}
 
-	public QueryResult setOperation(QueryOperation operation) {
+	public R setOperation(O operation) {
 		this.operation = operation;
-		return this;
+		return castThis();
 	}
 
 	public String getMajorKey() {
 		return majorKey;
 	}
 
-	public QueryResult setMajorKey(String majorKey) {
+	public R setMajorKey(String majorKey) {
 		this.majorKey = majorKey;
-		return this;
+		return castThis();
 	}
 
 	public DattyRow getRow() {
 		return row;
 	}
 	
-	public QueryResult setRow(DattyRow row) {
+	public R setRow(DattyRow row) {
 		this.row = row;
-		return this;
+		return castThis();
 	}
 	
 	public boolean hasRow() {
 		return row != null;
 	}
 	
-	public QueryResult addValue(String minorKey, ByteBuf value) {
+	public R addValue(String minorKey, ByteBuf value) {
 		if (row == null) {
 			row = new DattyRow();
 		}
 		row.putValue(minorKey, value, true);
-		return this;
+		return castThis();
 	}
 	
 	public boolean hasVersion() {
@@ -100,9 +100,9 @@ public class QueryResult implements DattyResult {
 		return version;
 	}
 	
-	public QueryResult setVersion(Version version) {
+	public R setVersion(Version version) {
 		this.version = version;
-		return this;
+		return castThis();
 	}
 	
 	public long count() {
@@ -161,11 +161,10 @@ public class QueryResult implements DattyResult {
 	public ResCode getCode() {
 		return ResCode.QUERY;
 	}
-
-	@Override
-	public String toString() {
-		return "QueryResult [operation=" + operation + ", majorKey=" + majorKey + ", version=" + version + ", row=" + row
-				+ ", count=" + count + "]";
+	
+	private R castThis() {
+		return (R) this;
 	}
+
 
 }

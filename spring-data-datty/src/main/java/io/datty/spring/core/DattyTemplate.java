@@ -25,9 +25,8 @@ import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
 import io.datty.api.DattyRow;
 import io.datty.api.UpdatePolicy;
-import io.datty.api.operation.AbstractQueryOperation;
-import io.datty.api.operation.CountOperation;
-import io.datty.api.operation.DeleteOperation;
+import io.datty.api.operation.SizeOperation;
+import io.datty.api.operation.ClearOperation;
 import io.datty.api.operation.ExistsOperation;
 import io.datty.api.operation.GetOperation;
 import io.datty.api.operation.PutOperation;
@@ -299,7 +298,7 @@ public class DattyTemplate implements DattyOperations {
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
 		ScanOperation scanOp = new ScanOperation(entityMetadata.getSetName());
-		addParametersToQuery(scanOp, entityMetadata);
+		scanOp.withTimeoutMillis(entityMetadata.getTimeoutMillis());
 		
 		return datty.executeQuery(scanOp).map(new Func1<DattyResult, T>() {
 
@@ -318,23 +317,6 @@ public class DattyTemplate implements DattyOperations {
 			
 		});
 		
-	}
-
-	private void addParametersToQuery(AbstractQueryOperation<?> queryOp, final DattyPersistentEntity<?> entityMetadata) {
-		
-		if (entityMetadata.hasMinorKey()) {
-			queryOp.addMinorKey(entityMetadata.getMinorKey());
-		}
-		else if (entityMetadata.useTags()) {
-			for (Integer tag : entityMetadata.getPropertyTags()) {
-				queryOp.addMinorKey(tag.toString());
-			}
-		}
-		else {
-			queryOp.addMinorKeys(entityMetadata.getPropertyNames());
-		}
-		
-		queryOp.withTimeoutMillis(entityMetadata.getTimeoutMillis());
 	}
 
 	@Override
@@ -385,8 +367,8 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		CountOperation countOp = new CountOperation(entityMetadata.getSetName());
-		addParametersToQuery(countOp, entityMetadata);
+		SizeOperation countOp = new SizeOperation(entityMetadata.getSetName());
+		countOp.withTimeoutMillis(entityMetadata.getTimeoutMillis());
 
 		return datty.executeQuery(countOp).map(new Func1<QueryResult, Long>() {
 
@@ -490,21 +472,9 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		DeleteOperation deleteOp = new DeleteOperation(entityMetadata.getSetName())
+		ClearOperation deleteOp = new ClearOperation(entityMetadata.getSetName())
 			.withTimeoutMillis(entityMetadata.getTimeoutMillis());
 
-		if (entityMetadata.hasMinorKey()) {
-			deleteOp.addMinorKey(entityMetadata.getMinorKey());
-		}
-		else if (entityMetadata.useTags()) {
-			for (Integer tag : entityMetadata.getPropertyTags()) {
-				deleteOp.addMinorKey(tag.toString());
-			}
-		}
-		else {
-			deleteOp.addMinorKeys(entityMetadata.getPropertyNames());
-		}
-		
 		return datty.executeQuery(deleteOp).toCompletable();
 	}
 

@@ -19,8 +19,8 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.datty.api.operation.CountOperation;
-import io.datty.api.operation.DeleteOperation;
+import io.datty.api.operation.SizeOperation;
+import io.datty.api.operation.ClearOperation;
 import io.datty.api.operation.PutOperation;
 import io.datty.api.operation.ScanOperation;
 import io.datty.api.result.QueryResult;
@@ -36,7 +36,7 @@ import io.netty.buffer.ByteBuf;
 public class DattyQueryTest extends AbstractDattyUnitTest {
 
 	private void clear() {
-		dattyManager.getDatty().executeQuery(new DeleteOperation(SET_NAME).allMinorKeys()).toBlocking().single();
+		dattyManager.getDatty().executeQuery(new ClearOperation(SET_NAME)).toBlocking().single();
 	}
 	
 	@Test
@@ -47,7 +47,7 @@ public class DattyQueryTest extends AbstractDattyUnitTest {
 		List<QueryResult> all = toList(dattyManager.getDatty().executeQuery(new ScanOperation(SET_NAME)).toBlocking().toIterable());
 		Assert.assertTrue(all.isEmpty());
 		
-		long count = dattyManager.getDatty().executeQuery(new CountOperation(SET_NAME)).toBlocking().single().count();
+		long count = dattyManager.getDatty().executeQuery(new SizeOperation(SET_NAME)).toBlocking().single().count();
 		
 		Assert.assertEquals(0, count);
 		
@@ -64,7 +64,7 @@ public class DattyQueryTest extends AbstractDattyUnitTest {
 		
 		dattyManager.getDatty().execute(new PutOperation(SET_NAME, majorKey).addValue(minorKey, value)).toBlocking().value();
 		
-		List<QueryResult> all = toList(dattyManager.getDatty().executeQuery(new ScanOperation(SET_NAME).allMinorKeys()).toBlocking().toIterable());
+		List<QueryResult> all = toList(dattyManager.getDatty().executeQuery(new ScanOperation(SET_NAME)).toBlocking().toIterable());
 		Assert.assertEquals(1, all.size());
 		
 		QueryResult result = all.get(0);
@@ -73,7 +73,7 @@ public class DattyQueryTest extends AbstractDattyUnitTest {
 		ByteBuf bb = result.get(minorKey);
 		Assert.assertEquals(value, bb);
 		
-		long count = dattyManager.getDatty().executeQuery(new CountOperation(SET_NAME)).toBlocking().single().count();
+		long count = dattyManager.getDatty().executeQuery(new SizeOperation(SET_NAME)).toBlocking().single().count();
 		
 		Assert.assertEquals(1, count);
 		
@@ -90,7 +90,7 @@ public class DattyQueryTest extends AbstractDattyUnitTest {
 		dattyManager.getDatty().execute(new PutOperation(SET_NAME, majorKey1).addValue(minorKey, value)).toBlocking().value();
 		dattyManager.getDatty().execute(new PutOperation(SET_NAME, majorKey2).addValue(minorKey, value)).toBlocking().value();
 		
-		long count = dattyManager.getDatty().executeQuery(new CountOperation(SET_NAME)).toBlocking().single().count();
+		long count = dattyManager.getDatty().executeQuery(new SizeOperation(SET_NAME)).toBlocking().single().count();
 		
 		Assert.assertEquals(2, count);
 		

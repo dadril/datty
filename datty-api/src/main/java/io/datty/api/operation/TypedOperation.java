@@ -25,7 +25,7 @@ import rx.Single;
  * @param <R> - datty return type
  */
 
-public interface TypedOperation<O extends TypedOperation<O, R>, R extends TypedResult<O>> extends SingleOperation {
+public interface TypedOperation<O extends TypedOperation<O, R>, R extends TypedResult<O>> extends RecordOperation {
 
 	/**
 	 * Gets fallback result if exists

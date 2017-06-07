@@ -14,15 +14,14 @@
 package io.datty.unit;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 import io.datty.api.DattyError.ErrCode;
 import io.datty.api.DattyQuery;
-import io.datty.api.operation.CountOperation;
-import io.datty.api.operation.DeleteOperation;
+import io.datty.api.operation.SizeOperation;
+import io.datty.api.operation.ClearOperation;
 import io.datty.api.operation.QueryOperation;
 import io.datty.api.operation.ScanOperation;
 import io.datty.api.result.QueryResult;
@@ -43,7 +42,7 @@ public class UnitDattyQuery implements DattyQuery {
 	public UnitDattyQuery(ConcurrentMap<String, UnitSet> setMap) {
 		this.setMap = setMap;
 	}
-
+	
 	@Override
 	public Observable<QueryResult> executeQuery(QueryOperation operation) {
 
@@ -58,14 +57,14 @@ public class UnitDattyQuery implements DattyQuery {
 			return Observable.error(new DattyOperationException(ErrCode.SET_NOT_FOUND, setName, operation));
 		}
 
-		if (operation instanceof CountOperation) {
-			return doCount(set, (CountOperation) operation);
+		if (operation instanceof SizeOperation) {
+			return doCount(set, (SizeOperation) operation);
 		}
 		if (operation instanceof ScanOperation) {
 			return doScan(set, (ScanOperation) operation);
 		}
-		if (operation instanceof DeleteOperation) {
-			return doDelete(set, (DeleteOperation) operation);
+		if (operation instanceof ClearOperation) {
+			return doDelete(set, (ClearOperation) operation);
 		}
 		else {
 			return Observable.error(new DattyOperationException(ErrCode.UNKNOWN_OPERATION, setName, operation));
@@ -86,20 +85,10 @@ public class UnitDattyQuery implements DattyQuery {
 			result.setVersion(record.getVersion());
 			result.setMajorKey(entry.getKey());
 			
-			if (operation.isAllMinorKeys()) {
-				for (Map.Entry<String, UnitValue> e : record.getColumnMap().entrySet()) {
-					UnitValue value = e.getValue();
-					if (value != null) {
-						result.addValue(e.getKey(), value.asByteBuf());
-					}
-				}
-			}
-			else {
-				for (String minorKey : operation.getMinorKeys()) {
-					UnitValue value = record.getColumn(minorKey);
-					if (value != null) {
-						result.addValue(minorKey, value.asByteBuf());
-					}
+			for (Map.Entry<String, UnitValue> e : record.getColumnMap().entrySet()) {
+				UnitValue value = e.getValue();
+				if (value != null) {
+					result.addValue(e.getKey(), value.asByteBuf());
 				}
 			}
 			
@@ -111,7 +100,7 @@ public class UnitDattyQuery implements DattyQuery {
 		
 	}
 	
-	protected Observable<QueryResult> doCount(UnitSet set, CountOperation operation) {
+	protected Observable<QueryResult> doCount(UnitSet set, SizeOperation operation) {
 
 		QueryResult result = new QueryResult();
 		result.setCount(set.getRecordMap().size());
@@ -119,32 +108,12 @@ public class UnitDattyQuery implements DattyQuery {
 		return Observable.just(result);
 	}
 	
-	protected Observable<QueryResult> doDelete(UnitSet set, DeleteOperation operation) {
+	protected Observable<QueryResult> doDelete(UnitSet set, ClearOperation operation) {
 
 		QueryResult result = new QueryResult();
 		
-		if (operation.isAllMinorKeys()) {
-			result.setCount(set.getRecordMap().size());
-			set.getRecordMap().clear();
-		}
-		else if (!operation.getMinorKeys().isEmpty()) {
-			int count = 0;
-			Map<String, UnitRecord> recordMap = new HashMap<>(set.getRecordMap());
-			for (Map.Entry<String, UnitRecord> entry : recordMap.entrySet()) {
-				UnitRecord record = entry.getValue();
-				UnitRecord newRecord = new UnitRecord(record, operation.getMinorKeys());
-				if (newRecord.isEmpty()) {
-					set.getRecordMap().remove(entry.getKey());
-					count++;
-				}
-				else if (newRecord.columns() != record.columns()) {
-					set.getRecordMap().put(entry.getKey(), newRecord);
-					count++;
-				}
-			}
-			result.setCount(count);
-		}
-		
+		result.setCount(set.getRecordMap().size());
+		set.getRecordMap().clear();
 		
 		return Observable.just(result);
 	}

@@ -37,7 +37,6 @@ public class DattyQueryDriver implements DattyQuery {
 	public DattyQueryDriver(DattyQuery delegate) {
 		this.delegate = delegate;
 	}
-	
 
 	@Override
 	public Observable<QueryResult> executeQuery(final QueryOperation operation) {

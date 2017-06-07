@@ -82,8 +82,8 @@ public interface DattyOperation {
 		COMPARE_AND_SET(5),
 		EXECUTE(6),
 		SCAN(7),
-		COUNT(8),
-		DELETE(9);
+		SIZE(8),
+		CLEAR(9);
 		
 		private final int opcode;
 		

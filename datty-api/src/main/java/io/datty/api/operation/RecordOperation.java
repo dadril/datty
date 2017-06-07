@@ -14,23 +14,22 @@
 package io.datty.api.operation;
 
 import io.datty.api.DattyOperation;
-import io.datty.api.result.QueryResult;
 
 /**
- * QueryOperation
+ * RecordOperation
  * 
  * @author Alex Shvid
  *
  */
 
-public interface QueryOperation extends DattyOperation {
+public interface RecordOperation extends DattyOperation {
 
 	/**
-	 * Gets fallback result if exists
+	 * Gets major key (partition key)
 	 * 
-	 * @return null or fallback
+	 * @return major key
 	 */
 	
-	QueryResult getFallback();
+	String getMajorKey();
 	
 }
