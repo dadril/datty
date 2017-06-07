@@ -58,13 +58,13 @@ public class UnitDattyQuery implements DattyQuery {
 		}
 
 		if (operation instanceof SizeOperation) {
-			return doCount(set, (SizeOperation) operation);
+			return doSize(set, (SizeOperation) operation);
 		}
 		if (operation instanceof ScanOperation) {
 			return doScan(set, (ScanOperation) operation);
 		}
 		if (operation instanceof ClearOperation) {
-			return doDelete(set, (ClearOperation) operation);
+			return doClear(set, (ClearOperation) operation);
 		}
 		else {
 			return Observable.error(new DattyOperationException(ErrCode.UNKNOWN_OPERATION, setName, operation));
@@ -100,7 +100,7 @@ public class UnitDattyQuery implements DattyQuery {
 		
 	}
 	
-	protected Observable<QueryResult> doCount(UnitSet set, SizeOperation operation) {
+	protected Observable<QueryResult> doSize(UnitSet set, SizeOperation operation) {
 
 		QueryResult result = new QueryResult();
 		result.setCount(set.getRecordMap().size());
@@ -108,7 +108,7 @@ public class UnitDattyQuery implements DattyQuery {
 		return Observable.just(result);
 	}
 	
-	protected Observable<QueryResult> doDelete(UnitSet set, ClearOperation operation) {
+	protected Observable<QueryResult> doClear(UnitSet set, ClearOperation operation) {
 
 		QueryResult result = new QueryResult();
 		

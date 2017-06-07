@@ -73,13 +73,13 @@ public class AerospikeDattyQuery implements DattyQuery {
 		}
 		
 		if (operation instanceof SizeOperation) {
-			return doCount(set, (SizeOperation) operation);
+			return doSize(set, (SizeOperation) operation);
 		}
 		if (operation instanceof ScanOperation) {
 			return doScan(set, (ScanOperation) operation);
 		}
 		if (operation instanceof ClearOperation) {
-			return doDelete(set, (ClearOperation) operation);
+			return doClear(set, (ClearOperation) operation);
 		}
 		else {
 			return Observable.error(new DattyOperationException(ErrCode.UNKNOWN_OPERATION, setName, operation));
@@ -135,7 +135,7 @@ public class AerospikeDattyQuery implements DattyQuery {
 	}
 	
 	
-	protected Observable<QueryResult> doCount(AerospikeSet set, SizeOperation operation) {
+	protected Observable<QueryResult> doSize(AerospikeSet set, SizeOperation operation) {
 		
 		AerospikeInfoRequest request = new AerospikeInfoRequest(manager.getConfig().getNamespace(), set.getName());
 		Observable<AerospikeInfoResponse> response = new AerospikeInfoCallable(manager, request).toOservable();
@@ -152,7 +152,7 @@ public class AerospikeDattyQuery implements DattyQuery {
 		});
 	}
 	
-	protected Observable<QueryResult> doDelete(AerospikeSet set, ClearOperation operation) {
+	protected Observable<QueryResult> doClear(AerospikeSet set, ClearOperation operation) {
 		
 		if (manager.getConfig().isScanAndDelete()) {
 			return doScanAndDelete(set, operation);
