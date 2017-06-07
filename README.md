@@ -13,3 +13,6 @@ The same as Netty but for data
 * Has own universal Spring Data module [spring-data-datty](spring-data-datty)
 * Written with TDD (Test Driven Design), has its own unit artifact [datty-unit](datty-unit). No mocks in your tests.
 * Core modules JDK 7 compatible.
+* Data Fusion - merging data from different sources by using fields mappings
+* Indexing of data
+* Creating counters on top of indexes
