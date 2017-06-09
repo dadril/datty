@@ -11,41 +11,36 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.unit.executor;
 
-import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 
-import io.datty.api.operation.RecordOperation;
+import io.datty.api.operation.ClearOperation;
+import io.datty.api.result.RecordResult;
+import io.datty.unit.UnitRecord;
 import rx.Observable;
-import rx.Single;
 
 /**
- * DattyBatch
- * 
- * Batch or bulk operations
+ * ClearExecutor
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattyBatch {
+public enum ClearExecutor implements SetOperationExecutor<ClearOperation> {
 
-	/**
-	 * Executes sequence of datty operations
-	 * 
-	 * @param operations - sequence of operations
-	 * @return sequence of results
-	 */
-	
-	Single<List<DattyResult>> executeBatch(List<RecordOperation> operations);
-	
-	/**
-	 * Executes sequence of datty operations
-	 * 
-	 * @param operations - sequence of operations
-	 * @return sequence of results
-	 */
-	
-	Observable<DattyResult> executeSequence(Observable<RecordOperation> operations);
-	
+	INSTANCE;
+
+	@Override
+	public Observable<RecordResult> execute(ConcurrentMap<String, UnitRecord> recordMap, ClearOperation operation) {
+		
+		RecordResult result = new RecordResult();
+		
+		result.setCount(recordMap.size());
+		
+		recordMap.clear();
+		
+		return Observable.just(result);
+	}
+
 }

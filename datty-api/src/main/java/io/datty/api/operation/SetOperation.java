@@ -14,16 +14,16 @@
 package io.datty.api.operation;
 
 import io.datty.api.DattyOperation;
-import io.datty.api.result.QueryResult;
+import io.datty.api.result.RecordResult;
 
 /**
- * QueryOperation
+ * SetOperation
  * 
  * @author Alex Shvid
  *
  */
 
-public interface QueryOperation extends DattyOperation {
+public interface SetOperation extends DattyOperation {
 
 	/**
 	 * Gets fallback result if exists
@@ -31,6 +31,6 @@ public interface QueryOperation extends DattyOperation {
 	 * @return null or fallback
 	 */
 	
-	QueryResult getFallback();
+	RecordResult getFallback();
 	
 }

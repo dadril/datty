@@ -11,31 +11,29 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api.operation;
+package io.datty.api.statement;
 
 /**
- * ClearOperation
+ * DeleteStatement
  * 
  * @author Alex Shvid
  *
  */
 
-public class ClearOperation extends AbstractSetOperation<ClearOperation> {
+public class DeleteStatement extends AbstractStatement<DeleteStatement> {
 
-	public ClearOperation(String setName) {
+	public DeleteStatement(String setName) {
 		super(setName);
 	}
-	
+
 	@Override
 	public OpCode getCode() {
-		return OpCode.CLEAR;
+		return OpCode.DELETE;
 	}
 
 	@Override
 	public String toString() {
-		return "ClearOperation [setName=" + setName + ", superKey=" + superKey + ", timeoutMillis=" + timeoutMillis
-				+ ", fallback=" + fallback + ", getCode()=" + getCode() + "]";
+		return "DeleteStatement [setName=" + setName + ", superKey=" + superKey + ", timeoutMillis=" + timeoutMillis + "]";
 	}
-	
-	
+
 }

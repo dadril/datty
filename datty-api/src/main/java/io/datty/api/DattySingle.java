@@ -13,8 +13,11 @@
  */
 package io.datty.api;
 
+import io.datty.api.operation.SetOperation;
 import io.datty.api.operation.TypedOperation;
+import io.datty.api.result.RecordResult;
 import io.datty.api.result.TypedResult;
+import rx.Observable;
 import rx.Single;
 
 /**
@@ -26,6 +29,15 @@ import rx.Single;
 
 public interface DattySingle {
 
+	/**
+	 * Executes operation under the whole Set
+	 * 
+	 * @param query - datty query operation
+	 * @return not null observable of results
+	 */
+	
+	<O extends SetOperation> Observable<RecordResult> execute(O operation);
+	
 	/**
 	 * Executes single datty operation
 	 * 

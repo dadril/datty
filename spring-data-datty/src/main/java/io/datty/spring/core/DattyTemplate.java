@@ -21,21 +21,21 @@ import org.springframework.data.mapping.model.MappingException;
 import org.springframework.util.Assert;
 
 import io.datty.api.Datty;
-import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
 import io.datty.api.DattyRow;
 import io.datty.api.UpdatePolicy;
-import io.datty.api.operation.SizeOperation;
 import io.datty.api.operation.ClearOperation;
 import io.datty.api.operation.ExistsOperation;
 import io.datty.api.operation.GetOperation;
 import io.datty.api.operation.PutOperation;
+import io.datty.api.operation.RecordOperation;
 import io.datty.api.operation.RemoveOperation;
 import io.datty.api.operation.ScanOperation;
+import io.datty.api.operation.SizeOperation;
 import io.datty.api.result.ExistsResult;
 import io.datty.api.result.GetResult;
 import io.datty.api.result.PutResult;
-import io.datty.api.result.QueryResult;
+import io.datty.api.result.RecordResult;
 import io.datty.spring.convert.DattyConverter;
 import io.datty.spring.mapping.DattyPersistentEntity;
 import io.datty.spring.mapping.DattyPersistentProperty;
@@ -131,10 +131,10 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		Observable<DattyOperation> operations = entityStream.map(new Func1<S, DattyOperation>() {
+		Observable<RecordOperation> operations = entityStream.map(new Func1<S, RecordOperation>() {
 
 			@Override
-			public DattyOperation call(S entity) {
+			public RecordOperation call(S entity) {
 				return toPutOperation(entityMetadata, entity);
 			}
 			
@@ -300,12 +300,12 @@ public class DattyTemplate implements DattyOperations {
 		ScanOperation scanOp = new ScanOperation(entityMetadata.getSetName());
 		scanOp.withTimeoutMillis(entityMetadata.getTimeoutMillis());
 		
-		return datty.executeQuery(scanOp).map(new Func1<DattyResult, T>() {
+		return datty.execute(scanOp).map(new Func1<DattyResult, T>() {
 
 			@Override
 			public T call(DattyResult res) {
 
-				QueryResult queryRes = (QueryResult) res;
+				RecordResult queryRes = (RecordResult) res;
 				
 				DattyRow row = queryRes.getRow();
 				if (row != null) {
@@ -333,10 +333,10 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		Observable<DattyOperation> operations = idStream.map(new Func1<DattyId, DattyOperation>() {
+		Observable<RecordOperation> operations = idStream.map(new Func1<DattyId, RecordOperation>() {
 
 			@Override
-			public DattyOperation call(DattyId dattyId) {
+			public RecordOperation call(DattyId dattyId) {
 				return toGetOperation(entityMetadata, dattyId);
 			}
 			
@@ -370,10 +370,10 @@ public class DattyTemplate implements DattyOperations {
 		SizeOperation countOp = new SizeOperation(entityMetadata.getSetName());
 		countOp.withTimeoutMillis(entityMetadata.getTimeoutMillis());
 
-		return datty.executeQuery(countOp).map(new Func1<QueryResult, Long>() {
+		return datty.execute(countOp).map(new Func1<RecordResult, Long>() {
 
 			@Override
-			public Long call(QueryResult res) {
+			public Long call(RecordResult res) {
 				return res.count();
 			}
 			
@@ -448,11 +448,11 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		Observable<DattyOperation> operations = entityStream
-				.map(new Func1<T, DattyOperation>() {
+		Observable<RecordOperation> operations = entityStream
+				.map(new Func1<T, RecordOperation>() {
 
 					@Override
-					public DattyOperation call(T entity) {
+					public RecordOperation call(T entity) {
 						DattyId id = getId(entityMetadata, entity).orElse(null);
 						if (id == null) {
 							throw new MappingException("id property not found for " + entityMetadata);
@@ -475,7 +475,7 @@ public class DattyTemplate implements DattyOperations {
 		ClearOperation deleteOp = new ClearOperation(entityMetadata.getSetName())
 			.withTimeoutMillis(entityMetadata.getTimeoutMillis());
 
-		return datty.executeQuery(deleteOp).toCompletable();
+		return datty.execute(deleteOp).toCompletable();
 	}
 
 	@Override

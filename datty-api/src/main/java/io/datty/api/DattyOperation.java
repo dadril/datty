@@ -83,7 +83,10 @@ public interface DattyOperation {
 		EXECUTE(6),
 		SCAN(7),
 		SIZE(8),
-		CLEAR(9);
+		CLEAR(9),
+		SELECT(10),
+		UPDATE(11),
+		DELETE(12);
 		
 		private final int opcode;
 		

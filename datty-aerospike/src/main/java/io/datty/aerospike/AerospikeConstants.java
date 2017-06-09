@@ -41,6 +41,10 @@ public final class AerospikeConstants {
 	
 	public static final boolean DEFAULT_SCAN_AND_DELELTE = true;
 	
+	public static final AerospikeVersion VERSION_3_12 = AerospikeVersion.of(3, 12);
+	
+	public static final String[] EMPTY_STRING_ARRAY = new String[] {};
+	
 	/**
 	 *  Unit LUA parameters
 	 */

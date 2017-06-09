@@ -13,39 +13,43 @@
  */
 package io.datty.api;
 
-import java.util.List;
+import java.util.Set;
 
-import io.datty.api.operation.RecordOperation;
+import io.datty.api.result.RecordResult;
 import rx.Observable;
-import rx.Single;
 
 /**
- * DattyBatch
- * 
- * Batch or bulk operations
+ * DattyStatement
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattyBatch {
+public interface DattyStatement extends DattyOperation {
 
 	/**
-	 * Executes sequence of datty operations
+	 * Checks if all minor keys are using in statement
+	 * Similar to '*' in SQL statements
 	 * 
-	 * @param operations - sequence of operations
-	 * @return sequence of results
+	 * @return true if all minor keys are using, ignore getMinorKeys
 	 */
 	
-	Single<List<DattyResult>> executeBatch(List<RecordOperation> operations);
+	boolean isAllMinorKeys();
 	
 	/**
-	 * Executes sequence of datty operations
+	 * Gets the list of minor keys that are using in statement
 	 * 
-	 * @param operations - sequence of operations
-	 * @return sequence of results
+	 * @return not null set of minor keys
 	 */
 	
-	Observable<DattyResult> executeSequence(Observable<RecordOperation> operations);
+	Set<String> getMinorKeys();
+	
+	/**
+	 * Query statement if Datty instance setup
+	 * 
+	 * @return not null results
+	 */
+	
+	Observable<RecordResult> query();
 	
 }

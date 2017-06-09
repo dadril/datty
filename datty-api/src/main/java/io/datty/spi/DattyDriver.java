@@ -18,14 +18,15 @@ import java.util.List;
 import io.datty.api.Datty;
 import io.datty.api.DattyBatch;
 import io.datty.api.DattyKey;
-import io.datty.api.DattyOperation;
 import io.datty.api.DattyQuery;
 import io.datty.api.DattyResult;
 import io.datty.api.DattySingle;
+import io.datty.api.DattyStatement;
 import io.datty.api.DattyStream;
-import io.datty.api.operation.QueryOperation;
+import io.datty.api.operation.RecordOperation;
+import io.datty.api.operation.SetOperation;
 import io.datty.api.operation.TypedOperation;
-import io.datty.api.result.QueryResult;
+import io.datty.api.result.RecordResult;
 import io.datty.api.result.TypedResult;
 import io.netty.buffer.ByteBuf;
 import rx.Observable;
@@ -55,10 +56,15 @@ public class DattyDriver implements Datty {
 	public static Builder newBuilder() {
 		return new Builder();
 	}
+	
+	@Override
+	public Observable<RecordResult> query(DattyStatement statement) {
+		return query.query(statement);
+	}
 
 	@Override
-	public Observable<QueryResult> executeQuery(QueryOperation operation) {
-		return query.executeQuery(operation);
+	public Observable<RecordResult> execute(SetOperation operation) {
+		return single.execute(operation);
 	}
 
 	@Override
@@ -72,12 +78,12 @@ public class DattyDriver implements Datty {
 	}
 
 	@Override
-	public Single<List<DattyResult>> executeBatch(List<DattyOperation> operations) {
+	public Single<List<DattyResult>> executeBatch(List<RecordOperation> operations) {
 		return batch.executeBatch(operations);
 	}
 
 	@Override
-	public Observable<DattyResult> executeSequence(Observable<DattyOperation> operations) {
+	public Observable<DattyResult> executeSequence(Observable<RecordOperation> operations) {
 		return batch.executeSequence(operations);
 	}
 

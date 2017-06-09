@@ -18,9 +18,12 @@ import java.util.concurrent.TimeUnit;
 import io.datty.api.DattyConstants;
 import io.datty.api.DattyError;
 import io.datty.api.DattySingle;
+import io.datty.api.operation.SetOperation;
 import io.datty.api.operation.TypedOperation;
+import io.datty.api.result.RecordResult;
 import io.datty.api.result.TypedResult;
 import io.datty.support.exception.DattyOperationException;
+import rx.Observable;
 import rx.Single;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -47,6 +50,34 @@ public class DattySingleDriver implements DattySingle {
 	
 	public int getMaxConcurrentTries() {
 		return DattyConstants.MAX_CONCURRENT_TRIES;
+	}
+	
+	@Override
+	public Observable<RecordResult> execute(final SetOperation operation) {
+		
+		Observable<RecordResult> result = single.execute(operation);
+		
+		if (operation.hasTimeoutMillis()) {
+			
+			result = result.timeout(operation.getTimeoutMillis(), TimeUnit.MILLISECONDS, 
+					Observable.<RecordResult>error(new DattyOperationException(DattyError.ErrCode.TIMEOUT, operation)));
+			
+		}
+		
+		result = result.doOnError(new Action1<Throwable>() {
+
+			@Override
+			public void call(Throwable t) {
+
+				if (!(t instanceof DattyOperationException)) {
+					throw new DattyOperationException(DattyError.ErrCode.UNKNOWN, operation, t);
+				}
+				
+			}
+			
+		});
+		
+		return result;
 	}
 	
 	@Override

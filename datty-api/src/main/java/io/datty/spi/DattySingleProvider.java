@@ -13,10 +13,16 @@
  */
 package io.datty.spi;
 
+import io.datty.api.DattyError;
+import io.datty.api.DattyOperation;
 import io.datty.api.DattySingle;
+import io.datty.api.operation.SetOperation;
 import io.datty.api.operation.TypedOperation;
 import io.datty.api.result.AbstractResult;
+import io.datty.api.result.RecordResult;
 import io.datty.api.result.TypedResult;
+import io.datty.support.exception.DattyOperationException;
+import rx.Observable;
 import rx.Single;
 import rx.functions.Func1;
 
@@ -35,6 +41,39 @@ public class DattySingleProvider implements DattySingle {
 		this.driver = driver;
 	}
 	
+	@Override
+	public Observable<RecordResult> execute(SetOperation operation) {
+		
+		final RecordResult fallback = operation.getFallback();
+
+		try {
+			Observable<RecordResult> result = driver.execute(operation);
+			
+			if (fallback != null) {
+				
+				result = result.onErrorReturn(new Func1<Throwable, RecordResult>() {
+
+					@Override
+					public RecordResult call(Throwable t) {
+						return fallback;
+					}
+					
+				});
+			}
+			
+			return result;
+		}
+		catch(RuntimeException e) {
+			if (fallback != null) {
+				return Observable.just(fallback);
+			}
+			else {
+				return Observable.error(transformException(operation, e));
+			}
+		}
+	}
+
+
 	@Override
 	public <O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(final O operation) {
 
@@ -75,7 +114,9 @@ public class DattySingleProvider implements DattySingle {
 			if (fallback != null) {
 				return Single.just(fallback);
 			}
-			throw e;
+			else {
+				return Single.error(transformException(operation, e));
+			}
 		}
 	}
 
@@ -93,6 +134,13 @@ public class DattySingleProvider implements DattySingle {
 		
 	}
 
-	
+	private static Throwable transformException(DattyOperation operation, Throwable t) {
+		if (t instanceof DattyOperationException) {
+			return t;
+		}
+		else {
+			return new DattyOperationException(DattyError.ErrCode.UNKNOWN, operation, t);
+		}
+	}
 
 }

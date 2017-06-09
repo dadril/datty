@@ -14,6 +14,7 @@
 package io.datty.aerospike.executor;
 
 import io.datty.api.DattyOperation.OpCode;
+import io.datty.api.operation.SetOperation;
 import io.datty.api.operation.TypedOperation;
 import io.datty.api.result.TypedResult;
 
@@ -26,6 +27,8 @@ import io.datty.api.result.TypedResult;
 
 public final class AerospikeOperations {
 
+	private final static AerospikeSetOperation<?>[] setCodeList = new AerospikeSetOperation<?>[OpCode.max() + 1];
+	
 	private final static AerospikeOperation<?, ?>[] codeList = new AerospikeOperation<?, ?>[OpCode.max() + 1];
 	
 	private AerospikeOperations() {
@@ -33,12 +36,21 @@ public final class AerospikeOperations {
 	
 	static {
 		
+		setCodeList[OpCode.CLEAR.getCode()] = AerospikeClear.INSTANCE;
+		setCodeList[OpCode.SIZE.getCode()] = AerospikeSize.INSTANCE;
+		setCodeList[OpCode.SCAN.getCode()] = AerospikeScan.INSTANCE;
+		
 		codeList[OpCode.EXISTS.getCode()] = AerospikeExists.INSTANCE;
 		codeList[OpCode.GET.getCode()] = AerospikeGet.INSTANCE;
 		codeList[OpCode.PUT.getCode()] = AerospikePut.INSTANCE;
 		codeList[OpCode.COMPARE_AND_SET.getCode()] = AerospikeCompareAndSet.INSTANCE;
 		codeList[OpCode.EXECUTE.getCode()] = AerospikeExecute.INSTANCE;
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <O extends SetOperation> AerospikeSetOperation<O> findSet(OpCode opcode) {
+		return (AerospikeSetOperation<O>) setCodeList[opcode.getCode()];
 	}
 	
 	@SuppressWarnings("unchecked")

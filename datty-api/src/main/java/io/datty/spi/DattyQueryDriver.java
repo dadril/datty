@@ -17,8 +17,8 @@ import java.util.concurrent.TimeUnit;
 
 import io.datty.api.DattyError;
 import io.datty.api.DattyQuery;
-import io.datty.api.operation.QueryOperation;
-import io.datty.api.result.QueryResult;
+import io.datty.api.DattyStatement;
+import io.datty.api.result.RecordResult;
 import io.datty.support.exception.DattyOperationException;
 import rx.Observable;
 import rx.functions.Action1;
@@ -39,14 +39,14 @@ public class DattyQueryDriver implements DattyQuery {
 	}
 
 	@Override
-	public Observable<QueryResult> executeQuery(final QueryOperation operation) {
+	public Observable<RecordResult> query(final DattyStatement statement) {
 		
-		Observable<QueryResult> result = delegate.executeQuery(operation);
+		Observable<RecordResult> result = delegate.query(statement);
 		
-		if (operation.hasTimeoutMillis()) {
+		if (statement.hasTimeoutMillis()) {
 			
-			result = result.timeout(operation.getTimeoutMillis(), TimeUnit.MILLISECONDS, 
-					Observable.<QueryResult>error(new DattyOperationException(DattyError.ErrCode.TIMEOUT, operation)));
+			result = result.timeout(statement.getTimeoutMillis(), TimeUnit.MILLISECONDS, 
+					Observable.<RecordResult>error(new DattyOperationException(DattyError.ErrCode.TIMEOUT, statement)));
 			
 		}
 		
@@ -56,7 +56,7 @@ public class DattyQueryDriver implements DattyQuery {
 			public void call(Throwable t) {
 
 				if (!(t instanceof DattyOperationException)) {
-					throw new DattyOperationException(DattyError.ErrCode.UNKNOWN, operation, t);
+					throw new DattyOperationException(DattyError.ErrCode.UNKNOWN, statement, t);
 				}
 				
 			}

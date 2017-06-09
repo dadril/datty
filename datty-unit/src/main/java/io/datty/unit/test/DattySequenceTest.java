@@ -25,6 +25,7 @@ import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
 import io.datty.api.operation.GetOperation;
 import io.datty.api.operation.PutOperation;
+import io.datty.api.operation.RecordOperation;
 import io.datty.api.result.GetResult;
 import io.datty.api.result.PutResult;
 import rx.Observable;
@@ -41,7 +42,7 @@ public class DattySequenceTest extends AbstractDattyUnitTest {
 	@Test
 	public void testEmpty() {
 		
-		Observable<DattyOperation> input = Observable.empty();
+		Observable<RecordOperation> input = Observable.empty();
 		
 		Iterable<DattyResult> result = dattyManager.getDatty().executeSequence(input).toBlocking().toIterable();
 		
@@ -56,9 +57,9 @@ public class DattySequenceTest extends AbstractDattyUnitTest {
 		
 		String majorKey = UUID.randomUUID().toString();
 		
-		DattyOperation getOp = new GetOperation(SET_NAME, majorKey).allMinorKeys();
+		RecordOperation getOp = new GetOperation(SET_NAME, majorKey).allMinorKeys();
 		
-		Observable<DattyOperation> input = Observable.just(getOp);
+		Observable<RecordOperation> input = Observable.just(getOp);
 		
 		Iterable<DattyResult> results = dattyManager.getDatty().executeSequence(input).toBlocking().toIterable();
 		List<DattyResult> list = Lists.newArrayList(results);
@@ -82,10 +83,10 @@ public class DattySequenceTest extends AbstractDattyUnitTest {
 		 * Put
 		 */
 		
-		DattyOperation put1 = new PutOperation(SET_NAME, majorKey).addValue(minorKey, value());
-		DattyOperation put2 = new PutOperation(SET_NAME, majorKeyOther).addValue(minorKey, value());
+		RecordOperation put1 = new PutOperation(SET_NAME, majorKey).addValue(minorKey, value());
+		RecordOperation put2 = new PutOperation(SET_NAME, majorKeyOther).addValue(minorKey, value());
 		
-		Observable<DattyOperation> input = Observable.just(put1, put2);
+		Observable<RecordOperation> input = Observable.just(put1, put2);
 		
 		Iterable<DattyResult> iterable = dattyManager.getDatty().executeSequence(input).toBlocking().toIterable();
 		List<DattyResult> results = Lists.newArrayList(iterable);
@@ -103,8 +104,8 @@ public class DattySequenceTest extends AbstractDattyUnitTest {
 		 * Get
 		 */
 		
-		DattyOperation get1 = new GetOperation(SET_NAME, majorKey).addMinorKey(minorKey);
-		DattyOperation get2 = new GetOperation(SET_NAME, majorKeyOther).addMinorKey(minorKey);
+		RecordOperation get1 = new GetOperation(SET_NAME, majorKey).addMinorKey(minorKey);
+		RecordOperation get2 = new GetOperation(SET_NAME, majorKeyOther).addMinorKey(minorKey);
 		
 		input = Observable.just(get1, get2);
 		

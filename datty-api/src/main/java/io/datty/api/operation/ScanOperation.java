@@ -20,7 +20,7 @@ package io.datty.api.operation;
  *
  */
 
-public class ScanOperation extends AbstractQueryOperation<ScanOperation> {
+public class ScanOperation extends AbstractSetOperation<ScanOperation> {
 
 	public ScanOperation(String setName) {
 		super(setName);

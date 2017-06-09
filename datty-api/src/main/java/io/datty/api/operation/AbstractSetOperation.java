@@ -14,16 +14,16 @@
 package io.datty.api.operation;
 
 import io.datty.api.DattyConstants;
-import io.datty.api.result.QueryResult;
+import io.datty.api.result.RecordResult;
 
 /**
- * AbstractQueryOperation
+ * AbstractSetOperation
  * 
  * @author Alex Shvid
  *
  */
 
-public abstract class AbstractQueryOperation<O extends QueryOperation> implements QueryOperation {
+public abstract class AbstractSetOperation<O extends SetOperation> implements SetOperation {
 
 	protected String setName;
 
@@ -31,9 +31,9 @@ public abstract class AbstractQueryOperation<O extends QueryOperation> implement
 	
 	protected int timeoutMillis = DattyConstants.UNSET_TIMEOUT;
 	
-	protected QueryResult fallback;
+	protected RecordResult fallback;
 	
-	public AbstractQueryOperation(String setName) {
+	public AbstractSetOperation(String setName) {
 		this.setName = setName;
 	}
 	
@@ -68,16 +68,16 @@ public abstract class AbstractQueryOperation<O extends QueryOperation> implement
 	}
 	
 	@Override
-	public QueryResult getFallback() {
+	public RecordResult getFallback() {
 		return fallback;
 	}
 
-	public O onFallback(QueryResult fallback) {
-		this.fallback = fallback.setOperation(castThis());
+	public O onFallback(RecordResult fallback) {
+		this.fallback = fallback;
 		return castThis();
 	}
 	
-	public O withFallback(QueryResult fallback) {
+	public O withFallback(RecordResult fallback) {
 		return onFallback(fallback);
 	}
 	

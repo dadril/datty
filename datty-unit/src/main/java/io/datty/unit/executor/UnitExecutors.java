@@ -14,6 +14,7 @@
 package io.datty.unit.executor;
 
 import io.datty.api.DattyOperation.OpCode;
+import io.datty.api.operation.SetOperation;
 import io.datty.api.operation.TypedOperation;
 import io.datty.api.result.TypedResult;
 
@@ -26,9 +27,15 @@ import io.datty.api.result.TypedResult;
 
 public final class UnitExecutors {
 
+	private final static SetOperationExecutor<?>[] setCodeList = new SetOperationExecutor<?>[OpCode.max() + 1];
+	
 	private final static OperationExecutor<?, ?>[] codeList = new OperationExecutor<?, ?>[OpCode.max() + 1];
 	
 	static {
+		
+		setCodeList[OpCode.CLEAR.getCode()] = ClearExecutor.INSTANCE;
+		setCodeList[OpCode.SIZE.getCode()] = SizeExecutor.INSTANCE;
+		setCodeList[OpCode.SCAN.getCode()] = ScanExecutor.INSTANCE;
 		
 		codeList[OpCode.EXISTS.getCode()] = ExistsExecutor.INSTANCE;
 		codeList[OpCode.GET.getCode()] = GetExecutor.INSTANCE;
@@ -39,6 +46,11 @@ public final class UnitExecutors {
 	}
 
 	private UnitExecutors() {
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <O extends SetOperation> SetOperationExecutor<O> findSetExecutor(OpCode opcode) {
+		return (SetOperationExecutor<O>) setCodeList[opcode.getCode()];
 	}
 	
 	@SuppressWarnings("unchecked")

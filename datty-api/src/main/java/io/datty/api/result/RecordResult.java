@@ -18,21 +18,18 @@ import java.util.Set;
 
 import io.datty.api.DattyResult;
 import io.datty.api.DattyRow;
-import io.datty.api.operation.QueryOperation;
 import io.datty.api.operation.Version;
 import io.netty.buffer.ByteBuf;
 
 /**
- * QueryResult
+ * RecordResult
  * 
  * @author Alex Shvid
  *
  */
 
-public class QueryResult implements DattyResult {
+public class RecordResult implements DattyResult {
 
-	private QueryOperation operation;
-	
 	private String majorKey;
 	
 	/**
@@ -50,23 +47,14 @@ public class QueryResult implements DattyResult {
 	
 	private long count;
 	
-	public QueryResult() {
+	public RecordResult() {
 	}
 	
-	public QueryOperation getOperation() {
-		return operation;
-	}
-
-	public QueryResult setOperation(QueryOperation operation) {
-		this.operation = operation;
-		return this;
-	}
-
 	public String getMajorKey() {
 		return majorKey;
 	}
 
-	public QueryResult setMajorKey(String majorKey) {
+	public RecordResult setMajorKey(String majorKey) {
 		this.majorKey = majorKey;
 		return this;
 	}
@@ -75,7 +63,7 @@ public class QueryResult implements DattyResult {
 		return row;
 	}
 	
-	public QueryResult setRow(DattyRow row) {
+	public RecordResult setRow(DattyRow row) {
 		this.row = row;
 		return this;
 	}
@@ -84,7 +72,7 @@ public class QueryResult implements DattyResult {
 		return row != null;
 	}
 	
-	public QueryResult addValue(String minorKey, ByteBuf value) {
+	public RecordResult addValue(String minorKey, ByteBuf value) {
 		if (row == null) {
 			row = new DattyRow();
 		}
@@ -100,7 +88,7 @@ public class QueryResult implements DattyResult {
 		return version;
 	}
 	
-	public QueryResult setVersion(Version version) {
+	public RecordResult setVersion(Version version) {
 		this.version = version;
 		return this;
 	}
@@ -159,12 +147,12 @@ public class QueryResult implements DattyResult {
 	
 	@Override
 	public ResCode getCode() {
-		return ResCode.QUERY;
+		return ResCode.RECORD;
 	}
 
 	@Override
 	public String toString() {
-		return "QueryResult [operation=" + operation + ", majorKey=" + majorKey + ", version=" + version + ", row=" + row
+		return "SetResult [majorKey=" + majorKey + ", version=" + version + ", row=" + row
 				+ ", count=" + count + "]";
 	}
 

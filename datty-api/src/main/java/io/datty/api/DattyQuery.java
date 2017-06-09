@@ -13,8 +13,7 @@
  */
 package io.datty.api;
 
-import io.datty.api.operation.QueryOperation;
-import io.datty.api.result.QueryResult;
+import io.datty.api.result.RecordResult;
 import rx.Observable;
 
 /**
@@ -27,12 +26,12 @@ import rx.Observable;
 public interface DattyQuery {
 
 	/**
-	 * Retrieve or update data by using query
+	 * Retrieve or update data by using statement
 	 * 
-	 * @param query - datty query operation
+	 * @param statement - datty statement
 	 * @return not null observable of results
 	 */
 	
-	Observable<QueryResult> executeQuery(QueryOperation query);
+	Observable<RecordResult> query(DattyStatement statement);
 	
 }

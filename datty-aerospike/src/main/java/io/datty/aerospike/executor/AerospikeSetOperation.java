@@ -11,41 +11,30 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.aerospike.executor;
 
-import java.util.List;
-
-import io.datty.api.operation.RecordOperation;
+import io.datty.aerospike.AerospikeSet;
+import io.datty.api.operation.SetOperation;
+import io.datty.api.result.RecordResult;
 import rx.Observable;
-import rx.Single;
 
 /**
- * DattyBatch
- * 
- * Batch or bulk operations
+ * AerospikeSetOperation
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattyBatch {
+public interface AerospikeSetOperation<O extends SetOperation> {
 
 	/**
-	 * Executes sequence of datty operations
+	 * Executes whole Set operation
 	 * 
-	 * @param operations - sequence of operations
-	 * @return sequence of results
+	 * @param set - aerospike set
+	 * @param operation - set operation
+	 * @return not null results
 	 */
 	
-	Single<List<DattyResult>> executeBatch(List<RecordOperation> operations);
-	
-	/**
-	 * Executes sequence of datty operations
-	 * 
-	 * @param operations - sequence of operations
-	 * @return sequence of results
-	 */
-	
-	Observable<DattyResult> executeSequence(Observable<RecordOperation> operations);
+	Observable<RecordResult> execute(AerospikeSet set, O operation);
 	
 }

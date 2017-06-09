@@ -15,11 +15,15 @@ package io.datty.aerospike;
 
 import io.datty.aerospike.executor.AerospikeOperation;
 import io.datty.aerospike.executor.AerospikeOperations;
+import io.datty.aerospike.executor.AerospikeSetOperation;
 import io.datty.api.DattyError.ErrCode;
 import io.datty.api.DattySingle;
+import io.datty.api.operation.SetOperation;
 import io.datty.api.operation.TypedOperation;
+import io.datty.api.result.RecordResult;
 import io.datty.api.result.TypedResult;
 import io.datty.support.exception.DattyOperationException;
+import rx.Observable;
 import rx.Single;
 import rx.functions.Func1;
 
@@ -37,7 +41,29 @@ public class AerospikeDattySingle implements DattySingle {
 	public AerospikeDattySingle(AerospikeDattyManager manager) {
 		this.manager = manager;
 	}
-	
+
+	@Override
+	public <O extends SetOperation> Observable<RecordResult> execute(O operation) {
+
+		String setName = operation.getSetName();
+		if (setName == null) {
+			return Observable.error(new DattyOperationException(ErrCode.BAD_ARGUMENTS, "empty setName", operation));
+		}
+		
+		AerospikeSet set = manager.getAerospikeSet(setName);
+		if (set == null) {
+			return Observable.error(new DattyOperationException(ErrCode.SET_NOT_FOUND, setName, operation));
+		}
+		
+		AerospikeSetOperation<O> aerospikeSetOperation = AerospikeOperations.findSet(operation.getCode());
+		
+		if (aerospikeSetOperation == null) {
+			return Observable.error(new DattyOperationException(ErrCode.UNKNOWN_OPERATION, "unknown operation: " + operation.getCode().name(), operation));
+		}
+		
+		return aerospikeSetOperation.execute(set, operation);
+	}
+
 	@Override
 	public <O extends TypedOperation<O, R>, R extends TypedResult<O>> Single<R> execute(O operation) {
 

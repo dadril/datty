@@ -11,41 +11,33 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.unit.executor;
 
-import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 
-import io.datty.api.operation.RecordOperation;
+import io.datty.api.operation.SizeOperation;
+import io.datty.api.result.RecordResult;
+import io.datty.unit.UnitRecord;
 import rx.Observable;
-import rx.Single;
 
 /**
- * DattyBatch
- * 
- * Batch or bulk operations
+ * SizeExecutor
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattyBatch {
+public enum SizeExecutor implements SetOperationExecutor<SizeOperation> {
 
-	/**
-	 * Executes sequence of datty operations
-	 * 
-	 * @param operations - sequence of operations
-	 * @return sequence of results
-	 */
-	
-	Single<List<DattyResult>> executeBatch(List<RecordOperation> operations);
-	
-	/**
-	 * Executes sequence of datty operations
-	 * 
-	 * @param operations - sequence of operations
-	 * @return sequence of results
-	 */
-	
-	Observable<DattyResult> executeSequence(Observable<RecordOperation> operations);
-	
+	INSTANCE;
+
+	@Override
+	public Observable<RecordResult> execute(ConcurrentMap<String, UnitRecord> recordMap, SizeOperation operation) {
+		
+		RecordResult result = new RecordResult();
+		result.setCount(recordMap.size());
+
+		return Observable.just(result);
+	}
+
 }

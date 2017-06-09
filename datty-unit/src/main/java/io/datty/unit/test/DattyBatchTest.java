@@ -21,10 +21,10 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
 import io.datty.api.operation.GetOperation;
 import io.datty.api.operation.PutOperation;
+import io.datty.api.operation.RecordOperation;
 import io.datty.api.result.GetResult;
 import io.datty.api.result.PutResult;
 
@@ -40,7 +40,7 @@ public class DattyBatchTest extends AbstractDattyUnitTest {
 	@Test
 	public void testEmpty() {
 		
-		List<DattyResult> result = dattyManager.getDatty().executeBatch(Collections.<DattyOperation>emptyList()).toBlocking().value();
+		List<DattyResult> result = dattyManager.getDatty().executeBatch(Collections.<RecordOperation>emptyList()).toBlocking().value();
 		
 		Assert.assertTrue(result.isEmpty());
 		
@@ -51,7 +51,7 @@ public class DattyBatchTest extends AbstractDattyUnitTest {
 		
 		String majorKey = UUID.randomUUID().toString();
 		
-		List<DattyOperation> batch = new ArrayList<DattyOperation>();
+		List<RecordOperation> batch = new ArrayList<RecordOperation>();
 		batch.add(new GetOperation(SET_NAME, majorKey).allMinorKeys());
 		
 		List<DattyResult> results = dattyManager.getDatty().executeBatch(batch).toBlocking().value();
@@ -75,7 +75,7 @@ public class DattyBatchTest extends AbstractDattyUnitTest {
 		 * Put
 		 */
 		
-		List<DattyOperation> batch = new ArrayList<DattyOperation>();
+		List<RecordOperation> batch = new ArrayList<RecordOperation>();
 		batch.add(new PutOperation(SET_NAME, majorKey).addValue(minorKey, value()));
 		batch.add(new PutOperation(SET_NAME, majorKeyOther).addValue(minorKey, value()));
 		
@@ -94,7 +94,7 @@ public class DattyBatchTest extends AbstractDattyUnitTest {
 		 * Get
 		 */
 		
-		batch = new ArrayList<DattyOperation>();
+		batch = new ArrayList<RecordOperation>();
 		batch.add(new GetOperation(SET_NAME, majorKey).addMinorKey(minorKey));
 		batch.add(new GetOperation(SET_NAME, majorKeyOther).addMinorKey(minorKey));
 		

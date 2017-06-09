@@ -21,6 +21,7 @@ import io.datty.api.DattyBatch;
 import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
 import io.datty.api.DattySingle;
+import io.datty.api.operation.RecordOperation;
 import io.datty.api.operation.TypedOperation;
 import rx.Completable;
 import rx.Observable;
@@ -44,7 +45,7 @@ public class DattyBatchDriver implements DattyBatch {
 	}
 	
 	@Override
-	public Single<List<DattyResult>> executeBatch(List<DattyOperation> operations) {
+	public Single<List<DattyResult>> executeBatch(List<RecordOperation> operations) {
 		
 		if (operations.isEmpty()) {
 			return Single.just(Collections.<DattyResult>emptyList());
@@ -91,7 +92,7 @@ public class DattyBatchDriver implements DattyBatch {
 	}
 
 	@Override
-	public Observable<DattyResult> executeSequence(Observable<DattyOperation> operations) {
+	public Observable<DattyResult> executeSequence(Observable<RecordOperation> operations) {
 		
 		Observable<DattyResult> results = operations.flatMap(new Func1<DattyOperation, Observable<DattyResult>>() {
 			

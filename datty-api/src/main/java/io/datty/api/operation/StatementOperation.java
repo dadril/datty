@@ -22,7 +22,7 @@ import java.util.Set;
  *
  */
 
-public interface StatementOperation extends QueryOperation {
+public interface StatementOperation extends SetOperation {
 
 	/**
 	 * Is all keys are requested

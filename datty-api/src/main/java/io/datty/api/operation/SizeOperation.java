@@ -7,7 +7,7 @@ package io.datty.api.operation;
  *
  */
 
-public class SizeOperation extends AbstractQueryOperation<SizeOperation> {
+public class SizeOperation extends AbstractSetOperation<SizeOperation> {
 
 	public SizeOperation(String setName) {
 		super(setName);
