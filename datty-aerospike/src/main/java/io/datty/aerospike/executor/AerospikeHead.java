@@ -22,25 +22,25 @@ import com.aerospike.client.policy.QueryPolicy;
 
 import io.datty.aerospike.AerospikeSet;
 import io.datty.aerospike.AerospikeDattyManager;
-import io.datty.api.operation.ExistsOperation;
-import io.datty.api.result.ExistsResult;
+import io.datty.api.operation.HeadOperation;
+import io.datty.api.result.HeadResult;
 import io.datty.support.LongVersion;
 import rx.Single;
 import rx.functions.Func1;
 
 /**
- * AerospikeExists
+ * AerospikeHead
  * 
  * @author Alex Shvid
  *
  */
 
-public enum AerospikeExists implements AerospikeOperation<ExistsOperation, ExistsResult> {
+public enum AerospikeHead implements AerospikeOperation<HeadOperation, HeadResult> {
 
 	INSTANCE;
 	
 	@Override
-	public Single<ExistsResult> execute(AerospikeSet set, final ExistsOperation operation) {
+	public Single<HeadResult> execute(AerospikeSet set, final HeadOperation operation) {
 		
 		AerospikeDattyManager manager = set.getParent();
 		QueryPolicy queryPolicy = set.getConfig().getQueryPolicy(operation, false);
@@ -59,19 +59,19 @@ public enum AerospikeExists implements AerospikeOperation<ExistsOperation, Exist
 			 result = manager.getClient().get(queryPolicy, recordKey, binNames, set.singleExceptionTransformer(operation, false));
 		}
 		
-		return result.map(new Func1<Record, ExistsResult>() {
+		return result.map(new Func1<Record, HeadResult>() {
 
 			@Override
-			public ExistsResult call(Record rec) {
-				return toExistsResult(rec, operation);
+			public HeadResult call(Record rec) {
+				return toHeadResult(rec, operation);
 			}
 			
 		});
 	}
 	
-	private ExistsResult toExistsResult(Record record, ExistsOperation operation) {
+	private HeadResult toHeadResult(Record record, HeadOperation operation) {
 		
-		ExistsResult result = new ExistsResult();
+		HeadResult result = new HeadResult();
 		
 		if (record == null) {
 			return result;

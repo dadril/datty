@@ -23,7 +23,7 @@ import io.datty.api.result.RecordResult;
  *
  */
 
-public abstract class AbstractSetOperation<O extends SetOperation> implements SetOperation {
+abstract class AbstractSetOperation<O extends SetOperation> implements SetOperation {
 
 	protected String setName;
 

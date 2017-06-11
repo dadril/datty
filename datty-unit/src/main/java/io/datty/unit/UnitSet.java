@@ -27,7 +27,7 @@ import io.datty.api.DattySet;
 import io.datty.api.DattyManager;
 import io.datty.api.operation.CompareAndSetOperation;
 import io.datty.api.operation.ExecuteOperation;
-import io.datty.api.operation.ExistsOperation;
+import io.datty.api.operation.HeadOperation;
 import io.datty.api.operation.GetOperation;
 import io.datty.api.operation.PutOperation;
 import io.datty.support.exception.DattyException;
@@ -111,13 +111,13 @@ public class UnitSet implements DattySet {
 	}
 
 	@Override
+	public HeadOperation head(String majorKey) {
+		return new HeadOperation().setSetName(name).setMajorKey(majorKey).setDatty(parent.getDatty());
+	}
+	
+	@Override
 	public GetOperation get(String majorKey) {
 		return new GetOperation().setSetName(name).setMajorKey(majorKey).setDatty(parent.getDatty());
-	}
-
-	@Override
-	public ExistsOperation exists(String majorKey) {
-		return new ExistsOperation().setSetName(name).setMajorKey(majorKey).setDatty(parent.getDatty());
 	}
 
 	@Override

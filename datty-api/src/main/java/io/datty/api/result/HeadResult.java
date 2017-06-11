@@ -18,17 +18,17 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import io.datty.api.operation.ExistsOperation;
+import io.datty.api.operation.HeadOperation;
 import io.datty.api.operation.Version;
 
 /**
- * ExistsResult
+ * HeadResult
  * 
  * @author Alex Shvid
  *
  */
 
-public class ExistsResult extends AbstractResult<ExistsOperation, ExistsResult> {
+public class HeadResult extends AbstractResult<HeadOperation, HeadResult> {
 
 	/**
 	 * Record exists only if version exists too
@@ -46,7 +46,7 @@ public class ExistsResult extends AbstractResult<ExistsOperation, ExistsResult> 
 	
 	private Set<String> minorKeys;
 	
-	public ExistsResult() {
+	public HeadResult() {
 	}
 	
 	public boolean hasVersion() {
@@ -57,7 +57,7 @@ public class ExistsResult extends AbstractResult<ExistsOperation, ExistsResult> 
 		return version;
 	}
 	
-	public ExistsResult setVersion(Version version) {
+	public HeadResult setVersion(Version version) {
 		this.version = version;
 		return this;
 	}
@@ -102,7 +102,7 @@ public class ExistsResult extends AbstractResult<ExistsOperation, ExistsResult> 
 		return this.minorKeys.contains(minorKey);
 	}
 	
-	public ExistsResult addMinorKey(String minorKey) {
+	public HeadResult addMinorKey(String minorKey) {
 		if (this.minorKeys == null) {
 			this.minorKeys = Collections.singleton(minorKey);
 		}
@@ -115,7 +115,7 @@ public class ExistsResult extends AbstractResult<ExistsOperation, ExistsResult> 
 		return this;
 	}
 	
-	public ExistsResult addMinorKeys(Collection<String> minorKeys) {
+	public HeadResult addMinorKeys(Collection<String> minorKeys) {
 		if (this.minorKeys == null) {
 			this.minorKeys = new HashSet<String>(minorKeys);
 		}
@@ -130,12 +130,12 @@ public class ExistsResult extends AbstractResult<ExistsOperation, ExistsResult> 
 	
 	@Override
 	public ResCode getCode() {
-		return ResCode.EXISTS;
+		return ResCode.HEAD;
 	}
 
 	@Override
 	public String toString() {
-		return "ExistsResult [version=" + version + ", minorKeys=" + minorKeys + "]";
+		return "HeadResult [version=" + version + ", minorKeys=" + minorKeys + "]";
 	}
 
 }

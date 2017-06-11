@@ -25,14 +25,14 @@ import io.datty.api.DattyResult;
 import io.datty.api.DattyRow;
 import io.datty.api.UpdatePolicy;
 import io.datty.api.operation.ClearOperation;
-import io.datty.api.operation.ExistsOperation;
+import io.datty.api.operation.HeadOperation;
 import io.datty.api.operation.GetOperation;
 import io.datty.api.operation.PutOperation;
 import io.datty.api.operation.RecordOperation;
 import io.datty.api.operation.RemoveOperation;
 import io.datty.api.operation.ScanOperation;
 import io.datty.api.operation.SizeOperation;
-import io.datty.api.result.ExistsResult;
+import io.datty.api.result.HeadResult;
 import io.datty.api.result.GetResult;
 import io.datty.api.result.PutResult;
 import io.datty.api.result.RecordResult;
@@ -227,9 +227,9 @@ public class DattyTemplate implements DattyOperations {
 		
 	}
 
-	protected ExistsOperation toExistsOperation(DattyPersistentEntity<?> entityMetadata, DattyId id) {
+	protected HeadOperation toExistsOperation(DattyPersistentEntity<?> entityMetadata, DattyId id) {
 		
-		ExistsOperation op = new ExistsOperation(entityMetadata.getSetName())
+		HeadOperation op = new HeadOperation(entityMetadata.getSetName())
 		.setSuperKey(id.getSuperKey())
 		.setMajorKey(id.getMajorKey());
 		
@@ -252,12 +252,12 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		ExistsOperation existsOp = toExistsOperation(entityMetadata, id);
+		HeadOperation existsOp = toExistsOperation(entityMetadata, id);
 		
-		return datty.execute(existsOp).map(new Func1<ExistsResult, Boolean>() {
+		return datty.execute(existsOp).map(new Func1<HeadResult, Boolean>() {
 
 			@Override
-			public Boolean call(ExistsResult res) {
+			public Boolean call(HeadResult res) {
 				return res.exists();
 			}
 			
@@ -272,19 +272,19 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		Single<ExistsOperation> existsOp = id.map(new Func1<DattyId, ExistsOperation>() {
+		Single<HeadOperation> existsOp = id.map(new Func1<DattyId, HeadOperation>() {
 
 			@Override
-			public ExistsOperation call(DattyId dattyId) {
+			public HeadOperation call(DattyId dattyId) {
 				return toExistsOperation(entityMetadata, dattyId);
 			}
 			
 		});
 		
-		return datty.execute(existsOp).map(new Func1<ExistsResult, Boolean>() {
+		return datty.execute(existsOp).map(new Func1<HeadResult, Boolean>() {
 
 			@Override
-			public Boolean call(ExistsResult res) {
+			public Boolean call(HeadResult res) {
 				return res.exists();
 			}
 			

@@ -29,7 +29,7 @@ import io.netty.buffer.ByteBuf;
 public interface DattyOperationIO<O extends DattyOperation> {
 
 	/**
-	 * Creates new operation
+	 * Creates a new operation
 	 * 
 	 * @return creates a new operation
 	 */

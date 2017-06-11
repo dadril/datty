@@ -13,38 +13,33 @@
  */
 package io.datty.api.operation;
 
+import io.datty.api.DattyOperationIO;
+import io.datty.msgpack.MessageReader;
+import io.datty.msgpack.MessageWriter;
+import io.netty.buffer.ByteBuf;
+
 /**
- * Abstract interface that provides version of record
+ * AbstractOperationIO
  * 
  * @author Alex Shvid
  *
  */
 
-public interface Version {
+@SuppressWarnings("rawtypes")
+abstract class AbstractOperationIO<O extends AbstractOperation> implements DattyOperationIO<O> {
 
-	/**
-	 * Gets version type
-	 * 
-	 * @return not null version type
-	 */
-	
-	VersionType type();
-	
-	/**
-	 * Gets version value as a long
-	 * 
-	 * @return not null version
-	 */
-	
-	long asLong();
-	
-	/**
-	 * Gets version value as a string
-	 * 
-	 * @return not null version
-	 */
-	
-	String asString();
-	
-	
+	@Override
+	public void readField(O operation, int fieldCode, MessageReader<Integer> reader, ByteBuf source) {
+
+		
+	}
+
+	@Override
+	public ByteBuf write(O operation, MessageWriter writer, ByteBuf sink) {
+		
+		
+		
+		return null;
+	}
+
 }

@@ -14,37 +14,17 @@
 package io.datty.api.operation;
 
 /**
- * Abstract interface that provides version of record
+ * HeadOperationIO
  * 
  * @author Alex Shvid
  *
  */
 
-public interface Version {
+public class HeadOperationIO extends AbstractOperationIO<HeadOperation> {
 
-	/**
-	 * Gets version type
-	 * 
-	 * @return not null version type
-	 */
-	
-	VersionType type();
-	
-	/**
-	 * Gets version value as a long
-	 * 
-	 * @return not null version
-	 */
-	
-	long asLong();
-	
-	/**
-	 * Gets version value as a string
-	 * 
-	 * @return not null version
-	 */
-	
-	String asString();
-	
-	
+	@Override
+	public HeadOperation newOperation() {
+		return new HeadOperation();
+	}
+
 }

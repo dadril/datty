@@ -18,7 +18,7 @@ import java.util.Properties;
 
 import io.datty.api.operation.CompareAndSetOperation;
 import io.datty.api.operation.ExecuteOperation;
-import io.datty.api.operation.ExistsOperation;
+import io.datty.api.operation.HeadOperation;
 import io.datty.api.operation.GetOperation;
 import io.datty.api.operation.PutOperation;
 
@@ -72,6 +72,15 @@ public interface DattySet {
 	Map<String, String> getStatistics();
 	
 	/**
+	 * Creates head operation
+	 * 
+	 * @param majorKey - major key
+	 * @return not null exists operation
+	 */
+	
+	HeadOperation head(String majorKey);
+	
+	/**
 	 * Creates get operation
 	 * 
 	 * @param majorKey - major key
@@ -79,15 +88,6 @@ public interface DattySet {
 	 */
 	
 	GetOperation get(String majorKey);
-
-	/**
-	 * Creates exists operation
-	 * 
-	 * @param majorKey - major key
-	 * @return not null exists operation
-	 */
-	
-	ExistsOperation exists(String majorKey);
 	
 	/**
 	 * Creates set operation

@@ -18,16 +18,21 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import io.datty.api.result.ExistsResult;
+import io.datty.api.result.HeadResult;
 
 /**
- * Exists operation
+ * Head operation
+ * 
+ * This is the same as GetOperation but values will not be retrieved
+ * 
+ * Used to get version and to know what minor keys are in record.
+ * Also used to check if record exists or not.
  * 
  * @author Alex Shvid
  *
  */
 
-public class ExistsOperation extends AbstractOperation<ExistsOperation, ExistsResult> {
+public class HeadOperation extends AbstractOperation<HeadOperation, HeadResult> {
 
 	/**
 	 * If allMinorKeys flag set, then retrieve all list of minor keys in record
@@ -41,14 +46,14 @@ public class ExistsOperation extends AbstractOperation<ExistsOperation, ExistsRe
 	
 	private Set<String> minorKeys;
 	
-	public ExistsOperation() {
+	public HeadOperation() {
 	}
 	
-	public ExistsOperation(String setName) {
+	public HeadOperation(String setName) {
 		setSetName(setName);
 	}
 
-	public ExistsOperation(String setName, String majorKey) {
+	public HeadOperation(String setName, String majorKey) {
 		setSetName(setName).setMajorKey(majorKey);
 	}
 	
@@ -61,7 +66,7 @@ public class ExistsOperation extends AbstractOperation<ExistsOperation, ExistsRe
 	 * does not get list of minorKeys
 	 */
 	
-	public ExistsOperation anyMinorKey() {
+	public HeadOperation anyMinorKey() {
 		this.allMinorKeys = false;
 		if (minorKeys != null) {
 			minorKeys.clear();
@@ -77,7 +82,7 @@ public class ExistsOperation extends AbstractOperation<ExistsOperation, ExistsRe
 	 * If allMinorKeys flag set, then retrieve all list of minor keys in record
 	 */
 	
-	public ExistsOperation allMinorKeys(boolean all) {
+	public HeadOperation allMinorKeys(boolean all) {
 		this.allMinorKeys = all;
 		return this;
 	}
@@ -86,12 +91,12 @@ public class ExistsOperation extends AbstractOperation<ExistsOperation, ExistsRe
 	 * If allMinorKeys flag set, then retrieve all list of minor keys in record
 	 */
 	
-	public ExistsOperation allMinorKeys() {
+	public HeadOperation allMinorKeys() {
 		this.allMinorKeys = true;
 		return this;
 	}
 
-	public ExistsOperation addMinorKey(String minorKey) {
+	public HeadOperation addMinorKey(String minorKey) {
 		this.allMinorKeys = false;
 		if (this.minorKeys == null) {
 			this.minorKeys = Collections.singleton(minorKey);
@@ -105,7 +110,7 @@ public class ExistsOperation extends AbstractOperation<ExistsOperation, ExistsRe
 		return this;
 	}
 	
-	public ExistsOperation addMinorKeys(Collection<String> minorKeys) {
+	public HeadOperation addMinorKeys(Collection<String> minorKeys) {
 		this.allMinorKeys = false;
 		if (this.minorKeys == null) {
 			this.minorKeys = new HashSet<String>(minorKeys);
@@ -125,12 +130,12 @@ public class ExistsOperation extends AbstractOperation<ExistsOperation, ExistsRe
 
 	@Override
 	public OpCode getCode() {
-		return OpCode.EXISTS;
+		return OpCode.HEAD;
 	}
 
 	@Override
 	public String toString() {
-		return "ExistsOperation [allMinorKeys=" + allMinorKeys + ", minorKeys=" + minorKeys + ", setName=" + setName
+		return "HeadOperation [allMinorKeys=" + allMinorKeys + ", minorKeys=" + minorKeys + ", setName=" + setName
 				+ ", superKey=" + superKey + ", majorKey=" + majorKey + ", timeoutMillis=" + timeoutMillis + "]";
 	}
 

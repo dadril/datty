@@ -14,7 +14,7 @@
 package io.datty.api;
 
 /**
- * Type of the action if set exists
+ * Type of the action if Set exists
  * 
  * @author Alex Shvid
  *

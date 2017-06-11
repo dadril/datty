@@ -26,7 +26,7 @@ import rx.Single;
  *
  */
 
-public abstract class AbstractOperation<O extends TypedOperation<O, R>, R extends TypedResult<O>> implements TypedOperation<O, R> {
+abstract class AbstractOperation<O extends TypedOperation<O, R>, R extends TypedResult<O>> implements TypedOperation<O, R> {
 
 	protected DattySingle datty;
 	

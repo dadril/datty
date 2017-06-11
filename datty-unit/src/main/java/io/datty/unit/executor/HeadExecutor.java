@@ -15,28 +15,28 @@ package io.datty.unit.executor;
 
 import java.util.concurrent.ConcurrentMap;
 
-import io.datty.api.operation.ExistsOperation;
-import io.datty.api.result.ExistsResult;
+import io.datty.api.operation.HeadOperation;
+import io.datty.api.result.HeadResult;
 import io.datty.unit.UnitRecord;
 import rx.Single;
 
 /**
- * ExistsExecutor
+ * HeadExecutor
  * 
  * @author Alex Shvid
  *
  */
 
-public enum ExistsExecutor implements OperationExecutor<ExistsOperation, ExistsResult> {
+public enum HeadExecutor implements OperationExecutor<HeadOperation, HeadResult> {
 
 	INSTANCE;
 	
 	@Override
-	public Single<ExistsResult> execute(ConcurrentMap<String, UnitRecord> recordMap, ExistsOperation operation) {
+	public Single<HeadResult> execute(ConcurrentMap<String, UnitRecord> recordMap, HeadOperation operation) {
 		
 		UnitRecord record = recordMap.get(operation.getMajorKey());
 		
-		ExistsResult result = new ExistsResult();
+		HeadResult result = new HeadResult();
 		if (record != null) {
 		
 			result.setVersion(record.getVersion());

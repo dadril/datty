@@ -22,6 +22,6 @@ package io.datty.api.operation;
 
 public enum VersionType {
 
-	LONG;
+	LONG, STRING;
 	
 }

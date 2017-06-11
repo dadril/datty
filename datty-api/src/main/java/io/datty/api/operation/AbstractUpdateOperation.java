@@ -24,7 +24,7 @@ import io.datty.api.result.TypedResult;
  *
  */
 
-public abstract class AbstractUpdateOperation<O extends TypedOperation<O, R>, R extends TypedResult<O>> 
+abstract class AbstractUpdateOperation<O extends TypedOperation<O, R>, R extends TypedResult<O>> 
 	extends AbstractOperation<O, R> implements UpdateOperation<O, R> {
 
 	protected int ttlSeconds = DattyConstants.UNSET_TTL;

@@ -27,7 +27,7 @@ import io.netty.buffer.ByteBuf;
  *
  */
 
-public abstract class AbstractSetOperationIO<O extends AbstractSetOperation<O>> implements DattyOperationIO<O> {
+abstract class AbstractSetOperationIO<O extends AbstractSetOperation<O>> implements DattyOperationIO<O> {
 
 	@Override
 	public void readField(O operation, int fieldCode, MessageReader<Integer> reader, ByteBuf source) {
