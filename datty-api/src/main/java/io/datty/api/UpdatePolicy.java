@@ -22,6 +22,27 @@ package io.datty.api;
 
 public enum UpdatePolicy {
 	
-	MERGE, REPLACE;
+	MERGE(1), 
+	
+	REPLACE(2);
+	
+	private final int code;
+	
+	private UpdatePolicy(int code) {
+		this.code = code;
+	}
+
+	public int getCode() {
+		return code;
+	}
+	
+	public static UpdatePolicy findByCode(int code) {
+		for (UpdatePolicy v : values()) {
+			if (v.getCode() == code) {
+				return v;
+			}
+		}
+		return null;
+	}
 	
 }

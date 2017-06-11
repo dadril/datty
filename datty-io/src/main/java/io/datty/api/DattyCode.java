@@ -36,7 +36,8 @@ public final class DattyCode {
   public static final int FIELD_ALL_MINOR_KEYS = 13;   // Boolean
   public static final int FIELD_MINOR_KEYS = 14;       // Collection of Strings
   public static final int FIELD_TIMEOUT_MLS = 15;      // Integer
-  
+  public static final int FIELD_TTL_SEC = 16;          // Integer
+  public static final int FIELD_UPDATE_POLICY = 17;    // Integer
   
   public static final int FIELD_MAXCODE = 20;    
   
