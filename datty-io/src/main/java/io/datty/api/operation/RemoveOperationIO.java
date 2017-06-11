@@ -14,17 +14,17 @@
 package io.datty.api.operation;
 
 /**
- * HeadOperationIO
+ * RemoveOperationIO
  * 
  * @author Alex Shvid
  *
  */
 
-public class HeadOperationIO extends AbstractRecordOperationIO<HeadOperation> {
+public class RemoveOperationIO extends AbstractRecordOperationIO<RemoveOperation> {
 
 	@Override
-	public HeadOperation newOperation() {
-		return new HeadOperation();
+	public RemoveOperation newOperation() {
+		return new RemoveOperation();
 	}
 
 }

@@ -17,6 +17,9 @@ import io.datty.api.DattyCode;
 import io.datty.api.DattyOperation;
 import io.datty.api.DattyOperationIO;
 import io.datty.api.operation.ClearOperationIO;
+import io.datty.api.operation.GetOperationIO;
+import io.datty.api.operation.HeadOperationIO;
+import io.datty.api.operation.RemoveOperationIO;
 import io.datty.api.operation.ScanOperationIO;
 import io.datty.api.operation.SizeOperationIO;
 import io.datty.msgpack.MessageReader;
@@ -46,7 +49,9 @@ public final class DattyIOUtil {
 		codeOperations[DattyOperation.OpCode.SIZE.getCode()] = new SizeOperationIO();
 		codeOperations[DattyOperation.OpCode.SCAN.getCode()] = new ScanOperationIO();
 		
-		
+		codeOperations[DattyOperation.OpCode.HEAD.getCode()] = new HeadOperationIO();
+		codeOperations[DattyOperation.OpCode.GET.getCode()] = new GetOperationIO();
+		codeOperations[DattyOperation.OpCode.REMOVE.getCode()] = new RemoveOperationIO();
 		
 	}
 	
@@ -96,7 +101,10 @@ public final class DattyIOUtil {
 				throw new DattyException("expected field number");
 			}
 			
-			io.readField(operation, fieldNum.intValue(), reader, source);
+			boolean read = io.readField(operation, fieldNum.intValue(), reader, source);
+			if (!read) {
+				reader.skipValue(source, false);
+			}
 			
 		}
 		

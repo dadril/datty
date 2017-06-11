@@ -27,14 +27,15 @@ public final class DattyCode {
 	private DattyCode() {
 	}
 
-  public static final int FIELD_OPCODE = 1;      // Int
-  public static final int FIELD_RESCODE = 2;     // Int        
+  public static final int FIELD_OPCODE = 1;      // Integer
+  public static final int FIELD_RESCODE = 2;     // Integer        
 	
   public static final int FIELD_SET_NAME = 10;         // String
   public static final int FIELD_SUPER_KEY = 11;        // String  
   public static final int FIELD_MAJOR_KEY = 12;        // String
-  public static final int FIELD_MINOR_KEY = 13;        // String
-  public static final int FIELD_TIMEOUT_MLS = 14;      // Int
+  public static final int FIELD_ALL_MINOR_KEYS = 13;   // Boolean
+  public static final int FIELD_MINOR_KEYS = 14;       // Collection of Strings
+  public static final int FIELD_TIMEOUT_MLS = 15;      // Integer
   
   
   public static final int FIELD_MAXCODE = 20;    

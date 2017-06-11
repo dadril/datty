@@ -17,7 +17,6 @@ import io.datty.api.DattyCode;
 import io.datty.api.DattyOperationIO;
 import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.MessageWriter;
-import io.datty.msgpack.core.AbstractMessageWriter;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -30,62 +29,63 @@ import io.netty.buffer.ByteBuf;
 abstract class AbstractSetOperationIO<O extends AbstractSetOperation<O>> implements DattyOperationIO<O> {
 
 	@Override
-	public void readField(O operation, int fieldCode, MessageReader<Integer> reader, ByteBuf source) {
-		
-		Object value = reader.readValue(source, true);
+	public boolean readField(O operation, int fieldCode, MessageReader<Integer> reader, ByteBuf source) {
 		
 		switch(fieldCode) {
 		
 		case DattyCode.FIELD_SET_NAME:
-			operation.setSetName((String) value);
-			break;
+			operation.setSetName((String) reader.readValue(source, true));
+			return true;
 			
 		case DattyCode.FIELD_SUPER_KEY:
-			operation.setSuperKey((String) value);
-			break;			
+			operation.setSuperKey((String) reader.readValue(source, true));
+			return true;		
 		
 		case DattyCode.FIELD_TIMEOUT_MLS:
-			operation.setTimeoutMillis(((Long) value).intValue());
-			break;
+			operation.setTimeoutMillis(((Long) reader.readValue(source, true)).intValue());
+			return true;
 			
 		}
 		
+		return false;
 	}
 
 	@Override
 	public ByteBuf write(O operation, MessageWriter writer, ByteBuf sink) {
 		
-		int headerIndex = writer.skipHeader(AbstractMessageWriter.MAX_BYTE_HEADER_SIZE, sink);
+		FieldWriter fieldWriter = new FieldWriter(writer, sink);
 		
-		int size = 0;
+		writeFields(operation, fieldWriter);
 		
-		writer.writeValue(DattyCode.FIELD_OPCODE, sink); 
-		writer.writeValue(operation.getCode().getCode(), sink);
-		size++;
+		return fieldWriter.writeEnd();
+		
+	}
+	
+	/**
+	 * This method must be called first, because opcode must be first
+	 * 
+	 * @param operation - operation
+	 * @param fieldWriter - field writer
+	 */
+	
+	protected void writeFields(O operation, FieldWriter fieldWriter) {
+		
+		fieldWriter.writeField(DattyCode.FIELD_OPCODE, operation.getCode());
 		
 		String setName = operation.getSetName();
 		if (setName != null) {
-			writer.writeValue(DattyCode.FIELD_SET_NAME, sink);
-			writer.writeValue(setName, sink);
-			size++;
+			fieldWriter.writeField(DattyCode.FIELD_SET_NAME, setName);
 		}
 		
 		String superKey = operation.getSuperKey();
 		if (superKey != null) {
-			writer.writeValue(DattyCode.FIELD_SUPER_KEY, sink);
-			writer.writeValue(superKey, sink);
-			size++;
+			fieldWriter.writeField(DattyCode.FIELD_SUPER_KEY, superKey);
 		}
 		
 		if (operation.hasTimeoutMillis()) {
-			writer.writeValue(DattyCode.FIELD_TIMEOUT_MLS, sink);
-			writer.writeValue(operation.getTimeoutMillis(), sink);
-			size++;
+			fieldWriter.writeField(DattyCode.FIELD_TIMEOUT_MLS, operation.getTimeoutMillis());
 		}		
 		
-		writer.writeHeader(size, AbstractMessageWriter.MAX_BYTE_HEADER_SIZE, headerIndex, sink); 
-		
-		return sink;
 	}
 	
 }
