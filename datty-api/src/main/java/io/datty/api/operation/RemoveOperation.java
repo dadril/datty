@@ -22,7 +22,7 @@ import io.datty.api.result.RemoveResult;
  *
  */
 
-public class RemoveOperation extends AbstractColumnOperation<RemoveOperation, RemoveResult> {
+public class RemoveOperation extends AbstractRecordOperation<RemoveOperation, RemoveResult> {
 
 	public RemoveOperation() {
 	}

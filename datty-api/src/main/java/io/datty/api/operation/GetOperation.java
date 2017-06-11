@@ -22,7 +22,7 @@ import io.datty.api.result.GetResult;
  *
  */
 
-public class GetOperation extends AbstractColumnOperation<GetOperation, GetResult> {
+public class GetOperation extends AbstractRecordOperation<GetOperation, GetResult> {
 	
 	public GetOperation() {
 	}

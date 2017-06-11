@@ -27,7 +27,7 @@ import io.datty.api.result.HeadResult;
  *
  */
 
-public class HeadOperation extends AbstractColumnOperation<HeadOperation, HeadResult> {
+public class HeadOperation extends AbstractRecordOperation<HeadOperation, HeadResult> {
 
 	public HeadOperation() {
 	}

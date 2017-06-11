@@ -21,13 +21,13 @@ import java.util.Set;
 import io.datty.api.result.TypedResult;
 
 /**
- * Abstract column operation
+ * Abstract record operation
  * 
  * @author Alex Shvid
  *
  */
 
-abstract class AbstractColumnOperation<O extends TypedOperation<O, R>, R extends TypedResult<O>> extends AbstractOperation<O, R> implements TypedOperation<O, R> {
+abstract class AbstractRecordOperation<O extends TypedOperation<O, R>, R extends TypedResult<O>> extends AbstractOperation<O, R> implements TypedOperation<O, R> {
 
 	/**
 	 * If allMinorKeys flag set, then retrieve all list of minor keys in record
