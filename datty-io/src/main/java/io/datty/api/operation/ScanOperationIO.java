@@ -14,31 +14,17 @@
 package io.datty.api.operation;
 
 /**
- * ClearOperation
+ * ScanOperationIO
  * 
  * @author Alex Shvid
  *
  */
 
-public class ClearOperation extends AbstractSetOperation<ClearOperation> {
-
-	public ClearOperation() {
-	}
-	
-	public ClearOperation(String setName) {
-		setSetName(setName);
-	}
-	
-	@Override
-	public OpCode getCode() {
-		return OpCode.CLEAR;
-	}
+public class ScanOperationIO extends AbstractSetOperationIO<ScanOperation> {
 
 	@Override
-	public String toString() {
-		return "ClearOperation [setName=" + setName + ", superKey=" + superKey + ", timeoutMillis=" + timeoutMillis
-				+ ", fallback=" + fallback + ", getCode()=" + getCode() + "]";
+	public ScanOperation newOperation() {
+		return new ScanOperation();
 	}
-	
-	
+
 }

@@ -30,14 +30,6 @@ public abstract class AbstractUpdateOperation<O extends TypedOperation<O, R>, R 
 	protected int ttlSeconds = DattyConstants.UNSET_TTL;
 	protected UpdatePolicy updatePolicy = UpdatePolicy.MERGE;
 	
-	public AbstractUpdateOperation(String setName) {
-		super(setName);
-	}
-	
-	public AbstractUpdateOperation(String setName, String majorKey) {
-		super(setName, majorKey);
-	}
-
 	@Override
 	public boolean hasTtlSeconds() {
 		return ttlSeconds != DattyConstants.UNSET_TTL;
@@ -53,22 +45,12 @@ public abstract class AbstractUpdateOperation<O extends TypedOperation<O, R>, R 
 		return castThis();
 	}
 	
-	public O withTimeToLive(int ttlSeconds) {
-		this.ttlSeconds = ttlSeconds;
-		return castThis();
-	}
-	
 	@Override
 	public UpdatePolicy getUpdatePolicy() {
 		return updatePolicy;
 	}
 
 	public O setUpdatePolicy(UpdatePolicy updatePolicy) {
-		this.updatePolicy = updatePolicy;
-		return castThis();
-	}
-	
-	public O withPolicy(UpdatePolicy updatePolicy) {
 		this.updatePolicy = updatePolicy;
 		return castThis();
 	}

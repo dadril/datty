@@ -22,8 +22,11 @@ package io.datty.api.operation;
 
 public class ScanOperation extends AbstractSetOperation<ScanOperation> {
 
+	public ScanOperation() {
+	}
+	
 	public ScanOperation(String setName) {
-		super(setName);
+		setSetName(setName);
 	}
 	
 	@Override

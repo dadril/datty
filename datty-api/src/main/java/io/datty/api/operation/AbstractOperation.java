@@ -42,18 +42,14 @@ public abstract class AbstractOperation<O extends TypedOperation<O, R>, R extend
 	
 	protected Object upstreamContext;
 	
-	public AbstractOperation(String setName) {
-		this.setName = setName;
-	}
-	
-	public AbstractOperation(String setName, String majorKey) {
-		this.setName = setName;
-		this.majorKey = majorKey;
-	}
-
 	@Override
 	public String getSetName() {
 		return setName;
+	}
+	
+	public O setSetName(String setName) {
+		this.setName = setName;
+		return castThis();
 	}
 
 	@Override
@@ -86,12 +82,12 @@ public abstract class AbstractOperation<O extends TypedOperation<O, R>, R extend
 		return timeoutMillis;
 	}
 
-	public O withTimeoutMillis(int timeoutMillis) {
+	public O setTimeoutMillis(int timeoutMillis) {
 		this.timeoutMillis = timeoutMillis;
 		return castThis();
 	}
 	
-	public O withDatty(DattySingle datty) {
+	public O setDatty(DattySingle datty) {
 		this.datty = datty;
 		return castThis();
 	}
@@ -107,7 +103,12 @@ public abstract class AbstractOperation<O extends TypedOperation<O, R>, R extend
 	}
 
 	@Override
-	public O onFallback(R fallback) {
+	public boolean hasFallback() {
+		return fallback != null;
+	}
+	
+	@Override
+	public O setFallback(R fallback) {
 		if (fallback instanceof AbstractResult) {
 			@SuppressWarnings("unchecked")
 			AbstractResult<O, R> abstractResult = (AbstractResult<O, R>) fallback;
@@ -117,10 +118,6 @@ public abstract class AbstractOperation<O extends TypedOperation<O, R>, R extend
 		return castThis();
 	}
 	
-	public O withFallback(R fallback) {
-		return onFallback(fallback);
-	}
-
 	public boolean hasUpstreamContext() {
 		return upstreamContext != null;
 	}

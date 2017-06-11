@@ -28,6 +28,14 @@ import rx.Single;
 public interface TypedOperation<O extends TypedOperation<O, R>, R extends TypedResult<O>> extends RecordOperation {
 
 	/**
+	 * Checks if fallback exists
+	 * 
+	 * @return true if operation has fallback
+	 */
+	
+	boolean hasFallback();
+	
+	/**
 	 * Gets fallback result if exists
 	 * 
 	 * @return null or fallback
@@ -42,7 +50,7 @@ public interface TypedOperation<O extends TypedOperation<O, R>, R extends TypedR
 	 * @return this
 	 */
 	
-	O onFallback(R fallback);
+	O setFallback(R fallback);
 	
 	/**
 	 * Executes operation if is created from Cache

@@ -11,34 +11,32 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api.operation;
+package io.datty.api;
 
 /**
- * ClearOperation
+ * DattyCode
+ * 
+ * Serialization codes
  * 
  * @author Alex Shvid
  *
  */
 
-public class ClearOperation extends AbstractSetOperation<ClearOperation> {
+public final class DattyCode {
 
-	public ClearOperation() {
-	}
-	
-	public ClearOperation(String setName) {
-		setSetName(setName);
-	}
-	
-	@Override
-	public OpCode getCode() {
-		return OpCode.CLEAR;
+	private DattyCode() {
 	}
 
-	@Override
-	public String toString() {
-		return "ClearOperation [setName=" + setName + ", superKey=" + superKey + ", timeoutMillis=" + timeoutMillis
-				+ ", fallback=" + fallback + ", getCode()=" + getCode() + "]";
-	}
+  public static final int FIELD_OPCODE = 1;      // Int
+  public static final int FIELD_RESCODE = 2;     // Int        
 	
-	
+  public static final int FIELD_SET_NAME = 10;         // String
+  public static final int FIELD_SUPER_KEY = 11;        // String  
+  public static final int FIELD_MAJOR_KEY = 12;        // String
+  public static final int FIELD_MINOR_KEY = 13;        // String
+  public static final int FIELD_TIMEOUT_MLS = 14;      // Int
+  
+  
+  public static final int FIELD_MAXCODE = 20;    
+  
 }

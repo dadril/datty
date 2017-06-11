@@ -28,6 +28,8 @@ import io.netty.buffer.ByteBuf;
 
 public abstract class AbstractMessageWriter {
 
+	public static final int MAX_BYTE_HEADER_SIZE = (1 << 4) - 1;
+	
   public ByteBuf writeByte(byte value, ByteBuf buffer) {
     return buffer.writeByte(value);
   }

@@ -92,27 +92,27 @@ public class AerospikeSet implements DattySet {
 
 	@Override
 	public GetOperation get(String majorKey) {
-		return new GetOperation(name, majorKey).withDatty(parent.getDatty());
+		return new GetOperation(name, majorKey).setDatty(parent.getDatty());
 	}
 
 	@Override
 	public ExistsOperation exists(String majorKey) {
-		return new ExistsOperation(name, majorKey).withDatty(parent.getDatty());
+		return new ExistsOperation(name, majorKey).setDatty(parent.getDatty());
 	}
 
 	@Override
 	public PutOperation put(String majorKey) {
-		return new PutOperation(name, majorKey).withDatty(parent.getDatty());
+		return new PutOperation(name, majorKey).setDatty(parent.getDatty());
 	}
 
 	@Override
 	public CompareAndSetOperation compareAndSet(String majorKey) {
-		return new CompareAndSetOperation(name, majorKey).withDatty(parent.getDatty());
+		return new CompareAndSetOperation(name, majorKey).setDatty(parent.getDatty());
 	}
 
 	@Override
 	public ExecuteOperation execute(String majorKey) {
-		return new ExecuteOperation(name, majorKey).withDatty(parent.getDatty());
+		return new ExecuteOperation(name, majorKey).setDatty(parent.getDatty());
 	}
 	
 	@Override

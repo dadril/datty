@@ -32,14 +32,17 @@ public class RemoveOperation extends AbstractOperation<RemoveOperation, RemoveRe
 	private boolean allMinorKeys;
 	private Set<String> minorKeys;
 	
+	public RemoveOperation() {
+	}
+	
 	public RemoveOperation(String setName) {
-		super(setName);
+		setSetName(setName);
 	}
 
 	public RemoveOperation(String setName, String majorKey) {
-		super(setName, majorKey);
+		setSetName(setName).setMajorKey(majorKey);
 	}
-
+	
 	public boolean isAllMinorKeys() {
 		return allMinorKeys;
 	}
@@ -89,6 +92,10 @@ public class RemoveOperation extends AbstractOperation<RemoveOperation, RemoveRe
 		return OpCode.REMOVE;
 	}
 
-
+	@Override
+	public String toString() {
+		return "RemoveOperation [allMinorKeys=" + allMinorKeys + ", minorKeys=" + minorKeys + ", setName=" + setName
+				+ ", superKey=" + superKey + ", majorKey=" + majorKey + "]";
+	}
 
 }

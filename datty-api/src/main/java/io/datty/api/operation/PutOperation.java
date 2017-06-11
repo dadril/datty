@@ -28,15 +28,17 @@ public class PutOperation extends AbstractUpdateOperation<PutOperation, PutResul
 
 	private DattyRow row;
 	
+	public PutOperation() {
+	}
+	
 	public PutOperation(String setName) {
-		super(setName);
+		setSetName(setName);
 	}
 
 	public PutOperation(String setName, String majorKey) {
-		super(setName);
-		setMajorKey(majorKey);
+		setSetName(setName).setMajorKey(majorKey);
 	}
-
+	
 	public DattyRow getRow() {
 		return row;
 	}

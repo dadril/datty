@@ -32,14 +32,17 @@ public class GetOperation extends AbstractOperation<GetOperation, GetResult> {
 	private boolean allMinorKeys;
 	private Set<String> minorKeys;
 	
+	public GetOperation() {
+	}
+	
 	public GetOperation(String setName) {
-		super(setName);
+		setSetName(setName);
 	}
 
 	public GetOperation(String setName, String majorKey) {
-		super(setName, majorKey);
+		setSetName(setName).setMajorKey(majorKey);
 	}
-
+	
 	public boolean isAllMinorKeys() {
 		return allMinorKeys;
 	}

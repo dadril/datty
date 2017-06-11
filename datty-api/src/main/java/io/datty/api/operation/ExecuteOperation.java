@@ -29,14 +29,17 @@ public class ExecuteOperation extends AbstractUpdateOperation<ExecuteOperation, 
 	private String functionName;
 	private ByteBuf arguments;
 	
+	public ExecuteOperation() {
+	}
+	
 	public ExecuteOperation(String setName) {
-		super(setName);
+		setSetName(setName);
 	}
 
 	public ExecuteOperation(String setName, String majorKey) {
-		super(setName, majorKey);
+		setSetName(setName).setMajorKey(majorKey);
 	}
-
+	
 	public String getPackageName() {
 		return packageName;
 	}

@@ -9,8 +9,11 @@ package io.datty.api.operation;
 
 public class SizeOperation extends AbstractSetOperation<SizeOperation> {
 
+	public SizeOperation() {
+	}
+	
 	public SizeOperation(String setName) {
-		super(setName);
+		setSetName(setName);
 	}
 	
 	@Override

@@ -113,7 +113,7 @@ public class DattyTemplate implements DattyOperations {
 		.setRow(row)
 		.setUpdatePolicy(UpdatePolicy.MERGE)
 		.setUpstreamContext(entity)
-		.withTimeoutMillis(entityMetadata.getTimeoutMillis());
+		.setTimeoutMillis(entityMetadata.getTimeoutMillis());
 		
 	}
 	
@@ -163,7 +163,7 @@ public class DattyTemplate implements DattyOperations {
 		return new GetOperation(entityMetadata.getSetName())
 		.setSuperKey(id.getSuperKey())
 		.setMajorKey(id.getMajorKey())
-		.withTimeoutMillis(entityMetadata.getTimeoutMillis());
+		.setTimeoutMillis(entityMetadata.getTimeoutMillis());
 		
 	}
 	
@@ -240,7 +240,7 @@ public class DattyTemplate implements DattyOperations {
 			op.anyMinorKey();
 		}
 		
-		op.withTimeoutMillis(entityMetadata.getTimeoutMillis());
+		op.setTimeoutMillis(entityMetadata.getTimeoutMillis());
 		
 		return op;
 	}
@@ -298,7 +298,7 @@ public class DattyTemplate implements DattyOperations {
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
 		ScanOperation scanOp = new ScanOperation(entityMetadata.getSetName());
-		scanOp.withTimeoutMillis(entityMetadata.getTimeoutMillis());
+		scanOp.setTimeoutMillis(entityMetadata.getTimeoutMillis());
 		
 		return datty.execute(scanOp).map(new Func1<DattyResult, T>() {
 
@@ -368,7 +368,7 @@ public class DattyTemplate implements DattyOperations {
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
 		SizeOperation countOp = new SizeOperation(entityMetadata.getSetName());
-		countOp.withTimeoutMillis(entityMetadata.getTimeoutMillis());
+		countOp.setTimeoutMillis(entityMetadata.getTimeoutMillis());
 
 		return datty.execute(countOp).map(new Func1<RecordResult, Long>() {
 
@@ -386,7 +386,7 @@ public class DattyTemplate implements DattyOperations {
 		RemoveOperation removeOp = new RemoveOperation(entityMetadata.getSetName())
 		.setSuperKey(id.getSuperKey())
 		.setMajorKey(id.getMajorKey())
-		.withTimeoutMillis(entityMetadata.getTimeoutMillis());
+		.setTimeoutMillis(entityMetadata.getTimeoutMillis());
 
 		if (entityMetadata.hasMinorKey()) {
 			removeOp.addMinorKey(entityMetadata.getMinorKey());
@@ -473,7 +473,7 @@ public class DattyTemplate implements DattyOperations {
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
 		ClearOperation deleteOp = new ClearOperation(entityMetadata.getSetName())
-			.withTimeoutMillis(entityMetadata.getTimeoutMillis());
+			.setTimeoutMillis(entityMetadata.getTimeoutMillis());
 
 		return datty.execute(deleteOp).toCompletable();
 	}

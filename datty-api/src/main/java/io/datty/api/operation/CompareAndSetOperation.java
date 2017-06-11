@@ -34,14 +34,17 @@ public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSe
 	
 	private DattyRow row;
 
+	public CompareAndSetOperation() {
+	}
+	
 	public CompareAndSetOperation(String setName) {
-		super(setName);
+		setSetName(setName);
 	}
 
 	public CompareAndSetOperation(String setName, String majorKey) {
-		super(setName, majorKey);
+		setSetName(setName).setMajorKey(majorKey);
 	}
-
+	
 	public boolean hasVersion() {
 		return version != null;
 	}
@@ -51,11 +54,6 @@ public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSe
 	}
 
 	public CompareAndSetOperation setVersion(Version oldVersion) {
-		this.version = oldVersion;
-		return this;
-	}
-	
-	public CompareAndSetOperation withVersion(Version oldVersion) {
 		this.version = oldVersion;
 		return this;
 	}

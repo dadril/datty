@@ -33,10 +33,6 @@ public abstract class AbstractSetOperation<O extends SetOperation> implements Se
 	
 	protected RecordResult fallback;
 	
-	public AbstractSetOperation(String setName) {
-		this.setName = setName;
-	}
-	
 	@Override
 	public boolean hasTimeoutMillis() {
 		return timeoutMillis != DattyConstants.UNSET_TIMEOUT;
@@ -45,6 +41,11 @@ public abstract class AbstractSetOperation<O extends SetOperation> implements Se
 	@Override
 	public String getSetName() {
 		return setName;
+	}
+	
+	public O setSetName(String setName) {
+		this.setName = setName;
+		return castThis();
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public abstract class AbstractSetOperation<O extends SetOperation> implements Se
 		return timeoutMillis;
 	}
 
-	public O withTimeoutMillis(int timeoutMillis) {
+	public O setTimeoutMillis(int timeoutMillis) {
 		this.timeoutMillis = timeoutMillis;
 		return castThis();
 	}
@@ -72,13 +73,9 @@ public abstract class AbstractSetOperation<O extends SetOperation> implements Se
 		return fallback;
 	}
 
-	public O onFallback(RecordResult fallback) {
+	public O setFallback(RecordResult fallback) {
 		this.fallback = fallback;
 		return castThis();
-	}
-	
-	public O withFallback(RecordResult fallback) {
-		return onFallback(fallback);
 	}
 	
 	@SuppressWarnings("unchecked")
