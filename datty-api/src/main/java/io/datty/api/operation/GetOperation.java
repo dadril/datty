@@ -13,11 +13,6 @@
  */
 package io.datty.api.operation;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import io.datty.api.result.GetResult;
 
 /**
@@ -27,10 +22,7 @@ import io.datty.api.result.GetResult;
  *
  */
 
-public class GetOperation extends AbstractOperation<GetOperation, GetResult> {
-
-	private boolean allMinorKeys;
-	private Set<String> minorKeys;
+public class GetOperation extends AbstractColumnOperation<GetOperation, GetResult> {
 	
 	public GetOperation() {
 	}
@@ -41,50 +33,6 @@ public class GetOperation extends AbstractOperation<GetOperation, GetResult> {
 
 	public GetOperation(String setName, String majorKey) {
 		setSetName(setName).setMajorKey(majorKey);
-	}
-	
-	public boolean isAllMinorKeys() {
-		return allMinorKeys;
-	}
-
-	public GetOperation allMinorKeys(boolean all) {
-		this.allMinorKeys = all;
-		return this;
-	}
-	
-	public GetOperation allMinorKeys() {
-		this.allMinorKeys = true;
-		return this;
-	}
-	
-	public GetOperation addMinorKey(String minorKey) {
-		if (this.minorKeys == null) {
-			this.minorKeys = Collections.singleton(minorKey);
-		}
-		else {
-			if (this.minorKeys.size() == 1) {
-				this.minorKeys = new HashSet<String>(this.minorKeys);
-			}			
-			this.minorKeys.add(minorKey);
-		}
-		return this;
-	}
-	
-	public GetOperation addMinorKeys(Collection<String> minorKeys) {
-		if (this.minorKeys == null) {
-			this.minorKeys = new HashSet<String>(minorKeys);
-		}
-		else {
-			if (this.minorKeys.size() == 1) {
-				this.minorKeys = new HashSet<String>(this.minorKeys);
-			}
-			this.minorKeys.addAll(minorKeys);
-		}
-		return this;
-	}
-	
-	public Set<String> getMinorKeys() {
-		return minorKeys != null ? minorKeys : Collections.<String>emptySet();
 	}
 
 	@Override

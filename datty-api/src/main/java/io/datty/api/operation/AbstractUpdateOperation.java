@@ -28,6 +28,7 @@ abstract class AbstractUpdateOperation<O extends TypedOperation<O, R>, R extends
 	extends AbstractOperation<O, R> implements UpdateOperation<O, R> {
 
 	protected int ttlSeconds = DattyConstants.UNSET_TTL;
+	
 	protected UpdatePolicy updatePolicy = UpdatePolicy.MERGE;
 	
 	@Override

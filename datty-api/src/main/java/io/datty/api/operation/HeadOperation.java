@@ -13,11 +13,6 @@
  */
 package io.datty.api.operation;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import io.datty.api.result.HeadResult;
 
 /**
@@ -32,20 +27,8 @@ import io.datty.api.result.HeadResult;
  *
  */
 
-public class HeadOperation extends AbstractOperation<HeadOperation, HeadResult> {
+public class HeadOperation extends AbstractColumnOperation<HeadOperation, HeadResult> {
 
-	/**
-	 * If allMinorKeys flag set, then retrieve all list of minor keys in record
-	 */
-	
-	private boolean allMinorKeys;
-	
-	/**
-	 * Retrieve a specific list of minor keys (checks them for existence)
-	 */
-	
-	private Set<String> minorKeys;
-	
 	public HeadOperation() {
 	}
 	
@@ -72,60 +55,6 @@ public class HeadOperation extends AbstractOperation<HeadOperation, HeadResult> 
 			minorKeys.clear();
 		}
 		return this;
-	}
-
-	public boolean isAllMinorKeys() {
-		return allMinorKeys;
-	}
-
-	/**
-	 * If allMinorKeys flag set, then retrieve all list of minor keys in record
-	 */
-	
-	public HeadOperation allMinorKeys(boolean all) {
-		this.allMinorKeys = all;
-		return this;
-	}
-	
-	/**
-	 * If allMinorKeys flag set, then retrieve all list of minor keys in record
-	 */
-	
-	public HeadOperation allMinorKeys() {
-		this.allMinorKeys = true;
-		return this;
-	}
-
-	public HeadOperation addMinorKey(String minorKey) {
-		this.allMinorKeys = false;
-		if (this.minorKeys == null) {
-			this.minorKeys = Collections.singleton(minorKey);
-		}
-		else {
-			if (this.minorKeys.size() == 1) {
-				this.minorKeys = new HashSet<String>(this.minorKeys);
-			}
-			this.minorKeys.add(minorKey);
-		}
-		return this;
-	}
-	
-	public HeadOperation addMinorKeys(Collection<String> minorKeys) {
-		this.allMinorKeys = false;
-		if (this.minorKeys == null) {
-			this.minorKeys = new HashSet<String>(minorKeys);
-		}
-		else {
-			if (this.minorKeys.size() == 1) {
-				this.minorKeys = new HashSet<String>(this.minorKeys);
-			}
-			this.minorKeys.addAll(minorKeys);
-		}
-		return this;
-	}
-	
-	public Set<String> getMinorKeys() {
-		return minorKeys != null ? minorKeys : Collections.<String>emptySet();
 	}
 
 	@Override
