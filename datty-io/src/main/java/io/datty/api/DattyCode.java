@@ -38,7 +38,12 @@ public final class DattyCode {
   public static final int FIELD_TIMEOUT_MLS = 15;      // Integer
   public static final int FIELD_TTL_SEC = 16;          // Integer
   public static final int FIELD_UPDATE_POLICY = 17;    // Integer
+  public static final int FIELD_ROW = 18;              // DattyRow
+  public static final int FIELD_VERSION = 19;          // Version  
+  public static final int FIELD_PACKAGE_NAME = 20;     // String
+  public static final int FIELD_FUNCTION_NAME = 21;    // String
+  public static final int FIELD_ARGUMENTS = 22;        // String
   
-  public static final int FIELD_MAXCODE = 20;    
+  public static final int FIELD_MAXCODE = 25;    
   
 }

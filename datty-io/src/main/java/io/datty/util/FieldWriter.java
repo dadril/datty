@@ -11,12 +11,14 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api.operation;
+package io.datty.util;
 
 import java.util.Collection;
 
 import io.datty.api.DattyOperation.OpCode;
 import io.datty.api.DattyResult.ResCode;
+import io.datty.api.DattyRow;
+import io.datty.api.DattyRowIO;
 import io.datty.msgpack.MessageWriter;
 import io.datty.msgpack.core.AbstractMessageWriter;
 import io.datty.msgpack.core.ArrayMessageWriter;
@@ -78,6 +80,12 @@ public final class FieldWriter {
 		size++;
 	}
 	
+	public void writeField(int fieldCode, ByteBuf value) {
+		writer.writeValue(fieldCode, sink);
+		writer.writeValue(value, sink, false);
+		size++;
+	}
+	
 	public void writeField(int fieldCode, Collection<String> values) {
 		
 		writer.writeValue(fieldCode, sink);
@@ -88,6 +96,15 @@ public final class FieldWriter {
 		for (String str : values) {
 			arrayWriter.writeValue(str, sink);
 		}
+		
+		size++;
+	}
+	
+	public void writeField(int fieldCode, DattyRow row) {
+		
+		writer.writeValue(fieldCode, sink);
+		
+		sink = DattyRowIO.writeRow(writer, row, sink);
 		
 		size++;
 	}

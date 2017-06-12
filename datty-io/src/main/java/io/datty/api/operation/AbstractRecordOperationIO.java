@@ -19,6 +19,7 @@ import io.datty.api.DattyCode;
 import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.core.ArrayMessageReader;
 import io.datty.support.exception.DattyException;
+import io.datty.util.FieldWriter;
 import io.netty.buffer.ByteBuf;
 
 /**

@@ -40,6 +40,10 @@ public class ExecuteOperation extends AbstractUpdateOperation<ExecuteOperation, 
 		setSetName(setName).setMajorKey(majorKey);
 	}
 	
+	public boolean hasPackageName() {
+		return packageName != null;
+	}
+	
 	public String getPackageName() {
 		return packageName;
 	}
@@ -47,6 +51,10 @@ public class ExecuteOperation extends AbstractUpdateOperation<ExecuteOperation, 
 	public ExecuteOperation setPackageName(String packageName) {
 		this.packageName = packageName;
 		return this;
+	}
+	
+	public boolean hasFunctionName() {
+		return functionName != null;
 	}
 
 	public String getFunctionName() {
@@ -58,6 +66,10 @@ public class ExecuteOperation extends AbstractUpdateOperation<ExecuteOperation, 
 		return this;
 	}
 
+	public boolean hasArguments() {
+		return arguments != null;
+	}
+	
 	public ByteBuf getArguments() {
 		return arguments;
 	}

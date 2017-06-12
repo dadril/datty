@@ -17,6 +17,7 @@ import io.datty.api.DattyCode;
 import io.datty.api.DattyOperationIO;
 import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.MessageWriter;
+import io.datty.util.FieldWriter;
 import io.netty.buffer.ByteBuf;
 
 /**

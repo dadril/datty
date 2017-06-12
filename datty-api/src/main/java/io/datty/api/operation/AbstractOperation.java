@@ -53,6 +53,11 @@ abstract class AbstractOperation<O extends TypedOperation<O, R>, R extends Typed
 	}
 
 	@Override
+	public boolean hasSuperKey() {
+		return superKey != null;
+	}
+
+	@Override
 	public String getSuperKey() {
 		return superKey;
 	}

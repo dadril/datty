@@ -33,6 +33,14 @@ public interface DattyOperation {
 	String getSetName();
 	
 	/**
+	 * Checks if super key is defined
+	 * 
+	 * @return true if exists
+	 */
+	
+	boolean hasSuperKey();
+	
+	/**
 	 * Gets super key (cross database routing key) if exists
 	 * 
 	 * Best usage is the country code

@@ -14,23 +14,27 @@
 package io.datty.api.operation;
 
 import io.datty.api.DattyCode;
-import io.datty.api.UpdatePolicy;
+import io.datty.api.DattyRowIO;
 import io.datty.msgpack.MessageReader;
 import io.datty.util.FieldWriter;
 import io.netty.buffer.ByteBuf;
 
 /**
- * AbstractUpdateOperationIO
+ * PutOperationIO
  * 
  * @author Alex Shvid
  *
  */
 
-@SuppressWarnings("rawtypes")
-abstract class AbstractUpdateOperationIO<O extends AbstractUpdateOperation> extends AbstractOperationIO<O> {
+public class PutOperationIO extends AbstractUpdateOperationIO<PutOperation> {
 
 	@Override
-	public boolean readField(O operation, int fieldCode, MessageReader<Integer> reader, ByteBuf source) {
+	public PutOperation newOperation() {
+		return new PutOperation();
+	}
+	
+	@Override
+	public boolean readField(PutOperation operation, int fieldCode, MessageReader<Integer> reader, ByteBuf source) {
 		
 		boolean read = super.readField(operation, fieldCode, reader, source);
 		
@@ -40,30 +44,24 @@ abstract class AbstractUpdateOperationIO<O extends AbstractUpdateOperation> exte
 		
 		switch(fieldCode) {
 		
-			case DattyCode.FIELD_TTL_SEC:
-				operation.setTtlSeconds(((Long) reader.readValue(source, true)).intValue());
-				return true;
-	
-			case DattyCode.FIELD_UPDATE_POLICY:
-				int code = ((Long) reader.readValue(source, true)).intValue();
-				operation.setUpdatePolicy(UpdatePolicy.findByCode(code));
+			case DattyCode.FIELD_ROW:
+				operation.setRow(DattyRowIO.readRow(reader, source));
 				return true;
 
 		}
 		
 		return false;
+		
 	}
-
+	
 	@Override
-	protected void writeFields(O operation, FieldWriter fieldWriter) {
+	protected void writeFields(PutOperation operation, FieldWriter fieldWriter) {
 		
 		super.writeFields(operation, fieldWriter);
 		
-		if (operation.hasTtlSeconds()) {
-			fieldWriter.writeField(DattyCode.FIELD_TTL_SEC, operation.getTtlSeconds());
+		if (operation.hasRow()) {
+			fieldWriter.writeField(DattyCode.FIELD_ROW, operation.getRow());
 		}
-		
-		fieldWriter.writeField(DattyCode.FIELD_UPDATE_POLICY, operation.getUpdatePolicy().getCode());
 		
 	}
 	

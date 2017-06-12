@@ -59,6 +59,11 @@ public abstract class AbstractStatement<S extends DattyStatement> implements Dat
 	}
 
 	@Override
+	public boolean hasSuperKey() {
+		return superKey != null;
+	}
+
+	@Override
 	public String getSuperKey() {
 		return superKey;
 	}

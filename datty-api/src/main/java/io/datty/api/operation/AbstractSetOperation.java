@@ -49,6 +49,11 @@ abstract class AbstractSetOperation<O extends SetOperation> implements SetOperat
 	}
 
 	@Override
+	public boolean hasSuperKey() {
+		return superKey != null;
+	}
+
+	@Override
 	public String getSuperKey() {
 		return superKey;
 	}
