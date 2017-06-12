@@ -17,8 +17,11 @@ import io.datty.api.DattyCode;
 import io.datty.api.DattyOperation;
 import io.datty.api.DattyOperationIO;
 import io.datty.api.operation.ClearOperationIO;
+import io.datty.api.operation.CompareAndSetOperationIO;
+import io.datty.api.operation.ExecuteOperationIO;
 import io.datty.api.operation.GetOperationIO;
 import io.datty.api.operation.HeadOperationIO;
+import io.datty.api.operation.PutOperationIO;
 import io.datty.api.operation.RemoveOperationIO;
 import io.datty.api.operation.ScanOperationIO;
 import io.datty.api.operation.SizeOperationIO;
@@ -28,19 +31,19 @@ import io.datty.support.exception.DattyException;
 import io.netty.buffer.ByteBuf;
 
 /**
- * DattyIOUtil
+ * DattyIO
  * 
  * @author Alex Shvid
  *
  */
 
-public final class DattyIOUtil {
+public final class DattyIO {
 
 	private final static int MAX_OPCODE = DattyOperation.OpCode.max();
 	
 	private final static DattyOperationIO<?>[] codeOperations = new DattyOperationIO<?>[MAX_OPCODE+1];
 	
-	private DattyIOUtil() {
+	private DattyIO() {
 	}
 	
 	static {
@@ -52,6 +55,9 @@ public final class DattyIOUtil {
 		codeOperations[DattyOperation.OpCode.HEAD.getCode()] = new HeadOperationIO();
 		codeOperations[DattyOperation.OpCode.GET.getCode()] = new GetOperationIO();
 		codeOperations[DattyOperation.OpCode.REMOVE.getCode()] = new RemoveOperationIO();
+		codeOperations[DattyOperation.OpCode.PUT.getCode()] = new PutOperationIO();
+		codeOperations[DattyOperation.OpCode.COMPARE_AND_SET.getCode()] = new CompareAndSetOperationIO();
+		codeOperations[DattyOperation.OpCode.EXECUTE.getCode()] = new ExecuteOperationIO();
 		
 	}
 	
