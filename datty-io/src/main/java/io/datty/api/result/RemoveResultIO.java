@@ -13,7 +13,7 @@
  */
 package io.datty.api.result;
 
-import io.datty.api.DattyCode;
+import io.datty.api.DattyField;
 import io.datty.api.DattyResultIO;
 import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.MessageWriter;
@@ -38,17 +38,19 @@ public enum RemoveResultIO implements DattyResultIO<RemoveResult> {
 	}
 
 	@Override
-	public boolean readField(RemoveResult result, int fieldCode, MessageReader<Integer> reader, ByteBuf source) {
+	public boolean readField(RemoveResult result, DattyField field, MessageReader<Integer> reader, ByteBuf source) {
 		
-		switch(fieldCode) {
+		switch(field) {
 		
-		case DattyCode.FIELD_MINOR_KEYS:
+		case MINOR_KEYS:
 			result.addMinorKeys(DattyCollectionIO.readStringArray(reader, source));
 			return true;
 			
+		default:
+			return false;			
+			
 		}
-		
-		return false;
+
 	}
 
 	@Override
@@ -56,10 +58,10 @@ public enum RemoveResultIO implements DattyResultIO<RemoveResult> {
 		
 		FieldWriter fieldWriter = new FieldWriter(writer, sink);
 		
-		fieldWriter.writeField(DattyCode.FIELD_RESCODE, result.getCode());
+		fieldWriter.writeField(DattyField.RESCODE, result.getCode());
 		
 		if (!result.isEmpty()) {
-			fieldWriter.writeField(DattyCode.FIELD_MINOR_KEYS, result.minorKeys());
+			fieldWriter.writeField(DattyField.MINOR_KEYS, result.minorKeys());
 		}
 		
 		return fieldWriter.writeEnd();

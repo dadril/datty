@@ -13,7 +13,7 @@
  */
 package io.datty.api.operation;
 
-import io.datty.api.DattyCode;
+import io.datty.api.DattyField;
 import io.datty.api.DattyRowIO;
 import io.datty.msgpack.MessageReader;
 import io.datty.util.FieldWriter;
@@ -34,23 +34,24 @@ public class PutOperationIO extends AbstractUpdateOperationIO<PutOperation> {
 	}
 	
 	@Override
-	public boolean readField(PutOperation operation, int fieldCode, MessageReader<Integer> reader, ByteBuf source) {
+	public boolean readField(PutOperation operation, DattyField field, MessageReader<Integer> reader, ByteBuf source) {
 		
-		boolean read = super.readField(operation, fieldCode, reader, source);
+		boolean read = super.readField(operation, field, reader, source);
 		
 		if (read) {
 			return true;
 		}
 		
-		switch(fieldCode) {
+		switch(field) {
 		
-			case DattyCode.FIELD_ROW:
+			case ROW:
 				operation.setRow(DattyRowIO.readRow(reader, source));
 				return true;
 
+			default:
+				return false;
+				
 		}
-		
-		return false;
 		
 	}
 	
@@ -60,7 +61,7 @@ public class PutOperationIO extends AbstractUpdateOperationIO<PutOperation> {
 		super.writeFields(operation, fieldWriter);
 		
 		if (operation.hasRow()) {
-			fieldWriter.writeField(DattyCode.FIELD_ROW, operation.getRow());
+			fieldWriter.writeField(DattyField.ROW, operation.getRow());
 		}
 		
 	}

@@ -13,7 +13,7 @@
  */
 package io.datty.util;
 
-import io.datty.api.DattyCode;
+import io.datty.api.DattyField;
 import io.datty.api.DattyOperation;
 import io.datty.api.DattyOperationIO;
 import io.datty.api.DattyResult;
@@ -120,12 +120,17 @@ public final class DattyIO {
 		}
 		size--;
 		
-		Integer fieldNum = reader.readKey(source);
-		if (fieldNum == null) {
-			throw new DattyException("expected field number");
+		Object fieldKey = reader.readKey(source);
+		if (fieldKey == null) {
+			throw new DattyException("null field number");
 		}
 		
-		if (DattyCode.FIELD_OPCODE != fieldNum.intValue()) {
+		DattyField field = DattyField.findByKey(fieldKey);
+		if (field == null) {
+			throw new DattyException("DattyField not found for: " + fieldKey);
+		}
+		
+		if (DattyField.OPCODE != field) {
 			throw new DattyException("first field in message must be OPCODE");
 		}
 		
@@ -152,12 +157,17 @@ public final class DattyIO {
 		
 		for (int i = 0; i != size; ++i) {
 			
-			fieldNum = reader.readKey(source);
-			if (fieldNum == null) {
-				throw new DattyException("expected field number");
+			fieldKey = reader.readKey(source);
+			if (fieldKey == null) {
+				throw new DattyException("null field number");
 			}
 			
-			boolean read = io.readField(operation, fieldNum.intValue(), reader, source);
+			field = DattyField.findByKey(fieldKey);
+			if (field == null) {
+				throw new DattyException("DattyField not found for: " + fieldKey);
+			}
+			
+			boolean read = io.readField(operation, field, reader, source);
 			if (!read) {
 				reader.skipValue(source, false);
 			}
@@ -231,12 +241,17 @@ public final class DattyIO {
 		}
 		size--;
 		
-		Integer fieldNum = reader.readKey(source);
-		if (fieldNum == null) {
-			throw new DattyException("expected field number");
+		Integer fieldKey = reader.readKey(source);
+		if (fieldKey == null) {
+			throw new DattyException("null field number");
 		}
 		
-		if (DattyCode.FIELD_RESCODE != fieldNum.intValue()) {
+		DattyField field = DattyField.findByKey(fieldKey);
+		if (field == null) {
+			throw new DattyException("DattyField not found for: " + fieldKey);
+		}
+		
+		if (DattyField.RESCODE != field) {
 			throw new DattyException("first field in message must be RESCODE");
 		}
 		
@@ -263,12 +278,17 @@ public final class DattyIO {
 		
 		for (int i = 0; i != size; ++i) {
 			
-			fieldNum = reader.readKey(source);
-			if (fieldNum == null) {
-				throw new DattyException("expected field number");
+			fieldKey = reader.readKey(source);
+			if (fieldKey == null) {
+				throw new DattyException("null field number");
 			}
 			
-			boolean read = io.readField(result, fieldNum.intValue(), reader, source);
+			field = DattyField.findByKey(fieldKey);
+			if (field == null) {
+				throw new DattyException("DattyField not found for: " + fieldKey);
+			}
+			
+			boolean read = io.readField(result, field, reader, source);
 			if (!read) {
 				reader.skipValue(source, false);
 			}

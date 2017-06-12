@@ -13,7 +13,7 @@
  */
 package io.datty.api.operation;
 
-import io.datty.api.DattyCode;
+import io.datty.api.DattyField;
 import io.datty.msgpack.MessageReader;
 import io.datty.util.FieldWriter;
 import io.netty.buffer.ByteBuf;
@@ -33,31 +33,32 @@ public class ExecuteOperationIO extends AbstractUpdateOperationIO<ExecuteOperati
 	}
 	
 	@Override
-	public boolean readField(ExecuteOperation operation, int fieldCode, MessageReader<Integer> reader, ByteBuf source) {
+	public boolean readField(ExecuteOperation operation, DattyField field, MessageReader<Integer> reader, ByteBuf source) {
 		
-		boolean read = super.readField(operation, fieldCode, reader, source);
+		boolean read = super.readField(operation, field, reader, source);
 		
 		if (read) {
 			return true;
 		}
 		
-		switch(fieldCode) {
+		switch(field) {
 		
-			case DattyCode.FIELD_PACKAGE_NAME:
+			case PACKAGE_NAME:
 				operation.setPackageName((String) reader.readValue(source, true));
 				return true;
 
-			case DattyCode.FIELD_FUNCTION_NAME:
+			case FUNCTION_NAME:
 				operation.setFunctionName((String) reader.readValue(source, true));
 				return true;
 
-			case DattyCode.FIELD_ARGUMENTS:
+			case ARGUMENTS:
 				operation.setArguments((ByteBuf) reader.readValue(source, false));
 				return true;
+			
+			default:
+				return false;
 				
 		}
-		
-		return false;
 		
 	}
 	
@@ -67,15 +68,15 @@ public class ExecuteOperationIO extends AbstractUpdateOperationIO<ExecuteOperati
 		super.writeFields(operation, fieldWriter);
 		
 		if (operation.hasPackageName()) {
-			fieldWriter.writeField(DattyCode.FIELD_PACKAGE_NAME, operation.getPackageName());
+			fieldWriter.writeField(DattyField.PACKAGE_NAME, operation.getPackageName());
 		}
 
 		if (operation.hasFunctionName()) {
-			fieldWriter.writeField(DattyCode.FIELD_FUNCTION_NAME, operation.getFunctionName());
+			fieldWriter.writeField(DattyField.FUNCTION_NAME, operation.getFunctionName());
 		}
 		
 		if (operation.hasArguments()) {
-			fieldWriter.writeField(DattyCode.FIELD_ARGUMENTS, operation.getArguments());
+			fieldWriter.writeField(DattyField.ARGUMENTS, operation.getArguments());
 		}
 		
 	}

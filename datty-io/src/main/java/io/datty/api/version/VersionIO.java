@@ -13,10 +13,10 @@
  */
 package io.datty.api.version;
 
-import io.datty.api.DattyCode;
+import io.datty.api.DattyField;
 import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.MessageWriter;
-import io.datty.msgpack.core.IntMapMessageReader;
+import io.datty.msgpack.core.MapMessageReader;
 import io.datty.support.exception.DattyException;
 import io.netty.buffer.ByteBuf;
 
@@ -41,11 +41,11 @@ public final class VersionIO {
 			return null;
 		}
 		
-		if (!(rowMap instanceof IntMapMessageReader)) {
-			throw new DattyException("expected IntMapMessageReader for DattyRow object");
+		if (!(rowMap instanceof MapMessageReader)) {
+			throw new DattyException("expected MapMessageReader for DattyRow object");
 		}
 		
-		IntMapMessageReader mapReader = (IntMapMessageReader) rowMap;
+		MapMessageReader mapReader = (MapMessageReader) rowMap;
 		
 		int size = mapReader.size();
 
@@ -55,19 +55,19 @@ public final class VersionIO {
 		
 		for (int i = 0; i != size; ++i) {
 			
-			Integer fieldNum = mapReader.readKey(source);
-			if (fieldNum == null) {
-				throw new DattyException("expected not null fieldNum in Version object");
-			}
-			int fieldCode = fieldNum.intValue();
-			
-			if (fieldCode != DattyCode.FIELD_VERSION_TYPE) {
-				throw new DattyException("expected first field will be VERSION_TYPE in Version object");
+			Object fieldKey = mapReader.readKey(source);
+			if (fieldKey == null) {
+				throw new DattyException("expected not null fieldNum in  object");
 			}
 			
-			switch(fieldCode) {
+			DattyField field = DattyField.findByKey(fieldKey);
+			if (field == null) {
+				throw new DattyException("field not found for fieldNum: " + fieldKey);
+			}
+
+			switch(field) {
 			
-			case DattyCode.FIELD_VERSION_TYPE:
+			case VERSION_TYPE:
 				int code = ((Long) mapReader.readValue(source, true)).intValue();
 				versionType = VersionType.findByCode(code);
 				if (versionType == null) {
@@ -75,11 +75,11 @@ public final class VersionIO {
 				}
 				break;
 				
-			case DattyCode.FIELD_VERSION_LONG:
+			case VERSION_LONG:
 				longValue = (Long) mapReader.readValue(source, true);
 				break;
 				
-			case DattyCode.FIELD_VERSION_STRING:
+			case VERSION_STRING:
 				stringValue = (String) mapReader.readValue(source, true);
 				break;
 				
@@ -130,10 +130,10 @@ public final class VersionIO {
 		
 		writer.writeHeader(2, sink);
 		
-		writer.writeKey(DattyCode.FIELD_VERSION_TYPE, sink);
+		writer.writeKey(DattyField.VERSION_TYPE.getFieldCode(), sink);
 		writer.writeValue(version.getType().getCode(), sink);
 		
-		writer.writeKey(DattyCode.FIELD_VERSION_LONG, sink);
+		writer.writeKey(DattyField.VERSION_LONG.getFieldCode(), sink);
 		writer.writeValue(version.asLong(), sink);
 		
 	}
@@ -144,11 +144,11 @@ public final class VersionIO {
 		
 		writer.writeHeader(stringVersion != null ? 2 : 1, sink);
 		
-		writer.writeKey(DattyCode.FIELD_VERSION_TYPE, sink);
+		writer.writeKey(DattyField.VERSION_TYPE.getFieldCode(), sink);
 		writer.writeValue(version.getType().getCode(), sink);
 		
 		if (stringVersion != null) {
-			writer.writeKey(DattyCode.FIELD_VERSION_STRING, sink);
+			writer.writeKey(DattyField.VERSION_STRING.getFieldCode(), sink);
 			writer.writeValue(stringVersion, sink);
 		}
 		

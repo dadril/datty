@@ -15,7 +15,7 @@ package io.datty.api.operation;
 
 import java.util.Set;
 
-import io.datty.api.DattyCode;
+import io.datty.api.DattyField;
 import io.datty.msgpack.MessageReader;
 import io.datty.util.DattyCollectionIO;
 import io.datty.util.FieldWriter;
@@ -33,27 +33,27 @@ abstract class AbstractRecordOperationIO<O extends AbstractRecordOperation> exte
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean readField(O operation, int fieldCode, MessageReader<Integer> reader, ByteBuf source) {
+	public boolean readField(O operation, DattyField field, MessageReader<Integer> reader, ByteBuf source) {
 		
-		boolean read = super.readField(operation, fieldCode, reader, source);
+		boolean read = super.readField(operation, field, reader, source);
 		
 		if (read) {
 			return true;
 		}
 		
-		switch(fieldCode) {
+		switch(field) {
 		
-			case DattyCode.FIELD_ALL_MINOR_KEYS:
+			case ALL_MINOR_KEYS:
 				operation.allMinorKeys(true);
 				return true;
 		
-			case DattyCode.FIELD_MINOR_KEYS:
+			case MINOR_KEYS:
 				operation.addMinorKeys(DattyCollectionIO.readStringArray(reader, source));
 				return true;
 				
+			default:
+				return false;
 		}
-		
-		return false;
 		
 	}
 
@@ -63,12 +63,12 @@ abstract class AbstractRecordOperationIO<O extends AbstractRecordOperation> exte
 		super.writeFields(operation, fieldWriter);
 		
 		if (operation.isAllMinorKeys()) {
-			fieldWriter.writeField(DattyCode.FIELD_ALL_MINOR_KEYS, true);
+			fieldWriter.writeField(DattyField.ALL_MINOR_KEYS, true);
 		}
 		else {
 			@SuppressWarnings("unchecked")
 			Set<String> minorKeys = operation.getMinorKeys();
-			fieldWriter.writeField(DattyCode.FIELD_MINOR_KEYS, minorKeys);
+			fieldWriter.writeField(DattyField.MINOR_KEYS, minorKeys);
 		}
 		
 	}

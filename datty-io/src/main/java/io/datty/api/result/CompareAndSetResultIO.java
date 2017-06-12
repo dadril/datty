@@ -13,7 +13,7 @@
  */
 package io.datty.api.result;
 
-import io.datty.api.DattyCode;
+import io.datty.api.DattyField;
 import io.datty.api.DattyResultIO;
 import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.MessageWriter;
@@ -37,17 +37,19 @@ public enum CompareAndSetResultIO implements DattyResultIO<CompareAndSetResult> 
 	}
 
 	@Override
-	public boolean readField(CompareAndSetResult result, int fieldCode, MessageReader<Integer> reader, ByteBuf source) {
+	public boolean readField(CompareAndSetResult result, DattyField field, MessageReader<Integer> reader, ByteBuf source) {
 		
-		switch(fieldCode) {
+		switch(field) {
 		
-		case DattyCode.FIELD_BOOL_VALUE:
+		case BOOL_VALUE:
 			result.set((Boolean) reader.readValue(source, true));
 			return true;
 			
+		default:
+			return false;
+			
 		}
-		
-		return false;
+
 	}
 
 	@Override
@@ -55,9 +57,9 @@ public enum CompareAndSetResultIO implements DattyResultIO<CompareAndSetResult> 
 		
 		FieldWriter fieldWriter = new FieldWriter(writer, sink);
 		
-		fieldWriter.writeField(DattyCode.FIELD_RESCODE, result.getCode());
+		fieldWriter.writeField(DattyField.RESCODE, result.getCode());
 		
-		fieldWriter.writeField(DattyCode.FIELD_BOOL_VALUE, result.get());
+		fieldWriter.writeField(DattyField.BOOL_VALUE, result.get());
 		
 		return fieldWriter.writeEnd();
 		

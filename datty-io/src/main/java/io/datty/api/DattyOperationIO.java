@@ -40,13 +40,13 @@ public interface DattyOperationIO<O extends DattyOperation> {
 	 * Sets field to operation
 	 * 
 	 * @param operation - operation instance
-	 * @param fieldCode - field code
+	 * @param field - field code
 	 * @param reader - message reader
 	 * @param source - input buffer
 	 * @return true if field successfully read
 	 */
 	
-	boolean readField(O operation, int fieldCode, MessageReader<Integer> reader, ByteBuf source);
+	boolean readField(O operation, DattyField field, MessageReader<Integer> reader, ByteBuf source);
 	
 	/**
 	 * Writes operation to the writer

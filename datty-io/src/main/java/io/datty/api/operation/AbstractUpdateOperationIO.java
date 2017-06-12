@@ -13,7 +13,7 @@
  */
 package io.datty.api.operation;
 
-import io.datty.api.DattyCode;
+import io.datty.api.DattyField;
 import io.datty.api.UpdatePolicy;
 import io.datty.msgpack.MessageReader;
 import io.datty.util.FieldWriter;
@@ -30,28 +30,29 @@ import io.netty.buffer.ByteBuf;
 abstract class AbstractUpdateOperationIO<O extends AbstractUpdateOperation> extends AbstractOperationIO<O> {
 
 	@Override
-	public boolean readField(O operation, int fieldCode, MessageReader<Integer> reader, ByteBuf source) {
+	public boolean readField(O operation, DattyField field, MessageReader<Integer> reader, ByteBuf source) {
 		
-		boolean read = super.readField(operation, fieldCode, reader, source);
+		boolean read = super.readField(operation, field, reader, source);
 		
 		if (read) {
 			return true;
 		}
 		
-		switch(fieldCode) {
+		switch(field) {
 		
-			case DattyCode.FIELD_TTL_SEC:
+			case TTL_SEC:
 				operation.setTtlSeconds(((Long) reader.readValue(source, true)).intValue());
 				return true;
 	
-			case DattyCode.FIELD_UPDATE_POLICY:
+			case UPDATE_POLICY:
 				int code = ((Long) reader.readValue(source, true)).intValue();
 				operation.setUpdatePolicy(UpdatePolicy.findByCode(code));
 				return true;
 
+			default:
+				return false;
 		}
 		
-		return false;
 	}
 
 	@Override
@@ -60,10 +61,10 @@ abstract class AbstractUpdateOperationIO<O extends AbstractUpdateOperation> exte
 		super.writeFields(operation, fieldWriter);
 		
 		if (operation.hasTtlSeconds()) {
-			fieldWriter.writeField(DattyCode.FIELD_TTL_SEC, operation.getTtlSeconds());
+			fieldWriter.writeField(DattyField.TTL_SEC, operation.getTtlSeconds());
 		}
 		
-		fieldWriter.writeField(DattyCode.FIELD_UPDATE_POLICY, operation.getUpdatePolicy().getCode());
+		fieldWriter.writeField(DattyField.UPDATE_POLICY, operation.getUpdatePolicy().getCode());
 		
 	}
 	

@@ -13,7 +13,7 @@
  */
 package io.datty.api.operation;
 
-import io.datty.api.DattyCode;
+import io.datty.api.DattyField;
 import io.datty.api.DattyOperationIO;
 import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.MessageWriter;
@@ -31,29 +31,31 @@ import io.netty.buffer.ByteBuf;
 abstract class AbstractOperationIO<O extends AbstractOperation> implements DattyOperationIO<O> {
 
 	@Override
-	public boolean readField(O operation, int fieldCode, MessageReader<Integer> reader, ByteBuf source) {
+	public boolean readField(O operation, DattyField field, MessageReader<Integer> reader, ByteBuf source) {
 
-		switch(fieldCode) {
+		switch(field) {
 		
-		case DattyCode.FIELD_SET_NAME:
+		case SET_NAME:
 			operation.setSetName((String) reader.readValue(source, true));
 			return true;
 			
-		case DattyCode.FIELD_SUPER_KEY:
+		case SUPER_KEY:
 			operation.setSuperKey((String) reader.readValue(source, true));
 			return true;
 			
-		case DattyCode.FIELD_MAJOR_KEY:
+		case MAJOR_KEY:
 			operation.setMajorKey((String) reader.readValue(source, true));
 			return true;	
 		
-		case DattyCode.FIELD_TIMEOUT_MLS:
+		case TIMEOUT_MLS:
 			operation.setTimeoutMillis(((Long) reader.readValue(source, true)).intValue());
 			return true;
 			
+		default:
+			return false;
+			
 		}
 		
-		return false;
 	}
 
 	@Override
@@ -76,25 +78,25 @@ abstract class AbstractOperationIO<O extends AbstractOperation> implements Datty
 	
 	protected void writeFields(O operation, FieldWriter fieldWriter) {
 		
-		fieldWriter.writeField(DattyCode.FIELD_OPCODE, operation.getCode());
+		fieldWriter.writeField(DattyField.OPCODE, operation.getCode());
 		
 		String setName = operation.getSetName();
 		if (setName != null) {
-			fieldWriter.writeField(DattyCode.FIELD_SET_NAME, setName);
+			fieldWriter.writeField(DattyField.SET_NAME, setName);
 		}
 		
 		String superKey = operation.getSuperKey();
 		if (superKey != null) {
-			fieldWriter.writeField(DattyCode.FIELD_SUPER_KEY, superKey);
+			fieldWriter.writeField(DattyField.SUPER_KEY, superKey);
 		}
 		
 		String majorKey = operation.getMajorKey();
 		if (majorKey != null) {
-			fieldWriter.writeField(DattyCode.FIELD_MAJOR_KEY, majorKey);
+			fieldWriter.writeField(DattyField.MAJOR_KEY, majorKey);
 		}		
 		
 		if (operation.hasTimeoutMillis()) {
-			fieldWriter.writeField(DattyCode.FIELD_TIMEOUT_MLS, operation.getTimeoutMillis());
+			fieldWriter.writeField(DattyField.TIMEOUT_MLS, operation.getTimeoutMillis());
 		}		
 		
 	}

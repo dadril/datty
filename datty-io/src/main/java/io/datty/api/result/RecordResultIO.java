@@ -13,7 +13,7 @@
  */
 package io.datty.api.result;
 
-import io.datty.api.DattyCode;
+import io.datty.api.DattyField;
 import io.datty.api.DattyResultIO;
 import io.datty.api.DattyRowIO;
 import io.datty.api.version.VersionIO;
@@ -39,29 +39,31 @@ public enum RecordResultIO implements DattyResultIO<RecordResult> {
 	}
 
 	@Override
-	public boolean readField(RecordResult result, int fieldCode, MessageReader<Integer> reader, ByteBuf source) {
+	public boolean readField(RecordResult result, DattyField field, MessageReader<Integer> reader, ByteBuf source) {
 		
-		switch(fieldCode) {
+		switch(field) {
 		
-		case DattyCode.FIELD_MAJOR_KEY:
+		case MAJOR_KEY:
 			result.setMajorKey((String) reader.readValue(source, true));
 			return true;
 		
-		case DattyCode.FIELD_VERSION:
+		case VERSION:
 			result.setVersion(VersionIO.readVersion(reader, source));
 			return true;
 		
-		case DattyCode.FIELD_ROW:
+		case ROW:
 			result.setRow(DattyRowIO.readRow(reader, source));
 			return true;
 			
-		case DattyCode.FIELD_COUNT:
+		case COUNT:
 			result.setCount((Long) reader.readValue(source, true));
 			return true;
 			
+		default:
+			return false;			
+			
 		}
 		
-		return false;
 	}
 
 	@Override
@@ -69,22 +71,22 @@ public enum RecordResultIO implements DattyResultIO<RecordResult> {
 		
 		FieldWriter fieldWriter = new FieldWriter(writer, sink);
 		
-		fieldWriter.writeField(DattyCode.FIELD_RESCODE, result.getCode());
+		fieldWriter.writeField(DattyField.RESCODE, result.getCode());
 		
 		if (result.hasMajorKey()) {
-			fieldWriter.writeField(DattyCode.FIELD_MAJOR_KEY, result.getMajorKey());
+			fieldWriter.writeField(DattyField.MAJOR_KEY, result.getMajorKey());
 		}
 		
 		if (result.hasVersion()) {
-			fieldWriter.writeField(DattyCode.FIELD_VERSION, result.getVersion());
+			fieldWriter.writeField(DattyField.VERSION, result.getVersion());
 		}
 		
 		if (result.hasRow()) {
-			fieldWriter.writeField(DattyCode.FIELD_ROW, result.getRow());
+			fieldWriter.writeField(DattyField.ROW, result.getRow());
 		}
 		
 		if (result.hasCount()) {
-			fieldWriter.writeField(DattyCode.FIELD_COUNT, result.getCount());
+			fieldWriter.writeField(DattyField.COUNT, result.getCount());
 		}
 		
 		return fieldWriter.writeEnd();

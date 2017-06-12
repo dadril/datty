@@ -13,7 +13,7 @@
  */
 package io.datty.api.result;
 
-import io.datty.api.DattyCode;
+import io.datty.api.DattyField;
 import io.datty.api.DattyResultIO;
 import io.datty.api.version.VersionIO;
 import io.datty.msgpack.MessageReader;
@@ -39,21 +39,23 @@ public enum HeadResultIO implements DattyResultIO<HeadResult> {
 	}
 
 	@Override
-	public boolean readField(HeadResult result, int fieldCode, MessageReader<Integer> reader, ByteBuf source) {
+	public boolean readField(HeadResult result, DattyField field, MessageReader<Integer> reader, ByteBuf source) {
 		
-		switch(fieldCode) {
+		switch(field) {
 		
-		case DattyCode.FIELD_VERSION:
+		case VERSION:
 			result.setVersion(VersionIO.readVersion(reader, source));
 			return true;
 		
-		case DattyCode.FIELD_MINOR_KEYS:
+		case MINOR_KEYS:
 			result.addMinorKeys(DattyCollectionIO.readStringArray(reader, source));
 			return true;
 			
+		default:
+			return false;			
+			
 		}
 		
-		return false;
 	}
 
 	@Override
@@ -61,14 +63,14 @@ public enum HeadResultIO implements DattyResultIO<HeadResult> {
 		
 		FieldWriter fieldWriter = new FieldWriter(writer, sink);
 		
-		fieldWriter.writeField(DattyCode.FIELD_RESCODE, result.getCode());
+		fieldWriter.writeField(DattyField.RESCODE, result.getCode());
 		
 		if (result.hasVersion()) {
-			fieldWriter.writeField(DattyCode.FIELD_VERSION, result.getVersion());
+			fieldWriter.writeField(DattyField.VERSION, result.getVersion());
 		}
 		
 		if (!result.isEmpty()) {
-			fieldWriter.writeField(DattyCode.FIELD_MINOR_KEYS, result.minorKeys());
+			fieldWriter.writeField(DattyField.MINOR_KEYS, result.minorKeys());
 		}
 		
 		return fieldWriter.writeEnd();

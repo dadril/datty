@@ -40,13 +40,13 @@ public interface DattyResultIO<R extends DattyResult> {
 	 * Sets field to result
 	 * 
 	 * @param result - result instance
-	 * @param fieldCode - field code
+	 * @param field - field code
 	 * @param reader - message reader
 	 * @param source - input buffer
 	 * @return true if field successfully read
 	 */
 	
-	boolean readField(R result, int fieldCode, MessageReader<Integer> reader, ByteBuf source);
+	boolean readField(R result, DattyField field, MessageReader<Integer> reader, ByteBuf source);
 	
 	/**
 	 * Writes result to the writer
