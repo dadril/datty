@@ -11,46 +11,48 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.support;
-
-import io.datty.api.operation.Version;
-import io.datty.api.operation.VersionType;
+package io.datty.api.version;
 
 /**
- * LongVersion
+ * StringVersion
  * 
  * @author Alex Shvid
  *
  */
 
-public class LongVersion implements Version {
+public class StringVersion implements Version {
 
-	private final long value;
+	private final String value;
 	
-	public LongVersion(long value) {
+	public StringVersion(String value) {
 		this.value = value;
 	}
 	
 	@Override
 	public VersionType type() {
-		return VersionType.LONG;
+		return VersionType.STRING;
 	}
 
 	@Override
 	public long asLong() {
-		return value;
+		try {
+			return Long.parseLong(value);
+		}
+		catch(NumberFormatException e) {
+			return 0L;
+		}
 	}
 
 	@Override
 	public String asString() {
-		return Long.toString(value);
+		return value;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (value ^ (value >>> 32));
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
 		return result;
 	}
 
@@ -62,15 +64,18 @@ public class LongVersion implements Version {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		LongVersion other = (LongVersion) obj;
-		if (value != other.value)
+		StringVersion other = (StringVersion) obj;
+		if (value == null) {
+			if (other.value != null)
+				return false;
+		} else if (!value.equals(other.value))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "LongVersion [value=" + value + "]";
+		return "StringVersion [value=" + value + "]";
 	}
 
 }

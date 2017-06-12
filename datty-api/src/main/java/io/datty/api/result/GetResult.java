@@ -18,7 +18,7 @@ import java.util.Set;
 
 import io.datty.api.DattyRow;
 import io.datty.api.operation.GetOperation;
-import io.datty.api.operation.Version;
+import io.datty.api.version.Version;
 import io.netty.buffer.ByteBuf;
 
 /**

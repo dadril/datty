@@ -26,7 +26,7 @@ import io.datty.aerospike.support.AerospikeValueUtil;
 import io.datty.api.DattyRow;
 import io.datty.api.operation.ScanOperation;
 import io.datty.api.result.RecordResult;
-import io.datty.support.LongVersion;
+import io.datty.api.version.LongVersion;
 import rx.Observable;
 import rx.functions.Func1;
 

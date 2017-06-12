@@ -13,7 +13,7 @@
  */
 package io.datty.spring.support;
 
-import io.datty.api.operation.Version;
+import io.datty.api.version.Version;
 import io.datty.spring.mapping.Versionable;
 
 /**

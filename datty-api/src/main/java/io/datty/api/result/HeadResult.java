@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import io.datty.api.operation.HeadOperation;
-import io.datty.api.operation.Version;
+import io.datty.api.version.Version;
 
 /**
  * HeadResult

@@ -15,6 +15,7 @@ package io.datty.api.operation;
 
 import io.datty.api.DattyRow;
 import io.datty.api.result.CompareAndSetResult;
+import io.datty.api.version.Version;
 import io.netty.buffer.ByteBuf;
 
 /**

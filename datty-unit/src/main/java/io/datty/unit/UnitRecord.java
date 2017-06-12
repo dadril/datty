@@ -19,8 +19,8 @@ import java.util.Set;
 import com.google.common.collect.ImmutableMap;
 
 import io.datty.api.UpdatePolicy;
-import io.datty.api.operation.Version;
-import io.datty.support.LongVersion;
+import io.datty.api.version.LongVersion;
+import io.datty.api.version.Version;
 import io.netty.buffer.ByteBuf;
 
 /**
