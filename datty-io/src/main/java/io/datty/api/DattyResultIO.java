@@ -29,14 +29,24 @@ import io.netty.buffer.ByteBuf;
 public interface DattyResultIO<R extends DattyResult> {
 
 	/**
-	 * Reads result from the reader
+	 * Creates a new result
 	 * 
-	 * @param reader - message reader
-	 * @param source - input buffer 
-	 * @return not null instance
+	 * @return new result instance
 	 */
 	
-	R read(MessageReader<Integer> reader, ByteBuf source);
+	R newResult();
+	
+	/**
+	 * Sets field to result
+	 * 
+	 * @param result - result instance
+	 * @param fieldCode - field code
+	 * @param reader - message reader
+	 * @param source - input buffer
+	 * @return true if field successfully read
+	 */
+	
+	boolean readField(R result, int fieldCode, MessageReader<Integer> reader, ByteBuf source);
 	
 	/**
 	 * Writes result to the writer
@@ -47,6 +57,6 @@ public interface DattyResultIO<R extends DattyResult> {
 	 * @return new or old sink 
 	 */
 	
-	void write(R result, MessageWriter writer, ByteBuf sink);
+	ByteBuf write(R result, MessageWriter writer, ByteBuf sink);
 	
 }

@@ -89,9 +89,11 @@ public interface DattyOperation {
 		REMOVE(4),
 		COMPARE_AND_SET(5),
 		EXECUTE(6),
+		
 		SCAN(7),
 		SIZE(8),
 		CLEAR(9),
+		
 		SELECT(10),
 		UPDATE(11),
 		DELETE(12);

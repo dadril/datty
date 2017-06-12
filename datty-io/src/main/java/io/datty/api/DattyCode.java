@@ -40,14 +40,19 @@ public final class DattyCode {
   public static final int FIELD_UPDATE_POLICY = 17;    // Integer
   public static final int FIELD_ROW = 18;              // DattyRow
   public static final int FIELD_VERSION = 19;          // Version  
-  public static final int FIELD_PACKAGE_NAME = 20;     // String
-  public static final int FIELD_FUNCTION_NAME = 21;    // String
-  public static final int FIELD_ARGUMENTS = 22;        // String
+  public static final int FIELD_COUNT = 20;            // Long  
+  public static final int FIELD_PACKAGE_NAME = 21;     // String
+  public static final int FIELD_FUNCTION_NAME = 22;    // String
+  public static final int FIELD_ARGUMENTS = 23;        // String
   
-  public static final int FIELD_VERSION_TYPE = 23;     // Integer  
-  public static final int FIELD_VERSION_LONG = 24;     // Long  
-  public static final int FIELD_VERSION_STRING = 25;   // String  
+  public static final int FIELD_VERSION_TYPE = 24;     // Integer  
+  public static final int FIELD_VERSION_LONG = 25;     // Long  
+  public static final int FIELD_VERSION_STRING = 26;   // String  
   
-  public static final int FIELD_MAXCODE = 25;    
+  public static final int FIELD_BOOL_VALUE = 27;       // Boolean  
+  public static final int FIELD_LONG_VALUE = 28;       // Long    
+  public static final int FIELD_BYTES_VALUE = 29;      // ByteBuf  
+  
+  public static final int FIELD_MAXCODE = 30;    
   
 }

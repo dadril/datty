@@ -17,8 +17,7 @@ import java.util.Set;
 
 import io.datty.api.DattyCode;
 import io.datty.msgpack.MessageReader;
-import io.datty.msgpack.core.ArrayMessageReader;
-import io.datty.support.exception.DattyException;
+import io.datty.util.DattyCollectionIO;
 import io.datty.util.FieldWriter;
 import io.netty.buffer.ByteBuf;
 
@@ -32,6 +31,7 @@ import io.netty.buffer.ByteBuf;
 @SuppressWarnings("rawtypes")
 abstract class AbstractRecordOperationIO<O extends AbstractRecordOperation> extends AbstractOperationIO<O> {
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean readField(O operation, int fieldCode, MessageReader<Integer> reader, ByteBuf source) {
 		
@@ -48,7 +48,7 @@ abstract class AbstractRecordOperationIO<O extends AbstractRecordOperation> exte
 				return true;
 		
 			case DattyCode.FIELD_MINOR_KEYS:
-				readMinorKeys(operation, reader, source);
+				operation.addMinorKeys(DattyCollectionIO.readStringArray(reader, source));
 				return true;
 				
 		}
@@ -57,40 +57,6 @@ abstract class AbstractRecordOperationIO<O extends AbstractRecordOperation> exte
 		
 	}
 
-	private void readMinorKeys(O operation, MessageReader<Integer> reader, ByteBuf source) {
-		
-		Object value = reader.readValue(source, false);
-		
-		if (value == null) {
-			return;
-		}
-		
-		if (!(value instanceof ArrayMessageReader)) {
-			throw new DattyException("expected array of strings in message, but was: " + value);
-		}
-		
-		ArrayMessageReader arrayReader = (ArrayMessageReader) value;
-		
-		int size = arrayReader.size();
-		
-		for (int i = 0; i != size; ++i) {
-			
-			Object item = arrayReader.readValue(source, true);
-			
-			if (item == null) {
-				continue;
-			}
-			
-			if (!(item instanceof String)) {
-				throw new DattyException("expected string item, but was:" + item);
-			}
-			
-			operation.addMinorKey((String) item);
-			
-		}
-		
-	}
-	
 	@Override
 	protected void writeFields(O operation, FieldWriter fieldWriter) {
 		

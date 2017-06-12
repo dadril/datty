@@ -38,7 +38,8 @@ public interface DattyOperationIO<O extends DattyOperation> {
 
 	/**
 	 * Sets field to operation
-	 * @param operation - operation
+	 * 
+	 * @param operation - operation instance
 	 * @param fieldCode - field code
 	 * @param reader - message reader
 	 * @param source - input buffer

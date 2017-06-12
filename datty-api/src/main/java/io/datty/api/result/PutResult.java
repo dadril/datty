@@ -33,6 +33,10 @@ public class PutResult extends AbstractResult<PutOperation, PutResult> {
 		this.writtenBytes = writtenBytes;
 	}
 	
+	public boolean hasWrittenBytes() {
+		return writtenBytes != 0L;
+	}
+	
 	public long getWrittenBytes() {
 		return writtenBytes;
 	}

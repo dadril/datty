@@ -23,7 +23,6 @@ import io.datty.api.version.Version;
 import io.datty.api.version.VersionIO;
 import io.datty.msgpack.MessageWriter;
 import io.datty.msgpack.core.AbstractMessageWriter;
-import io.datty.msgpack.core.ArrayMessageWriter;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -89,16 +88,8 @@ public final class FieldWriter {
 	}
 	
 	public void writeField(int fieldCode, Collection<String> values) {
-		
 		writer.writeValue(fieldCode, sink);
-
-		ArrayMessageWriter arrayWriter = ArrayMessageWriter.INSTANCE;
-		
-		arrayWriter.writeHeader(values.size(), sink); 
-		for (String str : values) {
-			arrayWriter.writeValue(str, sink);
-		}
-		
+		DattyCollectionIO.writeStringArray(values, sink);
 		size++;
 	}
 	

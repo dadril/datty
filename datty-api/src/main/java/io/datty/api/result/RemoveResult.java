@@ -47,6 +47,15 @@ public class RemoveResult extends AbstractResult<RemoveOperation, RemoveResult> 
 		return this.minorKeys.size();
 	}
 	
+	public boolean isEmpty() {
+		
+		if (this.minorKeys == null) {
+			return true;
+		}
+		
+		return this.minorKeys.isEmpty();
+	}
+	
 	public Set<String> minorKeys() {
 		
 		if (this.minorKeys == null) {

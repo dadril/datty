@@ -50,6 +50,10 @@ public class RecordResult implements DattyResult {
 	public RecordResult() {
 	}
 	
+	public boolean hasMajorKey() {
+		return majorKey != null;
+	}
+	
 	public String getMajorKey() {
 		return majorKey;
 	}
@@ -97,6 +101,10 @@ public class RecordResult implements DattyResult {
 		return count;
 	}
 
+	public boolean hasCount() {
+		return count != 0;
+	}
+	
 	public long getCount() {
 		return count;
 	}
