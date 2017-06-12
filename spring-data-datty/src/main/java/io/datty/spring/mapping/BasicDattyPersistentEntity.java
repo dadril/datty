@@ -26,6 +26,7 @@ import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.data.mapping.PersistentProperty;
 import org.springframework.data.mapping.SimplePropertyHandler;
 import org.springframework.data.mapping.model.BasicPersistentEntity;
+import org.springframework.data.mapping.model.MappingException;
 import org.springframework.data.util.TypeInformation;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ParserContext;
@@ -99,12 +100,23 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 		@Override
 		public void doWithPersistentProperty(PersistentProperty<?> property) {
 			DattyPersistentProperty prop = (DattyPersistentProperty) property;
-			map.put(prop.getPrimaryName(), prop);
+			tryPut(prop.getPrimaryName(), prop);
 			String[] otherNames = prop.getOtherNames();
 			int length = otherNames.length;
 			for (int i = 0; i != length; ++i) {
-				map.put(otherNames[i], prop);
+				tryPut(otherNames[i], prop);
 			}
+		}
+
+		private void tryPut(String key, DattyPersistentProperty value) {
+			
+			DattyPersistentProperty conflict = map.get(key);
+			
+			if (conflict != null) {
+				throw new MappingException("dublicate using of propertyName: " + key + ", already has value: " + conflict + " in try to add: " + value);
+			}
+			
+			map.put(key, value);
 		}
 
 		public Map<String, DattyPersistentProperty> getIndex() {
@@ -125,9 +137,20 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 		@Override
 		public void doWithPersistentProperty(PersistentProperty<?> property) {
 			DattyPersistentProperty prop = (DattyPersistentProperty) property;
-			map.put(prop.getTag(), prop);
+			tryPut(prop.getTag(), prop);
 		}
 
+		private void tryPut(int key, DattyPersistentProperty value) {
+			
+			DattyPersistentProperty conflict = map.get(key);
+			
+			if (conflict != null) {
+				throw new MappingException("dublicate using of tag number: " + key + ", already has value: " + conflict + " in try to add: " + value);
+			}
+			
+			map.put(key, value);
+		}
+		
 		public Map<Integer, DattyPersistentProperty> getIndex() {
 			return map;
 		}
