@@ -42,7 +42,7 @@ public final class DattyRowIO {
 		}
 		
 		if (!(rowMap instanceof StringMapMessageReader)) {
-			throw new DattyException("expected MapMessageReader for DattyRow object");
+			throw new DattyException("expected StringMapMessageReader for DattyRow object");
 		}
 
 		DattyRow row = new DattyRow();
@@ -54,6 +54,9 @@ public final class DattyRowIO {
 		for (int i = 0; i != size; ++i) {
 			
 			String minorKey = mapReader.readKey(source);
+			if (minorKey == null) {
+				throw new DattyException("expected not null key in DattyRow object");
+			}
 			
 			Object value = mapReader.readValue(source, false);
 			if (value != null) {

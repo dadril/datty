@@ -28,7 +28,7 @@ public interface Version {
 	 * @return not null version type
 	 */
 	
-	VersionType type();
+	VersionType getType();
 	
 	/**
 	 * Gets version value as a long

@@ -96,7 +96,7 @@ public enum CompareAndSetExecutor implements OperationExecutor<CompareAndSetOper
 			return true;
 		}
 		
-		if (version.type() == VersionType.LONG && version.asLong() == 0L) {
+		if (version.getType() == VersionType.LONG && version.asLong() == 0L) {
 			return true;
 		}
 		

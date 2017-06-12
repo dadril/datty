@@ -29,7 +29,7 @@ public class LongVersion implements Version {
 	}
 	
 	@Override
-	public VersionType type() {
+	public VersionType getType() {
 		return VersionType.LONG;
 	}
 

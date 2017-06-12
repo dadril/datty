@@ -15,6 +15,7 @@ package io.datty.api.operation;
 
 import io.datty.api.DattyCode;
 import io.datty.api.DattyRowIO;
+import io.datty.api.version.VersionIO;
 import io.datty.msgpack.MessageReader;
 import io.datty.util.FieldWriter;
 import io.netty.buffer.ByteBuf;
@@ -43,7 +44,11 @@ public class CompareAndSetOperationIO extends AbstractUpdateOperationIO<CompareA
 		}
 		
 		switch(fieldCode) {
-		
+
+			case DattyCode.FIELD_VERSION:
+				operation.setVersion(VersionIO.readVersion(reader, source));
+				return true;
+			
 			case DattyCode.FIELD_ROW:
 				operation.setRow(DattyRowIO.readRow(reader, source));
 				return true;
@@ -58,6 +63,10 @@ public class CompareAndSetOperationIO extends AbstractUpdateOperationIO<CompareA
 	protected void writeFields(CompareAndSetOperation operation, FieldWriter fieldWriter) {
 		
 		super.writeFields(operation, fieldWriter);
+		
+		if (operation.hasVersion()) {
+			fieldWriter.writeField(DattyCode.FIELD_VERSION, operation.getVersion());
+		}
 		
 		if (operation.hasRow()) {
 			fieldWriter.writeField(DattyCode.FIELD_ROW, operation.getRow());

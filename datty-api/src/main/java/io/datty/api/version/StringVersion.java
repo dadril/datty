@@ -29,7 +29,7 @@ public class StringVersion implements Version {
 	}
 	
 	@Override
-	public VersionType type() {
+	public VersionType getType() {
 		return VersionType.STRING;
 	}
 

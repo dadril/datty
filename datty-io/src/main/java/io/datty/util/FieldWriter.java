@@ -19,6 +19,8 @@ import io.datty.api.DattyOperation.OpCode;
 import io.datty.api.DattyResult.ResCode;
 import io.datty.api.DattyRow;
 import io.datty.api.DattyRowIO;
+import io.datty.api.version.Version;
+import io.datty.api.version.VersionIO;
 import io.datty.msgpack.MessageWriter;
 import io.datty.msgpack.core.AbstractMessageWriter;
 import io.datty.msgpack.core.ArrayMessageWriter;
@@ -96,6 +98,15 @@ public final class FieldWriter {
 		for (String str : values) {
 			arrayWriter.writeValue(str, sink);
 		}
+		
+		size++;
+	}
+	
+	public void writeField(int fieldCode, Version version) {
+		
+		writer.writeValue(fieldCode, sink);
+		
+		VersionIO.writeVersion(writer, version, sink);
 		
 		size++;
 	}

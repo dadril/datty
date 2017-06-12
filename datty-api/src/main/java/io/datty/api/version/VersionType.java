@@ -22,6 +22,27 @@ package io.datty.api.version;
 
 public enum VersionType {
 
-	LONG, STRING;
+	LONG(1), 
+	
+	STRING(2);
+	
+	private final int code;
+	
+	private VersionType(int code) {
+		this.code = code;
+	}
+
+	public int getCode() {
+		return code;
+	}
+	
+	public static VersionType findByCode(int code) {
+		for (VersionType v : values()) {
+			if (v.getCode() == code) {
+				return v;
+			}
+		}
+		return null;
+	}
 	
 }

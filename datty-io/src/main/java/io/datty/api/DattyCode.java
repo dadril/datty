@@ -44,6 +44,10 @@ public final class DattyCode {
   public static final int FIELD_FUNCTION_NAME = 21;    // String
   public static final int FIELD_ARGUMENTS = 22;        // String
   
+  public static final int FIELD_VERSION_TYPE = 23;     // Integer  
+  public static final int FIELD_VERSION_LONG = 24;     // Long  
+  public static final int FIELD_VERSION_STRING = 25;   // String  
+  
   public static final int FIELD_MAXCODE = 25;    
   
 }
