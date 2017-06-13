@@ -13,16 +13,6 @@
  */
 package io.datty.api.operation;
 
-import org.junit.Assert;
-import org.junit.Test;
-
-import io.datty.api.AbstractDattyIOTest;
-import io.datty.api.DattyOperation;
-import io.datty.util.DattyIO;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
-
 /**
  * ClearOperationIOTest
  * 
@@ -30,54 +20,11 @@ import io.netty.buffer.Unpooled;
  *
  */
 
-public class ClearOperationIOTest extends AbstractDattyIOTest {
+public class ClearOperationIOTest extends AbstractSetOperationIOTest<ClearOperation> {
 
-	@Test
-	public void testEmpty() {
-		
-		ByteBuf sink = Unpooled.buffer();
-		
-		ClearOperation empty = new ClearOperation();
-		
-		DattyIO.writeOperation(empty, sink, numeric);
-		
-		DattyOperation actual = DattyIO.readOperation(sink);
-		
-		Assert.assertNotNull(actual);
-		Assert.assertTrue(actual instanceof ClearOperation);
-		
-		Assert.assertNull(actual.getSetName());
-		Assert.assertNull(actual.getSuperKey());
-		Assert.assertFalse(actual.hasTimeoutMillis());
-		
-	}
-	
-	@Test
-	public void testNonEmpty() {
-		
-		ByteBuf sink = Unpooled.buffer();
-		
-		ClearOperation operation = new ClearOperation();
-		
-		operation
-		.setSetName(setName)
-		.setSuperKey(superKey)
-		.setTimeoutMillis(timeoutMillis);
-		
-		DattyIO.writeOperation(operation, sink, numeric);
-		
-		//System.out.println("bytes = " + Arrays.toString(ByteBufUtil.getBytes(sink)));
-		
-		DattyOperation actual = DattyIO.readOperation(sink);
-		
-		Assert.assertNotNull(actual);
-		Assert.assertTrue(actual instanceof ClearOperation);
-		
-		Assert.assertEquals(setName, actual.getSetName());
-		Assert.assertEquals(superKey, actual.getSuperKey());
-		Assert.assertEquals(timeoutMillis, actual.getTimeoutMillis());
-		
-		
+	@Override
+	ClearOperation newOperation() {
+		return new ClearOperation();
 	}
 	
 }
