@@ -54,7 +54,7 @@ public final class FieldWriter {
 		this.headerIndex = writer.skipHeader(maxHeaderSize, sink);
 	}
 	
-	private void writeField(DattyField field) {
+	private void writeKey(DattyField field) {
 		if (numeric) {
 			writer.writeValue(field.getFieldCode(), sink);
 		}
@@ -64,55 +64,55 @@ public final class FieldWriter {
 	}
 	
 	public void writeField(DattyField field, OpCode value) {
-		writeField(field);
+		writeKey(field);
 		writer.writeValue(value.getCode(), sink);
 		size++;
 	}
 
 	public void writeField(DattyField field, ResCode value) {
-		writeField(field);
+		writeKey(field);
 		writer.writeValue(value.getCode(), sink);
 		size++;
 	}
 	
 	public void writeField(DattyField field, boolean value) {
-		writeField(field);
+		writeKey(field);
 		writer.writeValue(value, sink);
 		size++;
 	}
 
 	public void writeField(DattyField field, long value) {
-		writeField(field);
+		writeKey(field);
 		writer.writeValue(value, sink);
 		size++;
 	}
 	
 	public void writeField(DattyField field, String value) {
-		writeField(field);
+		writeKey(field);
 		writer.writeValue(value, sink);
 		size++;
 	}
 	
 	public void writeField(DattyField field, ByteBuf value) {
-		writeField(field);
+		writeKey(field);
 		writer.writeValue(value, sink, false);
 		size++;
 	}
 	
 	public void writeField(DattyField field, Collection<String> values) {
-		writeField(field);
+		writeKey(field);
 		DattyCollectionIO.writeStringArray(values, sink);
 		size++;
 	}
 	
 	public void writeField(DattyField field, Version version) {
-		writeField(field);
-		VersionIO.writeVersion(writer, version, sink);
+		writeKey(field);
+		VersionIO.writeVersion(writer, version, sink, numeric);
 		size++;
 	}
 	
 	public void writeField(DattyField field, DattyRow row) {
-		writeField(field);
+		writeKey(field);
 		sink = DattyRowIO.writeRow(writer, row, sink);
 		size++;
 	}

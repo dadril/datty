@@ -105,18 +105,18 @@ public final class VersionIO {
 		
 	}
 	
-	public static void writeVersion(MessageWriter writer, Version version, ByteBuf sink) {
+	public static void writeVersion(MessageWriter writer, Version version, ByteBuf sink, boolean numeric) {
 		
 		VersionType type = version.getType();
 		
 		switch(type) {
 		
 		case LONG:
-			writeLongVersion(writer, version, sink);
+			writeLongVersion(writer, version, sink, numeric);
 			break;
 			
 		case STRING:
-			writeStringVersion(writer, version, sink);
+			writeStringVersion(writer, version, sink, numeric);
 			break;
 		
 		default:
@@ -126,32 +126,41 @@ public final class VersionIO {
 		
 	}
 	
-	public static void writeLongVersion(MessageWriter writer, Version version, ByteBuf sink) {
+	public static void writeLongVersion(MessageWriter writer, Version version, ByteBuf sink, boolean numeric) {
 		
 		writer.writeHeader(2, sink);
 		
-		writer.writeKey(DattyField.VERSION_TYPE.getFieldCode(), sink);
+		writeKey(writer, DattyField.VERSION_TYPE, sink, numeric);
 		writer.writeValue(version.getType().getCode(), sink);
 		
-		writer.writeKey(DattyField.VERSION_LONG.getFieldCode(), sink);
+		writeKey(writer, DattyField.VERSION_LONG, sink, numeric);
 		writer.writeValue(version.asLong(), sink);
 		
 	}
 	
-	public static void writeStringVersion(MessageWriter writer, Version version, ByteBuf sink) {
+	public static void writeStringVersion(MessageWriter writer, Version version, ByteBuf sink, boolean numeric) {
 		
 		String stringVersion = version.asString();
 		
 		writer.writeHeader(stringVersion != null ? 2 : 1, sink);
 		
-		writer.writeKey(DattyField.VERSION_TYPE.getFieldCode(), sink);
+		writeKey(writer, DattyField.VERSION_TYPE, sink, numeric);
 		writer.writeValue(version.getType().getCode(), sink);
 		
 		if (stringVersion != null) {
-			writer.writeKey(DattyField.VERSION_STRING.getFieldCode(), sink);
+			writeKey(writer, DattyField.VERSION_STRING, sink, numeric);
 			writer.writeValue(stringVersion, sink);
 		}
 		
+	}
+	
+	private static void writeKey(MessageWriter writer, DattyField field, ByteBuf sink, boolean numeric) {
+		if (numeric) {
+			writer.writeKey(DattyField.VERSION_TYPE.getFieldCode(), sink);
+		}
+		else {
+			writer.writeKey(DattyField.VERSION_TYPE.getFieldName(), sink);
+		}
 	}
 	
 }
