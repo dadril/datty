@@ -175,15 +175,16 @@ public final class DattyIO {
 	 * 
 	 * @param operation - datty operation
 	 * @param sink - output buffer
+	 * @param numeric - use numeric keys
 	 * @return old or new sink
 	 */
 	
-	public static <O extends DattyOperation> ByteBuf writeOperation(O operation, ByteBuf sink) {
-		return writeOperation(operation, MapMessageWriter.INSTANCE, sink);
+	public static <O extends DattyOperation> ByteBuf writeOperation(O operation, ByteBuf sink, boolean numeric) {
+		return writeOperation(operation, MapMessageWriter.INSTANCE, sink, numeric);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <O extends DattyOperation> ByteBuf writeOperation(O operation, MessageWriter writer, ByteBuf sink) {
+	public static <O extends DattyOperation> ByteBuf writeOperation(O operation, MessageWriter writer, ByteBuf sink, boolean numeric) {
 		
 		int opcode = operation.getCode().getCode();
 		
@@ -194,7 +195,7 @@ public final class DattyIO {
 			throw new DattyException("io operation is not found for opcode: " + opcode);
 		}
 		
-		return io.write(operation, writer, sink);
+		return io.write(operation, writer, sink, numeric);
 		
 	}
 	
@@ -290,15 +291,16 @@ public final class DattyIO {
 	 * 
 	 * @param result - datty result
 	 * @param sink - output buffer
+	 * @param numeric - use numeric keys
 	 * @return old or new sink
 	 */
 	
-	public static <R extends DattyResult> ByteBuf writeResult(R result, ByteBuf sink) {
-		return writeResult(result, MapMessageWriter.INSTANCE, sink);
+	public static <R extends DattyResult> ByteBuf writeResult(R result, ByteBuf sink, boolean numeric) {
+		return writeResult(result, MapMessageWriter.INSTANCE, sink, numeric);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <R extends DattyResult> ByteBuf writeResult(R result, MessageWriter writer, ByteBuf sink) {
+	public static <R extends DattyResult> ByteBuf writeResult(R result, MessageWriter writer, ByteBuf sink, boolean numeric) {
 		
 		int rescode = result.getCode().getCode();
 		
@@ -309,7 +311,7 @@ public final class DattyIO {
 			throw new DattyException("io result is not found for rescode: " + rescode);
 		}
 		
-		return io.write(result, writer, sink);
+		return io.write(result, writer, sink, numeric);
 		
 	}
 	

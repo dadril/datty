@@ -54,9 +54,10 @@ public interface DattyOperationIO<O extends DattyOperation> {
 	 * @param operation - datty operation
 	 * @param writer - message writer
 	 * @param sink - output buffer
+	 * @param numeric - use numeric keys
 	 * @return new or old sink
 	 */
 	
-	ByteBuf write(O operation, MessageWriter writer, ByteBuf sink);
+	ByteBuf write(O operation, MessageWriter writer, ByteBuf sink, boolean numeric);
 	
 }

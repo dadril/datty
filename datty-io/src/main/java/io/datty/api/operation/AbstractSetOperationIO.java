@@ -54,9 +54,9 @@ abstract class AbstractSetOperationIO<O extends AbstractSetOperation<O>> impleme
 	}
 
 	@Override
-	public ByteBuf write(O operation, MessageWriter writer, ByteBuf sink) {
+	public ByteBuf write(O operation, MessageWriter writer, ByteBuf sink, boolean numeric) {
 		
-		FieldWriter fieldWriter = new FieldWriter(writer, sink);
+		FieldWriter fieldWriter = new FieldWriter(writer, sink, numeric);
 		
 		writeFields(operation, fieldWriter);
 		

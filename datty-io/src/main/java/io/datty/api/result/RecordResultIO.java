@@ -67,9 +67,9 @@ public enum RecordResultIO implements DattyResultIO<RecordResult> {
 	}
 
 	@Override
-	public ByteBuf write(RecordResult result, MessageWriter writer, ByteBuf sink) {
+	public ByteBuf write(RecordResult result, MessageWriter writer, ByteBuf sink, boolean numeric) {
 		
-		FieldWriter fieldWriter = new FieldWriter(writer, sink);
+		FieldWriter fieldWriter = new FieldWriter(writer, sink, numeric);
 		
 		fieldWriter.writeField(DattyField.RESCODE, result.getCode());
 		

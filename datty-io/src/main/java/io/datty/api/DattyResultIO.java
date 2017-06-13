@@ -54,9 +54,10 @@ public interface DattyResultIO<R extends DattyResult> {
 	 * @param operation - datty operation
 	 * @param writer - message writer
 	 * @param sink - output buffer
+	 * @param numeric - use numeric keys
 	 * @return new or old sink 
 	 */
 	
-	ByteBuf write(R result, MessageWriter writer, ByteBuf sink);
+	ByteBuf write(R result, MessageWriter writer, ByteBuf sink, boolean numeric);
 	
 }

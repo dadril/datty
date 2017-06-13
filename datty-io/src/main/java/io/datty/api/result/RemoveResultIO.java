@@ -54,9 +54,9 @@ public enum RemoveResultIO implements DattyResultIO<RemoveResult> {
 	}
 
 	@Override
-	public ByteBuf write(RemoveResult result, MessageWriter writer, ByteBuf sink) {
+	public ByteBuf write(RemoveResult result, MessageWriter writer, ByteBuf sink, boolean numeric) {
 		
-		FieldWriter fieldWriter = new FieldWriter(writer, sink);
+		FieldWriter fieldWriter = new FieldWriter(writer, sink, numeric);
 		
 		fieldWriter.writeField(DattyField.RESCODE, result.getCode());
 		

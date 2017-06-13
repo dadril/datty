@@ -59,9 +59,9 @@ public enum HeadResultIO implements DattyResultIO<HeadResult> {
 	}
 
 	@Override
-	public ByteBuf write(HeadResult result, MessageWriter writer, ByteBuf sink) {
+	public ByteBuf write(HeadResult result, MessageWriter writer, ByteBuf sink, boolean numeric) {
 		
-		FieldWriter fieldWriter = new FieldWriter(writer, sink);
+		FieldWriter fieldWriter = new FieldWriter(writer, sink, numeric);
 		
 		fieldWriter.writeField(DattyField.RESCODE, result.getCode());
 		
