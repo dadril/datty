@@ -11,31 +11,20 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.api;
+package io.datty.api.operation;
 
 /**
- * AbstractIOTest
+ * CompareAndSetOperationIOTest
  * 
  * @author Alex Shvid
  *
  */
 
-public abstract class AbstractDattyIOTest {
+public class CompareAndSetOperationIOTest extends AbstractUpdateOperationIOTest<CompareAndSetOperation> {
 
-	protected boolean numeric = false;
-	
-	protected String setName = "SetName";
-	
-	protected String superKey = "SuperKey";
-	
-	protected String majorKey = "MajorKey";
-	
-	protected String minorKey = "MinorKey";
-	
-	protected int timeoutMillis = 100;
-	
-	protected int ttlSeconds = 500;
-	
-	protected UpdatePolicy updatePolicy = UpdatePolicy.REPLACE;
+	@Override
+	CompareAndSetOperation newOperation() {
+		return new CompareAndSetOperation();
+	}
 	
 }
