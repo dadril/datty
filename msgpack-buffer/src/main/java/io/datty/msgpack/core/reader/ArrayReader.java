@@ -81,7 +81,7 @@ public class ArrayReader extends AbstractMessageReader {
 	private Object readMap(Class<?> elementType, ValueReader<?> elementReader, ByteBuf source, boolean copy) {
 		
 		int length = readMapHeader(source);
-		MessageReader<Object> reader = new MapMessageReader(length);
+		MessageReader reader = new MapMessageReader(length);
 
 		Object array = Array.newInstance(elementType, length);
 

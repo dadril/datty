@@ -33,7 +33,7 @@ abstract class AbstractRecordOperationIO<O extends AbstractRecordOperation> exte
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean readField(O operation, DattyField field, MessageReader<Integer> reader, ByteBuf source) {
+	public boolean readField(O operation, DattyField field, MessageReader reader, ByteBuf source) {
 		
 		boolean read = super.readField(operation, field, reader, source);
 		

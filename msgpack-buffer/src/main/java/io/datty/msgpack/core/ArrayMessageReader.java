@@ -24,7 +24,7 @@ import io.netty.buffer.ByteBuf;
  *
  */
 
-public class ArrayMessageReader extends ValueMessageReader<Integer> implements MessageReader<Integer> {
+public class ArrayMessageReader extends ValueMessageReader implements MessageReader {
 
 	private final int length;
 	private final int start;

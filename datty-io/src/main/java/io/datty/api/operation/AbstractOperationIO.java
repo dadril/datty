@@ -31,7 +31,7 @@ import io.netty.buffer.ByteBuf;
 abstract class AbstractOperationIO<O extends AbstractOperation> implements DattyOperationIO<O> {
 
 	@Override
-	public boolean readField(O operation, DattyField field, MessageReader<Integer> reader, ByteBuf source) {
+	public boolean readField(O operation, DattyField field, MessageReader reader, ByteBuf source) {
 
 		switch(field) {
 		
