@@ -35,15 +35,15 @@ import io.netty.buffer.ByteBuf;
  *
  */
 
-public class ValueMessageReader<K> extends AbstractMessageReader implements MessageReader<K> {
+public class ValueMessageReader extends AbstractMessageReader implements MessageReader {
 
-	public static final ValueMessageReader<Object> INSTANCE = new ValueMessageReader<Object>();
+	public static final ValueMessageReader INSTANCE = new ValueMessageReader();
 	
 	public static final ValueReader<Object> OBJECT_KEY_READER = new ValueReader<Object>() {
 
 		@Override
 		public Object read(ByteBuf source, boolean copy) {
-			return INSTANCE.readKeyAsObject(source);
+			return INSTANCE.readValue(source, true);
 		}
 		
 	};
@@ -62,12 +62,6 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 		throw new UnsupportedOperationException("this method must be overriden");
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public K readKey(ByteBuf buffer) {
-		return (K) readKeyAsObject(buffer);
-	}
-	
 	/**
 	 * Return types:
 	 * 
@@ -79,7 +73,8 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 	 * 
 	 */
 	
-	public Object readKeyAsObject(ByteBuf buffer) {
+	@Override
+	public Object readKey(ByteBuf buffer) {
 		
 		if (!hasNext(buffer)) {
 			return null;
@@ -91,9 +86,6 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 	    case NIL:
 	      return readNull(buffer);
 	      
-	    case BOOLEAN:
-	    	return Boolean.valueOf(readBoolean(buffer));	      
-	      
 	    case POSFIXINT:
 	    case NEGFIXINT: 
 	    case UINT8:
@@ -104,11 +96,11 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 	    case INT16:
 	    case INT32:
 	    case INT64:
-	    	return Long.valueOf(readVLong(buffer));
+	    	return Integer.valueOf(readVInt(buffer));
 	    	
       case FLOAT32 :
       case FLOAT64 :
-        return Double.valueOf(readVDouble(buffer));
+        return Integer.valueOf((int) readVDouble(buffer));
       
       case FIXSTR: 
       case STR8 :
@@ -233,23 +225,17 @@ public class ValueMessageReader<K> extends AbstractMessageReader implements Mess
 		}
 	}
 	
-	public MessageReader<?> readArray(ByteBuf source, boolean copy) {
+	public MessageReader readArray(ByteBuf source, boolean copy) {
 		int length = readArrayHeader(source);
 		return new ArrayMessageReader(length);
 	}
 	
-	public MessageReader<?> readMap(ByteBuf source, boolean copy) {
+	public MessageReader readMap(ByteBuf source, boolean copy) {
 		int size = readMapHeader(source);
-		if (hasNext(source)) {
-			MessageFormat f = getNextFormat(source);
-			if (isInteger(f)) {
-				return new IntMapMessageReader(size);
-			}
-		}
-		return new StringMapMessageReader(size);
+		return new MapMessageReader(size);
 	}
 	
-	private boolean isInteger(MessageFormat f) {
+	public boolean isInteger(MessageFormat f) {
 		switch(f) {
     case POSFIXINT:
     case NEGFIXINT: 

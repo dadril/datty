@@ -14,7 +14,6 @@
 package io.datty.msgpack.core;
 
 import io.datty.msgpack.MessageReader;
-import io.netty.buffer.ByteBuf;
 
 /**
  * MapMessageReader
@@ -23,7 +22,7 @@ import io.netty.buffer.ByteBuf;
  *
  */
 
-public class MapMessageReader extends ValueMessageReader<Object> implements MessageReader<Object> {
+public class MapMessageReader extends ValueMessageReader implements MessageReader {
 
 	private final int size;
 	
@@ -34,11 +33,6 @@ public class MapMessageReader extends ValueMessageReader<Object> implements Mess
 	@Override
 	public int size() {
 		return size;
-	}
-	
-	@Override
-	public Object readKey(ByteBuf source) {
-		return ValueMessageReader.INSTANCE.readKey(source);
 	}
 	
 }

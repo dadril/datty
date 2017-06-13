@@ -22,7 +22,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.datty.msgpack.MessageReader;
-import io.datty.msgpack.core.StringMapMessageReader;
+import io.datty.msgpack.core.MapMessageReader;
 import io.datty.msgpack.core.ValueMessageReader;
 import io.datty.msgpack.core.type.DefaultTypeInfoProvider;
 import io.datty.msgpack.core.type.TypeInfo;
@@ -120,23 +120,23 @@ public class MessageReaderTypedTest {
 		ByteBuf source = Unpooled.wrappedBuffer(example);
 		
 		Object value = ValueMessageReader.INSTANCE.readValue(source, false);
-		Assert.assertTrue(value instanceof StringMapMessageReader);
+		Assert.assertTrue(value instanceof MapMessageReader);
 		
-		MessageReader<String> reader = (MessageReader<String>) value;
+		MessageReader reader = (MessageReader) value;
 		
 		Map<String, Object> map = new HashMap<>();
 		
 		for (int i = 0; i != reader.size(); i++) {
 			
-			String key = reader.readKey(source);
+			Object key = reader.readKey(source);
 			
 			Class<?> type = schema.get(key);
 			Assert.assertNotNull(type);
 			
 			Object field = reader.readValue(typeOf(type), source, false);
-			Assert.assertNotNull(key, field);
+			Assert.assertNotNull((String) key, field);
 			
-			map.put(key, field);
+			map.put((String) key, field);
 		}
 		
 		return map;

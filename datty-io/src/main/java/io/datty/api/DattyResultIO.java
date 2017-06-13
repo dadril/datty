@@ -46,7 +46,7 @@ public interface DattyResultIO<R extends DattyResult> {
 	 * @return true if field successfully read
 	 */
 	
-	boolean readField(R result, DattyField field, MessageReader<Integer> reader, ByteBuf source);
+	boolean readField(R result, DattyField field, MessageReader reader, ByteBuf source);
 	
 	/**
 	 * Writes result to the writer

@@ -33,7 +33,7 @@ public final class VersionIO {
 	}
 	
 	
-	public static Version readVersion(MessageReader<Integer> reader, ByteBuf source) {
+	public static Version readVersion(MessageReader reader, ByteBuf source) {
 		
 		Object rowMap = reader.readValue(source, false);
 		

@@ -33,7 +33,7 @@ public class ExecuteOperationIO extends AbstractUpdateOperationIO<ExecuteOperati
 	}
 	
 	@Override
-	public boolean readField(ExecuteOperation operation, DattyField field, MessageReader<Integer> reader, ByteBuf source) {
+	public boolean readField(ExecuteOperation operation, DattyField field, MessageReader reader, ByteBuf source) {
 		
 		boolean read = super.readField(operation, field, reader, source);
 		

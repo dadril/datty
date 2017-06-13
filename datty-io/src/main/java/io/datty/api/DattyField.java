@@ -85,8 +85,8 @@ public enum DattyField {
 	}
 	
 	public static DattyField findByKey(Object fieldKey) {
-		if (fieldKey instanceof Long) {
-			return findByCode(((Long) fieldKey).intValue());
+		if (fieldKey instanceof Integer) {
+			return findByCode((Integer) fieldKey);
 		}
 		else if (fieldKey instanceof String) {
 			return findByName((String) fieldKey);

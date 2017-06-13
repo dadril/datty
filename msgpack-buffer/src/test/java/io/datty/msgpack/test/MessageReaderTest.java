@@ -80,7 +80,7 @@ public class MessageReaderTest {
 	  Assert.assertTrue(message instanceof Map);
 		
 	  @SuppressWarnings("unchecked")
-	  Map<String, Object> map = (Map<String, Object>) message;
+	  Map<Object, Object> map = (Map<Object, Object>) message;
 	  
 	  Assert.assertEquals(map.get("acc"), "123");
 	  Assert.assertEquals(map.get("logins"), Long.valueOf(-9));

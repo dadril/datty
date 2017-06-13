@@ -46,7 +46,7 @@ public interface DattyOperationIO<O extends DattyOperation> {
 	 * @return true if field successfully read
 	 */
 	
-	boolean readField(O operation, DattyField field, MessageReader<Integer> reader, ByteBuf source);
+	boolean readField(O operation, DattyField field, MessageReader reader, ByteBuf source);
 	
 	/**
 	 * Writes operation to the writer

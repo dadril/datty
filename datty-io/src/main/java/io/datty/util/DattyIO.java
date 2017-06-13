@@ -36,7 +36,6 @@ import io.datty.api.result.RecordResultIO;
 import io.datty.api.result.RemoveResultIO;
 import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.MessageWriter;
-import io.datty.msgpack.core.IntMapMessageReader;
 import io.datty.msgpack.core.MapMessageWriter;
 import io.datty.msgpack.core.ValueMessageReader;
 import io.datty.support.exception.DattyException;
@@ -91,7 +90,6 @@ public final class DattyIO {
 	 * @return not null datty operation
 	 */
 	
-	@SuppressWarnings("unchecked")
 	public static DattyOperation readOperation(ByteBuf source) {
 		
 		if (source == null || source.readableBytes() == 0) {
@@ -102,17 +100,12 @@ public final class DattyIO {
 			throw new DattyException("expected map in the buffer");
 		}
 		
-		MessageReader<?> reader = ValueMessageReader.INSTANCE.readMap(source, true);
-		
-		if (!(reader instanceof IntMapMessageReader)) {
-			throw new DattyException("expected IntMapMessageReader in the buffer");
-		}
-		
-		return readOperation( (MessageReader<Integer>) reader, source);
+		MessageReader reader = ValueMessageReader.INSTANCE.readMap(source, true);
+		return readOperation(reader, source);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static DattyOperation readOperation(MessageReader<Integer> reader, ByteBuf source) {
+	public static DattyOperation readOperation(MessageReader reader, ByteBuf source) {
 				
 		int size = reader.size();
 		if (size == 0) {
@@ -212,7 +205,6 @@ public final class DattyIO {
 	 * @return not null datty result
 	 */
 	
-	@SuppressWarnings("unchecked")
 	public static DattyResult readResult(ByteBuf source) {
 		
 		if (source == null || source.readableBytes() == 0) {
@@ -223,17 +215,12 @@ public final class DattyIO {
 			throw new DattyException("expected map in the buffer");
 		}
 		
-		MessageReader<?> reader = ValueMessageReader.INSTANCE.readMap(source, true);
-		
-		if (!(reader instanceof IntMapMessageReader)) {
-			throw new DattyException("expected IntMapMessageReader in the buffer");
-		}
-		
-		return readResult( (MessageReader<Integer>) reader, source);
+		MessageReader reader = ValueMessageReader.INSTANCE.readMap(source, true);
+		return readResult(reader, source);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static DattyResult readResult(MessageReader<Integer> reader, ByteBuf source) {
+	public static DattyResult readResult(MessageReader reader, ByteBuf source) {
 				
 		int size = reader.size();
 		if (size == 0) {
@@ -241,7 +228,7 @@ public final class DattyIO {
 		}
 		size--;
 		
-		Integer fieldKey = reader.readKey(source);
+		Object fieldKey = reader.readKey(source);
 		if (fieldKey == null) {
 			throw new DattyException("null field number");
 		}

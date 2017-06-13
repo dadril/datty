@@ -17,7 +17,7 @@ import java.util.Map;
 
 import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.MessageWriter;
-import io.datty.msgpack.core.StringMapMessageReader;
+import io.datty.msgpack.core.MapMessageReader;
 import io.datty.support.exception.DattyException;
 import io.netty.buffer.ByteBuf;
 
@@ -33,7 +33,7 @@ public final class DattyRowIO {
 	private DattyRowIO() {
 	}
 	
-	public static DattyRow readRow(MessageReader<Integer> reader, ByteBuf source) {
+	public static DattyRow readRow(MessageReader reader, ByteBuf source) {
 		
 		Object rowMap = reader.readValue(source, false);
 		
@@ -41,21 +41,25 @@ public final class DattyRowIO {
 			return null;
 		}
 		
-		if (!(rowMap instanceof StringMapMessageReader)) {
-			throw new DattyException("expected StringMapMessageReader for DattyRow object");
+		if (!(rowMap instanceof MapMessageReader)) {
+			throw new DattyException("expected MapMessageReader for DattyRow object");
 		}
 
 		DattyRow row = new DattyRow();
 
-		StringMapMessageReader mapReader = (StringMapMessageReader) rowMap;
+		MapMessageReader mapReader = (MapMessageReader) rowMap;
 		
 		int size = mapReader.size();
 		
 		for (int i = 0; i != size; ++i) {
 			
-			String minorKey = mapReader.readKey(source);
+			Object minorKey = mapReader.readKey(source);
 			if (minorKey == null) {
 				throw new DattyException("expected not null key in DattyRow object");
+			}
+			
+			if (!(minorKey instanceof String)) {
+				throw new DattyException("expected string instance for minor key DattyRow object");
 			}
 			
 			Object value = mapReader.readValue(source, false);
@@ -65,7 +69,7 @@ public final class DattyRowIO {
 					throw new DattyException("expected ByteBuf value in DattyRow object: " + value);
 				}
 				
-				row.putValue(minorKey, (ByteBuf) value, true);
+				row.putValue((String) minorKey, (ByteBuf) value, true);
 				
 			}
 			

@@ -39,7 +39,7 @@ public enum GetResultIO implements DattyResultIO<GetResult> {
 	}
 
 	@Override
-	public boolean readField(GetResult result, DattyField field, MessageReader<Integer> reader, ByteBuf source) {
+	public boolean readField(GetResult result, DattyField field, MessageReader reader, ByteBuf source) {
 		
 		switch(field) {
 		

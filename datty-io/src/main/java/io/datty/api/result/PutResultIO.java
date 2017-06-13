@@ -37,7 +37,7 @@ public enum PutResultIO implements DattyResultIO<PutResult> {
 	}
 
 	@Override
-	public boolean readField(PutResult result, DattyField field, MessageReader<Integer> reader, ByteBuf source) {
+	public boolean readField(PutResult result, DattyField field, MessageReader reader, ByteBuf source) {
 		
 		switch(field) {
 		

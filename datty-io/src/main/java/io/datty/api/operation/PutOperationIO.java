@@ -34,7 +34,7 @@ public class PutOperationIO extends AbstractUpdateOperationIO<PutOperation> {
 	}
 	
 	@Override
-	public boolean readField(PutOperation operation, DattyField field, MessageReader<Integer> reader, ByteBuf source) {
+	public boolean readField(PutOperation operation, DattyField field, MessageReader reader, ByteBuf source) {
 		
 		boolean read = super.readField(operation, field, reader, source);
 		

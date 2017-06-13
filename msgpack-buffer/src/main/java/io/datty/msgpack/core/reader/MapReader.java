@@ -101,12 +101,12 @@ public class MapReader extends AbstractMessageReader implements ValueReader<Map<
 	private Map<Object, Object> readArray(ByteBuf source, boolean copy) {
 		
 		int length = readArrayHeader(source);
-		MessageReader<Integer> reader = new ArrayMessageReader(length);
+		MessageReader reader = new ArrayMessageReader(length);
 
 		Map<Object, Object> map = new HashMap<Object, Object>();
 
 		for (int i = 0; i != length; ++i) {
-			Integer key = reader.readKey(source);
+			Object key = reader.readKey(source);
 			Object value = reader.readValue(source, copy);
 			map.put(key, value);
 		}
@@ -131,7 +131,7 @@ public class MapReader extends AbstractMessageReader implements ValueReader<Map<
 	private Map<Object, Object> readMap(ByteBuf source, boolean copy) {
 		
 		int length = readMapHeader(source);
-		MessageReader<Object> reader = new MapMessageReader(length);
+		MessageReader reader = new MapMessageReader(length);
 
 		Map<Object, Object> map = new HashMap<Object, Object>();
 

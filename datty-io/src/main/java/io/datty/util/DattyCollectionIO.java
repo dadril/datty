@@ -36,7 +36,7 @@ public final class DattyCollectionIO {
 	private DattyCollectionIO() {
 	}
 	
-	public static List<String> readStringArray(MessageReader<Integer> reader, ByteBuf source) {
+	public static List<String> readStringArray(MessageReader reader, ByteBuf source) {
 		
 		Object value = reader.readValue(source, false);
 		

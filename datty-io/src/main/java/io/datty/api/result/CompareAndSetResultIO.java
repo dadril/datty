@@ -37,7 +37,7 @@ public enum CompareAndSetResultIO implements DattyResultIO<CompareAndSetResult> 
 	}
 
 	@Override
-	public boolean readField(CompareAndSetResult result, DattyField field, MessageReader<Integer> reader, ByteBuf source) {
+	public boolean readField(CompareAndSetResult result, DattyField field, MessageReader reader, ByteBuf source) {
 		
 		switch(field) {
 		

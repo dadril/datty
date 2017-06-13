@@ -38,7 +38,7 @@ public enum RemoveResultIO implements DattyResultIO<RemoveResult> {
 	}
 
 	@Override
-	public boolean readField(RemoveResult result, DattyField field, MessageReader<Integer> reader, ByteBuf source) {
+	public boolean readField(RemoveResult result, DattyField field, MessageReader reader, ByteBuf source) {
 		
 		switch(field) {
 		

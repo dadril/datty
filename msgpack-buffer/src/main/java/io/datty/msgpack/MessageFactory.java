@@ -19,8 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.datty.msgpack.core.ArrayMessageReader;
-import io.datty.msgpack.core.IntMapMessageReader;
-import io.datty.msgpack.core.StringMapMessageReader;
+import io.datty.msgpack.core.MapMessageReader;
 import io.datty.msgpack.core.ValueMessageReader;
 import io.datty.msgpack.core.type.TypeInfo;
 import io.datty.msgpack.support.MessageException;
@@ -52,13 +51,10 @@ public final class MessageFactory {
 	 * @return Map or List or null
 	 */
 	
-	public static Object readFrom(MessageReader<?> reader, ByteBuf source, boolean copy) {
+	public static Object readFrom(MessageReader reader, ByteBuf source, boolean copy) {
 		
-		if (reader instanceof StringMapMessageReader) {
-			return readStringMap((StringMapMessageReader) reader, source, copy);
-		}
-		else if (reader instanceof IntMapMessageReader) {
-			return readIntMap((IntMapMessageReader) reader, source, copy);
+		if (reader instanceof MapMessageReader) {
+			return readMap((MapMessageReader) reader, source, copy);
 		}
 		else if (reader instanceof ArrayMessageReader) {
 			return readArray((ArrayMessageReader) reader, source, copy);
@@ -69,56 +65,26 @@ public final class MessageFactory {
 	}
 	
 	/**
-	 * Reads string map from source
+	 * Reads map from source
 	 * 
 	 * @param reader - string map reader
 	 * @param source - input buffers
 	 * @return Map or null
 	 */
 	
-	public static Map<String, Object> readStringMap(MessageReader<String> reader, ByteBuf source, boolean copy) {
+	public static Map<Object, Object> readMap(MessageReader reader, ByteBuf source, boolean copy) {
 		
 		int size = reader.size();
 		
-	  Map<String, Object> map = new HashMap<>();
+	  Map<Object, Object> map = new HashMap<>();
 	  
 	  for (int i = 0; i != size; ++i) {
 	  	
-	  	String key = reader.readKey(source);
+	  	Object key = reader.readKey(source);
 	  	Object value = reader.readValue(source, copy);
 	  	
 	  	if (value instanceof MessageReader) {
-	  		value = readFrom((MessageReader<?>) value, source, copy);
-	  	}
-	  	
-	  	map.put(key, value);
-	  	
-	  }
-	  
-	  return map;
-	}
-	
-	/**
-	 * Reads int map from source
-	 * 
-	 * @param reader - string int reader
-	 * @param source - input buffers
-	 * @return Map or null
-	 */
-	
-	public static Map<Integer, Object> readIntMap(MessageReader<Integer> reader, ByteBuf source, boolean copy) {
-		
-		int size = reader.size();
-		
-	  Map<Integer, Object> map = new HashMap<>();
-	  
-	  for (int i = 0; i != size; ++i) {
-	  	
-	  	Integer key = reader.readKey(source);
-	  	Object value = reader.readValue(source, copy);
-	  	
-	  	if (value instanceof MessageReader) {
-	  		value = readFrom((MessageReader<?>) value, source, copy);
+	  		value = readFrom((MessageReader) value, source, copy);
 	  	}
 	  	
 	  	map.put(key, value);
@@ -136,7 +102,7 @@ public final class MessageFactory {
 	 * @return Map or null
 	 */
 	
-	public static List<Object> readArray(MessageReader<Integer> reader, ByteBuf source, boolean copy) {
+	public static List<Object> readArray(MessageReader reader, ByteBuf source, boolean copy) {
 		
 		int size = reader.size();
 		
@@ -147,7 +113,7 @@ public final class MessageFactory {
 	  	Object value = reader.readValue(source, copy);
 	  	
 	  	if (value instanceof MessageReader) {
-	  		value = readFrom((MessageReader<?>) value, source, copy);
+	  		value = readFrom((MessageReader) value, source, copy);
 	  	}
 	  	
 	  	list.add(value);
@@ -200,7 +166,7 @@ public final class MessageFactory {
 		Object value = ValueMessageReader.INSTANCE.readValue(source, copy);
 		
 		if (value instanceof MessageReader) {
-  		value = readFrom((MessageReader<?>) value, source, copy);
+  		value = readFrom((MessageReader) value, source, copy);
 		}
 		
 		return value;

@@ -23,7 +23,7 @@ import io.netty.buffer.ByteBuf;
  *
  */
 
-public interface MessageReader<K> {
+public interface MessageReader {
 
 	/**
 	 * Gets number of entries
@@ -36,11 +36,16 @@ public interface MessageReader<K> {
 	/**
 	 * Reads the key of the message entry
 	 * 
+	 * Return types:
+	 * null
+	 * Integer
+	 * String
+	 * 
 	 * @param source - input buffer
 	 * @return Integer or String or null if no entries
 	 */
 	
-	K readKey(ByteBuf source);
+	Object readKey(ByteBuf source);
 	
 	/**
 	 * Reads value of the message entry

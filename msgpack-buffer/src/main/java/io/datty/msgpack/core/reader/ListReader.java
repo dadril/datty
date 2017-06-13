@@ -100,7 +100,7 @@ public class ListReader extends AbstractMessageReader implements ValueReader<Lis
 	private List<Object> readArray(ByteBuf source, boolean copy) {
 		
 		int length = readArrayHeader(source);
-		MessageReader<Integer> reader = new ArrayMessageReader(length);
+		MessageReader reader = new ArrayMessageReader(length);
 
 		List<Object> list = new ArrayList<Object>(length);
 
@@ -129,7 +129,7 @@ public class ListReader extends AbstractMessageReader implements ValueReader<Lis
 	private List<Object> readMap(ByteBuf source, boolean copy) {
 		
 		int length = readMapHeader(source);
-		MessageReader<Object> reader = new MapMessageReader(length);
+		MessageReader reader = new MapMessageReader(length);
 
 		List<Object> list = new ArrayList<Object>(length);
 
@@ -145,7 +145,7 @@ public class ListReader extends AbstractMessageReader implements ValueReader<Lis
 	private <T> List<T> readMap(ValueReader<T> elementReader, ByteBuf source, boolean copy) {
 		
 		int length = readMapHeader(source);
-		MessageReader<Object> reader = new MapMessageReader(length);
+		MessageReader reader = new MapMessageReader(length);
 
 		List<T> list = new ArrayList<T>(length);
 
