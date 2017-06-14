@@ -18,6 +18,7 @@ import java.util.Map;
 import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.MessageWriter;
 import io.datty.msgpack.core.MapMessageReader;
+import io.datty.msgpack.core.MapMessageWriter;
 import io.datty.support.exception.DattyException;
 import io.netty.buffer.ByteBuf;
 
@@ -30,22 +31,25 @@ import io.netty.buffer.ByteBuf;
 
 public final class DattyRowIO {
 
+	private final static MessageReader reader = MapMessageReader.INSTANCE;
+	private final static MessageWriter writer = MapMessageWriter.INSTANCE;
+	
 	private DattyRowIO() {
 	}
 	
-	public static DattyRow readRow(MessageReader reader, ByteBuf source) {
+	public static DattyRow readRow(ByteBuf source) {
+		
+		DattyRow row = new DattyRow();
 		
 		Object rowMap = reader.readValue(source, false);
 		
 		if (rowMap == null) {
-			return null;
+			return row;
 		}
 		
 		if (!(rowMap instanceof MapMessageReader)) {
 			throw new DattyException("expected MapMessageReader for DattyRow object");
 		}
-
-		DattyRow row = new DattyRow();
 
 		MapMessageReader mapReader = (MapMessageReader) rowMap;
 		
@@ -78,7 +82,7 @@ public final class DattyRowIO {
 		return row;
 	}
 	
-	public static ByteBuf writeRow(MessageWriter writer, DattyRow row, ByteBuf sink) {
+	public static ByteBuf writeRow(DattyRow row, ByteBuf sink) {
 		
 		Map<String, ByteBuf> values = row.getValues();
 		

@@ -45,7 +45,7 @@ public class PutOperationIO extends AbstractUpdateOperationIO<PutOperation> {
 		switch(field) {
 		
 			case ROW:
-				operation.setRow(DattyRowIO.readRow(reader, source));
+				operation.setRow(DattyRowIO.readRow(source));
 				return true;
 
 			default:

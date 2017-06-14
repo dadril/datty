@@ -43,6 +43,8 @@ public class MessageWriterTypedTest extends MessageReaderTypedTest {
 
 		MessageWriter writer = MapMessageWriter.INSTANCE;
 		
+		int headerIndex = writer.skipHeader(255, sink);
+		
 		int fields = 0;
 		
 		writer.writeKey("boolean", sink);
@@ -109,7 +111,7 @@ public class MessageWriterTypedTest extends MessageReaderTypedTest {
 		writer.writeValue(typeOf(ByteBuf.class), Unpooled.wrappedBuffer(new byte[] { 1 }), sink, true);
 		fields++;
 		
-		sink = writer.prependHeader(fields, sink);
+		writer.writeHeader(fields, 255, headerIndex, sink);
 		
 		byte[] bytes = ByteBufUtil.getBytes(sink);
 		

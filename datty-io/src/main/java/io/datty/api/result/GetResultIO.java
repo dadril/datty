@@ -48,7 +48,7 @@ public enum GetResultIO implements DattyResultIO<GetResult> {
 			return true;
 		
 		case ROW:
-			result.setRow(DattyRowIO.readRow(reader, source));
+			result.setRow(DattyRowIO.readRow(source));
 			return true;
 			
 		default:

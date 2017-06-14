@@ -51,22 +51,6 @@ public class MessageWriterTest extends MessageReaderTest {
 	}
 	
 	@Test
-	public void testIntMapPrepend() {
-
-		MessageWriter writer = MapMessageWriter.INSTANCE;
-		ByteBuf sink = Unpooled.buffer();
-		
-		writeIntMapFields(writer, sink);
-		
-		sink = writer.prependHeader(FIELDS_COUNT, sink);
-		
-		byte[] bytes = ByteBufUtil.getBytes(sink);
-		
-		assertIntMapExample(bytes);
-		
-	}
-	
-	@Test
 	public void testIntMapSkip() {
 
 		MessageWriter writer = MapMessageWriter.INSTANCE;
@@ -100,22 +84,6 @@ public class MessageWriterTest extends MessageReaderTest {
 	}
 	
 	@Test
-	public void testStringMapPrepend() {
-		
-		MessageWriter writer = MapMessageWriter.INSTANCE;
-		ByteBuf sink = Unpooled.buffer();
-		
-		writeStringMapFields(writer, sink);
-		
-		sink = writer.prependHeader(FIELDS_COUNT, sink);
-		
-		byte[] bytes = ByteBufUtil.getBytes(sink);
-		
-		assertStringMapExample(bytes);
-		
-	}
-	
-	@Test
 	public void testStringMapSkip() {
 		
 		MessageWriter writer = MapMessageWriter.INSTANCE;
@@ -144,24 +112,6 @@ public class MessageWriterTest extends MessageReaderTest {
 		writeArrayFields(writer, sink);
 		
 		byte[] bytes = ByteBufUtil.getBytes(sink);
-		
-		assertArrayExample(bytes);
-		
-	}
-
-	@Test
-	public void testArrayPrepend() {
-
-		MessageWriter writer = ArrayMessageWriter.INSTANCE;
-		ByteBuf sink = Unpooled.buffer();
-		
-		writeArrayFields(writer, sink);
-		
-		sink = writer.prependHeader(FIELDS_COUNT, sink);
-		
-		byte[] bytes = ByteBufUtil.getBytes(sink);
-		
-		System.out.println(Arrays.toString(bytes));
 		
 		assertArrayExample(bytes);
 		

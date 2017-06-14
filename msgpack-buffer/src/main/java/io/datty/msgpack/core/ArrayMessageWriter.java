@@ -15,7 +15,6 @@ package io.datty.msgpack.core;
 
 import io.datty.msgpack.MessageWriter;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.CompositeByteBuf;
 
 /**
  * ArrayMessageWriter
@@ -51,27 +50,6 @@ public class ArrayMessageWriter extends ValueMessageWriter implements MessageWri
 		writeArrayHeader(size, sink);
 	}
 	
-	@Override
-	public ByteBuf prependHeader(int arraySize, ByteBuf sink) {
-		
-		int headerSize = getArrayHeaderSize(arraySize);
-		
-		ByteBuf header = sink.alloc().buffer(headerSize);
-		writeArrayHeader(arraySize, header);
-		
-		if (sink instanceof CompositeByteBuf) {
-			CompositeByteBuf compositeSink = (CompositeByteBuf) sink;
-			compositeSink.addComponent(true, 0, header);
-			return compositeSink;
-		}
-		else {
-			CompositeByteBuf result = sink.alloc().compositeBuffer();
-			result.addComponent(true, header);
-			result.addComponent(true, sink);
-			return result;
-		}
-	}
-
 	@Override
 	public void writeKey(String key, ByteBuf sink) {
 	}

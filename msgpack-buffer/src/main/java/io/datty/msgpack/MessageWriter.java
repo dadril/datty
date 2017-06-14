@@ -55,16 +55,6 @@ public interface MessageWriter {
 	void writeHeader(int size, ByteBuf sink);
 	
 	/**
-	 * Writes message header with number of elements, calls at the end of stream
-	 * 
-	 * @param size - number of entries in map
-	 * @param sink - output buffer
-	 * @return new sink
-	 */
-	
-	ByteBuf prependHeader(int size, ByteBuf sink);
-	
-	/**
 	 * Writes the key of the map as a string
 	 * 
 	 * @param key - not null string

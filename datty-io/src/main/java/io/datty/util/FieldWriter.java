@@ -113,7 +113,7 @@ public final class FieldWriter {
 	
 	public void writeField(DattyField field, DattyRow row) {
 		writeKey(field);
-		sink = DattyRowIO.writeRow(writer, row, sink);
+		sink = DattyRowIO.writeRow(row, sink);
 		size++;
 	}
 	

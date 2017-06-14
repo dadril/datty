@@ -35,7 +35,14 @@ public class ByteBufWriter extends AbstractMessageWriter implements ValueWriter<
 			writeNull(sink);
 			return sink;
 		}
+		else {
+			writeBinaryHeader(value.readableBytes(), sink);
+			sink.writeBytes(value, value.readerIndex(), value.readableBytes());
+			return sink;
+		}
+
 		
+		/**
 		else if (copy) {
 			writeBinaryHeader(value.readableBytes(), sink);
 			sink.writeBytes(value, value.readerIndex(), value.readableBytes());
@@ -56,6 +63,7 @@ public class ByteBufWriter extends AbstractMessageWriter implements ValueWriter<
 			result.addComponent(true, value);
 			return result;
 		}
+		*/
 		
 	}
 	

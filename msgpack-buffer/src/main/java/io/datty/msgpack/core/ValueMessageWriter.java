@@ -27,7 +27,6 @@ import io.datty.msgpack.core.writer.MapWriter;
 import io.datty.msgpack.core.writer.ValueWriter;
 import io.datty.msgpack.support.MessageParseException;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.CompositeByteBuf;
 
 /**
  * ValueMessageWriter
@@ -75,11 +74,6 @@ public class ValueMessageWriter extends AbstractMessageWriter implements Message
 	}
 
 	@Override
-	public ByteBuf prependHeader(int mapSize, ByteBuf sink) {
-		throw new UnsupportedOperationException("this method must be overriden");
-	}
-
-	@Override
 	public void writeKey(String key, ByteBuf sink) {
 		throw new UnsupportedOperationException("this method must be overriden");
 	}
@@ -112,6 +106,11 @@ public class ValueMessageWriter extends AbstractMessageWriter implements Message
 	@Override
 	public ByteBuf writeValue(ByteBuf value, ByteBuf sink, boolean copy) {
 
+		writeBinaryHeader(value.readableBytes(), sink);
+		sink.writeBytes(value, value.readerIndex(), value.readableBytes());
+		return sink;
+
+		/**
 		if (copy) {
 			writeBinaryHeader(value.readableBytes(), sink);
 			sink.writeBytes(value, value.readerIndex(), value.readableBytes());
@@ -120,7 +119,7 @@ public class ValueMessageWriter extends AbstractMessageWriter implements Message
 		else if (sink instanceof CompositeByteBuf) {
 			writeBinaryHeader(value.readableBytes(), sink);
 			CompositeByteBuf compositeSink = (CompositeByteBuf) sink;
-			compositeSink.addComponent(true, value);
+			compositeSink.addComponent(true, value.duplicate());
 			return compositeSink;
 		}
 		else {
@@ -130,6 +129,7 @@ public class ValueMessageWriter extends AbstractMessageWriter implements Message
 			result.addComponent(true, value);
 			return result;
 		}
+		*/
 		
 	}
 

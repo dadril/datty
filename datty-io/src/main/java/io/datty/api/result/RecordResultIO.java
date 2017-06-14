@@ -52,7 +52,7 @@ public enum RecordResultIO implements DattyResultIO<RecordResult> {
 			return true;
 		
 		case ROW:
-			result.setRow(DattyRowIO.readRow(reader, source));
+			result.setRow(DattyRowIO.readRow(source));
 			return true;
 			
 		case COUNT:

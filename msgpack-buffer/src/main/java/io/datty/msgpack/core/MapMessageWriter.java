@@ -15,7 +15,6 @@ package io.datty.msgpack.core;
 
 import io.datty.msgpack.MessageWriter;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.CompositeByteBuf;
 
 /**
  * MapMessageWriter
@@ -49,27 +48,6 @@ public class MapMessageWriter extends ValueMessageWriter implements MessageWrite
 	@Override
 	public void writeHeader(int size, ByteBuf sink) {
 		writeMapHeader(size, sink);
-	}
-
-	@Override
-	public ByteBuf prependHeader(int mapSize, ByteBuf sink) {
-		
-		int headerSize = getMapHeaderSize(mapSize);
-		
-		ByteBuf header = sink.alloc().buffer(headerSize);
-		writeMapHeader(mapSize, header);
-		
-		if (sink instanceof CompositeByteBuf) {
-			CompositeByteBuf compositeSink = (CompositeByteBuf) sink;
-			compositeSink.addComponent(true, 0, header);
-			return compositeSink;
-		}
-		else {
-			CompositeByteBuf result = sink.alloc().compositeBuffer();
-			result.addComponent(true, header);
-			result.addComponent(true, sink);
-			return result;
-		}
 	}
 
 	@Override

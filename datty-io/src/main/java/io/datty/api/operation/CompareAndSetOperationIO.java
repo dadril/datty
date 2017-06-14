@@ -50,7 +50,7 @@ public class CompareAndSetOperationIO extends AbstractUpdateOperationIO<CompareA
 				return true;
 			
 			case ROW:
-				operation.setRow(DattyRowIO.readRow(reader, source));
+				operation.setRow(DattyRowIO.readRow(source));
 				return true;
 
 			default:
