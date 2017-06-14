@@ -26,7 +26,7 @@ import io.datty.spring.mapping.PropertyName;
  */
 
 @Entity(setName="TEST_CACHE", numeric=true)
-public class TaggedMigratedCrossEntity {
+public class NumericMigratedCrossEntity {
 
 	@Id
 	@PropertyName(code=1)
@@ -68,7 +68,7 @@ public class TaggedMigratedCrossEntity {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		TaggedMigratedCrossEntity other = (TaggedMigratedCrossEntity) obj;
+		NumericMigratedCrossEntity other = (NumericMigratedCrossEntity) obj;
 		if (first == null) {
 			if (other.first != null)
 				return false;

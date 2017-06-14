@@ -30,12 +30,12 @@ import io.netty.buffer.ByteBuf;
  *
  */
 
-public class TaggedEntityTest {
+public class NumericEntityTest {
 
 	@Test
 	public void testNames() {
 		
-		TaggedEntity entity = new TaggedEntity();
+		NumericEntity entity = new NumericEntity();
 		entity.setId(123L);
 		entity.setName("Alex");
 		
@@ -55,7 +55,7 @@ public class TaggedEntityTest {
 		Assert.assertEquals(entity.getId(), map.get(1));
 		Assert.assertEquals("Alex", map.get(2));
 		
-		TaggedEntity actual = DattyConverterUtil.read(TaggedEntity.class, row);
+		NumericEntity actual = DattyConverterUtil.read(NumericEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertEquals(entity.getName(), actual.getName());
 		
@@ -75,7 +75,7 @@ public class TaggedEntityTest {
 		Assert.assertEquals(entity.getId(), map.get(1));
 		Assert.assertEquals("Alex", map.get(2));
 		
-		actual = DattyConverterUtil.read(TaggedEntity.class, row);
+		actual = DattyConverterUtil.read(NumericEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertEquals(entity.getName(), actual.getName());
 		

@@ -19,14 +19,14 @@ import io.datty.spring.mapping.Entity;
 import io.datty.spring.mapping.PropertyName;
 
 /**
- * TaggedEntity
+ * TaggedCrossEntity
  * 
  * @author Alex Shvid
  *
  */
 
-@Entity(setName="TEST_CACHE", minorKey="def", numeric=true)
-public class TaggedEntity {
+@Entity(setName="TEST_CACHE", numeric=true)
+public class NumericCrossEntity {
 
 	@Id
 	@PropertyName(code=1)
@@ -68,7 +68,7 @@ public class TaggedEntity {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		TaggedEntity other = (TaggedEntity) obj;
+		NumericCrossEntity other = (NumericCrossEntity) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -84,7 +84,7 @@ public class TaggedEntity {
 
 	@Override
 	public String toString() {
-		return "TaggedEntity [id=" + id + ", name=" + name + "]";
+		return "TaggedCrossEntity [id=" + id + ", name=" + name + "]";
 	}
 	
 	

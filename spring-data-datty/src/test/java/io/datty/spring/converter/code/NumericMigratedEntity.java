@@ -19,21 +19,21 @@ import io.datty.spring.mapping.Entity;
 import io.datty.spring.mapping.PropertyName;
 
 /**
- * TaggedCrossEntity
+ * TaggedMigratedEntity
  * 
  * @author Alex Shvid
  *
  */
 
-@Entity(setName="TEST_CACHE", numeric=true)
-public class TaggedCrossEntity {
+@Entity(setName="TEST_CACHE", minorKey="def", numeric=true)
+public class NumericMigratedEntity {
 
 	@Id
 	@PropertyName(code=1)
 	private Long id;
 	
 	@PropertyName(code=2)
-	private String name;
+	private String first;
 
 	public Long getId() {
 		return id;
@@ -43,20 +43,20 @@ public class TaggedCrossEntity {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getFirst() {
+		return first;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setFirst(String first) {
+		this.first = first;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((first == null) ? 0 : first.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
@@ -68,25 +68,24 @@ public class TaggedCrossEntity {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		TaggedCrossEntity other = (TaggedCrossEntity) obj;
+		NumericMigratedEntity other = (NumericMigratedEntity) obj;
+		if (first == null) {
+			if (other.first != null)
+				return false;
+		} else if (!first.equals(other.first))
+			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "TaggedCrossEntity [id=" + id + ", name=" + name + "]";
+		return "TaggedMigratedEntity [id=" + id + ", first=" + first + "]";
 	}
-	
-	
+
 	
 }

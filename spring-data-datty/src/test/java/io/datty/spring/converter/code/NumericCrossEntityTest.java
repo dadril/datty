@@ -27,12 +27,12 @@ import io.netty.buffer.ByteBuf;
  *
  */
 
-public class TaggedCrossEntityTest {
+public class NumericCrossEntityTest {
 
 	@Test
 	public void testNames() {
 		
-		TaggedCrossEntity entity = new TaggedCrossEntity();
+		NumericCrossEntity entity = new NumericCrossEntity();
 		entity.setId(123L);
 		entity.setName("Alex");
 		
@@ -45,7 +45,7 @@ public class TaggedCrossEntityTest {
 		bb = row.get("2");
 		Assert.assertNotNull(bb);
 		
-		TaggedMigratedCrossEntity actual = DattyConverterUtil.read(TaggedMigratedCrossEntity.class, row);
+		NumericMigratedCrossEntity actual = DattyConverterUtil.read(NumericMigratedCrossEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertEquals(entity.getName(), actual.getFirst());
 		
@@ -60,7 +60,7 @@ public class TaggedCrossEntityTest {
 		
 		//System.out.println(Arrays.toString(ByteBufUtil.getBytes(bb)));
 		
-		actual = DattyConverterUtil.read(TaggedMigratedCrossEntity.class, row);
+		actual = DattyConverterUtil.read(NumericMigratedCrossEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertEquals(entity.getName(), actual.getFirst());
 		
