@@ -31,7 +31,7 @@ public class NamedCrossEntity {
 	@Id
 	private Long id;
 	
-	@PropertyName("first")
+	@PropertyName(name = "first")
 	private String name;
 
 	public Long getId() {

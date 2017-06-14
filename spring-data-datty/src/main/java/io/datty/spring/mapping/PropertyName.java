@@ -36,7 +36,7 @@ public @interface PropertyName {
 	 * 
 	 * @return
 	 */
-	String value() default "";
+	String name() default "";
 	
 	/**
 	 * The unique code of the property
@@ -52,5 +52,13 @@ public @interface PropertyName {
 	 */
 	
 	String[] otherNames() default {};
+	
+	/**
+	 * Copy bytes from the buffers
+	 * 
+	 * @return true if copy all bytes for reads and writes
+	 */
+	
+	boolean copy() default true;
 	
 }

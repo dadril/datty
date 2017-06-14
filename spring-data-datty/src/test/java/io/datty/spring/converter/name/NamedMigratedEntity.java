@@ -31,7 +31,7 @@ public class NamedMigratedEntity {
 	@Id
 	private Long id;
 	
-	@PropertyName(value="last", otherNames={"first"})
+	@PropertyName(name="last", otherNames={"first"})
 	private String name;
 
 	public Long getId() {
