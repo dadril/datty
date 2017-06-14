@@ -68,14 +68,6 @@ public @interface Entity {
 	boolean numeric() default false;
 	
 	/**
-	 * Copy bytes from the buffers
-	 * 
-	 * @return true if copy all bytes for reads and writes
-	 */
-	
-	boolean copy() default false;
-
-	/**
 	 * Time to live in seconds
 	 * 
 	 * @return ttl or 0

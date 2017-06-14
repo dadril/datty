@@ -60,14 +60,6 @@ public interface DattyPersistentEntity<T> extends PersistentEntity<T, DattyPersi
 	boolean numeric();
 	
 	/**
-	 * Get copy flag
-	 * 
-	 * @return true if copy all bytes for reads and writes
-	 */
-	
-	boolean copy();
-	
-	/**
 	 * Gets time to live in seconds if defined
 	 * 
 	 * @return ttl or 0
@@ -119,10 +111,10 @@ public interface DattyPersistentEntity<T> extends PersistentEntity<T, DattyPersi
 	/**
 	 * Search property by tag
 	 * 
-	 * @param tag - tag number
+	 * @param code - code number
 	 * @return property
 	 */
 	
-	Optional<DattyPersistentProperty> findPropertyByCode(Integer tagNumber);
+	Optional<DattyPersistentProperty> findPropertyByCode(Integer code);
 	
 }

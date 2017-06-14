@@ -16,7 +16,7 @@ package io.datty.spring.converter.code;
 import org.springframework.data.annotation.Id;
 
 import io.datty.spring.mapping.Entity;
-import io.datty.spring.mapping.PropertyName;
+import io.datty.spring.mapping.PropertyInfo;
 
 /**
  * TaggedEntity
@@ -29,10 +29,10 @@ import io.datty.spring.mapping.PropertyName;
 public class NumericEntity {
 
 	@Id
-	@PropertyName(code=1)
+	@PropertyInfo(code=1)
 	private Long id;
 	
-	@PropertyName(code=2)
+	@PropertyInfo(code=2)
 	private String name;
 
 	public Long getId() {

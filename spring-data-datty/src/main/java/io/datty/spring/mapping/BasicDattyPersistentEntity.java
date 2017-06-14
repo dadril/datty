@@ -48,7 +48,6 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 	private final String setName;
 	private final String minorKey;
 	private final boolean numeric;
-	private final boolean copy;
 	private final int ttlSeconds;
 	private final int timeoutMillis;
 	private int propsCount = -1;
@@ -73,14 +72,12 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 			this.setName = expression(entity.setName());
 			this.minorKey = expression(entity.minorKey());
 			this.numeric = entity.numeric();
-			this.copy = entity.copy();
 			this.ttlSeconds = entity.ttlSeconds();
 			this.timeoutMillis = entity.timeoutMillis();
 		} else {
 			this.setName = rawType.getSimpleName();
 			this.minorKey = "";
 			this.numeric = false;
-			this.copy = false;
 			this.ttlSeconds = DattyConstants.UNSET_TTL;
 			this.timeoutMillis = DattyConstants.UNSET_TIMEOUT;
 		}
@@ -203,11 +200,6 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 	@Override
 	public boolean numeric() {
 		return numeric;
-	}
-
-	@Override
-	public boolean copy() {
-		return copy;
 	}
 
 	@Override

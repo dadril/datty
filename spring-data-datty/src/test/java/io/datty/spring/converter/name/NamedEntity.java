@@ -16,7 +16,7 @@ package io.datty.spring.converter.name;
 import org.springframework.data.annotation.Id;
 
 import io.datty.spring.mapping.Entity;
-import io.datty.spring.mapping.PropertyName;
+import io.datty.spring.mapping.PropertyInfo;
 
 /**
  * NamedEntity
@@ -31,7 +31,7 @@ public class NamedEntity {
 	@Id
 	private Long id;
 	
-	@PropertyName(name = "first")
+	@PropertyInfo(name = "first")
 	private String name;
 
 	public Long getId() {

@@ -78,11 +78,6 @@ public class MappingDattyEntityInformation<T> extends AbstractEntityInformation<
 	}
 
 	@Override
-	public boolean copy() {
-		return entityMetadata.copy();
-	}
-
-	@Override
 	public int ttlSeconds() {
 		return entityMetadata.getTtlSeconds();
 	}

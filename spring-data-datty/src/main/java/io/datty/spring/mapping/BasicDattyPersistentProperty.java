@@ -46,6 +46,7 @@ public class BasicDattyPersistentProperty extends AnnotationBasedPersistentPrope
 	private final String primaryName;
 	private final String[] otherNames;
 	private final int code;
+	private final boolean copy;
 	private final boolean isEmbeddedType;
 	private final boolean hasTransientModifier;
 	private volatile TypeInfo<?> typeInfo;
@@ -61,16 +62,18 @@ public class BasicDattyPersistentProperty extends AnnotationBasedPersistentPrope
 			Field fieldInstance = field.get();
 			Class<?> fieldType = fieldInstance.getType();
 
-			PropertyName nameAnnotation = fieldInstance.getAnnotation(PropertyName.class);
-			if (nameAnnotation != null) {
-				this.primaryName = nameAnnotation.name().length() > 0 ? nameAnnotation.name() : getName();
-				this.otherNames = nameAnnotation.otherNames();
-				this.code =  nameAnnotation.code();
+			PropertyInfo propertyInfo = fieldInstance.getAnnotation(PropertyInfo.class);
+			if (propertyInfo != null) {
+				this.primaryName = propertyInfo.name().length() > 0 ? propertyInfo.name() : getName();
+				this.otherNames = propertyInfo.otherNames();
+				this.code =  propertyInfo.code();
+				this.copy = propertyInfo.copy();
 			}
 			else {
 				this.primaryName = getName();
 				this.otherNames = EMPTY;
 				this.code = 0;
+				this.copy = true;
 			}
 
 			this.isEmbeddedType = fieldType.isAnnotationPresent(Embedded.class);
@@ -80,6 +83,7 @@ public class BasicDattyPersistentProperty extends AnnotationBasedPersistentPrope
 			this.primaryName = getName();
 			this.otherNames = EMPTY;
 			this.code = 0;		
+			this.copy = true;
 			this.isEmbeddedType = false;
 			this.hasTransientModifier = false;
 		}
@@ -107,6 +111,11 @@ public class BasicDattyPersistentProperty extends AnnotationBasedPersistentPrope
 	@Override
 	public int getCode() {
 		return code;
+	}
+
+	@Override
+	public boolean copy() {
+		return copy;
 	}
 
 	@Override

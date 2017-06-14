@@ -52,6 +52,14 @@ public interface DattyPersistentProperty extends PersistentProperty<DattyPersist
 	int getCode();
 	
 	/**
+	 * Get copy flag
+	 * 
+	 * @return true if copy all bytes for reads and writes
+	 */
+	
+	boolean copy();
+	
+	/**
 	 * Returns the true if the field is embedded type.
 	 * 
 	 * @return

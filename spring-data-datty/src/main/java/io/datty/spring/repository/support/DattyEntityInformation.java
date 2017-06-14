@@ -59,14 +59,6 @@ public interface DattyEntityInformation<T> extends EntityInformation<T, DattyId>
 	boolean numeric();
 	
 	/**
-	 * Checks if entity has to be copy all fields during deserialization
-	 * 
-	 * @return true if copy mode enabled
-	 */
-	
-	boolean copy();
-	
-	/**
 	 * Gets time to live in seconds for update operations
 	 * 
 	 * @return ttl in seconds or 0
