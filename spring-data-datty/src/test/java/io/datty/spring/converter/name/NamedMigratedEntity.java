@@ -16,7 +16,7 @@ package io.datty.spring.converter.name;
 import org.springframework.data.annotation.Id;
 
 import io.datty.spring.mapping.Entity;
-import io.datty.spring.mapping.Name;
+import io.datty.spring.mapping.PropertyName;
 
 /**
  * NamedMigratedEntity
@@ -31,7 +31,7 @@ public class NamedMigratedEntity {
 	@Id
 	private Long id;
 	
-	@Name(value="last", otherNames={"first"})
+	@PropertyName(value="last", otherNames={"first"})
 	private String name;
 
 	public Long getId() {

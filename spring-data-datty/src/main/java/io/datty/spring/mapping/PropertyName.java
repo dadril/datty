@@ -20,7 +20,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Name annotation to define details about property name mapping
+ * Name annotation to define details about property identification
  * 
  * @author Alex Shvid
  *
@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = { ElementType.FIELD, ElementType.METHOD, ElementType.ANNOTATION_TYPE })
-public @interface Name {
+public @interface PropertyName {
 
 	/**
 	 * The name of the property that overrides field name.

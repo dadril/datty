@@ -16,7 +16,7 @@ package io.datty.spring.converter.code;
 import org.springframework.data.annotation.Id;
 
 import io.datty.spring.mapping.Entity;
-import io.datty.spring.mapping.Name;
+import io.datty.spring.mapping.PropertyName;
 
 /**
  * TaggedCrossEntity
@@ -29,10 +29,10 @@ import io.datty.spring.mapping.Name;
 public class TaggedCrossEntity {
 
 	@Id
-	@Name(code=1)
+	@PropertyName(code=1)
 	private Long id;
 	
-	@Name(code=2)
+	@PropertyName(code=2)
 	private String name;
 
 	public Long getId() {

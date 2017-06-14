@@ -61,7 +61,7 @@ public class BasicDattyPersistentProperty extends AnnotationBasedPersistentPrope
 			Field fieldInstance = field.get();
 			Class<?> fieldType = fieldInstance.getType();
 
-			Name nameAnnotation = fieldInstance.getAnnotation(Name.class);
+			PropertyName nameAnnotation = fieldInstance.getAnnotation(PropertyName.class);
 			if (nameAnnotation != null) {
 				this.primaryName = nameAnnotation.value().length() > 0 ? nameAnnotation.value() : getName();
 				this.otherNames = nameAnnotation.otherNames();
