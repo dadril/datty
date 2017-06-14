@@ -49,7 +49,7 @@ public interface DattyPersistentProperty extends PersistentProperty<DattyPersist
 	 * @return not null tag number
 	 */
 	
-	int getTag();
+	int getCode();
 	
 	/**
 	 * Returns the true if the field is embedded type.

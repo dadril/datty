@@ -391,8 +391,8 @@ public class DattyTemplate implements DattyOperations {
 		if (entityMetadata.hasMinorKey()) {
 			removeOp.addMinorKey(entityMetadata.getMinorKey());
 		}
-		else if (entityMetadata.useTags()) {
-			for (Integer tag : entityMetadata.getPropertyTags()) {
+		else if (entityMetadata.numeric()) {
+			for (Integer tag : entityMetadata.getPropertyCodes()) {
 				removeOp.addMinorKey(tag.toString());
 			}
 		}

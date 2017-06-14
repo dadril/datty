@@ -47,14 +47,14 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 
 	private final String setName;
 	private final String minorKey;
-	private final boolean tags;
+	private final boolean numeric;
 	private final boolean copy;
 	private final int ttlSeconds;
 	private final int timeoutMillis;
 	private int propsCount = -1;
 	
-	private Map<String, DattyPersistentProperty> propertyIndex;
-	private Map<Integer, DattyPersistentProperty> tagIndex;
+	private Map<String, DattyPersistentProperty> nameIndex;
+	private Map<Integer, DattyPersistentProperty> codeIndex;
 	
 	private final SpelExpressionParser parser;
 	private final StandardEvaluationContext context;
@@ -72,14 +72,14 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 			Entity entity = rawType.getAnnotation(Entity.class);
 			this.setName = expression(entity.setName());
 			this.minorKey = expression(entity.minorKey());
-			this.tags = entity.tags();
+			this.numeric = entity.numeric();
 			this.copy = entity.copy();
 			this.ttlSeconds = entity.ttlSeconds();
 			this.timeoutMillis = entity.timeoutMillis();
 		} else {
 			this.setName = rawType.getSimpleName();
 			this.minorKey = "";
-			this.tags = false;
+			this.numeric = false;
 			this.copy = false;
 			this.ttlSeconds = DattyConstants.UNSET_TTL;
 			this.timeoutMillis = DattyConstants.UNSET_TIMEOUT;
@@ -87,13 +87,13 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 
 	}
 	
-	private Map<String, DattyPersistentProperty> buildPropertyIndex() {
-		PropertyIndexer indexer = new PropertyIndexer();
+	private Map<String, DattyPersistentProperty> buildNameIndex() {
+		NameIndexer indexer = new NameIndexer();
 		doWithProperties(indexer);
 		return indexer.getIndex();
 	}
 	
-	public static final class PropertyIndexer implements SimplePropertyHandler {
+	public static final class NameIndexer implements SimplePropertyHandler {
 		
 		private final Map<String, DattyPersistentProperty> map = new HashMap<>();
 		
@@ -124,20 +124,20 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 		}
 	}
 	
-	private Map<Integer, DattyPersistentProperty> buildTagIndex() {
-		TagIndexer indexer = new TagIndexer();
+	private Map<Integer, DattyPersistentProperty> buildCodeIndex() {
+		CodeIndexer indexer = new CodeIndexer();
 		doWithProperties(indexer);
 		return indexer.getIndex();
 	}
 	
-	public static final class TagIndexer implements SimplePropertyHandler {
+	public static final class CodeIndexer implements SimplePropertyHandler {
 		
 		private final Map<Integer, DattyPersistentProperty> map = new HashMap<>();
 		
 		@Override
 		public void doWithPersistentProperty(PersistentProperty<?> property) {
 			DattyPersistentProperty prop = (DattyPersistentProperty) property;
-			tryPut(prop.getTag(), prop);
+			tryPut(prop.getCode(), prop);
 		}
 
 		private void tryPut(int key, DattyPersistentProperty value) {
@@ -201,8 +201,8 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 	}
 	
 	@Override
-	public boolean useTags() {
-		return tags;
+	public boolean numeric() {
+		return numeric;
 	}
 
 	@Override
@@ -230,34 +230,34 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 
 	@Override
 	public Set<String> getPropertyNames() {
-		if (propertyIndex == null) {
-			propertyIndex = buildPropertyIndex();
+		if (nameIndex == null) {
+			nameIndex = buildNameIndex();
 		}
-		return propertyIndex.keySet();
+		return nameIndex.keySet();
 	}
 
 	@Override
 	public Optional<DattyPersistentProperty> findPropertyByName(String name) {
-		if (propertyIndex == null) {
-			propertyIndex = buildPropertyIndex();
+		if (nameIndex == null) {
+			nameIndex = buildNameIndex();
 		}
-		return Optional.ofNullable(propertyIndex.get(name));
+		return Optional.ofNullable(nameIndex.get(name));
 	}
 	
 	@Override
-	public Set<Integer> getPropertyTags() {
-		if (tagIndex == null) {
-			tagIndex = buildTagIndex();
+	public Set<Integer> getPropertyCodes() {
+		if (codeIndex == null) {
+			codeIndex = buildCodeIndex();
 		}
-		return tagIndex.keySet();
+		return codeIndex.keySet();
 	}
 
 	@Override
-	public Optional<DattyPersistentProperty> findPropertyByTag(Integer tagNumber) {
-		if (tagIndex == null) {
-			tagIndex = buildTagIndex();
+	public Optional<DattyPersistentProperty> findPropertyByCode(Integer codeNumber) {
+		if (codeIndex == null) {
+			codeIndex = buildCodeIndex();
 		}
-		return Optional.ofNullable(tagIndex.get(tagNumber));
+		return Optional.ofNullable(codeIndex.get(codeNumber));
 	}
 	
 	private String expression(String value) {

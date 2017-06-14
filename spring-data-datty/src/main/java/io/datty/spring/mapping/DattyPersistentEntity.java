@@ -57,7 +57,7 @@ public interface DattyPersistentEntity<T> extends PersistentEntity<T, DattyPersi
 	 * @return true if use tags
 	 */
 	
-	boolean useTags();
+	boolean numeric();
 	
 	/**
 	 * Get copy flag
@@ -114,7 +114,7 @@ public interface DattyPersistentEntity<T> extends PersistentEntity<T, DattyPersi
 	 * @return set of property names
 	 */
 	
-	Set<Integer> getPropertyTags();
+	Set<Integer> getPropertyCodes();
 	
 	/**
 	 * Search property by tag
@@ -123,6 +123,6 @@ public interface DattyPersistentEntity<T> extends PersistentEntity<T, DattyPersi
 	 * @return property
 	 */
 	
-	Optional<DattyPersistentProperty> findPropertyByTag(Integer tagNumber);
+	Optional<DattyPersistentProperty> findPropertyByCode(Integer tagNumber);
 	
 }

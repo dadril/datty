@@ -16,7 +16,7 @@ package io.datty.spring.converter.tag;
 import org.springframework.data.annotation.Id;
 
 import io.datty.spring.mapping.Entity;
-import io.datty.spring.mapping.Tag;
+import io.datty.spring.mapping.Name;
 
 /**
  * TaggedMigratedCrossEntity
@@ -25,14 +25,14 @@ import io.datty.spring.mapping.Tag;
  *
  */
 
-@Entity(setName="TEST_CACHE", tags=true)
+@Entity(setName="TEST_CACHE", numeric=true)
 public class TaggedMigratedCrossEntity {
 
 	@Id
-	@Tag(1)
+	@Name(code=1)
 	private Long id;
 	
-	@Tag(2)
+	@Name(code=2)
 	private String first;
 
 	public Long getId() {

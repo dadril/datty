@@ -73,8 +73,8 @@ public class MappingDattyEntityInformation<T> extends AbstractEntityInformation<
 	}
 
 	@Override
-	public boolean useTags() {
-		return entityMetadata.useTags();
+	public boolean numeric() {
+		return entityMetadata.numeric();
 	}
 
 	@Override

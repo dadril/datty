@@ -65,7 +65,7 @@ public @interface Entity {
 	 * @return true if tags mode enabled.
 	 */
 	
-	boolean tags() default false;
+	boolean numeric() default false;
 	
 	/**
 	 * Copy bytes from the buffers

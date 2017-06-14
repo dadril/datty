@@ -56,7 +56,7 @@ public interface DattyEntityInformation<T> extends EntityInformation<T, DattyId>
 	 * @return true if tags are enabled
 	 */
 	
-	boolean useTags();
+	boolean numeric();
 	
 	/**
 	 * Checks if entity has to be copy all fields during deserialization

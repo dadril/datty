@@ -36,7 +36,14 @@ public @interface Name {
 	 * 
 	 * @return
 	 */
-	String value();
+	String value() default "";
+	
+	/**
+	 * The unique code of the property
+	 * 
+	 * @return
+	 */
+	int code() default 0;
 	
 	/**
 	 * Other names of the property

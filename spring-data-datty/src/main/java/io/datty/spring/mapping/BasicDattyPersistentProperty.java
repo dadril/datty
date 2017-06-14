@@ -45,7 +45,7 @@ public class BasicDattyPersistentProperty extends AnnotationBasedPersistentPrope
 	
 	private final String primaryName;
 	private final String[] otherNames;
-	private final int tag;
+	private final int code;
 	private final boolean isEmbeddedType;
 	private final boolean hasTransientModifier;
 	private volatile TypeInfo<?> typeInfo;
@@ -63,38 +63,30 @@ public class BasicDattyPersistentProperty extends AnnotationBasedPersistentPrope
 
 			Name nameAnnotation = fieldInstance.getAnnotation(Name.class);
 			if (nameAnnotation != null) {
-				this.primaryName = nameAnnotation.value();
+				this.primaryName = nameAnnotation.value().length() > 0 ? nameAnnotation.value() : getName();
 				this.otherNames = nameAnnotation.otherNames();
+				this.code =  nameAnnotation.code();
 			}
 			else {
 				this.primaryName = getName();
 				this.otherNames = EMPTY;
+				this.code = 0;
 			}
-			
-			Tag tagAnnotation = fieldInstance.getAnnotation(Tag.class);
-			
-			if (owner.useTags() && tagAnnotation == null) {
-				throw new MappingException("entity tags enabled by property has no @Tag " + property);
-			}
-			
-			this.tag = tagAnnotation != null ? tagAnnotation.value() : 0;
-			
+
 			this.isEmbeddedType = fieldType.isAnnotationPresent(Embedded.class);
 			this.hasTransientModifier = Modifier.isTransient(field.get().getModifiers());
 		}
 		else {
 			this.primaryName = getName();
 			this.otherNames = EMPTY;
-			
-			if (owner.useTags()) {
-				throw new MappingException("entity tags enabled by property has no @Tag " + property);
-			}
-			
-			this.tag = 0;		
+			this.code = 0;		
 			this.isEmbeddedType = false;
 			this.hasTransientModifier = false;
 		}
 		
+		if (owner.numeric() && this.code == 0) {
+			throw new MappingException("numeric entity has no code for " + property);
+		}
 	}
 	
 	@Override
@@ -113,8 +105,8 @@ public class BasicDattyPersistentProperty extends AnnotationBasedPersistentPrope
 	}
 
 	@Override
-	public int getTag() {
-		return tag;
+	public int getCode() {
+		return code;
 	}
 
 	@Override

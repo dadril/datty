@@ -137,7 +137,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 		int headerIndex = writer.skipHeader(entity.getPropertiesCount(), sink);
 		
-		WriteEntityHandler entityWriter = new WriteEntityHandler(writer, source, entity.useTags(), sink, copy);
+		WriteEntityHandler entityWriter = new WriteEntityHandler(writer, source, entity.numeric(), sink, copy);
 		entity.doWithProperties(entityWriter);
 		
 		writer.writeHeader(entityWriter.size(), entity.getPropertiesCount(), headerIndex, sink);
@@ -185,7 +185,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 			if (propValue != null && !property.isTransient()) {
 							
 				if (useTags) {
-					writer.writeKey(property.getTag(), sink);
+					writer.writeKey(property.getCode(), sink);
 				}
 				else {
 					writer.writeKey(property.getPrimaryName(), sink);
@@ -207,7 +207,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 	private void writeCrossEntity(DattyPersistentEntity<?> entity, Object source, DattyRow sink, boolean copy) {
 		
-		entity.doWithProperties(new CrossWriteEntityHandler(source, entity.useTags(), sink, copy));
+		entity.doWithProperties(new CrossWriteEntityHandler(source, entity.numeric(), sink, copy));
 		
 	}	
 	
@@ -335,7 +335,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 			
 			if (propValue != null && !property.isTransient()) {
 				
-				String minorKey = useTags ? Integer.toString(property.getTag()) : property.getPrimaryName();
+				String minorKey = useTags ? Integer.toString(property.getCode()) : property.getPrimaryName();
 				
 				ByteBuf valueBuffer = sink.addValue(minorKey);
 				ByteBuf updatedBuffer = writeProperty(property, propType, propValue, valueBuffer, copy);
@@ -388,7 +388,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 	@SuppressWarnings("unchecked")
 	private <R> R readFromBuffer(Class<R> type, DattyPersistentEntity<R> entity, ByteBuf buffer, boolean copy) {
 		
-		boolean useTags = entity.useTags();
+		boolean useTags = entity.numeric();
 		
 		BeanWrapper wrapper = new BeanWrapperImpl(type);
 		
@@ -408,7 +408,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 			
 			if (useTags) {
 				Integer tagNumber = IntegerReader.INSTANCE.read(buffer, true);
-				prop = entity.findPropertyByTag(tagNumber);
+				prop = entity.findPropertyByCode(tagNumber);
 				if (!prop.isPresent()) {
 					throw new MappingException("property with tag '" + tagNumber + "' not found for " + entity);
 				}
@@ -435,7 +435,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 	@SuppressWarnings("unchecked")
 	private <R> R readCross(Class<R> type, DattyPersistentEntity<R> entity, DattyRow source, boolean copy) {
 		
-		boolean useTags = entity.useTags();
+		boolean useTags = entity.numeric();
 		
 		BeanWrapper wrapper = new BeanWrapperImpl(type);
 
@@ -453,7 +453,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 				catch(NumberFormatException nfe) {
 					throw new MappingException("invalid tag number for property '" + name + "' in payload for entity" + entity);
 				}
-				prop = entity.findPropertyByTag(tagNumber);
+				prop = entity.findPropertyByCode(tagNumber);
 				if (!prop.isPresent()) {
 					throw new MappingException("property with tag '" + tagNumber + "' not found for " + entity);
 				}
