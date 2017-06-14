@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.spring.converter.tag;
+package io.datty.spring.converter.code;
 
 import org.springframework.data.annotation.Id;
 
@@ -19,14 +19,14 @@ import io.datty.spring.mapping.Entity;
 import io.datty.spring.mapping.Name;
 
 /**
- * TaggedMigratedCrossEntity
+ * TaggedMigratedEntity
  * 
  * @author Alex Shvid
  *
  */
 
-@Entity(setName="TEST_CACHE", numeric=true)
-public class TaggedMigratedCrossEntity {
+@Entity(setName="TEST_CACHE", minorKey="def", numeric=true)
+public class TaggedMigratedEntity {
 
 	@Id
 	@Name(code=1)
@@ -68,7 +68,7 @@ public class TaggedMigratedCrossEntity {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		TaggedMigratedCrossEntity other = (TaggedMigratedCrossEntity) obj;
+		TaggedMigratedEntity other = (TaggedMigratedEntity) obj;
 		if (first == null) {
 			if (other.first != null)
 				return false;
@@ -84,7 +84,7 @@ public class TaggedMigratedCrossEntity {
 
 	@Override
 	public String toString() {
-		return "TaggedMigratedCrossEntity [id=" + id + ", first=" + first + "]";
+		return "TaggedMigratedEntity [id=" + id + ", first=" + first + "]";
 	}
 
 	

@@ -11,73 +11,58 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.spring.converter.tag;
-
-import java.util.Map;
+package io.datty.spring.converter.code;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import io.datty.api.DattyRow;
-import io.datty.msgpack.MessageFactory;
 import io.datty.spring.support.DattyConverterUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * TaggedEntityTest
+ * TaggedCrossEntityTest
  * 
  * @author Alex Shvid
  *
  */
 
-public class TaggedEntityTest {
+public class TaggedCrossEntityTest {
 
 	@Test
 	public void testNames() {
 		
-		TaggedEntity entity = new TaggedEntity();
+		TaggedCrossEntity entity = new TaggedCrossEntity();
 		entity.setId(123L);
 		entity.setName("Alex");
 		
 		DattyRow row = new DattyRow();
 		DattyConverterUtil.write(entity, row);
 
-		ByteBuf bb = row.get("def");
+		ByteBuf bb = row.get("1");
 		Assert.assertNotNull(bb);
 		
-		//System.out.println(Arrays.toString(ByteBufUtil.getBytes(bb)));
+		bb = row.get("2");
+		Assert.assertNotNull(bb);
 		
-		Object value = MessageFactory.readValue(bb.duplicate(), true);
-		Assert.assertNotNull(value);
-		Assert.assertTrue(value instanceof Map);
-		
-		Map<Integer, Object> map = (Map<Integer, Object>) value;
-		Assert.assertEquals(entity.getId(), map.get(1));
-		Assert.assertEquals("Alex", map.get(2));
-		
-		TaggedEntity actual = DattyConverterUtil.read(TaggedEntity.class, row);
+		TaggedMigratedCrossEntity actual = DattyConverterUtil.read(TaggedMigratedCrossEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
-		Assert.assertEquals(entity.getName(), actual.getName());
+		Assert.assertEquals(entity.getName(), actual.getFirst());
 		
-		row.clear();
+		row = new DattyRow();
 		DattyConverterUtil.write(actual, row);
 
-		bb = row.get("def");
+		bb = row.get("1");
+		Assert.assertNotNull(bb);
+				
+		bb = row.get("2");
 		Assert.assertNotNull(bb);
 		
 		//System.out.println(Arrays.toString(ByteBufUtil.getBytes(bb)));
 		
-		value = MessageFactory.readValue(bb.duplicate(), true);
-		Assert.assertNotNull(value);
-		Assert.assertTrue(value instanceof Map);
-		
-		map = (Map<Integer, Object>) value;
-		Assert.assertEquals(entity.getId(), map.get(1));
-		Assert.assertEquals("Alex", map.get(2));
-		
-		actual = DattyConverterUtil.read(TaggedEntity.class, row);
+		actual = DattyConverterUtil.read(TaggedMigratedCrossEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
-		Assert.assertEquals(entity.getName(), actual.getName());
+		Assert.assertEquals(entity.getName(), actual.getFirst());
 		
 	}
 	
