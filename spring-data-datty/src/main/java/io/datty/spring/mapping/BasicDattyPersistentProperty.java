@@ -58,6 +58,8 @@ public class BasicDattyPersistentProperty extends AnnotationBasedPersistentPrope
 		
 		Optional<Field> field = property.getField();
 		
+		int codeCandidate = 0;
+		
 		if (field.isPresent()) {
 			Field fieldInstance = field.get();
 			Class<?> fieldType = fieldInstance.getType();
@@ -66,13 +68,13 @@ public class BasicDattyPersistentProperty extends AnnotationBasedPersistentPrope
 			if (propertyInfo != null) {
 				this.primaryName = propertyInfo.name().length() > 0 ? propertyInfo.name() : getName();
 				this.otherNames = propertyInfo.otherNames();
-				this.code =  propertyInfo.code();
+				codeCandidate =  propertyInfo.code();
 				this.copy = propertyInfo.copy();
 			}
 			else {
 				this.primaryName = getName();
 				this.otherNames = EMPTY;
-				this.code = 0;
+				codeCandidate = 0;
 				this.copy = true;
 			}
 
@@ -82,15 +84,14 @@ public class BasicDattyPersistentProperty extends AnnotationBasedPersistentPrope
 		else {
 			this.primaryName = getName();
 			this.otherNames = EMPTY;
-			this.code = 0;		
+			codeCandidate = 0;		
 			this.copy = true;
 			this.isEmbeddedType = false;
 			this.hasTransientModifier = false;
 		}
 		
-		if (owner.numeric() && this.code == 0) {
-			throw new MappingException("numeric entity has no code for " + property);
-		}
+		this.code = codeCandidate != 0 ? codeCandidate : CodeGenerator.INSTANCE.generateCode(this.primaryName);
+		
 	}
 	
 	@Override
