@@ -39,10 +39,10 @@ public class NamedCrossEntityTest {
 		DattyRow row = new DattyRow();
 		DattyConverterUtil.write(entity, row);
 
-		ByteBuf bb = row.get("id");
+		ByteBuf bb = row.get("id").asByteBuf();
 		Assert.assertNotNull(bb);
 		
-		bb = row.get("first");
+		bb = row.get("first").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		NamedMigratedCrossEntity actual = DattyConverterUtil.read(NamedMigratedCrossEntity.class, row);
@@ -52,13 +52,12 @@ public class NamedCrossEntityTest {
 		row = new DattyRow();
 		DattyConverterUtil.write(actual, row);
 
-		bb = row.get("id");
+		bb = row.get("id").asByteBuf();
 		Assert.assertNotNull(bb);
 		
-		bb = row.get("first");
-		Assert.assertNull(bb);
+		Assert.assertNull(row.get("first"));
 		
-		bb = row.get("last");
+		bb = row.get("last").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		//System.out.println(Arrays.toString(ByteBufUtil.getBytes(bb)));

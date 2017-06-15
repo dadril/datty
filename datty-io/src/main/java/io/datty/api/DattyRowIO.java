@@ -19,6 +19,7 @@ import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.MessageWriter;
 import io.datty.msgpack.core.MapMessageReader;
 import io.datty.msgpack.core.MapMessageWriter;
+import io.datty.msgpack.core.ValueMessageReader;
 import io.datty.support.exception.DattyException;
 import io.netty.buffer.ByteBuf;
 
@@ -66,17 +67,22 @@ public final class DattyRowIO {
 				throw new DattyException("expected string instance for minor key DattyRow object");
 			}
 			
-			Object value = mapReader.readValue(source, false);
-			if (value != null) {
-				
-				if (!(value instanceof ByteBuf)) {
-					throw new DattyException("expected ByteBuf value in DattyRow object: " + value);
-				}
-				
-				row.putValue((String) minorKey, (ByteBuf) value, true);
-				
+			ByteBuf value = mapReader.skipValue(source, false);
+
+			DattyValue dattyValue; 
+			
+			if (value == null || ValueMessageReader.INSTANCE.isNull(value)) {
+				dattyValue = NullDattyValue.NULL;
+			}
+			else if (ValueMessageReader.INSTANCE.isBinary(value)) {
+				dattyValue = new ByteBufValue(ValueMessageReader.INSTANCE.readBinary(value, false));
+			}
+			else {
+				dattyValue = new ByteBufValue(value);
 			}
 			
+			row.addValue((String) minorKey, dattyValue, true);
+		
 		}
 		
 		return row;
@@ -84,26 +90,28 @@ public final class DattyRowIO {
 	
 	public static ByteBuf writeRow(DattyRow row, ByteBuf sink) {
 		
-		Map<String, ByteBuf> values = row.getValues();
+		Map<String, DattyValue> values = row.getValues();
 		
-		int headerIndex = writer.skipHeader(values.size(), sink);
+		writer.writeHeader(values.size(), sink);
 		
-		int size = 0;
-		for (Map.Entry<String, ByteBuf> entry : values.entrySet()) {
+		for (Map.Entry<String, DattyValue> entry : values.entrySet()) {
 			
-			ByteBuf value = entry.getValue();
-			if (value != null && value.readableBytes() > 0) {
+			DattyValue value = entry.getValue();
 
-				writer.writeKey(entry.getKey(), sink);
-				sink = writer.writeValue(value, sink, false);
-				size++;
-				
+			writer.writeKey(entry.getKey(), sink);
+			
+			if (value.isEmpty()) {
+				writer.writeNull(sink);
+			}
+			if (value.hasByteBuf()) {
+				writer.writeValue(value.asByteBuf(), sink, false);
+			}
+			else {
+				sink = value.write(sink);
 			}
 			
 		}
 
-		writer.writeHeader(size, values.size(), headerIndex, sink);
-		
 		return sink;
 		
 	}

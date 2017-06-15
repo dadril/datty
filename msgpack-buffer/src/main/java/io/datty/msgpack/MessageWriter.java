@@ -71,6 +71,14 @@ public interface MessageWriter {
 	 */
 	
 	void writeKey(int key, ByteBuf sink);
+
+	/**
+	 * Writes null 
+	 * 
+	 * @param sink
+	 */
+	
+	ByteBuf writeNull(ByteBuf sink);
 	
 	/**
 	 * Writes boolean value

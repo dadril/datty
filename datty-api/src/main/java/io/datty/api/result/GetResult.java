@@ -17,9 +17,9 @@ import java.util.Collections;
 import java.util.Set;
 
 import io.datty.api.DattyRow;
+import io.datty.api.DattyValue;
 import io.datty.api.operation.GetOperation;
 import io.datty.api.version.Version;
-import io.netty.buffer.ByteBuf;
 
 /**
  * GetResult
@@ -54,11 +54,11 @@ public class GetResult extends AbstractResult<GetOperation, GetResult> {
 		return row != null;
 	}
 	
-	public GetResult addValue(String minorKey, ByteBuf value) {
+	public GetResult addValue(String minorKey, DattyValue value) {
 		if (row == null) {
 			row = new DattyRow();
 		}
-		row.putValue(minorKey, value, true);
+		row.addValue(minorKey, value, true);
 		return this;
 	}
 	
@@ -97,7 +97,7 @@ public class GetResult extends AbstractResult<GetOperation, GetResult> {
 		return row.minorKeys();
 	}
 	
-	public ByteBuf get(String minorKey) {
+	public DattyValue get(String minorKey) {
 		
 		if (!hasRow()) {
 			return null;

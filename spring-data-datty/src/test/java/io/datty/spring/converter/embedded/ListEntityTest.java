@@ -44,7 +44,7 @@ public class ListEntityTest {
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("def");
+		ByteBuf bb = row.get("def").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Object value = MessageFactory.readValue(bb.duplicate(), true);
@@ -71,7 +71,7 @@ public class ListEntityTest {
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("def");
+		ByteBuf bb = row.get("def").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		//System.out.println(Lists.toString(ByteBufUtil.getBytes(bb)));
@@ -103,7 +103,7 @@ public class ListEntityTest {
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("def");
+		ByteBuf bb = row.get("def").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		//System.out.println(Lists.toString(ByteBufUtil.getBytes(bb)));
@@ -137,7 +137,7 @@ public class ListEntityTest {
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("def");
+		ByteBuf bb = row.get("def").asByteBuf();
 		Assert.assertNotNull(bb);
 				
 		//System.out.println(Lists.toString(ByteBufUtil.getBytes(bb)));

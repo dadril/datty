@@ -14,15 +14,19 @@
 package io.datty.unit.test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import org.junit.Assert;
 import org.junit.BeforeClass;
 
-import io.datty.api.DattySet;
-import io.datty.api.SetExistsAction;
+import io.datty.api.ByteBufValue;
 import io.datty.api.DattyFactory;
 import io.datty.api.DattyManager;
+import io.datty.api.DattySet;
+import io.datty.api.DattyValue;
+import io.datty.api.SetExistsAction;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -51,12 +55,12 @@ public abstract class AbstractDattyUnitTest {
 
 	static protected  final ByteBuf newValue = Unpooled.wrappedBuffer("newValue".getBytes());
 
-	static protected ByteBuf value() {
-		return value.resetReaderIndex();
+	static protected DattyValue value() {
+		return new ByteBufValue(value.resetReaderIndex());
 	}
 
-	static protected ByteBuf newValue() {
-		return newValue.resetReaderIndex();
+	static protected DattyValue newValue() {
+		return new ByteBufValue(newValue.resetReaderIndex());
 	}
 	
 	@BeforeClass
@@ -86,6 +90,12 @@ public abstract class AbstractDattyUnitTest {
 		}
 		
 		return list;
+	}
+	
+	protected void assertEquals(DattyValue expected, DattyValue actual) {
+		byte[] e = expected != null ? expected.toByteArray() : null;
+		byte[] a = actual != null ? actual.toByteArray() : null;
+		Assert.assertTrue(Arrays.equals(e, a));
 	}
 	
 }

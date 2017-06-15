@@ -28,7 +28,9 @@ import org.springframework.data.mapping.model.MappingException;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
+import io.datty.api.ByteBufValue;
 import io.datty.api.DattyRow;
+import io.datty.api.DattyValue;
 import io.datty.msgpack.MessageWriter;
 import io.datty.msgpack.core.MapMessageWriter;
 import io.datty.msgpack.core.ValueMessageReader;
@@ -119,10 +121,10 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		}
 
 		if (entity.hasMinorKey()) {
-			ByteBuf buffer = sink.addValue(entity.getMinorKey());
+			ByteBuf buffer = sink.getOrCreateValue(entity.getMinorKey());
 			ByteBuf updatedBufer = writeEntity(entity, source, buffer);
 			if (updatedBufer != buffer) {
-				sink.putValue(entity.getMinorKey(), updatedBufer, false);
+				sink.addValue(entity.getMinorKey(), new ByteBufValue(updatedBufer), false);
 			}
 		}
 		else {
@@ -333,10 +335,10 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 				
 				String minorKey = MinorKeyFormatter.INSTANCE.getMinorKey(property, numeric);
 				
-				ByteBuf valueBuffer = sink.addValue(minorKey);
+				ByteBuf valueBuffer = sink.getOrCreateValue(minorKey);
 				ByteBuf updatedBuffer = writeProperty(property, propType, propValue, valueBuffer);
 				if (updatedBuffer != valueBuffer) {
-					sink.putValue(minorKey, updatedBuffer, true);
+					sink.addValue(minorKey, new ByteBufValue(updatedBuffer), false);
 				}
 				size++;
 			}
@@ -366,12 +368,12 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 
 		if (entity.hasMinorKey()) {
 			
-			ByteBuf buffer = source.get(entity.getMinorKey());
-			if (buffer == null) {
+			DattyValue value = source.get(entity.getMinorKey());
+			if (value == null || value.isEmpty()) {
 				return null;
 			}
 			
-			return readFromBuffer(type, entity, buffer);
+			return readFromBuffer(type, entity, value.asByteBuf());
 		}
 		else {
 			
@@ -435,23 +437,23 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 		BeanWrapper wrapper = new BeanWrapperImpl(type);
 
-		for (Map.Entry<String, ByteBuf> e : source.getValues().entrySet()) {
+		for (Map.Entry<String, DattyValue> e : source.getValues().entrySet()) {
 			
 			String name = e.getKey();
-			ByteBuf buffer = e.getValue();
+			DattyValue dattyValue = e.getValue();
 
 			Optional<DattyPersistentProperty> prop;
 			if (numeric) {
-				int tagNumber;
+				int code;
 				try {
-					tagNumber = Integer.parseInt(name);
+					code = Integer.parseInt(name);
 				}
 				catch(NumberFormatException nfe) {
 					throw new MappingException("invalid tag number for property '" + name + "' in payload for entity" + entity);
 				}
-				prop = entity.findPropertyByCode(tagNumber);
+				prop = entity.findPropertyByCode(code);
 				if (!prop.isPresent()) {
-					throw new MappingException("property with tag '" + tagNumber + "' not found for " + entity);
+					throw new MappingException("property with tag '" + code + "' not found for " + entity);
 				}
 			}
 			else {
@@ -465,8 +467,8 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 			final Class<?> propType = property.getRawType();
 			
 			Object value = null;
-			if (buffer != null) {
-				value = readProperty(property, propType, buffer);
+			if (dattyValue != null && !dattyValue.isEmpty()) {
+				value = readProperty(property, propType, dattyValue.asByteBuf());
 			}
 			
 			wrapper.setPropertyValue(property.getName(), value);

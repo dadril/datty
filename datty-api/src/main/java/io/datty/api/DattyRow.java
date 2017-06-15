@@ -35,55 +35,84 @@ public final class DattyRow {
 	 * key is the minorKey, value is payload
 	 */
 	
-	private final Map<String, ByteBuf> values = new HashMap<String, ByteBuf>();
+	private final Map<String, DattyValue> values = new HashMap<String, DattyValue>();
 	
 	public DattyRow() {
 		this(DattyConstants.ALLOC);
 	}
 	
 	public DattyRow(ByteBufAllocator alloc) {
+		
+		if (alloc == null) {
+			throw new IllegalArgumentException("null alloc");
+		}
+		
 		this.alloc = alloc;
 	}
 	
+	public void reset() {
+		for (DattyValue value : values.values()) {
+			value.reset();
+		}
+	}
+
+	public void clear() {
+		for (DattyValue value : values.values()) {
+			value.clear();
+		}
+	}
+	
 	public void release() {
-		for (ByteBuf value : values.values()) {
+		for (DattyValue value : values.values()) {
 			value.release();
 		}
 		values.clear();
-	}
-	
-	public void clear() {
-		for (ByteBuf value : values.values()) {
-			value.resetReaderIndex().resetWriterIndex();
-		}
 	}
 	
 	public int size() {
 		return values.size();
 	}
 	
-	public ByteBuf addValue(String minorKey) {
-		ByteBuf buffer = values.get(minorKey);
-		if (buffer == null) {
-			buffer = alloc.buffer();
-			values.put(minorKey, buffer);
+	public ByteBuf getOrCreateValue(String minorKey) {
+		
+		if (minorKey == null) {
+			throw new IllegalArgumentException("null minorKey");
 		}
-		else {
-			buffer.resetReaderIndex().resetWriterIndex();
+		
+		DattyValue prev = values.get(minorKey);
+		if (prev != null && prev.hasByteBuf()) {
+			prev.clear();
+			return prev.asByteBuf();
 		}
+		ByteBuf buffer = alloc.buffer();
+		values.put(minorKey, new ByteBufValue(buffer));
 		return buffer;
 	}
 	
-	public DattyRow removeValue(String minorKey, boolean release) {
-		ByteBuf prev = values.remove(minorKey);
+	public DattyRow addValue(String minorKey, DattyValue value, boolean release) {
+		
+		if (minorKey == null) {
+			throw new IllegalArgumentException("null minorKey");
+		}
+		
+		if (value == null) {
+			throw new IllegalArgumentException("null value");
+		}
+		
+		DattyValue prev = values.put(minorKey, value);
 		if (prev != null && release) {
 			prev.release();
 		}
 		return this;
 	}
 	
-	public DattyRow putValue(String minorKey, ByteBuf value, boolean release) {
-		ByteBuf prev = values.put(minorKey, value);
+	public DattyRow removeValue(String minorKey, boolean release) {
+		
+		if (minorKey == null) {
+			throw new IllegalArgumentException("null minorKey");
+		}
+		
+		DattyValue prev = values.remove(minorKey);
 		if (prev != null && release) {
 			prev.release();
 		}
@@ -98,11 +127,16 @@ public final class DattyRow {
 		return this.values.keySet();
 	}
 	
-	public ByteBuf get(String minorKey) {
+	public DattyValue get(String minorKey) {
+		
+		if (minorKey == null) {
+			throw new IllegalArgumentException("null minorKey");
+		}
+		
 		return this.values.get(minorKey);
 	}
 
-	public Map<String, ByteBuf> getValues() {
+	public Map<String, DattyValue> getValues() {
 		return values;
 	}
 

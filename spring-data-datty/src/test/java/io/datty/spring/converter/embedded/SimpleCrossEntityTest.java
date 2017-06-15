@@ -13,6 +13,7 @@
  */
 package io.datty.spring.converter.embedded;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -24,6 +25,7 @@ import io.datty.msgpack.core.reader.LongReader;
 import io.datty.spring.mapping.Embedded;
 import io.datty.spring.support.DattyConverterUtil;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 
 /**
  * SimpleCrossEntityTest
@@ -55,15 +57,14 @@ public class SimpleCrossEntityTest {
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("id");
+		ByteBuf bb = row.get("id").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
 		Assert.assertNotNull(id);
 		Assert.assertEquals(123L, id.longValue());
 		
-		bb = row.get("embedded");
-		Assert.assertNull(bb);
+		Assert.assertNull(row.get("embedded"));
 		
 		SimpleCrossEntity actual = DattyConverterUtil.read(SimpleCrossEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
@@ -83,17 +84,17 @@ public class SimpleCrossEntityTest {
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("id");
+		ByteBuf bb = row.get("id").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
 		Assert.assertNotNull(id);
 		Assert.assertEquals(123L, id.longValue());
 		
-		bb = row.get("embedded");
+		bb = row.get("embedded").asByteBuf();
 		Assert.assertNotNull(bb);
 
-		Object embeddedObj = MessageFactory.readValue(bb, true);
+		Object embeddedObj = MessageFactory.readValue(bb.duplicate(), true);
 		Assert.assertNotNull(embeddedObj);
 		Assert.assertTrue(embeddedObj instanceof Map);
 		
@@ -121,18 +122,19 @@ public class SimpleCrossEntityTest {
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("id");
+		ByteBuf bb = row.get("id").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
 		Assert.assertNotNull(id);
 		Assert.assertEquals(123L, id.longValue());
 		
-		bb = row.get("embedded");
+		bb = row.get("embedded").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Object embeddedObj = MessageFactory.readValue(bb.duplicate(), true);
 		Assert.assertNotNull(embeddedObj);
+		
 		Assert.assertTrue(embeddedObj instanceof Map);
 		
 		Map embeddedMap = (Map) embeddedObj;

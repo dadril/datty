@@ -18,8 +18,8 @@ import java.util.Set;
 
 import io.datty.api.DattyResult;
 import io.datty.api.DattyRow;
+import io.datty.api.DattyValue;
 import io.datty.api.version.Version;
-import io.netty.buffer.ByteBuf;
 
 /**
  * RecordResult
@@ -76,11 +76,11 @@ public class RecordResult implements DattyResult {
 		return row != null;
 	}
 	
-	public RecordResult addValue(String minorKey, ByteBuf value) {
+	public RecordResult addValue(String minorKey, DattyValue value) {
 		if (row == null) {
 			row = new DattyRow();
 		}
-		row.putValue(minorKey, value, true);
+		row.addValue(minorKey, value, true);
 		return this;
 	}
 	
@@ -135,7 +135,7 @@ public class RecordResult implements DattyResult {
 		return row.minorKeys();
 	}
 	
-	public ByteBuf get(String minorKey) {
+	public DattyValue get(String minorKey) {
 		
 		if (!hasRow()) {
 			return null;

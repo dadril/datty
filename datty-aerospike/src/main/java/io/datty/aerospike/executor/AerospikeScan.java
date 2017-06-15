@@ -23,10 +23,13 @@ import io.datty.aerospike.AerospikeDattyManager;
 import io.datty.aerospike.AerospikeRecord;
 import io.datty.aerospike.AerospikeSet;
 import io.datty.aerospike.support.AerospikeValueUtil;
+import io.datty.api.ByteBufValue;
 import io.datty.api.DattyRow;
+import io.datty.api.DattyValue;
 import io.datty.api.operation.ScanOperation;
 import io.datty.api.result.RecordResult;
 import io.datty.api.version.LongVersion;
+import io.netty.buffer.ByteBuf;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -83,7 +86,11 @@ public enum AerospikeScan implements AerospikeSetOperation<ScanOperation> {
 			for (Map.Entry<String, Object> e : record.bins.entrySet()) {
 				Object value = e.getValue();
 				if (value != null) {
-					row.putValue(e.getKey(), AerospikeValueUtil.toByteBuf(value), true);
+					ByteBuf buffer = AerospikeValueUtil.toByteBuf(value);
+					row.addValue(e.getKey(), new ByteBufValue(buffer), true);
+				}
+				else {
+					row.addValue(e.getKey(), DattyValue.NULL, true);
 				}
 			}
 		

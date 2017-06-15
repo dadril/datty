@@ -11,30 +11,56 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.unit;
+package io.datty.api;
 
-import io.datty.api.ByteBufValue;
 import io.netty.buffer.ByteBuf;
 
 /**
- * Immutable bytes
+ * NullDattyValue
  * 
  * @author Alex Shvid
  *
  */
 
-public final class UnitValue extends ByteBufValue {
+public enum NullDattyValue implements DattyValue {
 
-	public UnitValue() {
-		super(UnitConstants.ALLOC.buffer());
-	}
-	
-	public UnitValue(ByteBuf input) {
-		super(input.copy());
+	NULL;
+
+	@Override
+	public boolean isEmpty() {
+		return true;
 	}
 
-	public UnitValue dublicate() {
-		return new UnitValue(asByteBuf());
+	@Override
+	public boolean hasByteBuf() {
+		return false;
+	}
+
+	@Override
+	public ByteBuf asByteBuf() {
+		return null;
+	}
+
+	@Override
+	public void reset() {
+	}
+
+	@Override
+	public void clear() {
+	}
+
+	@Override
+	public void release() {
+	}
+
+	@Override
+	public ByteBuf write(ByteBuf sink) {
+		return sink;
+	}
+
+	@Override
+	public byte[] toByteArray() {
+		return null;
 	}
 	
 }

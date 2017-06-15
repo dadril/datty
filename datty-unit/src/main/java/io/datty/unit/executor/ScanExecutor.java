@@ -51,7 +51,7 @@ public enum ScanExecutor implements SetOperationExecutor<ScanOperation> {
 			for (Map.Entry<String, UnitValue> e : record.getColumnMap().entrySet()) {
 				UnitValue value = e.getValue();
 				if (value != null) {
-					result.addValue(e.getKey(), value.asByteBuf());
+					result.addValue(e.getKey(), value.dublicate());
 				}
 			}
 			

@@ -18,10 +18,10 @@ import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
 
+import io.datty.api.DattyValue;
 import io.datty.api.UpdatePolicy;
 import io.datty.api.version.LongVersion;
 import io.datty.api.version.Version;
-import io.netty.buffer.ByteBuf;
 
 /**
  * Unit implementation of record
@@ -65,12 +65,12 @@ public final class UnitRecord {
 		this.version = 1L;
 	}
 	
-	public UnitRecord(Map<String, ByteBuf> map) {
+	public UnitRecord(Map<String, DattyValue> map) {
 		this.columnMap = toImmutableBuilder(map).build();
 		this.version = 1L;
 	}
 	
-	public UnitRecord(UnitRecord previous, Map<String, ByteBuf> addMap, UpdatePolicy updatePolicy) {
+	public UnitRecord(UnitRecord previous, Map<String, DattyValue> addMap, UpdatePolicy updatePolicy) {
 		
 		switch(updatePolicy) {
 		
@@ -106,12 +106,12 @@ public final class UnitRecord {
 		this.version = previous.version + 1;
 	}
 	
-	private ImmutableMap.Builder<String, UnitValue> toImmutableBuilder(Map<String, ByteBuf> map) {
+	private ImmutableMap.Builder<String, UnitValue> toImmutableBuilder(Map<String, DattyValue> map) {
 		ImmutableMap.Builder<String, UnitValue> builder = ImmutableMap.builder();
-		for (Map.Entry<String, ByteBuf> e : map.entrySet()) {
-			ByteBuf valueOrNull = e.getValue();
-			if (valueOrNull != null) {
-				builder.put(e.getKey(), new UnitValue(e.getValue()));
+		for (Map.Entry<String, DattyValue> e : map.entrySet()) {
+			DattyValue valueOrNull = e.getValue();
+			if (valueOrNull != null && valueOrNull.hasByteBuf()) {
+				builder.put(e.getKey(), new UnitValue(valueOrNull.asByteBuf()));
 			}
 		}
 		return builder;

@@ -46,15 +46,14 @@ public class ListCrossEntityTest {
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("id");
+		ByteBuf bb = row.get("id").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
 		Assert.assertNotNull(id);
 		Assert.assertEquals(123L, id.longValue());
 		
-		bb = row.get("embedded");
-		Assert.assertNull(bb);
+		Assert.assertNull(row.get("embedded"));
 
 		ListCrossEntity actual = DattyConverterUtil.read(ListCrossEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
@@ -73,14 +72,14 @@ public class ListCrossEntityTest {
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("id");
+		ByteBuf bb = row.get("id").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
 		Assert.assertNotNull(id);
 		Assert.assertEquals(123L, id.longValue());
 		
-		bb = row.get("embedded");
+		bb = row.get("embedded").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Object value = MessageFactory.readValue(bb.duplicate(), true);
@@ -110,14 +109,14 @@ public class ListCrossEntityTest {
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("id");
+		ByteBuf bb = row.get("id").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
 		Assert.assertNotNull(id);
 		Assert.assertEquals(123L, id.longValue());
 		
-		bb = row.get("embedded");
+		bb = row.get("embedded").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		//System.out.println(Lists.toString(ByteBufUtil.getBytes(bb)));
@@ -153,14 +152,14 @@ public class ListCrossEntityTest {
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("id");
+		ByteBuf bb = row.get("id").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
 		Assert.assertNotNull(id);
 		Assert.assertEquals(123L, id.longValue());
 		
-		bb = row.get("embedded");
+		bb = row.get("embedded").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		//System.out.println(Lists.toString(ByteBufUtil.getBytes(bb)));

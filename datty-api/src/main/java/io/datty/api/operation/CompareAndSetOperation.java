@@ -14,9 +14,9 @@
 package io.datty.api.operation;
 
 import io.datty.api.DattyRow;
+import io.datty.api.DattyValue;
 import io.datty.api.result.CompareAndSetResult;
 import io.datty.api.version.Version;
-import io.netty.buffer.ByteBuf;
 
 /**
  * CompareAndSetOperation
@@ -72,11 +72,11 @@ public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSe
 		return row != null;
 	}
 
-	public CompareAndSetOperation addValue(String minorKey, ByteBuf value) {
+	public CompareAndSetOperation addValue(String minorKey, DattyValue value) {
 		if (row == null) {
 			row = new DattyRow();
 		}
-		row.putValue(minorKey, value, true);
+		row.addValue(minorKey, value, true);
 		return this;
 	}
 	

@@ -54,7 +54,7 @@ public class SimpleEntityTest {
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("def");
+		ByteBuf bb = row.get("def").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Object value = MessageFactory.readValue(bb.duplicate(), true);
@@ -83,7 +83,7 @@ public class SimpleEntityTest {
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("def");
+		ByteBuf bb = row.get("def").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		//System.out.println(Arrays.toString(ByteBufUtil.getBytes(bb)));
@@ -116,7 +116,7 @@ public class SimpleEntityTest {
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("def");
+		ByteBuf bb = row.get("def").asByteBuf();
 		Assert.assertNotNull(bb);
 				
 		Object value = MessageFactory.readValue(bb.duplicate(), true);

@@ -19,13 +19,13 @@ import java.util.concurrent.ConcurrentMap;
 
 import io.datty.api.DattyError;
 import io.datty.api.DattyRow;
+import io.datty.api.DattyValue;
 import io.datty.api.operation.CompareAndSetOperation;
 import io.datty.api.result.CompareAndSetResult;
 import io.datty.api.version.Version;
 import io.datty.api.version.VersionType;
 import io.datty.support.exception.DattyOperationException;
 import io.datty.unit.UnitRecord;
-import io.netty.buffer.ByteBuf;
 import rx.Single;
 
 /**
@@ -43,7 +43,7 @@ public enum CompareAndSetExecutor implements OperationExecutor<CompareAndSetOper
 	public Single<CompareAndSetResult> execute(ConcurrentMap<String, UnitRecord> recordMap, CompareAndSetOperation operation) {
 		
 		DattyRow row = operation.getRow();
-		Map<String, ByteBuf> values = row != null ? row.getValues() : Collections.<String, ByteBuf>emptyMap();
+		Map<String, DattyValue> values = row != null ? row.getValues() : Collections.<String, DattyValue>emptyMap();
 		
 		UnitRecord record = recordMap.get(operation.getMajorKey());
 		

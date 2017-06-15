@@ -47,7 +47,7 @@ public enum GetExecutor implements OperationExecutor<GetOperation, GetResult> {
 			if (operation.isAllMinorKeys()) {
 				
 				for (Map.Entry<String, UnitValue> e : record.getColumnMap().entrySet()) {
-					result.addValue(e.getKey(), e.getValue().asByteBuf());
+					result.addValue(e.getKey(), e.getValue().dublicate());
 				}
 				
 			}
@@ -56,7 +56,7 @@ public enum GetExecutor implements OperationExecutor<GetOperation, GetResult> {
 				for (String minorKey : operation.getMinorKeys()) {
 					UnitValue value = record.getColumn(minorKey);
 					if (value != null) {
-						result.addValue(minorKey, value.asByteBuf());
+						result.addValue(minorKey, value.dublicate());
 					}
 				}
 				

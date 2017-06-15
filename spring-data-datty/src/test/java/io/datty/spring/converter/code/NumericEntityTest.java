@@ -42,7 +42,7 @@ public class NumericEntityTest {
 		DattyRow row = new DattyRow();
 		DattyConverterUtil.write(entity, row);
 
-		ByteBuf bb = row.get("def");
+		ByteBuf bb = row.get("def").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		//System.out.println(Arrays.toString(ByteBufUtil.getBytes(bb)));
@@ -62,7 +62,7 @@ public class NumericEntityTest {
 		row.clear();
 		DattyConverterUtil.write(actual, row);
 
-		bb = row.get("def");
+		bb = row.get("def").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		//System.out.println(Arrays.toString(ByteBufUtil.getBytes(bb)));

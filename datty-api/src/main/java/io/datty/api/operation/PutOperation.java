@@ -14,8 +14,8 @@
 package io.datty.api.operation;
 
 import io.datty.api.DattyRow;
+import io.datty.api.DattyValue;
 import io.datty.api.result.PutResult;
-import io.netty.buffer.ByteBuf;
 
 /**
  * Put operation
@@ -48,11 +48,11 @@ public class PutOperation extends AbstractUpdateOperation<PutOperation, PutResul
 		return this;
 	}
 	
-	public PutOperation addValue(String minorKey, ByteBuf value) {
+	public PutOperation addValue(String minorKey, DattyValue value) {
 		if (row == null) {
 			row = new DattyRow();
 		}
-		row.putValue(minorKey, value, true);
+		row.addValue(minorKey, value, true);
 		return this;
 	}
 	

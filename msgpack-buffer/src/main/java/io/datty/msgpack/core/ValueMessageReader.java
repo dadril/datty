@@ -14,6 +14,7 @@
 package io.datty.msgpack.core;
 
 import org.msgpack.core.MessageFormat;
+import org.msgpack.core.MessagePack.Code;
 
 import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.core.reader.ArrayReader;
@@ -271,6 +272,41 @@ public class ValueMessageReader extends AbstractMessageReader implements Message
 		}
 	}
 	
+	public boolean isNull(ByteBuf source) {
+		
+		if (!hasNext(source)) {
+			return true;
+		}
+		
+		byte b = getNextCode(source);
+		
+		return b == Code.NIL;
+	}
+	
+	public boolean isBinary(ByteBuf source) {
+		
+		if (!hasNext(source)) {
+			return false;
+		}
+
+		byte b = getNextCode(source);
+		
+		if (Code.isFixedRaw(b)) { // FixRaw
+			return true;
+		}
+		
+		switch (b) {
+		
+		case Code.BIN8:
+		case Code.BIN16:
+		case Code.BIN32:
+			return true;		
+		
+		}
+
+		return false;
+	}
+		
 	/**
 	 * This method automatically converts value to the expecting type
 	 */

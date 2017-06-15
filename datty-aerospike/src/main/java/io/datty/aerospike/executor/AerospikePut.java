@@ -23,15 +23,16 @@ import com.aerospike.client.policy.RecordExistsAction;
 import com.aerospike.client.policy.WritePolicy;
 
 import io.datty.aerospike.AerospikeBins;
-import io.datty.aerospike.AerospikeSet;
 import io.datty.aerospike.AerospikeDattyManager;
+import io.datty.aerospike.AerospikeSet;
 import io.datty.aerospike.support.AerospikeValueUtil;
+import io.datty.api.ByteBufValue;
 import io.datty.api.DattyError;
 import io.datty.api.DattyRow;
+import io.datty.api.DattyValue;
 import io.datty.api.operation.PutOperation;
 import io.datty.api.result.PutResult;
 import io.datty.support.exception.DattyOperationException;
-import io.netty.buffer.ByteBuf;
 import rx.Single;
 import rx.functions.Func1;
 
@@ -145,23 +146,23 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 		});
 	}
 	
-	private	Map<String, ByteBuf> mergeMaps(Record record, Map<String, ByteBuf> newValues) {
+	private	Map<String, DattyValue> mergeMaps(Record record, Map<String, DattyValue> newValues) {
 		
-		Map<String, ByteBuf> mergingMap = new HashMap<String, ByteBuf>();
+		Map<String, DattyValue> mergingMap = new HashMap<String, DattyValue>();
 			
 		if (record.bins != null) {
 			for (Map.Entry<String, Object> e : record.bins.entrySet()) {
 				Object value = e.getValue();
 				if (value != null) {
-					mergingMap.put(e.getKey(), AerospikeValueUtil.toByteBuf(value));
+					mergingMap.put(e.getKey(), new ByteBufValue(AerospikeValueUtil.toByteBuf(value)));
 				}
 			}
 		}
 		
-		for (Map.Entry<String, ByteBuf> e : newValues.entrySet()) {
+		for (Map.Entry<String, DattyValue> e : newValues.entrySet()) {
 			
-			ByteBuf value = e.getValue();
-			if (value != null) {
+			DattyValue value = e.getValue();
+			if (!value.isEmpty()) {
 				mergingMap.put(e.getKey(), value);
 			}
 			else {
@@ -207,10 +208,10 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 		
 	}
 	
-	public boolean hasNullBins(Map<String, ByteBuf> values) {
+	public boolean hasNullBins(Map<String, DattyValue> values) {
 		
-		for (Map.Entry<String, ByteBuf> entry : values.entrySet()) {
-			if (entry.getValue() == null) {
+		for (Map.Entry<String, DattyValue> entry : values.entrySet()) {
+			if (entry.getValue().isEmpty()) {
 				return true;
 			}
 		}

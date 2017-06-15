@@ -97,7 +97,7 @@ public class DattyConverterTest {
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("def");
+		ByteBuf bb = row.get("def").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Object value = MessageFactory.readValue(bb.duplicate(), true);
@@ -124,14 +124,14 @@ public class DattyConverterTest {
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("id");
+		ByteBuf bb = row.get("id").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
 		Assert.assertNotNull(id);
 		Assert.assertEquals(entity.getId(), id);
 		
-		bb = row.get("name");
+		bb = row.get("name").asByteBuf();
 		Assert.assertNotNull(bb);
 		String name = StringReader.INSTANCE.read(bb.duplicate(), true);
 		Assert.assertNotNull(name);

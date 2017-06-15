@@ -18,10 +18,11 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.datty.api.DattyValue;
 import io.datty.api.UpdatePolicy;
 import io.datty.api.operation.GetOperation;
-import io.datty.api.result.HeadResult;
 import io.datty.api.result.GetResult;
+import io.datty.api.result.HeadResult;
 import io.datty.support.exception.DattyOperationException;
 
 /**
@@ -105,7 +106,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		Assert.assertTrue(get.hasVersion());
 		Assert.assertNotNull(get.getVersion());
 		Assert.assertEquals(1, get.size());
-		Assert.assertEquals(value(), get.get(minorKey));
+		assertEquals(value(), get.get(minorKey));
 		
 		// column
 		get = dattySet.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
@@ -113,7 +114,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		Assert.assertTrue(get.hasVersion());
 		Assert.assertNotNull(get.getVersion());
 		Assert.assertEquals(1, get.size());
-		Assert.assertEquals(value(), get.get(minorKey));
+		assertEquals(value(), get.get(minorKey));
 		
 	}
 	
@@ -125,7 +126,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		dattySet.put(majorKey).addValue(minorKey, value()).execute().toBlocking().value();
 		
 		GetResult result = dattySet.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
-		Assert.assertEquals(value(), result.get(minorKey));
+		assertEquals(value(), result.get(minorKey));
 		
 		dattySet.put(majorKey).setUpdatePolicy(UpdatePolicy.REPLACE).execute().toBlocking().value();
 		
@@ -146,9 +147,9 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		dattySet.put(majorKey).addValue(minorKey, value()).execute().toBlocking().value();
 		
 		GetResult result = dattySet.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
-		Assert.assertEquals(value(), result.get(minorKey));
+		assertEquals(value(), result.get(minorKey));
 		
-		dattySet.put(majorKey).addValue(minorKey, null).setUpdatePolicy(UpdatePolicy.REPLACE).execute().toBlocking().value();
+		dattySet.put(majorKey).addValue(minorKey, DattyValue.NULL).setUpdatePolicy(UpdatePolicy.REPLACE).execute().toBlocking().value();
 		
 		boolean exists = dattySet.head(majorKey).execute().toBlocking().value().exists();
 		Assert.assertFalse(exists);
@@ -167,7 +168,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		dattySet.put(majorKey).addValue(minorKey, value()).execute().toBlocking().value();
 		
 		GetResult result = dattySet.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
-		Assert.assertEquals(value(), result.get(minorKey));
+		assertEquals(value(), result.get(minorKey));
 		
 		dattySet.put(majorKey).setUpdatePolicy(UpdatePolicy.MERGE).execute().toBlocking().value();
 		
@@ -177,7 +178,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		result = dattySet.get(majorKey).allMinorKeys().execute().toBlocking().value();
 		Assert.assertTrue(result.exists());
 		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(value(), result.get(minorKey));
+		assertEquals(value(), result.get(minorKey));
 		
 	}
 	
@@ -189,9 +190,9 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		dattySet.put(majorKey).addValue(minorKey, value()).execute().toBlocking().value();
 
 		GetResult result = dattySet.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
-		Assert.assertEquals(value(), result.get(minorKey));
+		assertEquals(value(), result.get(minorKey));
 
-		dattySet.put(majorKey).addValue(minorKey, null).setUpdatePolicy(UpdatePolicy.MERGE).execute().toBlocking().value();
+		dattySet.put(majorKey).addValue(minorKey, DattyValue.NULL).setUpdatePolicy(UpdatePolicy.MERGE).execute().toBlocking().value();
 		
 		boolean exists = dattySet.head(majorKey).allMinorKeys().execute().toBlocking().value().exists();
 		Assert.assertFalse(exists);
@@ -228,7 +229,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		Assert.assertTrue(updated);
 
 		result = dattySet.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
-		Assert.assertEquals(newValue(), result.get(minorKey));
+		assertEquals(newValue(), result.get(minorKey));
 
 	}
 }

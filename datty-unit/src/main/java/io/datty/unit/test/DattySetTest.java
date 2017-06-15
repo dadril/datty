@@ -62,7 +62,7 @@ public class DattySetTest extends AbstractDattyUnitTest {
 		
 		String majorKey = UUID.randomUUID().toString();
 		
-		dattyManager.getDatty().execute(new PutOperation(SET_NAME, majorKey).addValue(minorKey, value)).toBlocking().value();
+		dattyManager.getDatty().execute(new PutOperation(SET_NAME, majorKey).addValue(minorKey, value())).toBlocking().value();
 		
 		List<RecordResult> all = toList(dattyManager.getDatty().execute(new ScanOperation(SET_NAME)).toBlocking().toIterable());
 		Assert.assertEquals(1, all.size());
@@ -70,7 +70,7 @@ public class DattySetTest extends AbstractDattyUnitTest {
 		RecordResult result = all.get(0);
 		Assert.assertEquals(majorKey, result.getMajorKey());
 
-		ByteBuf bb = result.get(minorKey);
+		ByteBuf bb = result.get(minorKey).asByteBuf();
 		Assert.assertEquals(value, bb);
 		
 		long count = dattyManager.getDatty().execute(new SizeOperation(SET_NAME)).toBlocking().single().count();
@@ -87,8 +87,8 @@ public class DattySetTest extends AbstractDattyUnitTest {
 		String majorKey1 = UUID.randomUUID().toString();
 		String majorKey2 = UUID.randomUUID().toString();
 		
-		dattyManager.getDatty().execute(new PutOperation(SET_NAME, majorKey1).addValue(minorKey, value)).toBlocking().value();
-		dattyManager.getDatty().execute(new PutOperation(SET_NAME, majorKey2).addValue(minorKey, value)).toBlocking().value();
+		dattyManager.getDatty().execute(new PutOperation(SET_NAME, majorKey1).addValue(minorKey, value())).toBlocking().value();
+		dattyManager.getDatty().execute(new PutOperation(SET_NAME, majorKey2).addValue(minorKey, value())).toBlocking().value();
 		
 		long count = dattyManager.getDatty().execute(new SizeOperation(SET_NAME)).toBlocking().single().count();
 		

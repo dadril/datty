@@ -19,11 +19,11 @@ import java.util.concurrent.ConcurrentMap;
 
 import io.datty.api.DattyError;
 import io.datty.api.DattyRow;
+import io.datty.api.DattyValue;
 import io.datty.api.operation.PutOperation;
 import io.datty.api.result.PutResult;
 import io.datty.support.exception.DattyOperationException;
 import io.datty.unit.UnitRecord;
-import io.netty.buffer.ByteBuf;
 import rx.Single;
 
 /**
@@ -61,7 +61,7 @@ public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
 		}
 		else {
 			
-			Map<String, ByteBuf> values = row != null ? row.getValues() : Collections.<String, ByteBuf>emptyMap();
+			Map<String, DattyValue> values = row != null ? row.getValues() : Collections.<String, DattyValue>emptyMap();
 			UnitRecord newRecord = new UnitRecord(record, values, operation.getUpdatePolicy());
 			
 			boolean updated = newRecord.isEmpty() ? 

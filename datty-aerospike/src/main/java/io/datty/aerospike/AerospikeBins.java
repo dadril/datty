@@ -19,8 +19,8 @@ import java.util.Map;
 import com.aerospike.client.Bin;
 
 import io.datty.aerospike.support.AerospikeValueUtil;
+import io.datty.api.DattyValue;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 
 /**
  * AerospikeBins
@@ -40,20 +40,23 @@ public final class AerospikeBins {
 		this.bins = new Bin[] { bin };
 	}
 	
-	public AerospikeBins(Map<String, ByteBuf> values) {
+	public AerospikeBins(Map<String, DattyValue> values) {
 		
 		Bin[] localBins = new Bin[values.size()];
 		long localBytes = 0l;
 		
 		int i = 0;
-		for (Map.Entry<String, ByteBuf> entry : values.entrySet()) {
+		for (Map.Entry<String, DattyValue> entry : values.entrySet()) {
 			
 			String binName = entry.getKey();
-			ByteBuf value = entry.getValue();
+			DattyValue value = entry.getValue();
 			
-			if (value != null) {
-				localBytes += value.readableBytes();
-				localBins[i++] = new Bin(binName, ByteBufUtil.getBytes(value));
+			if (!value.isEmpty()) {
+				byte[] blob = value.toByteArray();
+				if (blob != null) {
+					localBytes += blob.length;
+					localBins[i++] = new Bin(binName, blob);
+				}
 			}
 			
 		}

@@ -39,10 +39,10 @@ public class NumericCrossEntityTest {
 		DattyRow row = new DattyRow();
 		DattyConverterUtil.write(entity, row);
 
-		ByteBuf bb = row.get("1");
+		ByteBuf bb = row.get("1").asByteBuf();
 		Assert.assertNotNull(bb);
 		
-		bb = row.get("2");
+		bb = row.get("2").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		NumericMigratedCrossEntity actual = DattyConverterUtil.read(NumericMigratedCrossEntity.class, row);
@@ -52,10 +52,10 @@ public class NumericCrossEntityTest {
 		row = new DattyRow();
 		DattyConverterUtil.write(actual, row);
 
-		bb = row.get("1");
+		bb = row.get("1").asByteBuf();
 		Assert.assertNotNull(bb);
 				
-		bb = row.get("2");
+		bb = row.get("2").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		//System.out.println(Arrays.toString(ByteBufUtil.getBytes(bb)));

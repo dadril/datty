@@ -64,11 +64,11 @@ public class DattyStreamTest extends AbstractDattyUnitTest {
 				.setMajorKey(majorKey)
 				.setMinorKey(minorKey);
 		
-		Observable<ByteBuf> input = Observable.just(value());
+		Observable<ByteBuf> input = Observable.just(value.resetReaderIndex());
 		
 		Long written = dattyManager.getDatty().streamIn(key, input).toBlocking().value();
 		
-		Assert.assertEquals(written, Long.valueOf(value().readableBytes()));
+		Assert.assertEquals(written, Long.valueOf(value.resetReaderIndex().readableBytes()));
 		
 		final ByteBuf destBuffer = UnitConstants.ALLOC.buffer();
 		
@@ -83,7 +83,7 @@ public class DattyStreamTest extends AbstractDattyUnitTest {
 			
 		}).toBlocking().subscribe();
 		
-		Assert.assertEquals(value(), destBuffer.resetReaderIndex());
+		Assert.assertEquals(value, destBuffer.resetReaderIndex());
 		
 	}
 	
@@ -97,11 +97,11 @@ public class DattyStreamTest extends AbstractDattyUnitTest {
 				.setMajorKey(majorKey)
 				.setMinorKey(minorKey);
 		
-		Observable<ByteBuf> input = Observable.just(value(), newValue());
+		Observable<ByteBuf> input = Observable.just(value.resetReaderIndex(), newValue.resetReaderIndex());
 		
 		Long written = dattyManager.getDatty().streamIn(key, input).toBlocking().value();
 		
-		Assert.assertEquals(written, Long.valueOf(value().readableBytes() + newValue().readableBytes()));
+		Assert.assertEquals(written, Long.valueOf(value.resetReaderIndex().readableBytes() + newValue.resetReaderIndex().readableBytes()));
 		
 		final ByteBuf destBuffer = UnitConstants.ALLOC.buffer();
 		
@@ -117,8 +117,8 @@ public class DattyStreamTest extends AbstractDattyUnitTest {
 		}).toBlocking().subscribe();
 		
 		ByteBuf expected = UnitConstants.ALLOC.buffer();
-		expected.writeBytes(value());
-		expected.writeBytes(newValue());
+		expected.writeBytes(value.resetReaderIndex());
+		expected.writeBytes(newValue.resetReaderIndex());
 		
 		Assert.assertEquals(expected.resetReaderIndex(), destBuffer.resetReaderIndex());
 		

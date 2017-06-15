@@ -118,12 +118,12 @@ public class DattySequenceTest extends AbstractDattyUnitTest {
 		GetResult result = (GetResult) results.get(0);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result.exists());
-		Assert.assertEquals(value(), result.get(minorKey));
+		assertEquals(value(), result.get(minorKey));
 		
 		result = (GetResult) results.get(1);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result.exists());
-		Assert.assertEquals(value(), result.get(minorKey));
+		assertEquals(value(), result.get(minorKey));
 		
 	}
 	
