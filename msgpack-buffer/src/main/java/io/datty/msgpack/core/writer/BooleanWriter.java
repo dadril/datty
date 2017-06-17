@@ -28,7 +28,7 @@ public class BooleanWriter extends AbstractMessageWriter implements ValueWriter<
 	public static final BooleanWriter INSTANCE = new BooleanWriter();
 
 	@Override
-	public ByteBuf write(Boolean value, ByteBuf sink, boolean copy) {
+	public ByteBuf write(Boolean value, ByteBuf sink, boolean copy, boolean numeric) {
 		if (value == null) {
 			writeNull(sink);
 		}

@@ -52,14 +52,6 @@ public interface DattyPersistentEntity<T> extends PersistentEntity<T, DattyPersi
 	String getMinorKey();
 	
 	/**
-	 * Use tags of properties instead of names
-	 *  
-	 * @return true if use tags
-	 */
-	
-	boolean numeric();
-	
-	/**
 	 * Gets time to live in seconds if defined
 	 * 
 	 * @return ttl or 0

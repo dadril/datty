@@ -26,6 +26,7 @@ import org.springframework.util.Assert;
 import io.datty.spring.core.DattyTemplate;
 import io.datty.spring.mapping.DattyPersistentEntity;
 import io.datty.spring.mapping.DattyPersistentProperty;
+import io.datty.spring.repository.RepositoryInfo;
 import io.datty.spring.repository.support.DattyEntityInformation;
 import io.datty.spring.repository.support.MappingDattyEntityInformation;
 import io.datty.spring.repository.support.SimpleDattyRepository;
@@ -58,7 +59,17 @@ public class DattyRepositoryFactory extends RepositoryFactorySupport {
 	@Override
 	protected Object getTargetRepository(RepositoryInformation metadata) {
 		
-		DattyEntityInformation<?> entityInformation = getEntityInformationOverride(metadata.getDomainType());
+		Class<?> repositoryInterface = metadata.getRepositoryInterface();
+		
+		DattyEntityInformation<?> entityInformation;
+		
+		if (repositoryInterface.isAnnotationPresent(RepositoryInfo.class)) {
+			RepositoryInfo info = repositoryInterface.getAnnotation(RepositoryInfo.class);
+			entityInformation = getEntityInformationOverride(metadata.getDomainType(), info);
+		}
+		else {
+			entityInformation = getEntityInformationOverride(metadata.getDomainType());
+		}
 		
 		return new SimpleDattyRepository(entityInformation, metadata.getRepositoryInterface(), template);
 	}
@@ -80,5 +91,18 @@ public class DattyRepositoryFactory extends RepositoryFactorySupport {
 		}
 
 		return new MappingDattyEntityInformation<T>(template, (DattyPersistentEntity<T>) entity);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> DattyEntityInformation<T> getEntityInformationOverride(Class<T> domainClass, RepositoryInfo repositoryInfo) {
+
+		DattyPersistentEntity<?> entity = mappingContext.getPersistentEntity((Class<?>) domainClass).orElse(null);
+
+		if (entity == null) {
+			throw new MappingException(String.format("Could not lookup mapping metadata for domain class %s!",
+					domainClass.getName()));
+		}
+
+		return new MappingDattyEntityInformation<T>(template, (DattyPersistentEntity<T>) entity, repositoryInfo.setName(), repositoryInfo.numeric());
 	}
 }

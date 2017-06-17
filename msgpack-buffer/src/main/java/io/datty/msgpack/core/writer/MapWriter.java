@@ -30,7 +30,7 @@ public class MapWriter extends AbstractMessageWriter {
 
 	public static final MapWriter INSTANCE = new MapWriter();
 	
-	public ByteBuf write(ValueWriter<?> keyWriter, ValueWriter<?> componentWriter, Object value, ByteBuf sink, boolean copy) {
+	public ByteBuf write(ValueWriter<?> keyWriter, ValueWriter<?> componentWriter, Object value, ByteBuf sink, boolean copy, boolean numeric) {
 		
 		if (value == null) {
 			writeNull(sink);
@@ -50,7 +50,7 @@ public class MapWriter extends AbstractMessageWriter {
 			Object key = e.getKey();
 			
 			if (key != null) {
-				sink = ((ValueWriter<Object>) keyWriter).write(key, sink, true);
+				sink = ((ValueWriter<Object>) keyWriter).write(key, sink, true, numeric);
 			}
 			else {
 				writeNull(sink);
@@ -59,7 +59,7 @@ public class MapWriter extends AbstractMessageWriter {
 			Object element = e.getValue();
 			
 			if (element != null) {
-				sink = ((ValueWriter<Object>) componentWriter).write(element, sink, copy);
+				sink = ((ValueWriter<Object>) componentWriter).write(element, sink, copy, numeric);
 			}
 			else {
 				writeNull(sink);

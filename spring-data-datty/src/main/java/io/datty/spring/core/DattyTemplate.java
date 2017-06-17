@@ -25,15 +25,15 @@ import io.datty.api.DattyResult;
 import io.datty.api.DattyRow;
 import io.datty.api.UpdatePolicy;
 import io.datty.api.operation.ClearOperation;
-import io.datty.api.operation.HeadOperation;
 import io.datty.api.operation.GetOperation;
+import io.datty.api.operation.HeadOperation;
 import io.datty.api.operation.PutOperation;
 import io.datty.api.operation.RecordOperation;
 import io.datty.api.operation.RemoveOperation;
 import io.datty.api.operation.ScanOperation;
 import io.datty.api.operation.SizeOperation;
-import io.datty.api.result.HeadResult;
 import io.datty.api.result.GetResult;
+import io.datty.api.result.HeadResult;
 import io.datty.api.result.PutResult;
 import io.datty.api.result.RecordResult;
 import io.datty.spring.convert.DattyConverter;
@@ -76,13 +76,13 @@ public class DattyTemplate implements DattyOperations {
 	}
 
 	@Override
-	public <S extends T, T> Single<S> save(Class<T> entityClass, final S entity) {
+	public <S extends T, T> Single<S> save(Class<T> entityClass, final S entity, boolean numeric) {
 		Assert.notNull(entityClass, "entityClass is null");
 		Assert.notNull(entity, "entity is null");
 		
 		DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 
-		return datty.execute(toPutOperation(entityMetadata, entity))
+		return datty.execute(toPutOperation(entityMetadata, entity, numeric))
 		
 		.map(new Func1<PutResult, S>() {
 
@@ -95,7 +95,7 @@ public class DattyTemplate implements DattyOperations {
 		
 	}
 
-	protected PutOperation toPutOperation(DattyPersistentEntity<?> entityMetadata, Object entity) {
+	protected PutOperation toPutOperation(DattyPersistentEntity<?> entityMetadata, Object entity, boolean numeric) {
 		
 		DattyId id = getId(entityMetadata, entity).orElse(null);
 		
@@ -104,7 +104,7 @@ public class DattyTemplate implements DattyOperations {
 		}
 		
 		DattyRow row = new DattyRow();
-		converter.write(entity, row);
+		converter.write(entity, row, numeric);
 		
 		return new PutOperation(entityMetadata.getSetName())
 		.setSuperKey(id.getSuperKey())
@@ -118,14 +118,14 @@ public class DattyTemplate implements DattyOperations {
 	}
 	
 	@Override
-	public <S extends T, T> Observable<S> save(Class<T> entityClass, Iterable<S> entities) {
+	public <S extends T, T> Observable<S> save(Class<T> entityClass, Iterable<S> entities, boolean numeric) {
 		Assert.notNull(entityClass, "entityClass is null");
 		Assert.notNull(entities, "entities is null");
-		return save(entityClass, Observable.from(entities));
+		return save(entityClass, Observable.from(entities), numeric);
 	}
 
 	@Override
-	public <S extends T, T> Observable<S> save(Class<T> entityClass, Observable<S> entityStream) {
+	public <S extends T, T> Observable<S> save(Class<T> entityClass, Observable<S> entityStream, final boolean numeric) {
 		Assert.notNull(entityClass, "entityClass is null");
 		Assert.notNull(entityStream, "entityStream is null");
 		
@@ -135,7 +135,7 @@ public class DattyTemplate implements DattyOperations {
 
 			@Override
 			public RecordOperation call(S entity) {
-				return toPutOperation(entityMetadata, entity);
+				return toPutOperation(entityMetadata, entity, numeric);
 			}
 			
 		});
@@ -386,19 +386,8 @@ public class DattyTemplate implements DattyOperations {
 		RemoveOperation removeOp = new RemoveOperation(entityMetadata.getSetName())
 		.setSuperKey(id.getSuperKey())
 		.setMajorKey(id.getMajorKey())
+		.allMinorKeys()
 		.setTimeoutMillis(entityMetadata.getTimeoutMillis());
-
-		if (entityMetadata.hasMinorKey()) {
-			removeOp.addMinorKey(entityMetadata.getMinorKey());
-		}
-		else if (entityMetadata.numeric()) {
-			for (Integer tag : entityMetadata.getPropertyCodes()) {
-				removeOp.addMinorKey(tag.toString());
-			}
-		}
-		else {
-			removeOp.addMinorKeys(entityMetadata.getPropertyNames());
-		}
 		
 		return removeOp;
 		

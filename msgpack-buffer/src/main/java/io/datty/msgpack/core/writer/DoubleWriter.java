@@ -28,7 +28,7 @@ public class DoubleWriter extends AbstractMessageWriter implements ValueWriter<D
 	public static final DoubleWriter INSTANCE = new DoubleWriter();
 
 	@Override
-	public ByteBuf write(Double value, ByteBuf sink, boolean copy) {
+	public ByteBuf write(Double value, ByteBuf sink, boolean copy, boolean numeric) {
 		if (value == null) {
 			writeNull(sink);
 		}

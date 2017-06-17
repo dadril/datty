@@ -40,5 +40,15 @@ public interface DattyConverter
 	 */
 	
 	DattyId toDattyId(Object id);
+	
+	/**
+	 * Writes object with parameter numeric 
+	 * 
+	 * @param source - source object
+	 * @param sink - output buffer
+	 * @param numeric - numeric keys
+	 */
+	
+	void write(Object source, DattyRow sink, boolean numeric); 
 
 }

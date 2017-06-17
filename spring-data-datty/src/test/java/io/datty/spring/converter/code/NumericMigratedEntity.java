@@ -25,7 +25,7 @@ import io.datty.spring.mapping.PropertyInfo;
  *
  */
 
-@Entity(setName="TEST_CACHE", minorKey="def", numeric=true)
+@Entity(setName="TEST_CACHE", minorKey="def")
 public class NumericMigratedEntity {
 
 	@Id

@@ -28,7 +28,7 @@ public class ByteWriter extends AbstractMessageWriter implements ValueWriter<Byt
 	public static final ByteWriter INSTANCE = new ByteWriter();
 
 	@Override
-	public ByteBuf write(Byte value, ByteBuf sink, boolean copy) {
+	public ByteBuf write(Byte value, ByteBuf sink, boolean copy, boolean numeric) {
 		if (value == null) {
 			writeNull(sink);
 		}

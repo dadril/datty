@@ -61,6 +61,12 @@ public final class DattyConverterUtil {
 		
 	}
 	
+	public static void write(Object entity, DattyRow row, boolean numeric) {
+		
+		Lazy.converter.write(entity, row, numeric);
+		
+	}
+	
 	public static DattyMappingConverter createConverter() {
 		
 		DattyMappingContext mappingContext = new DattyMappingContext();

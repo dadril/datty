@@ -25,4 +25,6 @@ public final class DattySpringConstants {
 	private DattySpringConstants() {
 	}
 	
+	public static final boolean USE_NUMERIC = false;
+	
 }

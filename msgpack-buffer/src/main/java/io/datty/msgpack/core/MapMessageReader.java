@@ -14,6 +14,8 @@
 package io.datty.msgpack.core;
 
 import io.datty.msgpack.MessageReader;
+import io.datty.msgpack.support.MessageException;
+import io.netty.buffer.ByteBuf;
 
 /**
  * MapMessageReader
@@ -28,6 +30,13 @@ public class MapMessageReader extends ValueMessageReader implements MessageReade
 	
 	public MapMessageReader(int size) {
 		this.size = size;
+	}
+	
+	public MapMessageReader(ByteBuf buffer) {
+		if (!isMap(buffer)) {
+			throw new MessageException("expected map message");
+		}
+		size = readMapHeader(buffer);
 	}
 	
 	@Override

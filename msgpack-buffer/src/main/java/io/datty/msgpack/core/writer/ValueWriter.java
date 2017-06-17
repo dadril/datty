@@ -30,9 +30,10 @@ public interface ValueWriter<V> {
 	 * @param value - java object value
 	 * @param sink - output buffer
 	 * @param copy - always copy if true
+	 * @param numeric - write numeric keys if true for complex values
 	 * @return old sink or new sink
 	 */
 	
-	ByteBuf write(V value, ByteBuf sink, boolean copy);
+	ByteBuf write(V value, ByteBuf sink, boolean copy, boolean numeric);
 	
 }

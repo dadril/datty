@@ -28,7 +28,7 @@ public class FloatWriter extends AbstractMessageWriter implements ValueWriter<Fl
 	public static final FloatWriter INSTANCE = new FloatWriter();
 
 	@Override
-	public ByteBuf write(Float value, ByteBuf sink, boolean copy) {
+	public ByteBuf write(Float value, ByteBuf sink, boolean copy, boolean numeric) {
 		if (value == null) {
 			writeNull(sink);
 		}

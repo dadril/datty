@@ -37,7 +37,7 @@ public class NumericCrossEntityTest {
 		entity.setName("Alex");
 		
 		DattyRow row = new DattyRow();
-		DattyConverterUtil.write(entity, row);
+		DattyConverterUtil.write(entity, row, true);
 
 		ByteBuf bb = row.get("1").asByteBuf();
 		Assert.assertNotNull(bb);
@@ -50,7 +50,7 @@ public class NumericCrossEntityTest {
 		Assert.assertEquals(entity.getName(), actual.getFirst());
 		
 		row = new DattyRow();
-		DattyConverterUtil.write(actual, row);
+		DattyConverterUtil.write(actual, row, true);
 
 		bb = row.get("1").asByteBuf();
 		Assert.assertNotNull(bb);

@@ -28,7 +28,7 @@ public class IntegerWriter extends AbstractMessageWriter implements ValueWriter<
 	public static final IntegerWriter INSTANCE = new IntegerWriter();
 
 	@Override
-	public ByteBuf write(Integer value, ByteBuf sink, boolean copy) {
+	public ByteBuf write(Integer value, ByteBuf sink, boolean copy, boolean numeric) {
 		if (value == null) {
 			writeNull(sink);
 		}

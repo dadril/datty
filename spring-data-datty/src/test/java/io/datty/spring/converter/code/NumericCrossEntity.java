@@ -25,7 +25,7 @@ import io.datty.spring.mapping.PropertyInfo;
  *
  */
 
-@Entity(setName="TEST_CACHE", numeric=true)
+@Entity(setName="TEST_CACHE")
 public class NumericCrossEntity {
 
 	@Id

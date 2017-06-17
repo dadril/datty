@@ -30,7 +30,7 @@ public class ListWriter extends AbstractMessageWriter {
 
 	public static final ListWriter INSTANCE = new ListWriter();
 	
-	public ByteBuf write(ValueWriter<?> componentWriter, Object value, ByteBuf sink, boolean copy) {
+	public ByteBuf write(ValueWriter<?> componentWriter, Object value, ByteBuf sink, boolean copy, boolean numeric) {
 		
 		if (value == null) {
 			writeNull(sink);
@@ -50,7 +50,7 @@ public class ListWriter extends AbstractMessageWriter {
 			Object element = list.get(i);
 			
 			if (element != null) {
-				sink = ((ValueWriter<Object>) componentWriter).write(element, sink, copy);
+				sink = ((ValueWriter<Object>) componentWriter).write(element, sink, copy, numeric);
 			}
 			else {
 				writeNull(sink);

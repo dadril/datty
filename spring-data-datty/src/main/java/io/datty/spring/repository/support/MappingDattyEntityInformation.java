@@ -33,20 +33,26 @@ public class MappingDattyEntityInformation<T> extends AbstractEntityInformation<
 
 	private final DattyTemplate template;
 	private final DattyPersistentEntity<T> entityMetadata;
-	private final String customSetName;
+	private final String setName;
+	private final boolean numeric;
 
 	public MappingDattyEntityInformation(DattyTemplate template, DattyPersistentEntity<T> entity) {
-		this(template, entity, null);
+		this(template, entity, null, false);
 	}
-
+	
 	public MappingDattyEntityInformation(DattyTemplate template, DattyPersistentEntity<T> entity,
-			String customSetName) {
+			String setName, boolean numeric) {
 		super(entity.getType());
 		this.template = template;
 		this.entityMetadata = entity;
-		this.customSetName = customSetName;
+		this.setName = isEmpty(setName) ? entity.getSetName() : setName;
+		this.numeric = numeric;
 	}
 
+	private boolean isEmpty(String str) {
+		return str == null || str.isEmpty();
+	}
+	
 	@Override
 	public Optional<DattyId> getId(T entity) {
 		return template.getId(entity);
@@ -59,7 +65,7 @@ public class MappingDattyEntityInformation<T> extends AbstractEntityInformation<
 
 	@Override
 	public String getSetName() {
-		return customSetName != null ? customSetName : entityMetadata.getSetName();
+		return setName;
 	}
 
 	@Override
@@ -74,7 +80,7 @@ public class MappingDattyEntityInformation<T> extends AbstractEntityInformation<
 
 	@Override
 	public boolean numeric() {
-		return entityMetadata.numeric();
+		return numeric;
 	}
 
 	@Override

@@ -47,7 +47,6 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 
 	private final String setName;
 	private final String minorKey;
-	private final boolean numeric;
 	private final int ttlSeconds;
 	private final int timeoutMillis;
 	private int propsCount = -1;
@@ -71,13 +70,11 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 			Entity entity = rawType.getAnnotation(Entity.class);
 			this.setName = expression(entity.setName());
 			this.minorKey = expression(entity.minorKey());
-			this.numeric = entity.numeric();
 			this.ttlSeconds = entity.ttlSeconds();
 			this.timeoutMillis = entity.timeoutMillis();
 		} else {
 			this.setName = rawType.getSimpleName();
 			this.minorKey = "";
-			this.numeric = false;
 			this.ttlSeconds = DattyConstants.UNSET_TTL;
 			this.timeoutMillis = DattyConstants.UNSET_TIMEOUT;
 		}
@@ -197,11 +194,6 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 		return minorKey;
 	}
 	
-	@Override
-	public boolean numeric() {
-		return numeric;
-	}
-
 	@Override
 	public int getTtlSeconds() {
 		return ttlSeconds;

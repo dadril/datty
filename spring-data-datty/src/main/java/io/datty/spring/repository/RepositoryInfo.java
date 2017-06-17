@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.datty.spring.mapping;
+package io.datty.spring.repository;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -21,10 +21,8 @@ import java.lang.annotation.Target;
 
 import org.springframework.data.annotation.Persistent;
 
-import io.datty.api.DattyConstants;
-
 /**
- * Entity annotation
+ * Repository annotation
  * 
  * @author Alex Shvid
  *
@@ -34,8 +32,8 @@ import io.datty.api.DattyConstants;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
-public @interface Entity {
-
+public @interface RepositoryInfo {
+	
 	/**
 	 * Name of the set. 
 	 * 
@@ -45,30 +43,11 @@ public @interface Entity {
 	String setName() default "";
 	
 	/**
-	 * Minor Key if defined.
+	 * Flag that is using to enable numeric keys in serialized message.
 	 * 
-	 * If defined then entity will be placed in the particular minorKey,
-	 * otherwise it will be stored in cross minorKeys
-	 * 
-	 * @return minorKey or empty string
+	 * @return true if tags mode enabled.
 	 */
 	
-	String minorKey() default "";
-	
-	/**
-	 * Time to live in seconds
-	 * 
-	 * @return ttl or 0
-	 */
-	
-	int ttlSeconds() default DattyConstants.UNSET_TTL;
-	
-	/**
-	 * SLA timeout milliseconds
-	 * 
-	 * @return timeout in milliseconds or 0
-	 */
-	
-	int timeoutMillis() default DattyConstants.UNSET_TIMEOUT;
-	
+	boolean numeric() default false;
+		
 }

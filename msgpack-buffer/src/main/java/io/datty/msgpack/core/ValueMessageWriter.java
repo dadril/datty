@@ -42,7 +42,7 @@ public class ValueMessageWriter extends AbstractMessageWriter implements Message
 	public static final ValueWriter<Object> OBJECT_VALUE_WRITER = new ValueWriter<Object>() {
 
 		@Override
-		public ByteBuf write(Object value, ByteBuf sink, boolean copy) {
+		public ByteBuf write(Object value, ByteBuf sink, boolean copy, boolean numeric) {
 			
 			if (value == null) {
 				return INSTANCE.writeNull(sink);
@@ -50,7 +50,7 @@ public class ValueMessageWriter extends AbstractMessageWriter implements Message
 			else {
 				Class<?> type = value.getClass();
 				TypeInfo<?> typeInfo = DefaultTypeInfoProvider.INSTANCE.getTypeInfo(type);
-				return INSTANCE.writeValue((TypeInfo<Object>) typeInfo, value, sink, copy);
+				return INSTANCE.writeValue((TypeInfo<Object>) typeInfo, value, sink, copy, numeric);
 			}
 			
 		}
@@ -135,12 +135,17 @@ public class ValueMessageWriter extends AbstractMessageWriter implements Message
 
 	@Override
 	public <V extends T, T> ByteBuf writeValue(TypeInfo<T> type, V value, ByteBuf sink, boolean copy) {
+		return writeValue(type, value, sink, copy, false);
+	}
+	
+	@Override
+	public <V extends T, T> ByteBuf writeValue(TypeInfo<T> type, V value, ByteBuf sink, boolean copy, boolean numeric) {
 
 		if (type instanceof SimpleTypeInfo) {
 			
 			SimpleTypeInfo<T> simpleType = (SimpleTypeInfo<T>) type;
 			
-			return simpleType.getValueWriter().write(value, sink, copy);
+			return simpleType.getValueWriter().write(value, sink, copy, numeric);
 			
 		}
 		
@@ -148,7 +153,7 @@ public class ValueMessageWriter extends AbstractMessageWriter implements Message
 			
 			ArrayTypeInfo<Object, T> arrayType = (ArrayTypeInfo<Object, T>) type;
 			
-			return ArrayWriter.INSTANCE.write(arrayType.getComponentValueWriter(), value, sink, copy);
+			return ArrayWriter.INSTANCE.write(arrayType.getComponentValueWriter(), value, sink, copy, numeric);
 			
 		}
 		
@@ -156,7 +161,7 @@ public class ValueMessageWriter extends AbstractMessageWriter implements Message
 			
 			ListTypeInfo<Object, T> listType = (ListTypeInfo<Object, T>) type;
 			
-			return ListWriter.INSTANCE.write(listType.getComponentValueWriter(), value, sink, copy);
+			return ListWriter.INSTANCE.write(listType.getComponentValueWriter(), value, sink, copy, numeric);
 			
 		}
 		
@@ -164,7 +169,7 @@ public class ValueMessageWriter extends AbstractMessageWriter implements Message
 			
 			MapTypeInfo<Object, Object, T> mapType = (MapTypeInfo<Object, Object, T>) type;
 			
-			return MapWriter.INSTANCE.write(mapType.getKeyValueWriter(), mapType.getComponentValueWriter(), value, sink, copy);
+			return MapWriter.INSTANCE.write(mapType.getKeyValueWriter(), mapType.getComponentValueWriter(), value, sink, copy, numeric);
 			
 		}
 		

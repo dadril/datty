@@ -49,17 +49,17 @@ public class SimpleDattyRepository<T> implements DattyRepository<T> {
 
 	@Override
 	public <S extends T> Single<S> save(S entity) {
-		return template.save(entityClass, entity);
+		return template.save(entityClass, entity, entityInformation.numeric());
 	}
 
 	@Override
 	public <S extends T> Observable<S> save(Iterable<S> entities) {
-		return template.save(entityClass, entities); 
+		return template.save(entityClass, entities, entityInformation.numeric()); 
 	}
 
 	@Override
 	public <S extends T> Observable<S> save(Observable<S> entityStream) {
-		return template.save(entityClass, entityStream); 
+		return template.save(entityClass, entityStream, entityInformation.numeric()); 
 	}
 
 	@Override

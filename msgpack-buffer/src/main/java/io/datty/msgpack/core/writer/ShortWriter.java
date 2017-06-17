@@ -30,7 +30,7 @@ public class ShortWriter extends AbstractMessageWriter implements ValueWriter<Sh
 	public static final ShortWriter INSTANCE = new ShortWriter();
 
 	@Override
-	public ByteBuf write(Short value, ByteBuf sink, boolean copy) {
+	public ByteBuf write(Short value, ByteBuf sink, boolean copy, boolean numeric) {
 		if (value == null) {
 			writeNull(sink);
 		}

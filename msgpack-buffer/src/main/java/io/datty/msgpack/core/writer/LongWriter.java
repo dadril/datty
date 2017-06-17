@@ -28,7 +28,7 @@ public class LongWriter extends AbstractMessageWriter implements ValueWriter<Lon
 	public static final LongWriter INSTANCE = new LongWriter();
 
 	@Override
-	public ByteBuf write(Long value, ByteBuf sink, boolean copy) {
+	public ByteBuf write(Long value, ByteBuf sink, boolean copy, boolean numeric) {
 		if (value == null) {
 			writeNull(sink);
 		}

@@ -60,7 +60,7 @@ public interface DattyOperations {
 	 * @param entity must not be {@literal null}.
 	 * @return the saved entity.
 	 */
-	<S extends T, T> Single<S> save(Class<T> entityClass, S entity);
+	<S extends T, T> Single<S> save(Class<T> entityClass, S entity, boolean numeric);
 
 	/**
 	 * Saves all given entities.
@@ -70,7 +70,7 @@ public interface DattyOperations {
 	 * @return the saved entities.
 	 * @throws IllegalArgumentException in case the given entity is {@literal null}.
 	 */
-	<S extends T, T> Observable<S> save(Class<T> entityClass, Iterable<S> entities);
+	<S extends T, T> Observable<S> save(Class<T> entityClass, Iterable<S> entities, boolean numeric);
 
 	/**
 	 * Saves all given entities.
@@ -80,7 +80,7 @@ public interface DattyOperations {
 	 * @return the saved entities.
 	 * @throws IllegalArgumentException in case the given {@code Publisher} is {@literal null}.
 	 */
-	<S extends T, T> Observable<S> save(Class<T> entityClass, Observable<S> entityStream);	
+	<S extends T, T> Observable<S> save(Class<T> entityClass, Observable<S> entityStream, boolean numeric);	
 	
 	/**
 	 * Retrieves an entity by its id.

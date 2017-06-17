@@ -141,4 +141,19 @@ public interface MessageWriter {
 	
 	<V extends T, T> ByteBuf writeValue(TypeInfo<T> type, V value, ByteBuf sink, boolean copy);
 	
+	/**
+	 * Writes value to the output buffer with specific value type
+	 * 
+	 * Does optimization for writing, creates CompositeByteBuf in case of big payload
+	 * 
+	 * @param type - value type
+	 * @param value - value object
+	 * @param sink - output buffer
+	 * @param copy - always copy value if true
+	 * @param numeric - writes numeric keys for complex values 
+	 * @return sink or CompositeByteBuf
+	 */
+	
+	<V extends T, T> ByteBuf writeValue(TypeInfo<T> type, V value, ByteBuf sink, boolean copy, boolean numeric);
+	
 }
