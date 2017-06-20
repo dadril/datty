@@ -85,6 +85,9 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		this.beanClassLoader = classLoader;
 	}
 	
+	/**
+	 * Gets datty id from the possible id object
+	 */
 	
 	@Override
 	public DattyId toDattyId(Object id) {
@@ -101,10 +104,18 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		return new DattyId().setMajorKey(majorKey);
 	}
 
+	/**
+	 * Writes entity to the row
+	 */
+	
 	@Override
 	public void write(Object source, DattyRow sink) {
 		write(source, sink, DattySpringConstants.USE_NUMERIC);
 	}
+	
+	/**
+	 * Writes entity to the row
+	 */
 	
 	@Override
 	public void write(Object source, DattyRow sink, boolean numeric) {
@@ -130,6 +141,17 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 	}
 
+	/**
+	 * Writes embedded entity to the buffer
+	 * 
+	 * @param entity - entity metadata
+	 * @param source - entity instance
+	 * @param sink - output buffer
+	 * @param numeric - if true use numeric keys
+	 * 
+	 * @return old or new sink buffer
+	 */
+	
 	private ByteBuf writeEmbeddedEntity(DattyPersistentEntity<?> entity, Object source, final ByteBuf sink, boolean numeric) {
 		
 		MessageWriter writer = MapMessageWriter.INSTANCE;
@@ -143,6 +165,14 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 		return entityWriter.getSink();
 	}
+	
+	/**
+	 * 
+	 * Embedded entity writer
+	 * 
+	 * @author Alex Shvid
+	 *
+	 */
 	
 	public final class WriteEmbeddedEntityHandler implements PropertyHandler<DattyPersistentProperty> {
 
@@ -187,6 +217,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 				else {
 					writer.writeKey(property.getPrimaryName(), sink);
 				}
+				
 				sink = writeProperty(property, propType, propValue, sink, numeric);
 				size++;
 				
@@ -196,30 +227,69 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 	}
 	
+	/**
+	 * Writes property to the output buffer 
+	 * 
+	 * @param property - property metadata
+	 * @param propType - property class type
+	 * @param propValue - property instance
+	 * @param sink - output buffer
+	 * @param numeric - if true use numeric keys
+	 * 
+	 * @return old or new sink instance
+	 */
+	
 	private ByteBuf writeProperty(DattyPersistentProperty property, final Class<?> propType,
 			Object propValue, 
 			ByteBuf sink,
 			boolean numeric) {
 		
 		return ValueMessageWriter.INSTANCE.writeValue(
-				(TypeInfo<Object>)property.getTypeInfo(ENTITY_DISCOVERY), 
+				(TypeInfo<Object>)property.getTypeInfo(ENTITY_PROVIDER), 
 				propValue, sink, property.copy(), numeric);
 	}
 		
+	/**
+	 * Writes entity to the row
+	 * 
+	 * @param entity - entity metadata
+	 * @param source - entity instance
+	 * @param sink - output row
+	 * @param numeric - if true use numeric keys
+	 */
+	
 	private void writeEntity(DattyPersistentEntity<?> entity, Object source, DattyRow sink, boolean numeric) {
 		entity.doWithProperties(new WriteEntityHandler(source, sink, numeric));
 	}	
 	
+	/**
+	 * Reads property from the input buffer
+	 * 
+	 * @param property - property metadata
+	 * @param propType - property class type
+	 * @param buffer - input buffer
+	 * 
+	 * @return property instance
+	 */
+	
 	private Object readProperty(DattyPersistentProperty property, Class<?> propType, ByteBuf buffer) {
-		return ValueMessageReader.INSTANCE.readValue(property.getTypeInfo(ENTITY_DISCOVERY), buffer, property.copy());
+		return ValueMessageReader.INSTANCE.readValue(property.getTypeInfo(ENTITY_PROVIDER), buffer, property.copy());
 	}
 	
-	public final class EntityReader<T> implements ValueReader<T> {
+	/**
+	 * Reads embedded entity
+	 * 
+	 * @author Alex Shvid
+	 *
+	 * @param <T> - entity type
+	 */
+	
+	public final class EmbeddedEntityReader<T> implements ValueReader<T> {
 		
 		private final Class<T> entityType;
 		private final DattyPersistentEntity<T> entity;
 		
-		public EntityReader(Class<T> entityType, DattyPersistentEntity<T> entity) {
+		public EmbeddedEntityReader(Class<T> entityType, DattyPersistentEntity<T> entity) {
 			this.entityType = entityType;
 			this.entity = entity;
 		}
@@ -231,11 +301,19 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 
 	}
 	
-	public final class EntityWriter<T> implements ValueWriter<T> {
+	/**
+	 * Writes embedded entity to the buffer
+	 * 
+	 * @author Alex Shvid
+	 *
+	 * @param <T> - entity type
+	 */
+	
+	public final class EmbeddedEntityWriter<T> implements ValueWriter<T> {
 
 		private final DattyPersistentEntity<?> entity;
 		
-		public EntityWriter(DattyPersistentEntity<?> entity) {
+		public EmbeddedEntityWriter(DattyPersistentEntity<?> entity) {
 			this.entity = entity;
 		}
 		
@@ -246,6 +324,16 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 	}
 	
+	/**
+	 * Entity type info
+	 * 
+	 * Uses for serialization and deserialization of embedded entities
+	 * 
+	 * @author Alex Shvid
+	 *
+	 * @param <T> - entity type
+	 */
+	
 	public final class EntityTypeInfo<T> implements SimpleTypeInfo<T> {
 
 		private final Class<T> type;
@@ -254,8 +342,8 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 		public EntityTypeInfo(DattyPersistentEntity<T> entity) {
 			this.type = entity.getType();
-			this.reader = new EntityReader<T>(this.type, entity);
-			this.writer = new EntityWriter<T>(entity);
+			this.reader = new EmbeddedEntityReader<T>(this.type, entity);
+			this.writer = new EmbeddedEntityWriter<T>(entity);
 		}
 		
 		@Override
@@ -276,7 +364,14 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 	}
 	
-	public final TypeInfoProvider ENTITY_DISCOVERY = new TypeInfoProvider() {
+	/**
+	 * Entity info provider
+	 * 
+	 * Uses for embedded entities
+	 * 
+	 */
+	
+	public final TypeInfoProvider ENTITY_PROVIDER = new TypeInfoProvider() {
 
 		@Override
 		public <T> TypeInfo<T> getTypeInfo(final Class<T> type) {
@@ -304,6 +399,13 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		}
 		
 	};
+	
+	/**
+	 * Writes the entity in to the row
+	 * 
+	 * @author Alex Shvid
+	 *
+	 */
 	
 	public final class WriteEntityHandler implements PropertyHandler<DattyPersistentProperty> {
 
@@ -346,6 +448,10 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 	}
 	
+	/**
+	 * Reads entity from the row
+	 */
+	
 	@Override
 	public <R> R read(Class<R> type, DattyRow source) {
 		Assert.notNull(type, "type is null");
@@ -365,6 +471,16 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 	}
 
+	/**
+	 * Reads embedded entity from the buffer
+	 * 
+	 * @param type - entity type
+	 * @param entity - entity metadata
+	 * @param buffer - input buffer
+	 * 
+	 * @return entity instance
+	 */
+	
 	@SuppressWarnings("unchecked")
 	private <R> R readEmbeddedEntity(Class<R> type, DattyPersistentEntity<R> entity, ByteBuf buffer) {
 		
@@ -407,6 +523,16 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		return (R) wrapper.getWrappedInstance();
 	}
 	
+	/**
+	 * Reads entity from the row
+	 * 
+	 * @param type - entity type
+	 * @param entity - entity metadata
+	 * @param source - input row
+	 * 
+	 * @return entity instance 
+	 */
+	
 	@SuppressWarnings("unchecked")
 	private <R> R readEntity(Class<R> type, DattyPersistentEntity<R> entity, DattyRow source) {
 		
@@ -447,7 +573,13 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 	}
 	
-
+	/**
+	 * Uses specific bean class loader to lookup entity metadata
+	 * 
+	 * @param entity - incoming entity class type
+	 * 
+	 * @return entity class type found in bean class loader 
+	 */
 
 	@SuppressWarnings("unchecked")
 	private <T> Class<T> transformClassToBeanClassLoaderClass(Class<T> entity) {
