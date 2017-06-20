@@ -69,16 +69,6 @@ public class MappingDattyEntityInformation<T> extends AbstractEntityInformation<
 	}
 
 	@Override
-	public boolean hasMinorKey() {
-		return entityMetadata.hasMinorKey();
-	}
-
-	@Override
-	public String getMinorKey() {
-		return entityMetadata.getMinorKey();
-	}
-
-	@Override
 	public boolean numeric() {
 		return numeric;
 	}

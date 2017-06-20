@@ -125,26 +125,18 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 			throw new MappingException("No mapping metadata found for " + source.getClass());
 		}
 
-		if (entity.hasMinorKey()) {
-			ByteBuf buffer = sink.getOrCreateValue(entity.getMinorKey());
-			ByteBuf updatedBufer = writeEntity(entity, source, buffer, numeric);
-			if (updatedBufer != buffer) {
-				sink.addValue(entity.getMinorKey(), new ByteBufValue(updatedBufer), false);
-			}
-		}
-		else {
-			writeCrossEntity(entity, source, sink, numeric);
-		}
+
+		writeEntity(entity, source, sink, numeric);
 		
 	}
 
-	private ByteBuf writeEntity(DattyPersistentEntity<?> entity, Object source, final ByteBuf sink, boolean numeric) {
+	private ByteBuf writeEmbeddedEntity(DattyPersistentEntity<?> entity, Object source, final ByteBuf sink, boolean numeric) {
 		
 		MessageWriter writer = MapMessageWriter.INSTANCE;
 		
 		int headerIndex = writer.skipHeader(entity.getPropertiesCount(), sink);
 		
-		WriteEntityHandler entityWriter = new WriteEntityHandler(writer, source, sink, numeric);
+		WriteEmbeddedEntityHandler entityWriter = new WriteEmbeddedEntityHandler(writer, source, sink, numeric);
 		entity.doWithProperties(entityWriter);
 		
 		writer.writeHeader(entityWriter.size(), entity.getPropertiesCount(), headerIndex, sink);
@@ -152,7 +144,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		return entityWriter.getSink();
 	}
 	
-	public final class WriteEntityHandler implements PropertyHandler<DattyPersistentProperty> {
+	public final class WriteEmbeddedEntityHandler implements PropertyHandler<DattyPersistentProperty> {
 
 		private final MessageWriter writer;
 		private final BeanWrapper wrapper;
@@ -160,7 +152,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		private final boolean numeric;
 		private int size;
 		
-		public WriteEntityHandler(MessageWriter writer, Object source, ByteBuf sink, boolean numeric) {
+		public WriteEmbeddedEntityHandler(MessageWriter writer, Object source, ByteBuf sink, boolean numeric) {
 			this.writer = writer;
 			this.wrapper = new BeanWrapperImpl(source);		
 			wrapper.setConversionService(conversionService);
@@ -214,8 +206,8 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 				propValue, sink, property.copy(), numeric);
 	}
 		
-	private void writeCrossEntity(DattyPersistentEntity<?> entity, Object source, DattyRow sink, boolean numeric) {
-		entity.doWithProperties(new CrossWriteEntityHandler(source, sink, numeric));
+	private void writeEntity(DattyPersistentEntity<?> entity, Object source, DattyRow sink, boolean numeric) {
+		entity.doWithProperties(new WriteEntityHandler(source, sink, numeric));
 	}	
 	
 	private Object readProperty(DattyPersistentProperty property, Class<?> propType, ByteBuf buffer) {
@@ -234,7 +226,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 
 		@Override
 		public T read(ByteBuf buffer, boolean copy) {
-			return readFromBuffer(entityType, entity, buffer);
+			return readEmbeddedEntity(entityType, entity, buffer);
 		}
 
 	}
@@ -249,7 +241,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 		@Override
 		public ByteBuf write(T value, ByteBuf sink, boolean copy, boolean numeric) {
-			return writeEntity(entity, value, sink, numeric);
+			return writeEmbeddedEntity(entity, value, sink, numeric);
 		}
 		
 	}
@@ -313,14 +305,14 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		
 	};
 	
-	public final class CrossWriteEntityHandler implements PropertyHandler<DattyPersistentProperty> {
+	public final class WriteEntityHandler implements PropertyHandler<DattyPersistentProperty> {
 
 		private final BeanWrapper wrapper;
 		private final DattyRow sink;
 		private final boolean numeric;		
 		private int size;
 		
-		public CrossWriteEntityHandler(Object source, DattyRow sink, boolean numeric) {
+		public WriteEntityHandler(Object source, DattyRow sink, boolean numeric) {
 			this.wrapper = new BeanWrapperImpl(source);		
 			wrapper.setConversionService(conversionService);
 			this.sink = sink;
@@ -359,10 +351,6 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 		Assert.notNull(type, "type is null");
 		Assert.notNull(source, "source is null");
 		
-		if (source.isEmpty()) {
-			return null;
-		}
-		
 		Class<R> beanClassLoaderClass = transformClassToBeanClassLoaderClass(type);
 		
 		@SuppressWarnings("unchecked")
@@ -373,25 +361,12 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 			throw new MappingException("No mapping metadata found for " + type);
 		}
 
-		if (entity.hasMinorKey()) {
-			
-			DattyValue value = source.get(entity.getMinorKey());
-			if (value == null || value.isEmpty()) {
-				return null;
-			}
-			
-			return readFromBuffer(type, entity, value.asByteBuf());
-		}
-		else {
-			
-			return readCross(type, entity, source);
-			
-		}
+		return readEntity(type, entity, source);
 		
 	}
 
 	@SuppressWarnings("unchecked")
-	private <R> R readFromBuffer(Class<R> type, DattyPersistentEntity<R> entity, ByteBuf buffer) {
+	private <R> R readEmbeddedEntity(Class<R> type, DattyPersistentEntity<R> entity, ByteBuf buffer) {
 		
 		BeanWrapper wrapper = new BeanWrapperImpl(type);
 		
@@ -433,7 +408,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <R> R readCross(Class<R> type, DattyPersistentEntity<R> entity, DattyRow source) {
+	private <R> R readEntity(Class<R> type, DattyPersistentEntity<R> entity, DattyRow source) {
 		
 		BeanWrapper wrapper = new BeanWrapperImpl(type);
 

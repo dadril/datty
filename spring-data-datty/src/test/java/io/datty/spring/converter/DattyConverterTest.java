@@ -13,13 +13,10 @@
  */
 package io.datty.spring.converter;
 
-import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Test;
 
 import io.datty.api.DattyRow;
-import io.datty.msgpack.MessageFactory;
 import io.datty.msgpack.core.reader.LongReader;
 import io.datty.msgpack.core.reader.StringReader;
 import io.datty.spring.core.DattyId;
@@ -44,7 +41,6 @@ public class DattyConverterTest {
 		
 		Assert.assertNull(id.getSuperKey());
 		Assert.assertNotNull(id.getMajorKey());
-		Assert.assertNull(id.getMinorKey());
 		
 		Assert.assertEquals("123", id.getMajorKey());
 		
@@ -57,7 +53,6 @@ public class DattyConverterTest {
 		
 		Assert.assertNull(id.getSuperKey());
 		Assert.assertNotNull(id.getMajorKey());
-		Assert.assertNull(id.getMinorKey());
 		
 		Assert.assertEquals("123", id.getMajorKey());
 		
@@ -78,38 +73,9 @@ public class DattyConverterTest {
 		
 		Assert.assertNotNull(id.getSuperKey());
 		Assert.assertNotNull(id.getMajorKey());
-		Assert.assertNull(id.getMinorKey());
 		
 		Assert.assertEquals("us", id.getSuperKey());
 		Assert.assertEquals("123", id.getMajorKey());
-		
-	}
-	
-	
-	@Test
-	public void testMinorKey() {
-		
-		ExampleEntity entity = new ExampleEntity();
-		entity.setId(777L);
-		entity.setName("Alex");
-		
-		DattyRow row = new DattyRow();
-		
-		DattyConverterUtil.write(entity, row);
-		
-		ByteBuf bb = row.get("def").asByteBuf();
-		Assert.assertNotNull(bb);
-		
-		Object value = MessageFactory.readValue(bb.duplicate(), true);
-		Assert.assertNotNull(value);
-		Assert.assertTrue(value instanceof Map);
-		
-		Map<String, Object> map = (Map<String, Object>) value;
-		Assert.assertEquals(entity.getId(), map.get("id"));
-		Assert.assertEquals(entity.getName(), map.get("name"));
-		
-		ExampleEntity actual = DattyConverterUtil.read(ExampleEntity.class, row);
-		Assert.assertEquals(entity, actual);
 		
 	}
 	

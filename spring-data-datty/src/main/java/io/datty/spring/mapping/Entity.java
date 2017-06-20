@@ -45,17 +45,6 @@ public @interface Entity {
 	String setName() default "";
 	
 	/**
-	 * Minor Key if defined.
-	 * 
-	 * If defined then entity will be placed in the particular minorKey,
-	 * otherwise it will be stored in cross minorKeys
-	 * 
-	 * @return minorKey or empty string
-	 */
-	
-	String minorKey() default "";
-	
-	/**
 	 * Time to live in seconds
 	 * 
 	 * @return ttl or 0

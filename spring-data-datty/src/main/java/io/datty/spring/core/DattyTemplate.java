@@ -231,16 +231,9 @@ public class DattyTemplate implements DattyOperations {
 		
 		HeadOperation op = new HeadOperation(entityMetadata.getSetName())
 		.setSuperKey(id.getSuperKey())
-		.setMajorKey(id.getMajorKey());
-		
-		if (id.hasMinorKey()) {
-			op.addMinorKey(id.getMinorKey());
-		}
-		else {
-			op.anyMinorKey();
-		}
-		
-		op.setTimeoutMillis(entityMetadata.getTimeoutMillis());
+		.setMajorKey(id.getMajorKey())
+		.anyMinorKey()
+		.setTimeoutMillis(entityMetadata.getTimeoutMillis());
 		
 		return op;
 	}
@@ -498,10 +491,6 @@ public class DattyTemplate implements DattyOperations {
 		}
 		
 		DattyId dattyId = converter.toDattyId(id);
-		
-		if (entityMetadata.hasMinorKey()) {
-			dattyId.setMinorKey(entityMetadata.getMinorKey());
-		}
 		
 		return Optional.of(dattyId);
 		

@@ -41,17 +41,18 @@ public abstract class AbstractConverterTest {
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("def").asByteBuf();
-		Assert.assertNotNull(bb);
+		System.out.println("row = " + row);
 		
-		//System.out.println(Arrays.toString(ByteBufUtil.getBytes(bb)));
+		Object actual = DattyConverterUtil.read(entity.getClass(), row);
 		
-		Object value = MessageFactory.readValue(bb, true);
-		Assert.assertNotNull(value);
-		Assert.assertTrue(value instanceof Map);
+		Assert.assertEquals(entity, actual);
 		
-		Map<String, Object> map = (Map<String, Object>) value;
-		Assert.assertTrue(map.isEmpty());
+		//Object value = MessageFactory.readValue(bb, true);
+		//Assert.assertNotNull(value);
+		//Assert.assertTrue(value instanceof Map);
+		
+		//Map<String, Object> map = (Map<String, Object>) value;
+		//Assert.assertTrue(map.isEmpty());
 		
 	}
 	
@@ -61,17 +62,18 @@ public abstract class AbstractConverterTest {
 		
 		DattyConverterUtil.write(entity, row);
 		
-		ByteBuf bb = row.get("def").asByteBuf();
-		Assert.assertNotNull(bb);
+		Object actual = DattyConverterUtil.read(entity.getClass(), row);
+		
+		Assert.assertEquals(entity, actual);
 		
 		//System.out.println(Arrays.toString(ByteBufUtil.getBytes(bb)));
 		
-		Object value = MessageFactory.readValue(bb, true);
-		Assert.assertNotNull(value);
-		Assert.assertTrue(value instanceof Map);
+		//Object value = MessageFactory.readValue(bb, true);
+		//Assert.assertNotNull(value);
+		//Assert.assertTrue(value instanceof Map);
 		
-		Map<String, Object> map = (Map<String, Object>) value;
-		assertEqualsMap(entity, map);
+		//Map<String, Object> map = (Map<String, Object>) value;
+		//assertEqualsMap(entity, map);
 		
 	}
 	

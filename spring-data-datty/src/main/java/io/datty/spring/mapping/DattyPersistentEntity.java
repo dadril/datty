@@ -36,22 +36,6 @@ public interface DattyPersistentEntity<T> extends PersistentEntity<T, DattyPersi
 	String getSetName();
 	
 	/**
-	 * Using to detect if minor key present in empty definition
-	 * 
-	 * @return true if has minor key
-	 */
-	
-	boolean hasMinorKey();
-	
-	/**
-	 * Gets minor key
-	 * 
-	 * @return minor key or empty string
-	 */
-	
-	String getMinorKey();
-	
-	/**
 	 * Gets time to live in seconds if defined
 	 * 
 	 * @return ttl or 0

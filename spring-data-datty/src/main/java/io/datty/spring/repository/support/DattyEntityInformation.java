@@ -35,22 +35,6 @@ public interface DattyEntityInformation<T> extends EntityInformation<T, DattyId>
 	String getSetName();
 	
 	/**
-	 * Checks if entity has minorKey
-	 * 
-	 * @return true if entity has minorKey
-	 */
-	
-	boolean hasMinorKey();
-	
-	/**
-	 * Gets minor key
-	 * 
-	 * @return not null minor key
-	 */
-	
-	String getMinorKey();
-	
-	/**
 	 * Checks if entity has to be serialized with tag numbers
 	 * 
 	 * @return true if tags are enabled

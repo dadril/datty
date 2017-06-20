@@ -46,7 +46,6 @@ public class BasicDattyPersistentEntity<T> extends BasicPersistentEntity<T, Datt
 DattyPersistentEntity<T>, ApplicationContextAware {
 
 	private final String setName;
-	private final String minorKey;
 	private final int ttlSeconds;
 	private final int timeoutMillis;
 	private int propsCount = -1;
@@ -69,12 +68,10 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 		if (rawType.isAnnotationPresent(Entity.class)) {
 			Entity entity = rawType.getAnnotation(Entity.class);
 			this.setName = expression(entity.setName());
-			this.minorKey = expression(entity.minorKey());
 			this.ttlSeconds = entity.ttlSeconds();
 			this.timeoutMillis = entity.timeoutMillis();
 		} else {
 			this.setName = rawType.getSimpleName();
-			this.minorKey = "";
 			this.ttlSeconds = DattyConstants.UNSET_TTL;
 			this.timeoutMillis = DattyConstants.UNSET_TIMEOUT;
 		}
@@ -184,16 +181,6 @@ DattyPersistentEntity<T>, ApplicationContextAware {
 		return setName;
 	}
 
-	@Override
-	public boolean hasMinorKey() {
-		return !minorKey.isEmpty();
-	}
-	
-	@Override
-	public String getMinorKey() {
-		return minorKey;
-	}
-	
 	@Override
 	public int getTtlSeconds() {
 		return ttlSeconds;

@@ -23,7 +23,7 @@ import io.netty.buffer.ByteBuf;
  *
  */
 
-@Entity(setName = "TEST_CACHE", minorKey = "def")
+@Entity(setName = "TEST_CACHE")
 public class AllTypesEntity {
 
 	private boolean booleanVal;
