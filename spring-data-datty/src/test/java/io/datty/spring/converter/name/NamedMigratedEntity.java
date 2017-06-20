@@ -19,14 +19,14 @@ import io.datty.spring.mapping.Entity;
 import io.datty.spring.mapping.PropertyInfo;
 
 /**
- * NamedMigratedCrossEntity
+ * NamedMigratedEntity
  * 
  * @author Alex Shvid
  *
  */
 
 @Entity(setName="TEST_CACHE")
-public class NamedMigratedCrossEntity {
+public class NamedMigratedEntity {
 
 	@Id
 	private Long id;
@@ -67,7 +67,7 @@ public class NamedMigratedCrossEntity {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		NamedMigratedCrossEntity other = (NamedMigratedCrossEntity) obj;
+		NamedMigratedEntity other = (NamedMigratedEntity) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

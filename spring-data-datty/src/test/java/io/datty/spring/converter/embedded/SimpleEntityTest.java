@@ -13,7 +13,6 @@
  */
 package io.datty.spring.converter.embedded;
 
-import java.util.Arrays;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -25,16 +24,15 @@ import io.datty.msgpack.core.reader.LongReader;
 import io.datty.spring.mapping.Embedded;
 import io.datty.spring.support.DattyConverterUtil;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 
 /**
- * SimpleCrossEntityTest
+ * SimpleEntityTest
  * 
  * @author Alex Shvid
  *
  */
 
-public class SimpleCrossEntityTest {
+public class SimpleEntityTest {
 
 	@Test
 	public void testAnnotation() {
@@ -50,7 +48,7 @@ public class SimpleCrossEntityTest {
 	@Test
 	public void testCrossNull() {
 		
-		SimpleCrossEntity entity = new SimpleCrossEntity();
+		SimpleEntity entity = new SimpleEntity();
 		entity.setId(123L);
 		
 		DattyRow row = new DattyRow();
@@ -66,7 +64,7 @@ public class SimpleCrossEntityTest {
 		
 		Assert.assertNull(row.get("embedded"));
 		
-		SimpleCrossEntity actual = DattyConverterUtil.read(SimpleCrossEntity.class, row);
+		SimpleEntity actual = DattyConverterUtil.read(SimpleEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNull(actual.getEmbedded());
 	}
@@ -74,7 +72,7 @@ public class SimpleCrossEntityTest {
 	@Test
 	public void testCrossEmbeddedNull() {
 		
-		SimpleCrossEntity entity = new SimpleCrossEntity();
+		SimpleEntity entity = new SimpleEntity();
 		entity.setId(123L);
 		
 		EmbeddedEntity embedded = new EmbeddedEntity();
@@ -101,7 +99,7 @@ public class SimpleCrossEntityTest {
 		Map embeddedMap = (Map) embeddedObj;
 		Assert.assertTrue(embeddedMap.isEmpty());
 		
-		SimpleCrossEntity actual = DattyConverterUtil.read(SimpleCrossEntity.class, row);
+		SimpleEntity actual = DattyConverterUtil.read(SimpleEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNotNull(actual.getEmbedded());
 		Assert.assertNull(actual.getEmbedded().getInnerField());
@@ -111,7 +109,7 @@ public class SimpleCrossEntityTest {
 	@Test
 	public void testCrossEmbedded() {
 		
-		SimpleCrossEntity entity = new SimpleCrossEntity();
+		SimpleEntity entity = new SimpleEntity();
 		entity.setId(123L);
 		
 		EmbeddedEntity embedded = new EmbeddedEntity();
@@ -144,7 +142,7 @@ public class SimpleCrossEntityTest {
 		Assert.assertTrue(innerField instanceof String);
 		Assert.assertEquals("inner", innerField);
 		
-		SimpleCrossEntity actual = DattyConverterUtil.read(SimpleCrossEntity.class, row);
+		SimpleEntity actual = DattyConverterUtil.read(SimpleEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNotNull(actual.getEmbedded());
 		Assert.assertEquals(embedded.getInnerField(), actual.getEmbedded().getInnerField());

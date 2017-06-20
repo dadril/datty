@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Datty.io Authors
+ * Copyright (C) 2016 Datty.io Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,26 +13,24 @@
  */
 package io.datty.spring.converter.embedded;
 
-import java.util.Map;
-
 import org.springframework.data.annotation.Id;
 
 import io.datty.spring.mapping.Entity;
 
 /**
- * IntMapCrossEntity
+ * SimpleEntity
  * 
  * @author Alex Shvid
  *
  */
 
 @Entity(setName="TEST_CACHE")
-public class IntMapCrossEntity {
+public class SimpleEntity {
 
 	@Id
 	private long id;
 	
-	private Map<Integer, EmbeddedEntity> embedded;
+	private EmbeddedEntity embedded;
 
 	public long getId() {
 		return id;
@@ -42,13 +40,12 @@ public class IntMapCrossEntity {
 		this.id = id;
 	}
 
-	public Map<Integer, EmbeddedEntity> getEmbedded() {
+	public EmbeddedEntity getEmbedded() {
 		return embedded;
 	}
 
-	public void setEmbedded(Map<Integer, EmbeddedEntity> embedded) {
+	public void setEmbedded(EmbeddedEntity embedded) {
 		this.embedded = embedded;
 	}
-
 
 }

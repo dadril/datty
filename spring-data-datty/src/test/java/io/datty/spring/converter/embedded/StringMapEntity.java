@@ -20,14 +20,14 @@ import org.springframework.data.annotation.Id;
 import io.datty.spring.mapping.Entity;
 
 /**
- * StringMapCrossEntity
+ * StringMapEntity
  * 
  * @author Alex Shvid
  *
  */
 
 @Entity(setName="TEST_CACHE")
-public class StringMapCrossEntity {
+public class StringMapEntity {
 
 	@Id
 	private long id;

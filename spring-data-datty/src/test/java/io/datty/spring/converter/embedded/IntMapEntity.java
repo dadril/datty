@@ -13,26 +13,26 @@
  */
 package io.datty.spring.converter.embedded;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.annotation.Id;
 
 import io.datty.spring.mapping.Entity;
 
 /**
- * ListCrossEntity
+ * IntMapEntity
  * 
  * @author Alex Shvid
  *
  */
 
 @Entity(setName="TEST_CACHE")
-public class ListCrossEntity {
+public class IntMapEntity {
 
 	@Id
 	private long id;
 	
-	private List<EmbeddedEntity> embedded;
+	private Map<Integer, EmbeddedEntity> embedded;
 
 	public long getId() {
 		return id;
@@ -42,12 +42,13 @@ public class ListCrossEntity {
 		this.id = id;
 	}
 
-	public List<EmbeddedEntity> getEmbedded() {
+	public Map<Integer, EmbeddedEntity> getEmbedded() {
 		return embedded;
 	}
 
-	public void setEmbedded(List<EmbeddedEntity> embedded) {
+	public void setEmbedded(Map<Integer, EmbeddedEntity> embedded) {
 		this.embedded = embedded;
 	}
+
 
 }

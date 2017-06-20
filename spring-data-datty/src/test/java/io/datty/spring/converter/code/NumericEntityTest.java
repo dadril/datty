@@ -21,18 +21,18 @@ import io.datty.spring.support.DattyConverterUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * TaggedCrossEntityTest
+ * NumericEntityTest
  * 
  * @author Alex Shvid
  *
  */
 
-public class NumericCrossEntityTest {
+public class NumericEntityTest {
 
 	@Test
 	public void testNames() {
 		
-		NumericCrossEntity entity = new NumericCrossEntity();
+		NumericEntity entity = new NumericEntity();
 		entity.setId(123L);
 		entity.setName("Alex");
 		
@@ -45,7 +45,7 @@ public class NumericCrossEntityTest {
 		bb = row.get("2").asByteBuf();
 		Assert.assertNotNull(bb);
 		
-		NumericMigratedCrossEntity actual = DattyConverterUtil.read(NumericMigratedCrossEntity.class, row);
+		NumericMigratedEntity actual = DattyConverterUtil.read(NumericMigratedEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertEquals(entity.getName(), actual.getFirst());
 		
@@ -60,7 +60,7 @@ public class NumericCrossEntityTest {
 		
 		//System.out.println(Arrays.toString(ByteBufUtil.getBytes(bb)));
 		
-		actual = DattyConverterUtil.read(NumericMigratedCrossEntity.class, row);
+		actual = DattyConverterUtil.read(NumericMigratedEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertEquals(entity.getName(), actual.getFirst());
 		

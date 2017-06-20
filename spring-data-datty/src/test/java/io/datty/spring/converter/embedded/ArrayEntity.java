@@ -18,14 +18,14 @@ import org.springframework.data.annotation.Id;
 import io.datty.spring.mapping.Entity;
 
 /**
- * ArrayCrossEntity
+ * ArrayEntity
  * 
  * @author Alex Shvid
  *
  */
 
 @Entity(setName="TEST_CACHE")
-public class ArrayCrossEntity {
+public class ArrayEntity {
 
 	@Id
 	private long id;

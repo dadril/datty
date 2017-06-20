@@ -28,18 +28,18 @@ import io.datty.spring.support.DattyConverterUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * ListCrossEntityTest
+ * ListEntityTest
  * 
  * @author Alex Shvid
  *
  */
 
-public class ListCrossEntityTest {
+public class ListEntityTest {
 
 	@Test
 	public void testNull() {
 		
-		ListCrossEntity entity = new ListCrossEntity();
+		ListEntity entity = new ListEntity();
 		entity.setId(123L);
 		
 		DattyRow row = new DattyRow();
@@ -55,7 +55,7 @@ public class ListCrossEntityTest {
 		
 		Assert.assertNull(row.get("embedded"));
 
-		ListCrossEntity actual = DattyConverterUtil.read(ListCrossEntity.class, row);
+		ListEntity actual = DattyConverterUtil.read(ListEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNull(actual.getEmbedded());
 		
@@ -64,7 +64,7 @@ public class ListCrossEntityTest {
 	@Test
 	public void testEmbeddedEmpty() {
 		
-		ListCrossEntity entity = new ListCrossEntity();
+		ListEntity entity = new ListEntity();
 		entity.setId(123L);
 		entity.setEmbedded(Collections.<EmbeddedEntity>emptyList());
 		
@@ -89,7 +89,7 @@ public class ListCrossEntityTest {
 		List<Map> list = (List<Map>) value;
 		Assert.assertEquals(0, list.size());
 
-		ListCrossEntity actual = DattyConverterUtil.read(ListCrossEntity.class, row);
+		ListEntity actual = DattyConverterUtil.read(ListEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNotNull(actual.getEmbedded());
 		Assert.assertEquals(0, actual.getEmbedded().size());
@@ -99,7 +99,7 @@ public class ListCrossEntityTest {
 	@Test
 	public void testEmbeddedNull() {
 		
-		ListCrossEntity entity = new ListCrossEntity();
+		ListEntity entity = new ListEntity();
 		entity.setId(123L);
 		
 		EmbeddedEntity embedded = new EmbeddedEntity();
@@ -130,7 +130,7 @@ public class ListCrossEntityTest {
 		Assert.assertNotNull(list.get(0));
 		Assert.assertNull(list.get(0).get("innerField"));
 
-		ListCrossEntity actual = DattyConverterUtil.read(ListCrossEntity.class, row);
+		ListEntity actual = DattyConverterUtil.read(ListEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNotNull(actual.getEmbedded());
 		Assert.assertEquals(1, actual.getEmbedded().size());
@@ -141,7 +141,7 @@ public class ListCrossEntityTest {
 	@Test
 	public void testEmbedded() {
 		
-		ListCrossEntity entity = new ListCrossEntity();
+		ListEntity entity = new ListEntity();
 		entity.setId(123L);
 		
 		EmbeddedEntity embedded = new EmbeddedEntity();
@@ -173,7 +173,7 @@ public class ListCrossEntityTest {
 		Assert.assertNotNull(list.get(0));
 		Assert.assertEquals("inner", list.get(0).get("innerField"));
 
-		ListCrossEntity actual = DattyConverterUtil.read(ListCrossEntity.class, row);
+		ListEntity actual = DattyConverterUtil.read(ListEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNotNull(actual.getEmbedded());
 		Assert.assertEquals(1, actual.getEmbedded().size());

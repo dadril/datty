@@ -26,18 +26,18 @@ import io.datty.spring.support.DattyConverterUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
- * StringMapCrossEntityTest
+ * StringMapEntityTest
  * 
  * @author Alex Shvid
  *
  */
 
-public class StringMapCrossEntityTest {
+public class StringMapEntityTest {
 
 	@Test
 	public void testNull() {
 		
-		StringMapCrossEntity entity = new StringMapCrossEntity();
+		StringMapEntity entity = new StringMapEntity();
 		entity.setId(123L);
 		
 		DattyRow row = new DattyRow();
@@ -53,7 +53,7 @@ public class StringMapCrossEntityTest {
 		
 		Assert.assertNull(row.get("embedded"));
 
-		StringMapCrossEntity actual = DattyConverterUtil.read(StringMapCrossEntity.class, row);
+		StringMapEntity actual = DattyConverterUtil.read(StringMapEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNull(actual.getEmbedded());
 		
@@ -62,7 +62,7 @@ public class StringMapCrossEntityTest {
 	@Test
 	public void testEmbeddedEmpty() {
 		
-		StringMapCrossEntity entity = new StringMapCrossEntity();
+		StringMapEntity entity = new StringMapEntity();
 		entity.setId(123L);
 		entity.setEmbedded(Collections.<String, EmbeddedEntity>emptyMap());
 		
@@ -87,7 +87,7 @@ public class StringMapCrossEntityTest {
 		Map<String, Map> map = (Map<String, Map>) value;
 		Assert.assertEquals(0, map.size());
 
-		StringMapCrossEntity actual = DattyConverterUtil.read(StringMapCrossEntity.class, row);
+		StringMapEntity actual = DattyConverterUtil.read(StringMapEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNotNull(actual.getEmbedded());
 		Assert.assertEquals(0, actual.getEmbedded().size());
@@ -97,7 +97,7 @@ public class StringMapCrossEntityTest {
 	@Test
 	public void testEmbeddedNull() {
 		
-		StringMapCrossEntity entity = new StringMapCrossEntity();
+		StringMapEntity entity = new StringMapEntity();
 		entity.setId(123L);
 		
 		EmbeddedEntity embedded = new EmbeddedEntity();
@@ -128,7 +128,7 @@ public class StringMapCrossEntityTest {
 		Assert.assertNotNull(map.get("k"));
 		Assert.assertNull(map.get("k").get("innerField"));
 
-		StringMapCrossEntity actual = DattyConverterUtil.read(StringMapCrossEntity.class, row);
+		StringMapEntity actual = DattyConverterUtil.read(StringMapEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNotNull(actual.getEmbedded());
 		Assert.assertEquals(1, actual.getEmbedded().size());
@@ -139,7 +139,7 @@ public class StringMapCrossEntityTest {
 	@Test
 	public void testEmbedded() {
 		
-		StringMapCrossEntity entity = new StringMapCrossEntity();
+		StringMapEntity entity = new StringMapEntity();
 		entity.setId(123L);
 		
 		EmbeddedEntity embedded = new EmbeddedEntity();
@@ -171,7 +171,7 @@ public class StringMapCrossEntityTest {
 		Assert.assertNotNull(map.get("k"));
 		Assert.assertEquals("inner", map.get("k").get("innerField"));
 
-		StringMapCrossEntity actual = DattyConverterUtil.read(StringMapCrossEntity.class, row);
+		StringMapEntity actual = DattyConverterUtil.read(StringMapEntity.class, row);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNotNull(actual.getEmbedded());
 		Assert.assertEquals(1, actual.getEmbedded().size());
