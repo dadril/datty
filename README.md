@@ -12,7 +12,7 @@ The same as Netty but for data
 * Polyglot persistence
 * Vendor agnostic
 * Multi tenant support
-* Multi datacenter support
+* Multi datacenter support (replicated and partitioned data schemes)
 * Multi cloud support (Amazon, Google, etc)
 * LDR (failover, active-active)
 * DR (one way, active-active)
