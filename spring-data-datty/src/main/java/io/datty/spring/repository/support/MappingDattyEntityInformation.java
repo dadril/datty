@@ -21,7 +21,7 @@ import io.datty.api.DattyConstants;
 import io.datty.spring.core.DattyId;
 import io.datty.spring.core.DattyTemplate;
 import io.datty.spring.mapping.DattyPersistentEntity;
-import io.datty.spring.repository.RepositoryInfo;
+import io.datty.spring.repository.DattyEntity;
 
 /**
  * MappingDattyEntityInformation
@@ -49,13 +49,13 @@ public class MappingDattyEntityInformation<T> extends AbstractEntityInformation<
 	}
 	
 	public MappingDattyEntityInformation(DattyTemplate template, DattyPersistentEntity<T> entity,
-			RepositoryInfo repositoryAnnotation) {
+			DattyEntity annotation) {
 		super(entity.getType());
 		this.template = template;
-		this.setName = isEmpty(repositoryAnnotation.setName()) ? entity.getSetName() : repositoryAnnotation.setName();
-		this.ttlSeconds = repositoryAnnotation.ttlSeconds() != DattyConstants.UNSET_TTL ? repositoryAnnotation.ttlSeconds() : entity.getTtlSeconds();
-		this.timeoutMillis = repositoryAnnotation.timeoutMillis() != DattyConstants.UNSET_TIMEOUT ? repositoryAnnotation.timeoutMillis() : entity.getTimeoutMillis();
-		this.numeric = repositoryAnnotation.numeric();
+		this.setName = isEmpty(annotation.setName()) ? entity.getSetName() : annotation.setName();
+		this.ttlSeconds = annotation.ttlSeconds() != DattyConstants.UNSET_TTL ? annotation.ttlSeconds() : entity.getTtlSeconds();
+		this.timeoutMillis = annotation.timeoutMillis() != DattyConstants.UNSET_TIMEOUT ? annotation.timeoutMillis() : entity.getTimeoutMillis();
+		this.numeric = annotation.numeric();
 	}
 
 	private boolean isEmpty(String str) {

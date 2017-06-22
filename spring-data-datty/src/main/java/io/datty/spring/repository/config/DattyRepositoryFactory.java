@@ -26,7 +26,7 @@ import org.springframework.util.Assert;
 import io.datty.spring.core.DattyTemplate;
 import io.datty.spring.mapping.DattyPersistentEntity;
 import io.datty.spring.mapping.DattyPersistentProperty;
-import io.datty.spring.repository.RepositoryInfo;
+import io.datty.spring.repository.DattyEntity;
 import io.datty.spring.repository.support.DattyEntityInformation;
 import io.datty.spring.repository.support.MappingDattyEntityInformation;
 import io.datty.spring.repository.support.SimpleDattyRepository;
@@ -63,9 +63,9 @@ public class DattyRepositoryFactory extends RepositoryFactorySupport {
 		
 		DattyEntityInformation<?> entityInformation;
 		
-		if (repositoryInterface.isAnnotationPresent(RepositoryInfo.class)) {
-			RepositoryInfo info = repositoryInterface.getAnnotation(RepositoryInfo.class);
-			entityInformation = getEntityInformationOverride(metadata.getDomainType(), info);
+		if (repositoryInterface.isAnnotationPresent(DattyEntity.class)) {
+			DattyEntity annotation = repositoryInterface.getAnnotation(DattyEntity.class);
+			entityInformation = getEntityInformationOverride(metadata.getDomainType(), annotation);
 		}
 		else {
 			entityInformation = getEntityInformationOverride(metadata.getDomainType());
@@ -94,7 +94,7 @@ public class DattyRepositoryFactory extends RepositoryFactorySupport {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T> DattyEntityInformation<T> getEntityInformationOverride(Class<T> domainClass, RepositoryInfo repositoryAnnotation) {
+	public <T> DattyEntityInformation<T> getEntityInformationOverride(Class<T> domainClass, DattyEntity annotation) {
 
 		DattyPersistentEntity<?> entity = mappingContext.getPersistentEntity((Class<?>) domainClass).orElse(null);
 
@@ -103,6 +103,6 @@ public class DattyRepositoryFactory extends RepositoryFactorySupport {
 					domainClass.getName()));
 		}
 
-		return new MappingDattyEntityInformation<T>(template, (DattyPersistentEntity<T>) entity, repositoryAnnotation);
+		return new MappingDattyEntityInformation<T>(template, (DattyPersistentEntity<T>) entity, annotation);
 	}
 }

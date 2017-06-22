@@ -24,7 +24,7 @@ import org.springframework.data.annotation.Persistent;
 import io.datty.api.DattyConstants;
 
 /**
- * Repository annotation
+ * DattyEntity annotation
  * 
  * @author Alex Shvid
  *
@@ -34,7 +34,7 @@ import io.datty.api.DattyConstants;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
-public @interface RepositoryInfo {
+public @interface DattyEntity {
 	
 	/**
 	 * Name of the set. 
