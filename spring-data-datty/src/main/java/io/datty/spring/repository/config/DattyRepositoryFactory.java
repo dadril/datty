@@ -94,7 +94,7 @@ public class DattyRepositoryFactory extends RepositoryFactorySupport {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T> DattyEntityInformation<T> getEntityInformationOverride(Class<T> domainClass, RepositoryInfo repositoryInfo) {
+	public <T> DattyEntityInformation<T> getEntityInformationOverride(Class<T> domainClass, RepositoryInfo repositoryAnnotation) {
 
 		DattyPersistentEntity<?> entity = mappingContext.getPersistentEntity((Class<?>) domainClass).orElse(null);
 
@@ -103,6 +103,6 @@ public class DattyRepositoryFactory extends RepositoryFactorySupport {
 					domainClass.getName()));
 		}
 
-		return new MappingDattyEntityInformation<T>(template, (DattyPersistentEntity<T>) entity, repositoryInfo.setName(), repositoryInfo.numeric());
+		return new MappingDattyEntityInformation<T>(template, (DattyPersistentEntity<T>) entity, repositoryAnnotation);
 	}
 }

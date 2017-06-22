@@ -17,9 +17,11 @@ import java.util.Optional;
 
 import org.springframework.data.repository.core.support.AbstractEntityInformation;
 
+import io.datty.api.DattyConstants;
 import io.datty.spring.core.DattyId;
 import io.datty.spring.core.DattyTemplate;
 import io.datty.spring.mapping.DattyPersistentEntity;
+import io.datty.spring.repository.RepositoryInfo;
 
 /**
  * MappingDattyEntityInformation
@@ -32,21 +34,28 @@ public class MappingDattyEntityInformation<T> extends AbstractEntityInformation<
 		DattyEntityInformation<T> {
 
 	private final DattyTemplate template;
-	private final DattyPersistentEntity<T> entityMetadata;
 	private final String setName;
+	private final int ttlSeconds;
+	private final int timeoutMillis;
 	private final boolean numeric;
 
 	public MappingDattyEntityInformation(DattyTemplate template, DattyPersistentEntity<T> entity) {
-		this(template, entity, null, false);
+		super(entity.getType());
+		this.template = template;
+		this.setName = entity.getSetName();
+		this.ttlSeconds = entity.getTtlSeconds();
+		this.timeoutMillis = entity.getTimeoutMillis();
+		this.numeric = false;
 	}
 	
 	public MappingDattyEntityInformation(DattyTemplate template, DattyPersistentEntity<T> entity,
-			String setName, boolean numeric) {
+			RepositoryInfo repositoryAnnotation) {
 		super(entity.getType());
 		this.template = template;
-		this.entityMetadata = entity;
-		this.setName = isEmpty(setName) ? entity.getSetName() : setName;
-		this.numeric = numeric;
+		this.setName = isEmpty(repositoryAnnotation.setName()) ? entity.getSetName() : repositoryAnnotation.setName();
+		this.ttlSeconds = repositoryAnnotation.ttlSeconds() != DattyConstants.UNSET_TTL ? repositoryAnnotation.ttlSeconds() : entity.getTtlSeconds();
+		this.timeoutMillis = repositoryAnnotation.timeoutMillis() != DattyConstants.UNSET_TIMEOUT ? repositoryAnnotation.timeoutMillis() : entity.getTimeoutMillis();
+		this.numeric = repositoryAnnotation.numeric();
 	}
 
 	private boolean isEmpty(String str) {
@@ -75,13 +84,12 @@ public class MappingDattyEntityInformation<T> extends AbstractEntityInformation<
 
 	@Override
 	public int ttlSeconds() {
-		return entityMetadata.getTtlSeconds();
+		return ttlSeconds;
 	}
 
 	@Override
 	public int timeoutMillis() {
-		return entityMetadata.getTimeoutMillis();
+		return timeoutMillis;
 	}
-	
 
 }
