@@ -20,6 +20,6 @@ package io.datty.api;
  *
  */
 
-public interface Datty extends DattySingle, DattyBatch, DattyStream, DattyQuery {
+public interface Datty extends DattySingle, DattyBatch, DattyStream {
 	
 }

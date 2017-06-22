@@ -26,7 +26,6 @@ import io.datty.aerospike.support.RandomUtil;
 import io.datty.api.Datty;
 import io.datty.api.DattyBatch;
 import io.datty.api.DattyManager;
-import io.datty.api.DattyQuery;
 import io.datty.api.DattySet;
 import io.datty.api.DattySetError;
 import io.datty.api.DattySingle;
@@ -34,7 +33,6 @@ import io.datty.api.DattyStream;
 import io.datty.api.SetExistsAction;
 import io.datty.spi.DattyBatchDriver;
 import io.datty.spi.DattyDriver;
-import io.datty.spi.DattyQueryDriver;
 import io.datty.spi.DattySingleDriver;
 import io.datty.spi.DattySingleProvider;
 import io.datty.spi.DattyStreamDriver;
@@ -67,13 +65,11 @@ public class AerospikeDattyManager implements DattyManager {
 		DattySingle single = new DattySingleProvider(new DattySingleDriver(new AerospikeDattySingle(this)));
 		DattyBatch batch = new DattyBatchDriver(single);
 		DattyStream stream = new DattyStreamDriver(new AerospikeDattyStream(this));
-		DattyQuery query = new DattyQueryDriver(new AerospikeDattyQuery(this));
 		
 		this.currentDatty = DattyDriver.newBuilder()
 				.setSingle(single)
 				.setBatch(batch)
 				.setStream(stream)
-				.setQuery(query)
 				.build();
 		
 		this.version = requestVersion();

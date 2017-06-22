@@ -18,10 +18,8 @@ import java.util.List;
 import io.datty.api.Datty;
 import io.datty.api.DattyBatch;
 import io.datty.api.DattyKey;
-import io.datty.api.DattyQuery;
 import io.datty.api.DattyResult;
 import io.datty.api.DattySingle;
-import io.datty.api.DattyStatement;
 import io.datty.api.DattyStream;
 import io.datty.api.operation.RecordOperation;
 import io.datty.api.operation.SetOperation;
@@ -44,24 +42,17 @@ public class DattyDriver implements Datty {
 	private final DattySingle single;
 	private final DattyBatch batch;
 	private final DattyStream stream;
-	private final DattyQuery query;
 
-	public DattyDriver(DattySingle single, DattyBatch batch, DattyStream stream, DattyQuery query) {
+	public DattyDriver(DattySingle single, DattyBatch batch, DattyStream stream) {
 		this.single = single;
 		this.batch = batch;
 		this.stream = stream;
-		this.query = query;
 	}
 
 	public static Builder newBuilder() {
 		return new Builder();
 	}
 	
-	@Override
-	public Observable<RecordResult> query(DattyStatement statement) {
-		return query.query(statement);
-	}
-
 	@Override
 	public Observable<RecordResult> execute(SetOperation operation) {
 		return single.execute(operation);
@@ -102,7 +93,6 @@ public class DattyDriver implements Datty {
 		private DattySingle single;
 		private DattyBatch batch;
 		private DattyStream stream;
-		private DattyQuery query;
 
 		public DattySingle getSingle() {
 			return single;
@@ -131,15 +121,6 @@ public class DattyDriver implements Datty {
 			return this;			
 		}
 
-		public DattyQuery getQuery() {
-			return query;
-		}
-
-		public Builder setQuery(DattyQuery query) {
-			this.query = query;
-			return this;
-		}
-
 		public DattyDriver build() {
 
 			if (single == null) {
@@ -154,11 +135,7 @@ public class DattyDriver implements Datty {
 				throw new IllegalArgumentException("empty stream");
 			}
 
-			if (query == null) {
-				throw new IllegalArgumentException("empty query");
-			}
-
-			return new DattyDriver(single, batch, stream, query);
+			return new DattyDriver(single, batch, stream);
 		}
 
 	}
