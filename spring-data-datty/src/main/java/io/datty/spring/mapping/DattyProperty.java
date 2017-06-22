@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = { ElementType.FIELD, ElementType.METHOD, ElementType.ANNOTATION_TYPE })
-public @interface PropertyInfo {
+public @interface DattyProperty {
 
 	/**
 	 * The name of the property that overrides field name.

@@ -18,12 +18,12 @@ import org.springframework.data.repository.reactive.RxJava1CrudRepository;
 import io.datty.spring.core.DattyId;
 
 /**
- * DattyRepository
+ * RxDattyRepository
  * 
  * @author Alex Shvid
  *
  */
 
-public interface DattyRepository<T> extends RxJava1CrudRepository<T, DattyId> {
+public interface RxDattyRepository<T> extends RxJava1CrudRepository<T, DattyId> {
 
 }

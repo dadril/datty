@@ -21,6 +21,8 @@ import java.lang.annotation.Target;
 
 import org.springframework.data.annotation.Persistent;
 
+import io.datty.api.DattyConstants;
+
 /**
  * Repository annotation
  * 
@@ -41,6 +43,22 @@ public @interface RepositoryInfo {
 	 */
 
 	String setName() default "";
+	
+	/**
+	 * Time to live in seconds
+	 * 
+	 * @return ttl or 0
+	 */
+	
+	int ttlSeconds() default DattyConstants.UNSET_TTL;
+	
+	/**
+	 * SLA timeout milliseconds
+	 * 
+	 * @return timeout in milliseconds or 0
+	 */
+	
+	int timeoutMillis() default DattyConstants.UNSET_TIMEOUT;
 	
 	/**
 	 * Flag that is using to enable numeric keys in serialized message.

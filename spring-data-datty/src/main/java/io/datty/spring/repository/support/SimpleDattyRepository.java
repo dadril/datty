@@ -17,7 +17,7 @@ import org.springframework.util.Assert;
 
 import io.datty.spring.core.DattyId;
 import io.datty.spring.core.DattyTemplate;
-import io.datty.spring.repository.DattyRepository;
+import io.datty.spring.repository.RxDattyRepository;
 import rx.Completable;
 import rx.Observable;
 import rx.Single;
@@ -29,7 +29,7 @@ import rx.Single;
  *
  */
 
-public class SimpleDattyRepository<T> implements DattyRepository<T> {
+public class SimpleDattyRepository<T> implements RxDattyRepository<T> {
 
 	private final DattyEntityInformation<T> entityInformation;
 	private final DattyTemplate template;

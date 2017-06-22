@@ -16,7 +16,7 @@ package io.datty.spring.converter.code;
 import org.springframework.data.annotation.Id;
 
 import io.datty.spring.mapping.Entity;
-import io.datty.spring.mapping.PropertyInfo;
+import io.datty.spring.mapping.DattyProperty;
 
 /**
  * NumericMigratedEntity
@@ -29,10 +29,10 @@ import io.datty.spring.mapping.PropertyInfo;
 public class NumericMigratedEntity {
 
 	@Id
-	@PropertyInfo(code=1)
+	@DattyProperty(code=1)
 	private Long id;
 	
-	@PropertyInfo(code=2)
+	@DattyProperty(code=2)
 	private String first;
 
 	public Long getId() {
