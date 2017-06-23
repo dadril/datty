@@ -48,7 +48,7 @@ public enum RecordResultIO implements DattyResultIO<RecordResult> {
 			return true;
 		
 		case VERSION:
-			result.setVersion(VersionIO.readVersion(reader, source));
+			result.setVersion(VersionIO.readVersion(source));
 			return true;
 		
 		case ROW:

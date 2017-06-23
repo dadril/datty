@@ -18,9 +18,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.core.ArrayMessageReader;
 import io.datty.msgpack.core.ArrayMessageWriter;
+import io.datty.msgpack.core.ValueMessageReader;
 import io.datty.support.exception.DattyException;
 import io.netty.buffer.ByteBuf;
 
@@ -36,9 +36,9 @@ public final class DattyCollectionIO {
 	private DattyCollectionIO() {
 	}
 	
-	public static List<String> readStringArray(MessageReader reader, ByteBuf source) {
+	public static List<String> readStringArray(ByteBuf source) {
 		
-		Object value = reader.readValue(source, false);
+		Object value = ValueMessageReader.INSTANCE.readValue(source, false);
 		
 		if (value == null) {
 			return Collections.emptyList();

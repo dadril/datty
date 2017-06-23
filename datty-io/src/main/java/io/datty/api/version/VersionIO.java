@@ -14,9 +14,10 @@
 package io.datty.api.version;
 
 import io.datty.api.DattyField;
-import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.MessageWriter;
 import io.datty.msgpack.core.MapMessageReader;
+import io.datty.msgpack.core.MapMessageWriter;
+import io.datty.msgpack.core.ValueMessageReader;
 import io.datty.support.exception.DattyException;
 import io.netty.buffer.ByteBuf;
 
@@ -33,9 +34,9 @@ public final class VersionIO {
 	}
 	
 	
-	public static Version readVersion(MessageReader reader, ByteBuf source) {
+	public static Version readVersion(ByteBuf source) {
 		
-		Object rowMap = reader.readValue(source, false);
+		Object rowMap = ValueMessageReader.INSTANCE.readValue(source, false);
 		
 		if (rowMap == null) {
 			return null;
@@ -57,14 +58,14 @@ public final class VersionIO {
 			
 			Object fieldKey = mapReader.readKey(source);
 			if (fieldKey == null) {
-				throw new DattyException("expected not null fieldNum in  object");
+				throw new DattyException("expected not null fieldNum in object");
 			}
 			
 			DattyField field = DattyField.findByKey(fieldKey);
 			if (field == null) {
 				throw new DattyException("field not found for fieldNum: " + fieldKey);
 			}
-
+			
 			switch(field) {
 			
 			case VERSION_TYPE:
@@ -75,11 +76,11 @@ public final class VersionIO {
 				}
 				break;
 				
-			case VERSION_LONG:
+			case LONG_VALUE:
 				longValue = (Long) mapReader.readValue(source, true);
 				break;
 				
-			case VERSION_STRING:
+			case STRING_VALUE:
 				stringValue = (String) mapReader.readValue(source, true);
 				break;
 				
@@ -105,18 +106,18 @@ public final class VersionIO {
 		
 	}
 	
-	public static void writeVersion(MessageWriter writer, Version version, ByteBuf sink, boolean numeric) {
+	public static void writeVersion(Version version, ByteBuf sink, boolean numeric) {
 		
 		VersionType type = version.getType();
 		
 		switch(type) {
 		
 		case LONG:
-			writeLongVersion(writer, version, sink, numeric);
+			writeLongVersion(version, sink, numeric);
 			break;
 			
 		case STRING:
-			writeStringVersion(writer, version, sink, numeric);
+			writeStringVersion(version, sink, numeric);
 			break;
 		
 		default:
@@ -126,19 +127,23 @@ public final class VersionIO {
 		
 	}
 	
-	public static void writeLongVersion(MessageWriter writer, Version version, ByteBuf sink, boolean numeric) {
+	public static void writeLongVersion(Version version, ByteBuf sink, boolean numeric) {
+		
+		MessageWriter writer = MapMessageWriter.INSTANCE;
 		
 		writer.writeHeader(2, sink);
 		
 		writeKey(writer, DattyField.VERSION_TYPE, sink, numeric);
-		writer.writeValue(version.getType().getCode(), sink);
+	  writer.writeValue(version.getType().getCode(), sink);
 		
-		writeKey(writer, DattyField.VERSION_LONG, sink, numeric);
+		writeKey(writer, DattyField.LONG_VALUE, sink, numeric);
 		writer.writeValue(version.asLong(), sink);
 		
 	}
 	
-	public static void writeStringVersion(MessageWriter writer, Version version, ByteBuf sink, boolean numeric) {
+	public static void writeStringVersion(Version version, ByteBuf sink, boolean numeric) {
+		
+		MessageWriter writer = MapMessageWriter.INSTANCE;
 		
 		String stringVersion = version.asString();
 		
@@ -148,7 +153,7 @@ public final class VersionIO {
 		writer.writeValue(version.getType().getCode(), sink);
 		
 		if (stringVersion != null) {
-			writeKey(writer, DattyField.VERSION_STRING, sink, numeric);
+			writeKey(writer, DattyField.STRING_VALUE, sink, numeric);
 			writer.writeValue(stringVersion, sink);
 		}
 		
@@ -156,10 +161,10 @@ public final class VersionIO {
 	
 	private static void writeKey(MessageWriter writer, DattyField field, ByteBuf sink, boolean numeric) {
 		if (numeric) {
-			writer.writeKey(DattyField.VERSION_TYPE.getFieldCode(), sink);
+			writer.writeKey(field.getFieldCode(), sink);
 		}
 		else {
-			writer.writeKey(DattyField.VERSION_TYPE.getFieldName(), sink);
+			writer.writeKey(field.getFieldName(), sink);
 		}
 	}
 	

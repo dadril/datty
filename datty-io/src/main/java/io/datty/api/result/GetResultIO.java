@@ -44,7 +44,7 @@ public enum GetResultIO implements DattyResultIO<GetResult> {
 		switch(field) {
 		
 		case VERSION:
-			result.setVersion(VersionIO.readVersion(reader, source));
+			result.setVersion(VersionIO.readVersion(source));
 			return true;
 		
 		case ROW:

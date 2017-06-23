@@ -46,12 +46,11 @@ public enum DattyField {
 	ARGUMENTS(23, "arguments"), // String
 
 	VERSION_TYPE(24, "type"), // Integer
-	VERSION_LONG(25, "long"), // Long
-	VERSION_STRING(26, "string"), // String
 
-	BOOL_VALUE(27, "bool"), // Boolean
-	LONG_VALUE(28, "long"), // Long
-	BYTES_VALUE(29, "bytes"); // ByteBuf
+	BOOL_VALUE(25, "bool"), // Boolean
+	LONG_VALUE(26, "long"), // Long
+	STRING_VALUE(27, "string"), // String
+	BYTES_VALUE(28, "bytes"); // ByteBuf
 
 	private final int code;
 	private final String name;
@@ -88,6 +87,9 @@ public enum DattyField {
 		if (fieldKey instanceof Integer) {
 			return findByCode((Integer) fieldKey);
 		}
+		else if (fieldKey instanceof Long) {
+			return findByCode(((Long) fieldKey).intValue());
+		}		
 		else if (fieldKey instanceof String) {
 			return findByName((String) fieldKey);
 		}

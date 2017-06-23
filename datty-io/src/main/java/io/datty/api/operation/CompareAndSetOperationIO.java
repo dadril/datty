@@ -46,7 +46,7 @@ public class CompareAndSetOperationIO extends AbstractUpdateOperationIO<CompareA
 		switch(field) {
 
 			case VERSION:
-				operation.setVersion(VersionIO.readVersion(reader, source));
+				operation.setVersion(VersionIO.readVersion(source));
 				return true;
 			
 			case ROW:

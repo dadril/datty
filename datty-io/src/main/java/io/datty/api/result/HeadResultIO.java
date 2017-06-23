@@ -44,11 +44,11 @@ public enum HeadResultIO implements DattyResultIO<HeadResult> {
 		switch(field) {
 		
 		case VERSION:
-			result.setVersion(VersionIO.readVersion(reader, source));
+			result.setVersion(VersionIO.readVersion(source));
 			return true;
 		
 		case MINOR_KEYS:
-			result.addMinorKeys(DattyCollectionIO.readStringArray(reader, source));
+			result.addMinorKeys(DattyCollectionIO.readStringArray(source));
 			return true;
 			
 		default:

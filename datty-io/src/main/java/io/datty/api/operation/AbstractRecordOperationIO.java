@@ -48,7 +48,7 @@ abstract class AbstractRecordOperationIO<O extends AbstractRecordOperation> exte
 				return true;
 		
 			case MINOR_KEYS:
-				operation.addMinorKeys(DattyCollectionIO.readStringArray(reader, source));
+				operation.addMinorKeys(DattyCollectionIO.readStringArray(source));
 				return true;
 				
 			default:

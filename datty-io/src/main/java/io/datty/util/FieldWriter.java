@@ -56,10 +56,10 @@ public final class FieldWriter {
 	
 	private void writeKey(DattyField field) {
 		if (numeric) {
-			writer.writeValue(field.getFieldCode(), sink);
+			writer.writeKey(field.getFieldCode(), sink);
 		}
 		else {
-			writer.writeValue(field.getFieldName(), sink);
+			writer.writeKey(field.getFieldName(), sink);
 		}
 	}
 	
@@ -107,7 +107,7 @@ public final class FieldWriter {
 	
 	public void writeField(DattyField field, Version version) {
 		writeKey(field);
-		VersionIO.writeVersion(writer, version, sink, numeric);
+		VersionIO.writeVersion(version, sink, numeric);
 		size++;
 	}
 	

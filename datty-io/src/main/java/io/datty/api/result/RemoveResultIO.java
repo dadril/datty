@@ -43,7 +43,7 @@ public enum RemoveResultIO implements DattyResultIO<RemoveResult> {
 		switch(field) {
 		
 		case MINOR_KEYS:
-			result.addMinorKeys(DattyCollectionIO.readStringArray(reader, source));
+			result.addMinorKeys(DattyCollectionIO.readStringArray(source));
 			return true;
 			
 		default:
