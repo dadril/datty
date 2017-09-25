@@ -21,7 +21,7 @@ import java.util.Map;
 import org.junit.Assert;
 
 import io.datty.api.DattyRow;
-import io.datty.msgpack.MessageFactory;
+import io.datty.msgpack.MessageIO;
 import io.datty.spring.support.DattyConverterUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;

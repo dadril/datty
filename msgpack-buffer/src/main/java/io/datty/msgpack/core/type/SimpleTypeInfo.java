@@ -15,7 +15,7 @@ package io.datty.msgpack.core.type;
 
 import io.datty.msgpack.core.reader.ValueReader;
 import io.datty.msgpack.core.writer.ValueWriter;
-import io.datty.msgpack.support.MessageException;
+import io.datty.msgpack.support.MessageIOException;
 
 /**
  * SimpleTypeInfo
@@ -30,7 +30,7 @@ public interface SimpleTypeInfo<T> extends TypeInfo<T> {
 	 * Gets value reader
 	 * 
 	 * @return not null value reader
-	 * @throws MessageException if not found
+	 * @throws MessageIOException if not found
 	 */
 
 	ValueReader<T> getValueReader();
@@ -39,7 +39,7 @@ public interface SimpleTypeInfo<T> extends TypeInfo<T> {
 	 * Gets value writer
 	 * 
 	 * @return not null value reader
-	 * @throws MessageException if not found
+	 * @throws MessageIOException if not found
 	 */
 
 	ValueWriter<T> getValueWriter();

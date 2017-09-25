@@ -19,7 +19,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.datty.api.DattyRow;
-import io.datty.msgpack.MessageFactory;
+import io.datty.msgpack.MessageIO;
 import io.datty.msgpack.core.reader.LongReader;
 import io.datty.spring.mapping.Embedded;
 import io.datty.spring.support.DattyConverterUtil;
@@ -92,7 +92,7 @@ public class SimpleEntityTest {
 		bb = row.get("embedded").asByteBuf();
 		Assert.assertNotNull(bb);
 
-		Object embeddedObj = MessageFactory.readValue(bb.duplicate(), true);
+		Object embeddedObj = MessageIO.readValue(bb.duplicate(), true);
 		Assert.assertNotNull(embeddedObj);
 		Assert.assertTrue(embeddedObj instanceof Map);
 		
@@ -130,7 +130,7 @@ public class SimpleEntityTest {
 		bb = row.get("embedded").asByteBuf();
 		Assert.assertNotNull(bb);
 		
-		Object embeddedObj = MessageFactory.readValue(bb.duplicate(), true);
+		Object embeddedObj = MessageIO.readValue(bb.duplicate(), true);
 		Assert.assertNotNull(embeddedObj);
 		
 		Assert.assertTrue(embeddedObj instanceof Map);

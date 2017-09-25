@@ -27,7 +27,7 @@ public interface ValueReaderProvider {
 	 * 
 	 * @param type - class type
 	 * @return not null value reader
-	 * @throws MessageException if not found
+	 * @throws MessageIOException if not found
 	 */
 	
 	<T> ValueReader<T> find(Class<T> type);

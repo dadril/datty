@@ -15,7 +15,7 @@ package io.datty.msgpack.core.type;
 
 import io.datty.msgpack.core.reader.ValueReader;
 import io.datty.msgpack.core.writer.ValueWriter;
-import io.datty.msgpack.support.MessageException;
+import io.datty.msgpack.support.MessageIOException;
 
 /**
  * ListTypeInfo
@@ -38,7 +38,7 @@ public interface ListTypeInfo<E, T> extends TypeInfo<T> {
 	 * Gets component value reader
 	 * 
 	 * @return not null value reader
-	 * @throws MessageException if not found
+	 * @throws MessageIOException if not found
 	 */
 	
 	ValueReader<E> getComponentValueReader();
@@ -47,7 +47,7 @@ public interface ListTypeInfo<E, T> extends TypeInfo<T> {
 	 * Gets component value writer
 	 * 
 	 * @return not null value reader
-	 * @throws MessageException if not found
+	 * @throws MessageIOException if not found
 	 */
 	
 	ValueWriter<E> getComponentValueWriter();

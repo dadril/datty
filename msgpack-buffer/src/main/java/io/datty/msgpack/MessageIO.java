@@ -22,19 +22,19 @@ import io.datty.msgpack.core.ArrayMessageReader;
 import io.datty.msgpack.core.MapMessageReader;
 import io.datty.msgpack.core.ValueMessageReader;
 import io.datty.msgpack.core.type.TypeInfo;
-import io.datty.msgpack.support.MessageException;
+import io.datty.msgpack.support.MessageIOException;
 import io.netty.buffer.ByteBuf;
 
 /**
- * MessageFactory
+ * MessageIO
  * 
  * @author Alex Shvid
  *
  */
 
-public final class MessageFactory {
+public final class MessageIO {
 
-	private MessageFactory() {
+	private MessageIO() {
 	}
 	
 	/**
@@ -60,7 +60,7 @@ public final class MessageFactory {
 			return readArray((ArrayMessageReader) reader, source, copy);
 		}
 		else {
-			throw new MessageException("unknown reader type: " + reader);
+			throw new MessageIOException("unknown reader type: " + reader);
 		}
 	}
 	

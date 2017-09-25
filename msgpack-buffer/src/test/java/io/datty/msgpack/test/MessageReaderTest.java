@@ -19,7 +19,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.datty.msgpack.MessageFactory;
+import io.datty.msgpack.MessageIO;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -60,7 +60,7 @@ public class MessageReaderTest {
 		
 		ByteBuf source = Unpooled.wrappedBuffer(example);
 		
-		Object message = MessageFactory.readValue(source, false);
+		Object message = MessageIO.readValue(source, false);
 	  Assert.assertTrue(message instanceof Map);
 		
 	  @SuppressWarnings("unchecked")
@@ -76,7 +76,7 @@ public class MessageReaderTest {
 		
 		ByteBuf source = Unpooled.wrappedBuffer(example);
 		
-		Object message = MessageFactory.readValue(source, false);
+		Object message = MessageIO.readValue(source, false);
 	  Assert.assertTrue(message instanceof Map);
 		
 	  @SuppressWarnings("unchecked")
@@ -92,7 +92,7 @@ public class MessageReaderTest {
 		
 		ByteBuf source = Unpooled.wrappedBuffer(example);
 		
-		Object message = MessageFactory.readValue(source, false);
+		Object message = MessageIO.readValue(source, false);
 	  Assert.assertTrue(message instanceof List);
 	  
 	  @SuppressWarnings("unchecked")

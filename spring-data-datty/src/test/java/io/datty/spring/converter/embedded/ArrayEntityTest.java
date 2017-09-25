@@ -20,7 +20,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.datty.api.DattyRow;
-import io.datty.msgpack.MessageFactory;
+import io.datty.msgpack.MessageIO;
 import io.datty.msgpack.core.reader.LongReader;
 import io.datty.spring.support.DattyConverterUtil;
 import io.netty.buffer.ByteBuf;
@@ -80,7 +80,7 @@ public class ArrayEntityTest {
 		bb = row.get("embedded").asByteBuf();
 		Assert.assertNotNull(bb);
 		
-		Object value = MessageFactory.readValue(bb.duplicate(), true);
+		Object value = MessageIO.readValue(bb.duplicate(), true);
 		Assert.assertNotNull(value);
 		Assert.assertTrue(value instanceof List);
 		
@@ -119,7 +119,7 @@ public class ArrayEntityTest {
 		
 		//System.out.println(Arrays.toString(ByteBufUtil.getBytes(bb)));
 		
-		Object value = MessageFactory.readValue(bb.duplicate(), true);
+		Object value = MessageIO.readValue(bb.duplicate(), true);
 		Assert.assertNotNull(value);
 		Assert.assertTrue(value instanceof List);
 		
@@ -162,7 +162,7 @@ public class ArrayEntityTest {
 		
 		//System.out.println(Arrays.toString(ByteBufUtil.getBytes(bb)));
 		
-		Object value = MessageFactory.readValue(bb.duplicate(), true);
+		Object value = MessageIO.readValue(bb.duplicate(), true);
 		Assert.assertNotNull(value);
 		Assert.assertTrue(value instanceof List);
 		

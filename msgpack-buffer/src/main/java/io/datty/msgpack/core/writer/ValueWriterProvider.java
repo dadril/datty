@@ -13,7 +13,7 @@
  */
 package io.datty.msgpack.core.writer;
 
-import io.datty.msgpack.support.MessageException;
+import io.datty.msgpack.support.MessageIOException;
 
 /**
  * ValueWriterProvider
@@ -29,7 +29,7 @@ public interface ValueWriterProvider {
 	 * 
 	 * @param type - class type
 	 * @return not null value reader
-	 * @throws MessageException if not found
+	 * @throws MessageIOException if not found
 	 */
 	
 	<T> ValueWriter<T> find(Class<T> type);

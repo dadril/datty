@@ -15,7 +15,7 @@ package io.datty.msgpack.core.type;
 
 import io.datty.msgpack.core.reader.ValueReader;
 import io.datty.msgpack.core.writer.ValueWriter;
-import io.datty.msgpack.support.MessageException;
+import io.datty.msgpack.support.MessageIOException;
 
 /**
  * MapTypeInfo
@@ -46,7 +46,7 @@ public interface MapTypeInfo<K, V, T>  extends TypeInfo<T> {
 	 * Gets key value reader
 	 * 
 	 * @return not null value reader
-	 * @throws MessageException if not found
+	 * @throws MessageIOException if not found
 	 */
 	
 	ValueReader<K> getKeyValueReader();
@@ -55,7 +55,7 @@ public interface MapTypeInfo<K, V, T>  extends TypeInfo<T> {
 	 * Gets key value writer
 	 * 
 	 * @return not null value reader
-	 * @throws MessageException if not found
+	 * @throws MessageIOException if not found
 	 */
 	
 	ValueWriter<K> getKeyValueWriter();
@@ -64,7 +64,7 @@ public interface MapTypeInfo<K, V, T>  extends TypeInfo<T> {
 	 * Gets component value reader
 	 * 
 	 * @return not null value reader
-	 * @throws MessageException if not found
+	 * @throws MessageIOException if not found
 	 */
 	
 	ValueReader<V> getComponentValueReader();
@@ -73,7 +73,7 @@ public interface MapTypeInfo<K, V, T>  extends TypeInfo<T> {
 	 * Gets component value writer
 	 * 
 	 * @return not null value reader
-	 * @throws MessageException if not found
+	 * @throws MessageIOException if not found
 	 */
 	
 	ValueWriter<V> getComponentValueWriter();

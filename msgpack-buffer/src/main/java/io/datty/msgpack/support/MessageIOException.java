@@ -14,21 +14,21 @@
 package io.datty.msgpack.support;
 
 /**
- * MessageException
+ * MessageIOException
  * 
  * @author Alex Shvid
  *
  */
 
-public class MessageException extends RuntimeException {
+public class MessageIOException extends RuntimeException {
 
 	private static final long serialVersionUID = -5571833624476726588L;
 
-	public MessageException(String msg) {
+	public MessageIOException(String msg) {
     super(msg);
   }
   
-  public MessageException(String msg, Throwable t) {
+  public MessageIOException(String msg, Throwable t) {
     super(msg, t);
   } 
   

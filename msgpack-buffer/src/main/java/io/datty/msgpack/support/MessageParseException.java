@@ -20,7 +20,7 @@ package io.datty.msgpack.support;
  *
  */
 
-public class MessageParseException extends MessageException {
+public class MessageParseException extends MessageIOException {
 
 	private static final long serialVersionUID = 7986906435587487812L;
 
