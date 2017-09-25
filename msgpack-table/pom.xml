@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>msgpack-table</artifactId>
+	<packaging>jar</packaging>
+	
+	<parent>
+    <groupId>io.datty</groupId>
+    <artifactId>datty-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <msgpack.version>0.8.11</msgpack.version>
+  </properties>  
+
+  <developers>
+    <developer>
+      <id>alex</id>
+      <name>Alex Shvid</name>
+      <email>alex@datty.io</email>
+    </developer>
+  </developers>
+
+  <dependencies>
+  
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>    
+    
+    <!-- VENDOR -->   
+  
+    <dependency>
+       <groupId>org.msgpack</groupId>
+       <artifactId>msgpack-core</artifactId>
+       <version>${msgpack.version}</version>
+    </dependency>   
+
+    <!-- TEST -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>      
+  
+  </dependencies>
+
+</project>
