@@ -188,7 +188,7 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 		for (Map.Entry<String, DattyValue> e : newValues.entrySet()) {
 
 			DattyValue value = e.getValue();
-			if (!value.isEmpty()) {
+			if (!value.isNull()) {
 				mergingMap.put(e.getKey(), value);
 			} else {
 				mergingMap.remove(e.getKey());
@@ -243,7 +243,7 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 	public boolean hasNullBins(Map<String, DattyValue> values) {
 
 		for (Map.Entry<String, DattyValue> entry : values.entrySet()) {
-			if (entry.getValue().isEmpty()) {
+			if (entry.getValue().isNull()) {
 				return true;
 			}
 		}

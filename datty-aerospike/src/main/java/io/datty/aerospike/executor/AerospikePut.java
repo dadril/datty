@@ -162,7 +162,7 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 		for (Map.Entry<String, DattyValue> e : newValues.entrySet()) {
 			
 			DattyValue value = e.getValue();
-			if (!value.isEmpty()) {
+			if (!value.isNull()) {
 				mergingMap.put(e.getKey(), value);
 			}
 			else {
@@ -211,7 +211,7 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 	public boolean hasNullBins(Map<String, DattyValue> values) {
 		
 		for (Map.Entry<String, DattyValue> entry : values.entrySet()) {
-			if (entry.getValue().isEmpty()) {
+			if (entry.getValue().isNull()) {
 				return true;
 			}
 		}

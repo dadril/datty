@@ -31,12 +31,12 @@ public interface DattyValue {
 	public static final DattyValue NULL = NullDattyValue.NULL;
 	
 	/**
-	 * Checks if value is empty
+	 * Checks if value is null
 	 * 
-	 * @return true if value is emptys
+	 * @return true if value is null
 	 */
 	
-	boolean isEmpty();
+	boolean isNull();
 	
 	/**
 	 * Checks if it has ByteBuf

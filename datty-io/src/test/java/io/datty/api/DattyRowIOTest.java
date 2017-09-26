@@ -59,7 +59,7 @@ public class DattyRowIOTest extends AbstractDattyIOTest {
 		
 		DattyValue actualValue = actual.get(minorKey);
 		Assert.assertNotNull(actualValue);
-		Assert.assertTrue(actualValue.isEmpty());
+		Assert.assertTrue(actualValue.isNull());
 		
 		Assert.assertEquals(NullDattyValue.NULL, actualValue);
 	}

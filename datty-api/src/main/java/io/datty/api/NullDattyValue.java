@@ -27,7 +27,7 @@ public enum NullDattyValue implements DattyValue {
 	NULL;
 
 	@Override
-	public boolean isEmpty() {
+	public boolean isNull() {
 		return true;
 	}
 

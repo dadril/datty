@@ -562,7 +562,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 			final Class<?> propType = property.getRawType();
 			
 			Object value = null;
-			if (dattyValue != null && !dattyValue.isEmpty()) {
+			if (dattyValue != null && !dattyValue.isNull()) {
 				value = readProperty(property, propType, dattyValue.asByteBuf());
 			}
 			

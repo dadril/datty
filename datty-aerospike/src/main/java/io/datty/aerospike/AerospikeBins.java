@@ -51,7 +51,7 @@ public final class AerospikeBins {
 			String binName = entry.getKey();
 			DattyValue value = entry.getValue();
 			
-			if (!value.isEmpty()) {
+			if (!value.isNull()) {
 				byte[] blob = value.toByteArray();
 				if (blob != null) {
 					localBytes += blob.length;

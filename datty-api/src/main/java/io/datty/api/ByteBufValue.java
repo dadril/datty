@@ -37,8 +37,8 @@ public class ByteBufValue implements DattyValue {
 	}
 
 	@Override
-	public boolean isEmpty() {
-		return value.readableBytes() == 0;
+	public boolean isNull() {
+		return false;
 	}
 
 	@Override

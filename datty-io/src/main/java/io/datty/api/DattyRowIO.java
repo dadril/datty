@@ -100,7 +100,7 @@ public final class DattyRowIO {
 
 			writer.writeKey(entry.getKey(), sink);
 			
-			if (value.isEmpty()) {
+			if (value.isNull()) {
 				writer.writeNull(sink);
 			}
 			if (value.hasByteBuf()) {
