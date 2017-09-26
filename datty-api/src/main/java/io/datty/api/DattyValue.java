@@ -55,16 +55,12 @@ public interface DattyValue {
 	ByteBuf asByteBuf();
 	
 	/**
-	 * Resets reader index in ByteBuf value
+	 * Retain value
+	 * 
+	 * @return this
 	 */
 	
-	void reset();
-	
-	/**
-	 * Resets reader and writer index in ByteBuf value
-	 */
-	
-	void clear();
+	DattyValue retain();
 	
 	/**
 	 * Releases ByteBuf if it has

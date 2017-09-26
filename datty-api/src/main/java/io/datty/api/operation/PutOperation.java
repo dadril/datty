@@ -52,7 +52,7 @@ public class PutOperation extends AbstractUpdateOperation<PutOperation, PutResul
 		if (row == null) {
 			row = new DattyRow();
 		}
-		row.addValue(minorKey, value, true);
+		row.put(minorKey, value);
 		return this;
 	}
 	

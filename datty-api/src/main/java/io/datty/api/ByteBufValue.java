@@ -52,13 +52,9 @@ public class ByteBufValue implements DattyValue {
 	}
 	
 	@Override
-	public void reset() {
-		value.resetReaderIndex();
-	}
-
-	@Override
-	public void clear() {
-		value.resetReaderIndex().resetWriterIndex();
+	public DattyValue retain() {
+		ByteBuf o = value.retain();
+		return o == value ? this : new ByteBufValue(o);
 	}
 
 	@Override

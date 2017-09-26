@@ -80,7 +80,7 @@ public class RecordResult implements DattyResult {
 		if (row == null) {
 			row = new DattyRow();
 		}
-		row.addValue(minorKey, value, true);
+		row.put(minorKey, value);
 		return this;
 	}
 	

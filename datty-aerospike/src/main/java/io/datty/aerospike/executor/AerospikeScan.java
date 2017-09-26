@@ -87,10 +87,10 @@ public enum AerospikeScan implements AerospikeSetOperation<ScanOperation> {
 				Object value = e.getValue();
 				if (value != null) {
 					ByteBuf buffer = AerospikeValueUtil.toByteBuf(value);
-					row.addValue(e.getKey(), new ByteBufValue(buffer), true);
+					row.put(e.getKey(), new ByteBufValue(buffer));
 				}
 				else {
-					row.addValue(e.getKey(), DattyValue.NULL, true);
+					row.put(e.getKey(), DattyValue.NULL);
 				}
 			}
 		

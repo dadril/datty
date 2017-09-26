@@ -42,11 +42,8 @@ public enum NullDattyValue implements DattyValue {
 	}
 
 	@Override
-	public void reset() {
-	}
-
-	@Override
-	public void clear() {
+	public DattyValue retain() {
+		return this;
 	}
 
 	@Override

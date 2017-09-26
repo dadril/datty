@@ -29,6 +29,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 import io.datty.api.ByteBufValue;
+import io.datty.api.DattyConstants;
 import io.datty.api.DattyRow;
 import io.datty.api.DattyValue;
 import io.datty.msgpack.MessageWriter;
@@ -48,6 +49,7 @@ import io.datty.spring.mapping.DattyPersistentEntity;
 import io.datty.spring.mapping.DattyPersistentProperty;
 import io.datty.spring.mapping.Identifiable;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 
 /**
  * DattyMappingConverter
@@ -64,6 +66,8 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 
 	private ClassLoader beanClassLoader;
 
+	private static final ByteBufAllocator ALLOC = DattyConstants.ALLOC;
+	
 	public DattyMappingConverter(
 			MappingContext<? extends DattyPersistentEntity<?>, DattyPersistentProperty> mappingContext) {
 		this(mappingContext, new DefaultConversionService());
@@ -436,11 +440,8 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 				
 				String minorKey = MinorKeyFormatter.INSTANCE.getMinorKey(property, numeric);
 				
-				ByteBuf valueBuffer = sink.getOrCreateValue(minorKey);
-				ByteBuf updatedBuffer = writeProperty(property, propType, propValue, valueBuffer, numeric);
-				if (updatedBuffer != valueBuffer) {
-					sink.addValue(minorKey, new ByteBufValue(updatedBuffer), false);
-				}
+				ByteBuf valueBuffer = writeProperty(property, propType, propValue, ALLOC.buffer(), numeric);
+				sink.put(minorKey, new ByteBufValue(valueBuffer));
 				size++;
 			}
 			

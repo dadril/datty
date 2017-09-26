@@ -17,9 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
-
 /**
  * DattyRow
  * 
@@ -29,7 +26,11 @@ import io.netty.buffer.ByteBufAllocator;
 
 public final class DattyRow {
 
-	private final ByteBufAllocator alloc;
+	/**
+	 * Own values or not
+	 */
+	
+	private final boolean ownValues;
 	
 	/**
 	 * key is the minorKey, value is payload
@@ -38,33 +39,18 @@ public final class DattyRow {
 	private final Map<String, DattyValue> values = new HashMap<String, DattyValue>();
 	
 	public DattyRow() {
-		this(DattyConstants.ALLOC);
+		this.ownValues = false;
 	}
-	
-	public DattyRow(ByteBufAllocator alloc) {
-		
-		if (alloc == null) {
-			throw new IllegalArgumentException("null alloc");
-		}
-		
-		this.alloc = alloc;
-	}
-	
-	public void reset() {
-		for (DattyValue value : values.values()) {
-			value.reset();
-		}
+
+	public DattyRow(boolean ownValues) {
+		this.ownValues = ownValues;
 	}
 
 	public void clear() {
-		for (DattyValue value : values.values()) {
-			value.clear();
-		}
-	}
-	
-	public void release() {
-		for (DattyValue value : values.values()) {
-			value.release();
+		if (ownValues) {
+			for (DattyValue value : values.values()) {
+				value.release();
+			}
 		}
 		values.clear();
 	}
@@ -73,23 +59,7 @@ public final class DattyRow {
 		return values.size();
 	}
 	
-	public ByteBuf getOrCreateValue(String minorKey) {
-		
-		if (minorKey == null) {
-			throw new IllegalArgumentException("null minorKey");
-		}
-		
-		DattyValue prev = values.get(minorKey);
-		if (prev != null && prev.hasByteBuf()) {
-			prev.clear();
-			return prev.asByteBuf();
-		}
-		ByteBuf buffer = alloc.buffer();
-		values.put(minorKey, new ByteBufValue(buffer));
-		return buffer;
-	}
-	
-	public DattyRow addValue(String minorKey, DattyValue value, boolean release) {
+	public DattyRow put(String minorKey, DattyValue value) {
 		
 		if (minorKey == null) {
 			throw new IllegalArgumentException("null minorKey");
@@ -99,21 +69,21 @@ public final class DattyRow {
 			throw new IllegalArgumentException("null value");
 		}
 		
-		DattyValue prev = values.put(minorKey, value);
-		if (prev != null && release) {
+		DattyValue prev = values.put(minorKey, ownValues ? value.retain() : value);
+		if (prev != null && ownValues) {
 			prev.release();
 		}
 		return this;
 	}
 	
-	public DattyRow removeValue(String minorKey, boolean release) {
+	public DattyRow remove(String minorKey) {
 		
 		if (minorKey == null) {
 			throw new IllegalArgumentException("null minorKey");
 		}
 		
 		DattyValue prev = values.remove(minorKey);
-		if (prev != null && release) {
+		if (prev != null && ownValues) {
 			prev.release();
 		}
 		return this;

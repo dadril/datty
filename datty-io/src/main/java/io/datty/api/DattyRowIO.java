@@ -81,7 +81,7 @@ public final class DattyRowIO {
 				dattyValue = new ByteBufValue(value);
 			}
 			
-			row.addValue((String) minorKey, dattyValue, true);
+			row.put((String) minorKey, dattyValue);
 		
 		}
 		

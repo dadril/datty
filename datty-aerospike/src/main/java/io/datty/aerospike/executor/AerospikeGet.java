@@ -92,10 +92,10 @@ public enum AerospikeGet implements AerospikeOperation<GetOperation, GetResult> 
 					Object value = e.getValue();
 					if (value != null) {
 						ByteBuf buffer = AerospikeValueUtil.toByteBuf(value);
-						row.addValue(e.getKey(), new ByteBufValue(buffer), true);
+						row.put(e.getKey(), new ByteBufValue(buffer));
 					}
 					else {
-						row.addValue(e.getKey(), DattyValue.NULL, true);
+						row.put(e.getKey(), DattyValue.NULL);
 					}
 				}
 				
@@ -106,10 +106,10 @@ public enum AerospikeGet implements AerospikeOperation<GetOperation, GetResult> 
 					Object value = record.bins.get(minorKey);
 					if (value != null) {
 						ByteBuf buffer = AerospikeValueUtil.toByteBuf(value);
-						row.addValue(minorKey, new ByteBufValue(buffer), true);
+						row.put(minorKey, new ByteBufValue(buffer));
 					}
 					else {
-						row.addValue(minorKey, DattyValue.NULL, true);
+						row.put(minorKey, DattyValue.NULL);
 					}
 				}
 				

@@ -58,7 +58,7 @@ public class GetResult extends AbstractResult<GetOperation, GetResult> {
 		if (row == null) {
 			row = new DattyRow();
 		}
-		row.addValue(minorKey, value, true);
+		row.put(minorKey, value);
 		return this;
 	}
 	

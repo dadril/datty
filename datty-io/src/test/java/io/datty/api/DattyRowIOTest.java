@@ -46,7 +46,7 @@ public class DattyRowIOTest extends AbstractDattyIOTest {
 	public void testNull() {
 		
 		DattyRow row = new DattyRow();
-		row.addValue(minorKey, NullDattyValue.NULL, true);
+		row.put(minorKey, NullDattyValue.NULL);
 		
 		ByteBuf sink = Unpooled.buffer();
 		
@@ -70,7 +70,7 @@ public class DattyRowIOTest extends AbstractDattyIOTest {
 		ByteBuf value = Unpooled.wrappedBuffer("value".getBytes());
 		
 		DattyRow row = new DattyRow();
-		row.addValue(minorKey, new ByteBufValue(value), true);
+		row.put(minorKey, new ByteBufValue(value));
 		
 		ByteBuf sink = Unpooled.buffer();
 		
@@ -93,8 +93,8 @@ public class DattyRowIOTest extends AbstractDattyIOTest {
 		ByteBuf value2 = Unpooled.wrappedBuffer("value2".getBytes());
 		
 		DattyRow row = new DattyRow();
-		row.addValue(minorKey, new ByteBufValue(value), true);
-		row.addValue("minorKey2", new ByteBufValue(value2), true);
+		row.put(minorKey, new ByteBufValue(value));
+		row.put("minorKey2", new ByteBufValue(value2));
 		
 		ByteBuf sink = Unpooled.buffer();
 		
