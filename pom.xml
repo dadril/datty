@@ -18,7 +18,7 @@
 
 	<modules>
     <module>msgpack-buffer</module>	
-    <module>msgpack-lite</module>  
+    <module>msgpack-table</module>  
 		<module>datty-api</module>
     <module>datty-io</module>		
 		<module>datty-unit</module>
