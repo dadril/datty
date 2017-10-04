@@ -5,7 +5,7 @@ import java.util.Set;
 import org.msgpack.value.Value;
 
 /**
- * PackableEvent
+ * PackableMessage
  * 
  * Event contains both header and body.
  * 
@@ -13,7 +13,7 @@ import org.msgpack.value.Value;
  *
  */
 
-public interface PackableEvent {
+public interface PackableMessage {
 
 	/**
 	 * All headers are under this key
@@ -43,7 +43,7 @@ public interface PackableEvent {
 	 * @return this
 	 */
 	
-	PackableEvent addHeader(String key, String value);
+	PackableMessage addHeader(String key, String value);
 	
 	/**
 	 * Gets header
@@ -70,7 +70,7 @@ public interface PackableEvent {
 	 * @return this
 	 */
 	
-	PackableEvent addPayload(String key, PackableValue<?> payload);
+	PackableMessage addPayload(String key, PackableValue<?> payload);
 	
 	/**
 	 * Adds payload to the message
@@ -81,7 +81,7 @@ public interface PackableEvent {
 	 * @return this
 	 */
 	
-	PackableEvent addPayload(String key, byte[] payload, boolean copy);
+	PackableMessage addPayload(String key, byte[] payload, boolean copy);
 
 	/**
 	 * Adds payload as UTF-8 string
@@ -91,7 +91,7 @@ public interface PackableEvent {
 	 * @return this
 	 */
 	
-	PackableEvent addPayloadUtf8(String key, String payload);
+	PackableMessage addPayloadUtf8(String key, String payload);
 	
 	/**
 	 * Gets typed payload

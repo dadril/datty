@@ -8,7 +8,7 @@ import org.msgpack.core.MessagePack;
 import org.msgpack.core.MessageUnpacker;
 
 import io.datty.msgpack.table.impl.PackableBooleanImpl;
-import io.datty.msgpack.table.impl.PackableEventImpl;
+import io.datty.msgpack.table.impl.PackableMessageImpl;
 import io.datty.msgpack.table.impl.PackableNumberImpl;
 import io.datty.msgpack.table.impl.PackableStringImpl;
 import io.datty.msgpack.table.impl.PackableTableImpl;
@@ -36,8 +36,8 @@ public final class PackableValueFactory {
 	 * @return not null instance
 	 */
 	
-	public static final PackableEvent newEvent() {
-		return new PackableEventImpl();
+	public static final PackableMessage newEvent() {
+		return new PackableMessageImpl();
 	}
 	
 	/**
@@ -48,8 +48,8 @@ public final class PackableValueFactory {
 	 * @return not null instance
 	 */
 	
-	public static final PackableEvent parseEvent(byte[] blob) {
-		return new PackableEventImpl(blob);
+	public static final PackableMessage parseEvent(byte[] blob) {
+		return new PackableMessageImpl(blob);
 	}
 	
 	/**
@@ -62,8 +62,8 @@ public final class PackableValueFactory {
 	 * @return not null instance
 	 */
 	
-	public static final PackableEvent parseEvent(byte[] buffer, int offset, int length) {
-		return new PackableEventImpl(buffer, offset, length);
+	public static final PackableMessage parseEvent(byte[] buffer, int offset, int length) {
+		return new PackableMessageImpl(buffer, offset, length);
 	}
 	
 	/**
@@ -74,8 +74,8 @@ public final class PackableValueFactory {
 	 * @return not null instance
 	 */
 	
-	public static final PackableEvent parseEvent(ByteBuffer buffer) {
-		return new PackableEventImpl(buffer);
+	public static final PackableMessage parseEvent(ByteBuffer buffer) {
+		return new PackableMessageImpl(buffer);
 	}
 	
 	/**

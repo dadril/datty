@@ -18,21 +18,21 @@ import org.msgpack.value.impl.ImmutableBinaryValueImpl;
 import org.msgpack.value.impl.ImmutableMapValueImpl;
 import org.msgpack.value.impl.ImmutableStringValueImpl;
 
-import io.datty.msgpack.table.PackableEvent;
+import io.datty.msgpack.table.PackableMessage;
 import io.datty.msgpack.table.PackableValue;
 import io.datty.msgpack.table.PackableValueFactory;
-import io.datty.msgpack.table.support.PackableEventException;
+import io.datty.msgpack.table.support.PackableMessageException;
 
 /**
- * PackableEventImpl
+ * PackableMessageImpl
  * 
- * Default implementation of the PackableEvent
+ * Default implementation of the PackableMessage
  * 
  * @author Alex Shvid
  *
  */
 
-public class PackableEventImpl implements PackableEvent {
+public class PackableMessageImpl implements PackableMessage {
 
 	private final Map<String, String> header = new HashMap<String, String>();
 	private final Map<String, Payload> body = new HashMap<String, Payload>();
@@ -182,21 +182,21 @@ public class PackableEventImpl implements PackableEvent {
 	}
 	
 	/**
-	 * Message value payload implementation
+	 * Packable value payload implementation
 	 * 
 	 * @author Alex Shvid
 	 *
 	 */
 	
-	private static final class MessageValuePayload implements Payload {
+	private static final class PackableValuePayload implements Payload {
 		
 		private final PackableValue<?> value;
 		
-		public MessageValuePayload(MessageUnpacker unpacker) throws IOException {
+		public PackableValuePayload(MessageUnpacker unpacker) throws IOException {
 			this.value = PackableValueFactory.newValue(unpacker);
 		}
 		
-		public MessageValuePayload(PackableValue<?> payload) {
+		public PackableValuePayload(PackableValue<?> payload) {
 			this.value = payload;
 		}
 		
@@ -227,10 +227,10 @@ public class PackableEventImpl implements PackableEvent {
 		
 	}
 	
-	public PackableEventImpl() {
+	public PackableMessageImpl() {
 	}
 
-	public PackableEventImpl(byte[] buffer) {
+	public PackableMessageImpl(byte[] buffer) {
 		
 		if (buffer == null) {
 			throw new IllegalArgumentException("null buffer");
@@ -240,11 +240,11 @@ public class PackableEventImpl implements PackableEvent {
 		try {
 			parse(unpacker);
 		} catch (IOException e) {
-			throw new PackableEventException("unexpected IOException", e);
+			throw new PackableMessageException("unexpected IOException", e);
 		}
 	}
 	
-	public PackableEventImpl(byte[] buffer, int offset, int length) {
+	public PackableMessageImpl(byte[] buffer, int offset, int length) {
 		
 		if (buffer == null) {
 			throw new IllegalArgumentException("null buffer");
@@ -254,11 +254,11 @@ public class PackableEventImpl implements PackableEvent {
 		try {
 			parse(unpacker);
 		} catch (IOException e) {
-			throw new PackableEventException("unexpected IOException", e);
+			throw new PackableMessageException("unexpected IOException", e);
 		}		
 	}
 	
-	public PackableEventImpl(ByteBuffer buffer) {
+	public PackableMessageImpl(ByteBuffer buffer) {
 		
 		if (buffer == null) {
 			throw new IllegalArgumentException("null buffer");
@@ -268,7 +268,7 @@ public class PackableEventImpl implements PackableEvent {
 		try {
 			parse(unpacker);
 		} catch (IOException e) {
-			throw new PackableEventException("unexpected IOException", e);
+			throw new PackableMessageException("unexpected IOException", e);
 		}
 	}
 	
@@ -320,7 +320,7 @@ public class PackableEventImpl implements PackableEvent {
 		}
 		
 		if (!isMap(format)) {
-			throw new PackableEventException("expected Map in message pack format");
+			throw new PackableMessageException("expected Map in message pack format");
 		}
 		
     int size = unpacker.unpackMapHeader();
@@ -350,7 +350,7 @@ public class PackableEventImpl implements PackableEvent {
 		}
 		
 		if (!isMap(format)) {
-			throw new PackableEventException("expected Map in message pack format");
+			throw new PackableMessageException("expected Map in message pack format");
 		}
 		
     int size = unpacker.unpackMapHeader();
@@ -390,7 +390,7 @@ public class PackableEventImpl implements PackableEvent {
 			return new Utf8Payload(unpacker);
 		}
 		
-		return new MessageValuePayload(unpacker);
+		return new PackableValuePayload(unpacker);
 		
 	}
 	
@@ -454,7 +454,7 @@ public class PackableEventImpl implements PackableEvent {
 	}
 
 	@Override
-	public PackableEvent addHeader(String key, String value) {
+	public PackableMessage addHeader(String key, String value) {
 		if (value != null) {
 			header.put(key, value);
 		}
@@ -475,9 +475,9 @@ public class PackableEventImpl implements PackableEvent {
 	}
 	
 	@Override
-	public PackableEvent addPayload(String key, PackableValue<?> payload) {
+	public PackableMessage addPayload(String key, PackableValue<?> payload) {
 		if (payload != null) {
-			body.put(key, new MessageValuePayload(payload));
+			body.put(key, new PackableValuePayload(payload));
 		}
 		else {
 			body.remove(key);
@@ -486,7 +486,7 @@ public class PackableEventImpl implements PackableEvent {
 	}
 
 	@Override
-	public PackableEvent addPayload(String key, byte[] payload, boolean copy) {
+	public PackableMessage addPayload(String key, byte[] payload, boolean copy) {
 		if (payload != null) {
 			body.put(key, new BinaryPayload(payload, copy));
 		}
@@ -497,7 +497,7 @@ public class PackableEventImpl implements PackableEvent {
 	}
 	
 	@Override
-	public PackableEvent addPayloadUtf8(String key, String payload) {
+	public PackableMessage addPayloadUtf8(String key, String payload) {
 		if (payload != null) {
 			body.put(key, new Utf8Payload(payload));
 		}
@@ -550,7 +550,7 @@ public class PackableEventImpl implements PackableEvent {
 			writeTo(packer);
 			packer.flush();
 		} catch (IOException e) {
-			throw new PackableEventException("IOException happened during serialization to byte array", e);
+			throw new PackableMessageException("IOException happened during serialization to byte array", e);
 		}
 
 		return out.toByteArray();
