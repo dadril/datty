@@ -16,7 +16,7 @@ package io.datty.api.operation;
 import java.util.Set;
 
 import io.datty.api.DattyField;
-import io.datty.msgpack.MessageReader;
+import io.datty.msgpack.message.MessageReader;
 import io.datty.util.DattyCollectionIO;
 import io.datty.util.FieldWriter;
 import io.netty.buffer.ByteBuf;

@@ -20,9 +20,9 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import io.datty.msgpack.MessageWriter;
-import io.datty.msgpack.core.ArrayMessageWriter;
-import io.datty.msgpack.core.MapMessageWriter;
+import io.datty.msgpack.message.MessageWriter;
+import io.datty.msgpack.message.core.ArrayMessageWriter;
+import io.datty.msgpack.message.core.MapMessageWriter;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;

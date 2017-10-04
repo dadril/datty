@@ -20,8 +20,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.datty.api.DattyRow;
-import io.datty.msgpack.MessageIO;
-import io.datty.msgpack.core.reader.LongReader;
+import io.datty.msgpack.message.MessageIO;
+import io.datty.msgpack.message.core.reader.LongReader;
 import io.datty.spring.support.DattyConverterUtil;
 import io.netty.buffer.ByteBuf;
 

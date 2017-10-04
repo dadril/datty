@@ -34,10 +34,10 @@ import io.datty.api.result.HeadResultIO;
 import io.datty.api.result.PutResultIO;
 import io.datty.api.result.RecordResultIO;
 import io.datty.api.result.RemoveResultIO;
-import io.datty.msgpack.MessageReader;
-import io.datty.msgpack.MessageWriter;
-import io.datty.msgpack.core.MapMessageWriter;
-import io.datty.msgpack.core.ValueMessageReader;
+import io.datty.msgpack.message.MessageReader;
+import io.datty.msgpack.message.MessageWriter;
+import io.datty.msgpack.message.core.MapMessageWriter;
+import io.datty.msgpack.message.core.ValueMessageReader;
 import io.datty.support.exception.DattyException;
 import io.netty.buffer.ByteBuf;
 

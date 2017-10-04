@@ -18,9 +18,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import io.datty.msgpack.core.ArrayMessageReader;
-import io.datty.msgpack.core.ArrayMessageWriter;
-import io.datty.msgpack.core.ValueMessageReader;
+import io.datty.msgpack.message.core.ArrayMessageReader;
+import io.datty.msgpack.message.core.ArrayMessageWriter;
+import io.datty.msgpack.message.core.ValueMessageReader;
 import io.datty.support.exception.DattyException;
 import io.netty.buffer.ByteBuf;
 

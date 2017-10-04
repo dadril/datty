@@ -21,11 +21,11 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.datty.msgpack.MessageReader;
-import io.datty.msgpack.core.MapMessageReader;
-import io.datty.msgpack.core.ValueMessageReader;
-import io.datty.msgpack.core.type.DefaultTypeInfoProvider;
-import io.datty.msgpack.core.type.TypeInfo;
+import io.datty.msgpack.message.MessageReader;
+import io.datty.msgpack.message.core.MapMessageReader;
+import io.datty.msgpack.message.core.ValueMessageReader;
+import io.datty.msgpack.message.core.type.DefaultTypeInfoProvider;
+import io.datty.msgpack.message.core.type.TypeInfo;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;

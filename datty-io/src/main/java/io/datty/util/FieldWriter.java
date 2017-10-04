@@ -22,8 +22,8 @@ import io.datty.api.DattyRow;
 import io.datty.api.DattyRowIO;
 import io.datty.api.version.Version;
 import io.datty.api.version.VersionIO;
-import io.datty.msgpack.MessageWriter;
-import io.datty.msgpack.core.AbstractMessageWriter;
+import io.datty.msgpack.message.MessageWriter;
+import io.datty.msgpack.message.core.AbstractMessageWriter;
 import io.netty.buffer.ByteBuf;
 
 /**

@@ -17,8 +17,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.datty.api.DattyRow;
-import io.datty.msgpack.core.reader.LongReader;
-import io.datty.msgpack.core.reader.StringReader;
+import io.datty.msgpack.message.core.reader.LongReader;
+import io.datty.msgpack.message.core.reader.StringReader;
 import io.datty.spring.core.DattyId;
 import io.datty.spring.mapping.Identifiable;
 import io.datty.spring.support.DattyConverterUtil;

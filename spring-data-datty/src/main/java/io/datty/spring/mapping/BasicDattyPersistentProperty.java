@@ -23,13 +23,13 @@ import org.springframework.data.mapping.model.MappingException;
 import org.springframework.data.mapping.model.Property;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
 
-import io.datty.msgpack.core.type.ArrayTypeInfoAdapter;
-import io.datty.msgpack.core.type.ListTypeInfoAdapter;
-import io.datty.msgpack.core.type.MapTypeInfoAdapter;
-import io.datty.msgpack.core.type.SimpleTypeInfo;
-import io.datty.msgpack.core.type.TypeInfo;
-import io.datty.msgpack.core.type.TypeInfoProvider;
-import io.datty.msgpack.core.type.TypeRegistry;
+import io.datty.msgpack.message.core.type.ArrayTypeInfoAdapter;
+import io.datty.msgpack.message.core.type.ListTypeInfoAdapter;
+import io.datty.msgpack.message.core.type.MapTypeInfoAdapter;
+import io.datty.msgpack.message.core.type.SimpleTypeInfo;
+import io.datty.msgpack.message.core.type.TypeInfo;
+import io.datty.msgpack.message.core.type.TypeInfoProvider;
+import io.datty.msgpack.message.core.type.TypeRegistry;
 
 /**
  * BasicDattyPersistentProperty

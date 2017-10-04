@@ -19,7 +19,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.datty.msgpack.MessageIO;
+import io.datty.msgpack.message.MessageIO;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
