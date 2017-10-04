@@ -26,7 +26,7 @@ public class PackableMessageTest {
 	@Test
 	public void testEmpty() {
 		
-		PackableMessage message = PackableValueFactory.newEvent();
+		PackableMessage message = PackableValueFactory.newMessage();
 		
 		Assert.assertTrue(message.isEmpty());
 
@@ -36,7 +36,7 @@ public class PackableMessageTest {
 		String json = message.toJson();
 		Assert.assertEquals("{}", json);
 		
-		PackableMessage actual = PackableValueFactory.parseEvent(msgpack);
+		PackableMessage actual = PackableValueFactory.parseMessage(msgpack);
 		Assert.assertTrue(actual.isEmpty());
 		
 	}
@@ -46,7 +46,7 @@ public class PackableMessageTest {
 		
 		String payload = "{}";
 		
-		PackableMessage message = PackableValueFactory.newEvent();
+		PackableMessage message = PackableValueFactory.newMessage();
 		
 		message
 		.addHeader("id", "123")
@@ -60,7 +60,7 @@ public class PackableMessageTest {
 		String json = message.toJson();
 		//System.out.println("json = " + json);
 		
-		PackableMessage actual = PackableValueFactory.parseEvent(msgpack);
+		PackableMessage actual = PackableValueFactory.parseMessage(msgpack);
 		Assert.assertFalse(actual.isEmpty());
 		
 		Assert.assertEquals(message.getHeader("id"), actual.getHeader("id"));
@@ -76,7 +76,7 @@ public class PackableMessageTest {
 		
 		byte[] payload = "{}".getBytes(StandardCharsets.UTF_8);
 		
-		PackableMessage message = PackableValueFactory.newEvent();
+		PackableMessage message = PackableValueFactory.newMessage();
 		
 		message
 		.addHeader("id", "123")
@@ -91,7 +91,7 @@ public class PackableMessageTest {
 		String json = message.toJson();
 		//System.out.println("json = " + json);
 		
-		PackableMessage actual = PackableValueFactory.parseEvent(msgpack);
+		PackableMessage actual = PackableValueFactory.parseMessage(msgpack);
 		Assert.assertFalse(actual.isEmpty());
 		
 		Assert.assertEquals(message.getHeader("id"), actual.getHeader("id"));
@@ -110,7 +110,7 @@ public class PackableMessageTest {
 		payload.put("name", "Bob");
 		payload.put("age", "45");
 		
-		PackableMessage message = PackableValueFactory.newEvent();
+		PackableMessage message = PackableValueFactory.newMessage();
 		
 		message
 		.addHeader("id", "123")
@@ -123,7 +123,7 @@ public class PackableMessageTest {
 		String json = message.toJson();
 		//System.out.println("json = " + json);
 		
-		PackableMessage actual = PackableValueFactory.parseEvent(msgpack);
+		PackableMessage actual = PackableValueFactory.parseMessage(msgpack);
 		Assert.assertFalse(actual.isEmpty());
 		
 		Assert.assertEquals(message.getHeader("id"), actual.getHeader("id"));

@@ -37,6 +37,12 @@
        <artifactId>msgpack-core</artifactId>
        <version>${msgpack.version}</version>
     </dependency>   
+    
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-buffer</artifactId>
+      <version>${netty.version}</version>
+    </dependency>       
 
     <!-- TEST -->
     <dependency>

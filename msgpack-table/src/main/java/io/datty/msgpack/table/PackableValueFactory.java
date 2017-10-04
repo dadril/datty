@@ -36,7 +36,7 @@ public final class PackableValueFactory {
 	 * @return not null instance
 	 */
 	
-	public static final PackableMessage newEvent() {
+	public static final PackableMessage newMessage() {
 		return new PackableMessageImpl();
 	}
 	
@@ -48,7 +48,7 @@ public final class PackableValueFactory {
 	 * @return not null instance
 	 */
 	
-	public static final PackableMessage parseEvent(byte[] blob) {
+	public static final PackableMessage parseMessage(byte[] blob) {
 		return new PackableMessageImpl(blob);
 	}
 	
@@ -62,7 +62,7 @@ public final class PackableValueFactory {
 	 * @return not null instance
 	 */
 	
-	public static final PackableMessage parseEvent(byte[] buffer, int offset, int length) {
+	public static final PackableMessage parseMessage(byte[] buffer, int offset, int length) {
 		return new PackableMessageImpl(buffer, offset, length);
 	}
 	
@@ -74,7 +74,7 @@ public final class PackableValueFactory {
 	 * @return not null instance
 	 */
 	
-	public static final PackableMessage parseEvent(ByteBuffer buffer) {
+	public static final PackableMessage parseMessage(ByteBuffer buffer) {
 		return new PackableMessageImpl(buffer);
 	}
 	
