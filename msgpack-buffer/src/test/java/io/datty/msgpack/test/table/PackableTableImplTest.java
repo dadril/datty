@@ -13,6 +13,7 @@
  */
 package io.datty.msgpack.test.table;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,6 +27,9 @@ import io.datty.msgpack.table.PackableValueFactory;
 import io.datty.msgpack.table.impl.PackableNumberImpl;
 import io.datty.msgpack.table.impl.PackableStringImpl;
 import io.datty.msgpack.table.impl.PackableTableImpl;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 
 
 
@@ -73,8 +77,20 @@ public class PackableTableImplTest extends AbstractPackableTest {
 		
 	}
 	
+	private byte[] getAndCheck(PackableTable table) throws IOException {
+		
+    byte[] core = table.toByteArray();
+    
+    ByteBuf buffer = Unpooled.buffer();
+    table.pack(buffer);
+    byte[] raw = ByteBufUtil.getBytes(buffer);
+    Assert.assertTrue(Arrays.equals(core, raw));
+    
+    return core;
+	}
+	
 	@Test
-	public void testSingleInt() {
+	public void testSingleInt() throws IOException {
 		
 		PackableTable table = new PackableTableImpl();
 		
@@ -88,7 +104,7 @@ public class PackableTableImplTest extends AbstractPackableTest {
     Assert.assertEquals("817b7b", table.toHexString());
     Assert.assertEquals("817b7b", toHexString(table));
 		
-		PackableTable actual = PackableValueFactory.newTypedValue(table.toByteArray());
+		PackableTable actual = PackableValueFactory.newTypedValue(getAndCheck(table));
 		
 		Assert.assertEquals(PackableTableType.INT_KEY, actual.getType());
 		Assert.assertEquals(1, actual.size());
@@ -148,7 +164,7 @@ public class PackableTableImplTest extends AbstractPackableTest {
 	}
 	
 	@Test
-	public void testIntToStringTable() {
+	public void testIntToStringTable() throws IOException {
 		
 		PackableTable table = new PackableTableImpl();
 		table.put("1", "one");
@@ -159,7 +175,7 @@ public class PackableTableImplTest extends AbstractPackableTest {
 		Assert.assertEquals(3, table.size());
 		Assert.assertEquals(3, table.maxIntKey().intValue());
 		
-		byte[] msgpack = table.toByteArray();
+		byte[] msgpack = getAndCheck(table);
 		PackableTable actual = PackableValueFactory.newTypedValue(msgpack);
 
 		Assert.assertEquals(PackableTableType.INT_KEY, actual.getType());
@@ -224,7 +240,7 @@ public class PackableTableImplTest extends AbstractPackableTest {
 	}
 	
 	@Test
-	public void testInnerTable() {
+	public void testInnerTable() throws IOException {
 
 		PackableTable innerTable = new PackableTableImpl();
 		innerTable.put("first", "Alex");
@@ -234,7 +250,7 @@ public class PackableTableImplTest extends AbstractPackableTest {
 		
 		//System.out.println(table.toJson());
 		
-		byte[] msgpack = table.toByteArray();
+		byte[] msgpack = getAndCheck(table);
 		PackableTable actual = PackableValueFactory.newTypedValue(msgpack);
 		
 		// one entry in table guarantee the order

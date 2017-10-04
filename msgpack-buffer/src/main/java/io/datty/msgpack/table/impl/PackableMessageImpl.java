@@ -693,7 +693,7 @@ public class PackableMessageImpl implements PackableMessage {
 
 	@Override
 	public String toString() {
-		return "LiteEventImpl [header=" + header + ", body=" + body + "]";
+		return "PackableMessageImpl [header=" + header + ", body=" + body + "]";
 	} 
   
 }

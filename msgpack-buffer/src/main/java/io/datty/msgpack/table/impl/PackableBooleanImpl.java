@@ -19,7 +19,9 @@ import org.msgpack.core.MessagePacker;
 import org.msgpack.value.Value;
 import org.msgpack.value.impl.ImmutableBooleanValueImpl;
 
+import io.datty.msgpack.message.core.writer.BooleanWriter;
 import io.datty.msgpack.table.PackableBoolean;
+import io.netty.buffer.ByteBuf;
 
 /**
  * PackableBooleanImpl immutable implementation
@@ -61,6 +63,11 @@ public final class PackableBooleanImpl extends AbstractPackableValueImpl<Packabl
 	}
 
 	@Override
+	public ByteBuf pack(ByteBuf buffer) throws IOException {
+		return BooleanWriter.INSTANCE.writeBoolean(booleanValue, buffer);
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -84,7 +91,7 @@ public final class PackableBooleanImpl extends AbstractPackableValueImpl<Packabl
 
 	@Override
 	public void print(StringBuilder str, int initialSpaces, int tabSpaces) {
-		str.append("LiteBoolean [booleanValue=").append(booleanValue).append("]");
+		str.append("PackableBoolean [booleanValue=").append(booleanValue).append("]");
 	}
 
 }

@@ -20,12 +20,15 @@ import org.msgpack.value.Value;
 import org.msgpack.value.impl.ImmutableDoubleValueImpl;
 import org.msgpack.value.impl.ImmutableLongValueImpl;
 
+import io.datty.msgpack.message.core.writer.DoubleWriter;
+import io.datty.msgpack.message.core.writer.LongWriter;
 import io.datty.msgpack.table.PackableNumber;
 import io.datty.msgpack.table.PackableNumberType;
 import io.datty.msgpack.table.support.PackableException;
 import io.datty.msgpack.table.support.PackableNumberFormatException;
 import io.datty.msgpack.table.util.PackableStringifyUtil;
 import io.datty.msgpack.table.util.PackableStringifyUtil.NumberType;
+import io.netty.buffer.ByteBuf;
 
 /**
  * 
@@ -217,7 +220,19 @@ public final class PackableNumberImpl extends AbstractPackableValueImpl<Packable
 		  throw new IOException("unexpected type: " + type);		
 		}	
 	}
-  
+
+	@Override
+	public ByteBuf pack(ByteBuf buffer) throws IOException {
+		switch(type) {
+		case LONG:
+			return LongWriter.INSTANCE.writeVLong(longValue, buffer);
+		case DOUBLE:
+			return DoubleWriter.INSTANCE.writeDouble(doubleValue, buffer);
+		default:
+		  throw new IOException("unexpected type: " + type);		
+		}	
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -254,7 +269,7 @@ public final class PackableNumberImpl extends AbstractPackableValueImpl<Packable
 
 	@Override
 	public void print(StringBuilder str, int initialSpaces, int tabSpaces) {
-		str.append("LiteNumber [type=").append(type);
+		str.append("PackableNumber [type=").append(type);
 		if (type == PackableNumberType.LONG) {
 			str.append(", longValue=").append(longValue);
 		}

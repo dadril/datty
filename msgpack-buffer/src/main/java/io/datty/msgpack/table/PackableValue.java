@@ -18,6 +18,8 @@ import java.io.IOException;
 import org.msgpack.core.MessagePacker;
 import org.msgpack.value.Value;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * Base interface for all packable values
  * 
@@ -63,6 +65,15 @@ public interface PackableValue<T> {
 	 */
 	
 	void writeTo(MessagePacker packer) throws IOException;
+	
+	/**
+	 * Writes payload to buffer
+	 * 
+	 * @param not null buffer
+	 * @throws IOException
+	 */
+	
+	ByteBuf pack(ByteBuf buffer)  throws IOException;
 	
 	/**
 	 * Gets hex string value representation

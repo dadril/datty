@@ -22,9 +22,12 @@ import org.msgpack.value.Value;
 import org.msgpack.value.impl.ImmutableBinaryValueImpl;
 import org.msgpack.value.impl.ImmutableStringValueImpl;
 
+import io.datty.msgpack.message.core.writer.ByteBufWriter;
+import io.datty.msgpack.message.core.writer.StringWriter;
 import io.datty.msgpack.table.PackableString;
 import io.datty.msgpack.table.PackableStringType;
 import io.datty.msgpack.table.support.PackableException;
+import io.netty.buffer.ByteBuf;
 
 /**
  * PackableStringImpl
@@ -138,6 +141,25 @@ public final class PackableStringImpl extends AbstractPackableValueImpl<Packable
 		}	
 	}
   
+
+	@Override
+	public ByteBuf pack(ByteBuf buffer) throws IOException {
+		
+		switch(type) {
+		
+		case UTF8:
+			return StringWriter.INSTANCE.writeString(stringValue, buffer);
+			
+		case BYTES:
+			ByteBufWriter.INSTANCE.writeBinaryHeader(bytesValue.length, buffer);
+			return ByteBufWriter.INSTANCE.writeBytes(bytesValue, buffer);
+			
+		default:
+		  throw new IOException("unexpected type: " + type);		
+		}			
+		
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -177,7 +199,7 @@ public final class PackableStringImpl extends AbstractPackableValueImpl<Packable
 
 	@Override
 	public void print(StringBuilder str, int initialSpaces, int tabSpaces) {
-		str.append("LiteString [type=").append(type);
+		str.append("PackableString [type=").append(type);
 		if (type == PackableStringType.UTF8) {
 			str.append(", stringValue=").append(stringValue);
 		}

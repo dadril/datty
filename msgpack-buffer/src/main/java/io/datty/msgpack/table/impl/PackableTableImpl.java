@@ -29,6 +29,8 @@ import org.msgpack.value.impl.ImmutableLongValueImpl;
 import org.msgpack.value.impl.ImmutableMapValueImpl;
 import org.msgpack.value.impl.ImmutableStringValueImpl;
 
+import io.datty.msgpack.message.core.MapMessageWriter;
+import io.datty.msgpack.message.core.writer.StringWriter;
 import io.datty.msgpack.table.PackableBoolean;
 import io.datty.msgpack.table.PackableNumber;
 import io.datty.msgpack.table.PackableString;
@@ -41,6 +43,7 @@ import io.datty.msgpack.table.support.PackableException;
 import io.datty.msgpack.table.support.PackableNumberFormatException;
 import io.datty.msgpack.table.util.PackableStringifyUtil;
 import io.datty.msgpack.table.util.PackableValueUtil;
+import io.netty.buffer.ByteBuf;
 import io.datty.msgpack.table.util.PackableStringifyUtil.NumberType;
 
 /**
@@ -674,10 +677,73 @@ public class PackableTableImpl extends AbstractPackableValueImpl<PackableTable> 
     
   }  
 
+	@Override
+	public ByteBuf pack(ByteBuf buffer) throws IOException {
+		
+		switch(type) {
+		
+		case INT_KEY:
+			return packIntMap(buffer);
+			
+		case STRING_KEY:
+			return packStringMap(buffer);
+			
+		default:
+			throw new IOException("unexpected type: " + type);
+		}
+	}
 
+	private ByteBuf packIntMap(ByteBuf buffer) throws IOException {
+		
+    int size = size();
+    
+		MapMessageWriter writer = MapMessageWriter.INSTANCE;
+		
+		writer.writeHeader(size, buffer);
+    
+    for (Map.Entry<String, PackableValue<?>> entry : table.entrySet()) {
+    	
+    	String key = entry.getKey();
+    	int intKey;
+    	try {
+    		intKey = Integer.parseInt(key);
+    	}
+    	catch(NumberFormatException e) {
+    		throw new IOException(key, e);
+    	}
+    	
+    	PackableValue<?> value = entry.getValue();
+    	
+    	buffer = writer.writeVInt(intKey, buffer);
+    	buffer = value.pack(buffer);
+    }
+    
+    return buffer;
+	}
+	
+	private ByteBuf packStringMap(ByteBuf buffer) throws IOException {
+		
+    int size = size();
+    
+		MapMessageWriter writer = MapMessageWriter.INSTANCE;
+    
+		writer.writeHeader(size, buffer);
+    
+    for (Map.Entry<String, PackableValue<?>> entry : table.entrySet()) {
+    	
+    	String key = entry.getKey();
+    	PackableValue<?> value = entry.getValue();
+    	
+    	buffer = StringWriter.INSTANCE.writeString(key, buffer);
+    	buffer = value.pack(buffer);
+    }
+    
+    return buffer;
+	}
+	
 	@Override
 	public void print(StringBuilder str, int initialSpaces, int tabSpaces) {
-		str.append("LiteTable [type=" + type + ", size=" + table.size() + "] {\n");
+		str.append("PackableTable [type=" + type + ", size=" + table.size() + "] {\n");
 		boolean first = true;
 		for (Map.Entry<String, PackableValue<?>> entry : table.entrySet()) {
 			if (!first) {
