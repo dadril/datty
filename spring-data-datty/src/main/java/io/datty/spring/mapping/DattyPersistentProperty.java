@@ -15,8 +15,8 @@ package io.datty.spring.mapping;
 
 import org.springframework.data.mapping.PersistentProperty;
 
-import io.datty.msgpack.message.core.type.TypeInfo;
-import io.datty.msgpack.message.core.type.TypeInfoProvider;
+import io.datty.msgpack.core.type.TypeInfo;
+import io.datty.msgpack.core.type.TypeInfoProvider;
 
 /**
  * DattyPersistentProperty

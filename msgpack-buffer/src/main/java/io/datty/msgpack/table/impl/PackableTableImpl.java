@@ -29,8 +29,8 @@ import org.msgpack.value.impl.ImmutableLongValueImpl;
 import org.msgpack.value.impl.ImmutableMapValueImpl;
 import org.msgpack.value.impl.ImmutableStringValueImpl;
 
-import io.datty.msgpack.message.core.MapMessageWriter;
-import io.datty.msgpack.message.core.writer.StringWriter;
+import io.datty.msgpack.core.MapMessageWriter;
+import io.datty.msgpack.core.writer.StringWriter;
 import io.datty.msgpack.table.PackableBoolean;
 import io.datty.msgpack.table.PackableNumber;
 import io.datty.msgpack.table.PackableString;

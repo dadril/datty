@@ -13,8 +13,8 @@
  */
 package io.datty.api;
 
-import io.datty.msgpack.message.MessageReader;
-import io.datty.msgpack.message.MessageWriter;
+import io.datty.msgpack.MessageReader;
+import io.datty.msgpack.MessageWriter;
 import io.netty.buffer.ByteBuf;
 
 /**

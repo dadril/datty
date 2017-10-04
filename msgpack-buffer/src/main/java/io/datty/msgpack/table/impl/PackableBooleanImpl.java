@@ -19,7 +19,7 @@ import org.msgpack.core.MessagePacker;
 import org.msgpack.value.Value;
 import org.msgpack.value.impl.ImmutableBooleanValueImpl;
 
-import io.datty.msgpack.message.core.writer.BooleanWriter;
+import io.datty.msgpack.core.writer.BooleanWriter;
 import io.datty.msgpack.table.PackableBoolean;
 import io.netty.buffer.ByteBuf;
 

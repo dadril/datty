@@ -22,8 +22,8 @@ import org.msgpack.value.Value;
 import org.msgpack.value.impl.ImmutableBinaryValueImpl;
 import org.msgpack.value.impl.ImmutableStringValueImpl;
 
-import io.datty.msgpack.message.core.writer.ByteBufWriter;
-import io.datty.msgpack.message.core.writer.StringWriter;
+import io.datty.msgpack.core.writer.ByteBufWriter;
+import io.datty.msgpack.core.writer.StringWriter;
 import io.datty.msgpack.table.PackableString;
 import io.datty.msgpack.table.PackableStringType;
 import io.datty.msgpack.table.support.PackableException;

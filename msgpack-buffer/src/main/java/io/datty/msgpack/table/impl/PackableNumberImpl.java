@@ -20,8 +20,8 @@ import org.msgpack.value.Value;
 import org.msgpack.value.impl.ImmutableDoubleValueImpl;
 import org.msgpack.value.impl.ImmutableLongValueImpl;
 
-import io.datty.msgpack.message.core.writer.DoubleWriter;
-import io.datty.msgpack.message.core.writer.LongWriter;
+import io.datty.msgpack.core.writer.DoubleWriter;
+import io.datty.msgpack.core.writer.LongWriter;
 import io.datty.msgpack.table.PackableNumber;
 import io.datty.msgpack.table.PackableNumberType;
 import io.datty.msgpack.table.support.PackableException;
