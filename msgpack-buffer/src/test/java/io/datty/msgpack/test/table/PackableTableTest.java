@@ -20,13 +20,12 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.datty.msgpack.table.PackableNumber;
+import io.datty.msgpack.table.PackableString;
 import io.datty.msgpack.table.PackableTable;
 import io.datty.msgpack.table.PackableTableType;
 import io.datty.msgpack.table.PackableValue;
 import io.datty.msgpack.table.PackableValueFactory;
-import io.datty.msgpack.table.impl.PackableNumberImpl;
-import io.datty.msgpack.table.impl.PackableStringImpl;
-import io.datty.msgpack.table.impl.PackableTableImpl;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -34,18 +33,18 @@ import io.netty.buffer.Unpooled;
 
 
 /**
- * PackableTableImplTest
+ * PackableTableTest
  * 
  * @author Alex Shvid
  *
  */
 
-public class PackableTableImplTest extends AbstractPackableTest {
+public class PackableTableTest extends AbstractPackableTest {
 
 	@Test
 	public void testNull() {
 
-		PackableTable table = new PackableTableImpl();
+		PackableTable table = new PackableTable();
 
 		Assert.assertEquals(0, table.size());
 		
@@ -66,7 +65,7 @@ public class PackableTableImplTest extends AbstractPackableTest {
 	@Test
 	public void testEmpty() {
 		
-		PackableTable table = new PackableTableImpl();
+		PackableTable table = new PackableTable();
 		
 		Assert.assertEquals(PackableTableType.INT_KEY, table.getType());
 		Assert.assertEquals(0, table.size());
@@ -92,9 +91,9 @@ public class PackableTableImplTest extends AbstractPackableTest {
 	@Test
 	public void testSingleInt() throws IOException {
 		
-		PackableTable table = new PackableTableImpl();
+		PackableTable table = new PackableTable();
 		
-		table.put(123, new PackableNumberImpl(123));
+		table.put(123, new PackableNumber(123));
 		
 		Assert.assertEquals(PackableTableType.INT_KEY, table.getType());
 		Assert.assertEquals(1, table.size());
@@ -116,7 +115,7 @@ public class PackableTableImplTest extends AbstractPackableTest {
 	@Test
 	public void testIntKey() {
 		
-		PackableTable table = new PackableTableImpl();
+		PackableTable table = new PackableTable();
 		table.put(123, "stringValue");
 		Assert.assertEquals(PackableTableType.INT_KEY, table.getType());
 		table.put("123", "newStringValue");
@@ -128,7 +127,7 @@ public class PackableTableImplTest extends AbstractPackableTest {
 	@Test
 	public void testIntToStringKey() {
 		
-		PackableTable table = new PackableTableImpl();
+		PackableTable table = new PackableTable();
 		table.put(123, "stringValue");
 		Assert.assertEquals(PackableTableType.INT_KEY, table.getType());
 		table.put("abc", "newStringValue");
@@ -142,7 +141,7 @@ public class PackableTableImplTest extends AbstractPackableTest {
 	@Test
 	public void testIntArray() {
 		
-		PackableTable table = new PackableTableImpl();
+		PackableTable table = new PackableTable();
 		Assert.assertNull(table.maxIntKey());
 		Assert.assertTrue(table.keySet().isEmpty());
 		Assert.assertTrue(table.intKeys().isEmpty());
@@ -166,7 +165,7 @@ public class PackableTableImplTest extends AbstractPackableTest {
 	@Test
 	public void testIntToStringTable() throws IOException {
 		
-		PackableTable table = new PackableTableImpl();
+		PackableTable table = new PackableTable();
 		table.put("1", "one");
 		table.put(2, "two");
 		table.put("3", "three");
@@ -200,18 +199,18 @@ public class PackableTableImplTest extends AbstractPackableTest {
 	@Test
 	public void testStringGetters() {
 		
-		PackableTable table = new PackableTableImpl();
+		PackableTable table = new PackableTable();
 		table.put("abc", "123.0");
 		
-		Assert.assertEquals(new PackableNumberImpl(123.0), table.get("abc"));
+		Assert.assertEquals(new PackableNumber(123.0), table.get("abc"));
 		
 		Assert.assertEquals(false, table.getBoolean("abc"));
 		
-		Assert.assertEquals(new PackableNumberImpl(123.0), table.getNumber("abc"));
+		Assert.assertEquals(new PackableNumber(123.0), table.getNumber("abc"));
 		Assert.assertEquals(Long.valueOf(123L), table.getLong("abc"));
 		Assert.assertEquals(Double.valueOf(123.0), table.getDouble("abc"));
 		
-		Assert.assertEquals(new PackableStringImpl("123.0"), table.getString("abc"));
+		Assert.assertEquals(new PackableString("123.0"), table.getString("abc"));
 		Assert.assertEquals("123.0", table.getStringUtf8("abc"));
 		Assert.assertTrue(Arrays.equals("123.0".getBytes(), table.getBytes("abc", false)));
 		
@@ -220,18 +219,18 @@ public class PackableTableImplTest extends AbstractPackableTest {
 	@Test
 	public void testIntGetters() {
 		
-		PackableTable table = new PackableTableImpl();
+		PackableTable table = new PackableTable();
 		table.put(5, "123.0");
 		
-		Assert.assertEquals(new PackableNumberImpl(123.0), table.get(5));
+		Assert.assertEquals(new PackableNumber(123.0), table.get(5));
 		
 		Assert.assertEquals(false, table.getBoolean(5));
 		
-		Assert.assertEquals(new PackableNumberImpl(123.0), table.getNumber(5));
+		Assert.assertEquals(new PackableNumber(123.0), table.getNumber(5));
 		Assert.assertEquals(Long.valueOf(123L), table.getLong(5));
 		Assert.assertEquals(Double.valueOf(123.0), table.getDouble(5));
 		
-		Assert.assertEquals(new PackableStringImpl("123.0"), table.getString(5));
+		Assert.assertEquals(new PackableString("123.0"), table.getString(5));
 		Assert.assertEquals("123.0", table.getStringUtf8(5));
 		Assert.assertTrue(Arrays.equals("123.0".getBytes(), table.getBytes(5, false)));
 		
@@ -242,10 +241,10 @@ public class PackableTableImplTest extends AbstractPackableTest {
 	@Test
 	public void testInnerTable() throws IOException {
 
-		PackableTable innerTable = new PackableTableImpl();
+		PackableTable innerTable = new PackableTable();
 		innerTable.put("first", "Alex");
 		
-		PackableTable table = new PackableTableImpl();
+		PackableTable table = new PackableTable();
 		table.put("name", innerTable);
 		
 		//System.out.println(table.toJson());

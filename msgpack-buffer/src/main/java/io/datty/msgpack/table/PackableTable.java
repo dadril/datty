@@ -13,17 +13,77 @@
  */
 package io.datty.msgpack.table;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.msgpack.core.MessagePacker;
+import org.msgpack.value.Value;
+import org.msgpack.value.impl.ImmutableLongValueImpl;
+import org.msgpack.value.impl.ImmutableMapValueImpl;
+import org.msgpack.value.impl.ImmutableStringValueImpl;
+
+import io.datty.msgpack.core.MapMessageWriter;
+import io.datty.msgpack.core.writer.StringWriter;
+import io.datty.msgpack.table.support.PackableException;
+import io.datty.msgpack.table.support.PackableNumberFormatException;
+import io.datty.msgpack.table.util.PackableStringifyUtil;
+import io.datty.msgpack.table.util.PackableStringifyUtil.NumberType;
+import io.datty.msgpack.table.util.PackableValueUtil;
+import io.netty.buffer.ByteBuf;
+
 /**
- * Mutable table interface
+ * Mutable table
  * 
  * @author Alex Shvid
  *
  */
 
-public interface PackableTable extends PackableValue<PackableTable> {
+public final class PackableTable extends PackableValue<PackableTable> {
+
+	/**
+	 * Keys could be stringify integers or any strings
+	 */
+
+	private final Map<String, PackableValue<?>> table = new HashMap<String, PackableValue<?>>();
+
+	private PackableTableType type = PackableTableType.INT_KEY;
+
+	/**
+	 * Simple comparator that uses to make sure that Map is sorted by keys
+	 * 
+	 * @author Alex Shvid
+	 *
+	 */
+	
+	public final class KeyComparator implements Comparator<String> {
+
+		@Override
+		public int compare(String o1, String o2) {
+
+			if (type == PackableTableType.INT_KEY) {
+
+				try {
+					int i1 = Integer.parseInt(o1);
+					int i2 = Integer.parseInt(o2);
+
+					return Integer.compare(i1, i2);
+					
+				} catch (NumberFormatException e) {
+					return o1.compareTo(o2);
+				}
+			}
+
+			return o1.compareTo(o2);
+		}
+
+	}
 
 	/**
 	 * Gets Msg table type
@@ -31,8 +91,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return not null type of the table
 	 */
 	
-	PackableTableType getType();
-		
+	public PackableTableType getType() {
+		return type;
+	}
+
 	/**
 	 * Gets value by key
 	 * 
@@ -40,7 +102,14 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return message value or null
 	 */
 	
-	PackableValue<?> get(String key);
+	public PackableValue<?> get(String key) {
+		
+		if (key == null) {
+			throw new IllegalArgumentException("empty key");
+		}
+		
+		return table.get(key);
+	}
 	
 	/**
 	 * Gets table by key if possible
@@ -51,8 +120,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return message table or null
 	 */
 	
-	PackableTable getTable(String key);
-	
+	public PackableTable getTable(String key) {
+		return PackableValueUtil.toTable(get(key));
+	}
+
 	/**
 	 * Gets boolean value by key
 	 * 
@@ -62,8 +133,11 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return boolean or null
 	 */
 	
-	Boolean getBoolean(String key);
-	
+	public Boolean getBoolean(String key) {
+		PackableBoolean val = PackableValueUtil.toBoolean(get(key));
+		return val != null ? val.asBoolean() : null;
+	}
+
 	/**
 	 * Gets number value by key
 	 * 
@@ -73,7 +147,9 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return message number or null
 	 */
 	
-	PackableNumber getNumber(String key);
+	public PackableNumber getNumber(String key) {
+		return PackableValueUtil.toNumber(get(key));
+	}
 	
 	/**
 	 * Gets long number value by key
@@ -84,7 +160,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return long number or null
 	 */
 	
-	Long getLong(String key);
+	public Long getLong(String key) {
+		PackableNumber number = getNumber(key);
+		return number != null ? number.asLong() : null;
+	}
 	
 	/**
 	 * Gets double number value by key
@@ -95,8 +174,11 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return double number or null
 	 */
 	
-	Double getDouble(String key);
-	
+	public Double getDouble(String key) {
+		PackableNumber number = getNumber(key);
+		return number != null ? number.asDouble() : null;
+	}
+
 	/**
 	 * Gets string value by key
 	 * 
@@ -106,8 +188,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return Msg string or null
 	 */
 	
-	PackableString getString(String key);
-	
+	public PackableString getString(String key) {
+		return PackableValueUtil.toString(get(key));
+	}
+
 	/**
 	 * Gets string value by key
 	 * 
@@ -117,8 +201,11 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return string or null
 	 */
 	
-	String getStringUtf8(String key);
-	
+	public String getStringUtf8(String key) {
+		PackableString str = getString(key);
+		return str != null ? str.toUtf8() : null;
+	}
+
 	/**
 	 * Gets bytes value by key
 	 * 
@@ -129,8 +216,11 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return bytes string or null
 	 */
 	
-	byte[] getBytes(String key, boolean copy);
-	
+	public byte[] getBytes(String key, boolean copy) {
+		PackableString str = getString(key);
+		return str != null ? str.getBytes(copy) : null;
+	}
+
 	/**
 	 * Gets value by key
 	 * 
@@ -138,7 +228,14 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return message value or null
 	 */
 	
-	PackableValue<?> get(Integer key);
+	public PackableValue<?> get(Integer key) {
+		
+		if (key == null) {
+			throw new IllegalArgumentException("empty key");
+		}
+		
+		return table.get(key.toString());
+	}
 	
 	/**
 	 * Gets table by key if possible
@@ -149,7 +246,9 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return message table or null
 	 */
 	
-	PackableTable getTable(Integer key);
+	public PackableTable getTable(Integer key) {
+		return PackableValueUtil.toTable(get(key));
+	}
 	
 	/**
 	 * Gets boolean value by key
@@ -160,8 +259,11 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return message boolean or null
 	 */
 	
-	Boolean getBoolean(Integer key);
-	
+	public Boolean getBoolean(Integer key) {
+		PackableBoolean val = PackableValueUtil.toBoolean(get(key));
+		return val != null ? val.asBoolean() : null;
+	}
+
 	/**
 	 * Gets number value by key
 	 * 
@@ -171,7 +273,9 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return message number or null
 	 */
 	
-	PackableNumber getNumber(Integer key);
+	public PackableNumber getNumber(Integer key) {
+		return PackableValueUtil.toNumber(get(key));
+	}
 	
 	/**
 	 * Gets long number value by key
@@ -182,7 +286,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return long number or null
 	 */
 	
-	Long getLong(Integer key);
+	public Long getLong(Integer key) {
+		PackableNumber number = getNumber(key);
+		return number != null ? number.asLong() : null;
+	}
 	
 	/**
 	 * Gets double number value by key
@@ -193,8 +300,11 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return double number or null
 	 */
 	
-	Double getDouble(Integer key);
-	
+	public Double getDouble(Integer key) {
+		PackableNumber number = getNumber(key);
+		return number != null ? number.asDouble() : null;
+	}
+
 	/**
 	 * Gets string value by key
 	 * 
@@ -204,7 +314,9 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return message string or null
 	 */
 	
-	PackableString getString(Integer key);
+	public PackableString getString(Integer key) {
+		return PackableValueUtil.toString(get(key));
+	}
 	
 	/**
 	 * Gets string value by key
@@ -215,8 +327,11 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return string or null
 	 */
 	
-	String getStringUtf8(Integer key);
-	
+	public String getStringUtf8(Integer key) {
+		PackableString str = getString(key);
+		return str != null ? str.toUtf8() : null;
+	}
+
 	/**
 	 * Gets bytes string value by key
 	 * 
@@ -227,7 +342,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return bytes string or null
 	 */
 	
-	byte[] getBytes(Integer key, boolean copy);
+	public byte[] getBytes(Integer key, boolean copy) {
+		PackableString str = getString(key);
+		return str != null ? str.getBytes(copy) : null;
+	}
 	
 	/**
 	 * Gets value
@@ -236,7 +354,36 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return message value or null
 	 */
 	
-	PackableValue<?> get(PackableValueExpression ve);
+	public PackableValue<?> get(PackableValueExpression ve) {
+	
+		if (ve == null) {
+			throw new IllegalArgumentException("null ve");
+		}
+		
+		if (ve.isEmpty()) {
+			return this;
+		}
+		
+		int lastIndex = ve.size() - 1;
+		PackableTable currentTable = this;
+		for (int i = 0; i != lastIndex; ++i) {
+			
+			String key = ve.get(i);
+			PackableValue<?> existingValue = currentTable.get(key);
+			
+			if (existingValue == null || !(existingValue instanceof PackableTable)) {
+				return null;
+			}
+			else {
+				currentTable = (PackableTable) existingValue;
+			}
+			
+		}
+		
+		String key = ve.get(lastIndex);
+		return currentTable.get(key);
+		
+	}
 	
 	/**
 	 * Gets table by key if possible
@@ -247,8 +394,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return message table or null
 	 */
 	
-	PackableTable getTable(PackableValueExpression ve);
-	
+	public PackableTable getTable(PackableValueExpression ve) {
+		return PackableValueUtil.toTable(get(ve));
+	}
+
 	/**
 	 * Gets boolean value
 	 * 
@@ -258,7 +407,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return message boolean or null
 	 */
 	
-	Boolean getBoolean(PackableValueExpression ve);
+	public Boolean getBoolean(PackableValueExpression ve) {
+		PackableBoolean val = PackableValueUtil.toBoolean(get(ve));
+		return val != null ? val.asBoolean() : null;
+	}
 	
 	/**
 	 * Gets number value
@@ -269,7 +421,9 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return message number or null
 	 */
 	
-	PackableNumber getNumber(PackableValueExpression ve);
+	public PackableNumber getNumber(PackableValueExpression ve) {
+		return PackableValueUtil.toNumber(get(ve));
+	}
 	
 	/**
 	 * Gets long number value
@@ -280,7 +434,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return long or null
 	 */
 	
-	Long getLong(PackableValueExpression ve);
+	public Long getLong(PackableValueExpression ve) {
+		PackableNumber number = getNumber(ve);
+		return number != null ? number.asLong() : null;
+	}
 	
 	/**
 	 * Gets double number value
@@ -291,7 +448,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return double or null
 	 */
 	
-	Double getDouble(PackableValueExpression ve);
+	public Double getDouble(PackableValueExpression ve) {
+		PackableNumber number = getNumber(ve);
+		return number != null ? number.asDouble() : null;
+	}
 	
 	/**
 	 * Gets string value
@@ -302,7 +462,9 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return message string or null
 	 */
 	
-	PackableString getString(PackableValueExpression ve);
+	public PackableString getString(PackableValueExpression ve) {
+		return PackableValueUtil.toString(get(ve));
+	}
 	
 	/**
 	 * Gets string value
@@ -313,8 +475,11 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return string or null
 	 */
 	
-	String getStringUtf8(PackableValueExpression ve);
-	
+	public String getStringUtf8(PackableValueExpression ve) {
+		PackableString str = getString(ve);
+		return str != null ? str.toUtf8() : null;
+	}
+
 	/**
 	 * Gets bytes string value
 	 * 
@@ -325,7 +490,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return bytes string or null
 	 */
 	
-	byte[] getBytes(PackableValueExpression ve, boolean copy);
+	public byte[] getBytes(PackableValueExpression ve, boolean copy) {
+		PackableString str = getString(ve);
+		return str != null ? str.getBytes(copy) : null;
+	}
 	
 	/**
 	 * Puts value to the table
@@ -335,7 +503,24 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> put(String key, PackableValue<?> value);
+	public PackableValue<?> put(String key, PackableValue<?> value) {
+
+		if (type == PackableTableType.INT_KEY) {
+
+			NumberType numberType = PackableStringifyUtil.detectNumber(key);
+			if (numberType == NumberType.NAN) {
+				type = PackableTableType.STRING_KEY;
+			}
+
+		}
+
+		if (value != null) {
+			return table.put(key, value);
+		}
+		else {
+			return table.remove(key);
+		}
+	}
 	
 	/**
 	 * Puts stringify value to the table with auto-detection type
@@ -345,7 +530,9 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> put(String key, String stringifyValue);
+	public PackableValue<?> put(String key, String stringfyValue) {
+		return put(key, PackableValueFactory.newStringifyValue(stringfyValue));
+	}
 	
 	/**
 	 * Puts boolean value to the table
@@ -355,8 +542,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> putBoolean(String key, boolean value);
-	
+	public PackableValue<?> putBoolean(String key, boolean value) {
+		return put(key, new PackableBoolean(value));
+	}
+
 	/**
 	 * Puts long value to the table
 	 * 
@@ -365,8 +554,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> putLong(String key, long value);
-	
+	public PackableValue<?> putLong(String key, long value) {
+		return put(key, new PackableNumber(value));
+	}
+
 	/**
 	 * Puts double value to the table
 	 * 
@@ -375,8 +566,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> putDouble(String key, double value);
-	
+	public PackableValue<?> putDouble(String key, double value) {
+		return put(key, new PackableNumber(value));
+	}
+
 	/**
 	 * Puts string value to the table
 	 * 
@@ -385,8 +578,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> putString(String key, String value);
-	
+	public PackableValue<?> putString(String key, String value) {
+		return put(key, new PackableString(value));
+	}
+
 	/**
 	 * Puts bytes value to the table
 	 * 
@@ -396,8 +591,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> putBytes(String key, byte[] value, boolean copy);
-	
+	public PackableValue<?> putBytes(String key, byte[] value, boolean copy) {
+		return put(key, new PackableString(value, copy));
+	}
+
 	/**
 	 * Puts value to the table
 	 * 
@@ -406,7 +603,16 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> put(Integer key, PackableValue<?> value);
+	public PackableValue<?> put(Integer key, PackableValue<?> value) {
+		
+		if (value != null) {
+			return table.put(key.toString(), value);
+		}
+		else {
+			return table.remove(key.toString());
+		}
+		
+	}
 	
 	/**
 	 * Puts stringify value to the table with auto-detection type
@@ -416,8 +622,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> put(Integer key, String stringifyValue);
-	
+	public PackableValue<?> put(Integer key, String stringfyValue) {
+		return put(key, PackableValueFactory.newStringifyValue(stringfyValue));
+	}
+
 	/**
 	 * Puts boolean value to the table
 	 * 
@@ -426,7 +634,9 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> putBoolean(Integer key, boolean value);
+	public PackableValue<?> putBoolean(Integer key, boolean value) {
+		return put(key, new PackableBoolean(value));
+	}
 	
 	/**
 	 * Puts long value to the table
@@ -436,8 +646,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> putLong(Integer key, long value);
-	
+	public PackableValue<?> putLong(Integer key, long value) {
+		return put(key, new PackableNumber(value));
+	}
+
 	/**
 	 * Puts double value to the table
 	 * 
@@ -446,7 +658,9 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> putDouble(Integer key, double value);
+	public PackableValue<?> putDouble(Integer key, double value) {
+		return put(key, new PackableNumber(value));
+	}
 	
 	/**
 	 * Puts string value to the table
@@ -456,8 +670,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> putString(Integer key, String value);
-	
+	public PackableValue<?> putString(Integer key, String value) {
+		return put(key, new PackableString(value));
+	}
+
 	/**
 	 * Puts bytes value to the table
 	 * 
@@ -467,7 +683,9 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> putBytes(Integer key, byte[] value, boolean copy);
+	public PackableValue<?> putBytes(Integer key, byte[] value, boolean copy) {
+		return put(key, new PackableString(value, copy));
+	}
 	
 	/**
 	 * Puts value to the table
@@ -477,8 +695,38 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> put(PackableValueExpression ve, PackableValue<?> value);
-	
+	public PackableValue<?> put(PackableValueExpression ve, PackableValue<?> value) {
+
+		if (ve == null) {
+			throw new IllegalArgumentException("null ve");
+		}
+		
+		if (ve.isEmpty()) {
+			return value;
+		}
+		
+		int lastIndex = ve.size() - 1;
+		PackableTable currentTable = this;
+		for (int i = 0; i != lastIndex; ++i) {
+			
+			String key = ve.get(i);
+			PackableValue<?> existingValue = currentTable.get(key);
+			
+			if (existingValue == null || !(existingValue instanceof PackableTable)) {
+			  PackableTable newTable = new PackableTable();
+			  currentTable.put(key, newTable);
+			  currentTable = newTable;
+			}
+			else {
+				currentTable = (PackableTable) existingValue;
+			}
+			
+		}
+		
+		String key = ve.get(lastIndex);
+		return currentTable.put(key, value);
+	}
+		
 	/**
 	 * Puts stringfy value to the table with auto-detection type
 	 * 
@@ -487,7 +735,9 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> put(PackableValueExpression ve, String stringfyValue);	
+	public PackableValue<?> put(PackableValueExpression ve, String stringfyValue) {
+		return put(ve, PackableValueFactory.newStringifyValue(stringfyValue));
+	}
 	
 	/**
 	 * Puts boolean value to the table
@@ -497,7 +747,9 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> putBoolean(PackableValueExpression ve, boolean value);
+	public PackableValue<?> putBoolean(PackableValueExpression ve, boolean value) {
+		return put(ve, new PackableBoolean(value));
+	}
 	
 	/**
 	 * Puts long value to the table
@@ -507,8 +759,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> putLong(PackableValueExpression ve, long value);
-	
+	public PackableValue<?> putLong(PackableValueExpression ve, long value) {
+		return put(ve, new PackableNumber(value));
+	}
+
 	/**
 	 * Puts double value to the table
 	 * 
@@ -517,7 +771,9 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> putDouble(PackableValueExpression ve, double value);
+	public PackableValue<?> putDouble(PackableValueExpression ve, double value) {
+		return put(ve, new PackableNumber(value));
+	}
 	
 	/**
 	 * Puts string value to the table
@@ -527,8 +783,10 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> putString(PackableValueExpression ve, String value);
-	
+	public PackableValue<?> putString(PackableValueExpression ve, String value) {
+		return put(ve, new PackableString(value));
+	}
+
 	/**
 	 * Puts bytes value to the table
 	 * 
@@ -538,7 +796,9 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> putBytes(PackableValueExpression ve, byte[] value, boolean copy);
+	public PackableValue<?> putBytes(PackableValueExpression ve, byte[] value, boolean copy) {
+		return put(ve, new PackableString(value, copy));
+	}
 	
 	/**
 	 * Removes value from the table
@@ -547,7 +807,9 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> remove(String key);
+	public PackableValue<?> remove(String key) {
+		return put(key, (PackableValue<?>) null);
+	}
 	
 	/**
 	 * Removes value from the table
@@ -556,7 +818,9 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> remove(Integer key);
+	public PackableValue<?> remove(Integer key) {
+		return put(key, (PackableValue<?>) null);
+	}
 	
 	/**
 	 * Removes value from the table
@@ -565,7 +829,9 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return old value or null
 	 */
 	
-	PackableValue<?> remove(PackableValueExpression ve);
+	public PackableValue<?> remove(PackableValueExpression ve) {
+		return put(ve, (PackableValue<?>) null);
+	}
 	
 	/**
 	 * Gets all keys in the table
@@ -573,7 +839,9 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return set of keys
 	 */
 	
-	Set<String> keySet();
+	public Set<String> keySet() {
+		return table.keySet();
+	}
 	
 	/**
 	 * Gets all keys sorted by ascending order
@@ -581,7 +849,24 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return not null sorted integer keys
 	 */
 	
-	List<Integer> intKeys();
+	public List<Integer> intKeys() {
+		
+		List<Integer> list = new ArrayList<Integer>(table.size());
+		
+		for (String key : table.keySet()) {
+
+			try {
+				list.add(Integer.parseInt(key));
+			}
+			catch(NumberFormatException e) {
+				// ignore
+			}
+		}
+		
+		Collections.sort(list);
+		
+		return list;
+	}
 
 	/**
 	 * Gets minimum integer key in table
@@ -589,7 +874,25 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return min int key or null of not found
 	 */
 	
-	Integer minIntKey();
+	public Integer minIntKey() {
+		
+		Integer minKey = null;
+		
+		for (String key : table.keySet()) {
+
+			try {
+				int value = Integer.parseInt(key);
+				if (minKey == null || value < minKey) {
+					minKey = value;
+				}
+			}
+			catch(NumberFormatException e) {
+				// ignore
+			}
+		}
+		
+		return minKey;
+	}
 	
 	/**
 	 * Gets maximum integer key in table
@@ -597,21 +900,277 @@ public interface PackableTable extends PackableValue<PackableTable> {
 	 * @return max int key or null of not found
 	 */
 	
-	Integer maxIntKey();
-	
+	public Integer maxIntKey() {
+		
+		Integer maxKey = null;
+		
+		for (String key : table.keySet()) {
+
+			try {
+				int value = Integer.parseInt(key);
+				if (maxKey == null || value > maxKey) {
+					maxKey = value;
+				}
+			}
+			catch(NumberFormatException e) {
+				// ignore
+			}
+		}
+		
+		return maxKey;
+	}
+
 	/**
 	 * Gets size of the table
 	 * 
 	 * @return size of the table
 	 */
 	
-	int size();
-	
+	public int size() {
+		return table.size();
+	}
+
 	/**
 	 * Clear table
 	 */
 	
-	void clear();
+	public void clear() {
+		table.clear();
+	}
+
+	@Override
+	public String asString() {
+		StringBuilder str = new StringBuilder();
+		str.append("{");
+		boolean first = true;
+		for (Map.Entry<String, PackableValue<?>> entry : table.entrySet()) {
+			if (!first) {
+				str.append(", ");
+			}
+			str.append(entry.getKey()).append("=").append(entry.getValue().asString());
+			first = false;
+		}
+		str.append("}");
+		return str.toString();
+	}
+
+	@Override
+	public Value toValue() {
+
+		switch(type) {
+		
+		case INT_KEY:
+			return toIntValue();
+			
+		case STRING_KEY:
+			return toStringValue();
+			
+		}
+		
+		throw new PackableException("unexpected type: " + type);
+	}
+
+	private Value toIntValue() {
+		
+    int size = size();
+    
+    int capacity = size << 1;
+    Value[] array = new Value[capacity];
+    
+    int index = 0;
+    for (Map.Entry<String, PackableValue<?>> entry : table.entrySet()) {
+      
+    	int integerKey;
+    	try {
+    		integerKey = Integer.parseInt(entry.getKey());
+    	}
+    	catch(NumberFormatException e) {
+    		throw new PackableNumberFormatException(entry.getKey(), e);
+    	}
+    	
+    	PackableValue<?> val = entry.getValue();
+      
+      array[index++] = new ImmutableLongValueImpl(integerKey);
+      array[index++] = val.toValue();
+      
+    }
+    
+    return new ImmutableMapValueImpl(array);
+		
+	}
+
+	private Value toStringValue() {
+		
+    int size = size();
+
+    int capacity = size << 1;
+    Value[] array = new Value[capacity];
+    
+    int index = 0;
+    for (Map.Entry<String, PackableValue<?>> entry : table.entrySet()) {
+      
+    	PackableValue<?> val = entry.getValue();
+      
+      array[index++] = new ImmutableStringValueImpl(entry.getKey());
+      array[index++] = val.toValue();
+      
+    }
+    
+    return new ImmutableMapValueImpl(array);
+    
+	}
+	
+  @Override
+	public void writeTo(MessagePacker packer) throws IOException {
+		switch(type) {
+		
+		case INT_KEY:
+			writeIntMapTo(packer);
+			break;
+			
+		case STRING_KEY:
+			writeStringMapTo(packer);
+			break;
+			
+		default:
+			throw new IOException("unexpected type: " + type);
+		}
+		
+	}	
+  
+  private void writeIntMapTo(MessagePacker packer) throws IOException {
+  	
+    int size = size();
+    
+    packer.packMapHeader(size);
+    
+    for (Map.Entry<String, PackableValue<?>> entry : table.entrySet()) {
+    	
+    	String key = entry.getKey();
+    	int intKey;
+    	try {
+    		intKey = Integer.parseInt(key);
+    	}
+    	catch(NumberFormatException e) {
+    		throw new IOException(key, e);
+    	}
+    	
+    	PackableValue<?> value = entry.getValue();
+    	
+			packer.packInt(intKey);
+    	value.writeTo(packer);
+    }
+    
+  }
+  
+  private void writeStringMapTo(MessagePacker packer) throws IOException {
+  	
+    int size = size();
+    
+    packer.packMapHeader(size);
+    
+    for (Map.Entry<String, PackableValue<?>> entry : table.entrySet()) {
+    	
+    	String key = entry.getKey();
+    	PackableValue<?> value = entry.getValue();
+    	
+			byte[] data = key.getBytes(StandardCharsets.UTF_8);
+			packer.packRawStringHeader(data.length);
+			packer.writePayload(data);
+			
+    	value.writeTo(packer);
+    }
+    
+  }  
+
+	@Override
+	public ByteBuf pack(ByteBuf buffer) throws IOException {
+		
+		switch(type) {
+		
+		case INT_KEY:
+			return packIntMap(buffer);
+			
+		case STRING_KEY:
+			return packStringMap(buffer);
+			
+		default:
+			throw new IOException("unexpected type: " + type);
+		}
+	}
+
+	private ByteBuf packIntMap(ByteBuf buffer) throws IOException {
+		
+    int size = size();
+    
+		MapMessageWriter writer = MapMessageWriter.INSTANCE;
+		
+		writer.writeHeader(size, buffer);
+    
+    for (Map.Entry<String, PackableValue<?>> entry : table.entrySet()) {
+    	
+    	String key = entry.getKey();
+    	int intKey;
+    	try {
+    		intKey = Integer.parseInt(key);
+    	}
+    	catch(NumberFormatException e) {
+    		throw new IOException(key, e);
+    	}
+    	
+    	PackableValue<?> value = entry.getValue();
+    	
+    	buffer = writer.writeVInt(intKey, buffer);
+    	buffer = value.pack(buffer);
+    }
+    
+    return buffer;
+	}
+	
+	private ByteBuf packStringMap(ByteBuf buffer) throws IOException {
+		
+    int size = size();
+    
+		MapMessageWriter writer = MapMessageWriter.INSTANCE;
+    
+		writer.writeHeader(size, buffer);
+    
+    for (Map.Entry<String, PackableValue<?>> entry : table.entrySet()) {
+    	
+    	String key = entry.getKey();
+    	PackableValue<?> value = entry.getValue();
+    	
+    	buffer = StringWriter.INSTANCE.writeString(key, buffer);
+    	buffer = value.pack(buffer);
+    }
+    
+    return buffer;
+	}
+	
+	@Override
+	public void print(StringBuilder str, int initialSpaces, int tabSpaces) {
+		str.append("PackableTable [type=" + type + ", size=" + table.size() + "] {\n");
+		boolean first = true;
+		for (Map.Entry<String, PackableValue<?>> entry : table.entrySet()) {
+			if (!first) {
+				str.append(",\n");
+			}
+			addSpaces(str, initialSpaces + tabSpaces);
+			str.append(entry.getKey()).append("=");
+			entry.getValue().print(str, initialSpaces + tabSpaces, tabSpaces);
+			first = false;
+		}
+		str.append("\n");
+		addSpaces(str, initialSpaces);
+		str.append("}");
+	}
+
+	private void addSpaces(StringBuilder str, int spaces) {
+		for (int i = 0; i != spaces; ++i) {
+			str.append(' ');
+		}
+	}
+	
 	
 }
 

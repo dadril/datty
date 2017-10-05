@@ -17,12 +17,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.datty.msgpack.table.PackableNumber;
+import io.datty.msgpack.table.PackableString;
 import io.datty.msgpack.table.PackableTable;
 import io.datty.msgpack.table.PackableValueExpression;
-import io.datty.msgpack.table.impl.PackableNumberImpl;
-import io.datty.msgpack.table.impl.PackableStringImpl;
-import io.datty.msgpack.table.impl.PackableTableImpl;
-import io.datty.msgpack.table.impl.PackableValueExpressionImpl;
 
 
 
@@ -38,14 +35,14 @@ public class PackableValueExpressionTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testNull() {
 		
-		new PackableValueExpressionImpl(null);
+		new PackableValueExpression(null);
 		
 	}
 	
 	@Test
 	public void testEmpty() {
 		
-		PackableValueExpression ve = new PackableValueExpressionImpl("");
+		PackableValueExpression ve = new PackableValueExpression("");
 		Assert.assertTrue(ve.isEmpty());
 		
 	}
@@ -53,7 +50,7 @@ public class PackableValueExpressionTest {
 	@Test
 	public void testSingle() {
 		
-		PackableValueExpression ve = new PackableValueExpressionImpl("logins");
+		PackableValueExpression ve = new PackableValueExpression("logins");
 		Assert.assertFalse(ve.isEmpty());
 		Assert.assertEquals(1, ve.size());
 		Assert.assertEquals("logins", ve.get(0));
@@ -65,7 +62,7 @@ public class PackableValueExpressionTest {
 	@Test
 	public void testSingleIndex() {
 		
-		PackableValueExpression ve = new PackableValueExpressionImpl("[4]");
+		PackableValueExpression ve = new PackableValueExpression("[4]");
 		Assert.assertFalse(ve.isEmpty());
 		Assert.assertEquals(1, ve.size());
 		Assert.assertEquals("4", ve.get(0));
@@ -77,7 +74,7 @@ public class PackableValueExpressionTest {
 	@Test
 	public void testTwo() {
 		
-		PackableValueExpression ve = new PackableValueExpressionImpl("name.first");
+		PackableValueExpression ve = new PackableValueExpression("name.first");
 		Assert.assertFalse(ve.isEmpty());
 		Assert.assertEquals(2, ve.size());
 		Assert.assertEquals("name", ve.get(0));
@@ -90,7 +87,7 @@ public class PackableValueExpressionTest {
 	@Test
 	public void testTwoWithIndex() {
 		
-		PackableValueExpression ve = new PackableValueExpressionImpl("name[1]");
+		PackableValueExpression ve = new PackableValueExpression("name[1]");
 		Assert.assertFalse(ve.isEmpty());
 		Assert.assertEquals(2, ve.size());
 		Assert.assertEquals("name", ve.get(0));
@@ -103,7 +100,7 @@ public class PackableValueExpressionTest {
 	@Test
 	public void testComplex() {
 		
-		PackableValueExpression ve = new PackableValueExpressionImpl("educations[2].name");
+		PackableValueExpression ve = new PackableValueExpression("educations[2].name");
 		Assert.assertFalse(ve.isEmpty());
 		Assert.assertEquals(3, ve.size());
 		Assert.assertEquals("educations", ve.get(0));
@@ -117,86 +114,86 @@ public class PackableValueExpressionTest {
 	@Test
 	public void testSimple() {
 		
-		PackableTable table = new PackableTableImpl();
+		PackableTable table = new PackableTable();
 		table.put("name", "John");
 		
-		PackableValueExpression ve = new PackableValueExpressionImpl("name");
+		PackableValueExpression ve = new PackableValueExpression("name");
 		
-		Assert.assertEquals(new PackableStringImpl("John"), table.get(ve));
-		Assert.assertEquals(new PackableStringImpl("John"), table.getString(ve));
+		Assert.assertEquals(new PackableString("John"), table.get(ve));
+		Assert.assertEquals(new PackableString("John"), table.getString(ve));
 		
 	}
 	
 	@Test
 	public void testInner() {
 		
-		PackableTable innerTable = new PackableTableImpl();
+		PackableTable innerTable = new PackableTable();
 		innerTable.put("first", "John");
 		innerTable.put("last", "Dow");
 		
-		PackableTable table = new PackableTableImpl();
+		PackableTable table = new PackableTable();
 		table.put("name", innerTable);
 		
-		PackableValueExpression ve = new PackableValueExpressionImpl("name.first");
+		PackableValueExpression ve = new PackableValueExpression("name.first");
 		
-		Assert.assertEquals(new PackableStringImpl("John"), table.get(ve));
-		Assert.assertEquals(new PackableStringImpl("John"), table.getString(ve));
+		Assert.assertEquals(new PackableString("John"), table.get(ve));
+		Assert.assertEquals(new PackableString("John"), table.getString(ve));
 		
 	}
 	
 	@Test
 	public void testInnerWithIndex() {
 		
-		PackableTable innerTable = new PackableTableImpl();
+		PackableTable innerTable = new PackableTable();
 		innerTable.put(1, "John");
 		innerTable.put(2, "Dow");
 		
-		PackableTable table = new PackableTableImpl();
+		PackableTable table = new PackableTable();
 		table.put("name", innerTable);
 		
-		PackableValueExpression ve = new PackableValueExpressionImpl("name[1]");
+		PackableValueExpression ve = new PackableValueExpression("name[1]");
 		
-		Assert.assertEquals(new PackableStringImpl("John"), table.get(ve));
-		Assert.assertEquals(new PackableStringImpl("John"), table.getString(ve));
+		Assert.assertEquals(new PackableString("John"), table.get(ve));
+		Assert.assertEquals(new PackableString("John"), table.getString(ve));
 		
 	}
 	
 	@Test
 	public void testEmptyPut() {
 		
-		PackableTable table = new PackableTableImpl();
-		PackableValueExpression ve = new PackableValueExpressionImpl("name");
+		PackableTable table = new PackableTable();
+		PackableValueExpression ve = new PackableValueExpression("name");
 
 		table.put(ve, "John");
 		
-		Assert.assertEquals(new PackableStringImpl("John"), table.get(ve));
-		Assert.assertEquals(new PackableStringImpl("John"), table.getString(ve));
+		Assert.assertEquals(new PackableString("John"), table.get(ve));
+		Assert.assertEquals(new PackableString("John"), table.getString(ve));
 	}
 	
 	@Test
 	public void testEmptyInnerPut() {
 		
-		PackableTable table = new PackableTableImpl();
-		PackableValueExpression ve = new PackableValueExpressionImpl("name.first");
+		PackableTable table = new PackableTable();
+		PackableValueExpression ve = new PackableValueExpression("name.first");
 
 		table.put(ve, "John");
 		
-		Assert.assertEquals(new PackableStringImpl("John"), table.get(ve));
-		Assert.assertEquals(new PackableStringImpl("John"), table.getString(ve));
+		Assert.assertEquals(new PackableString("John"), table.get(ve));
+		Assert.assertEquals(new PackableString("John"), table.getString(ve));
 		
 	}
 	
 	@Test
 	public void testIncrement() {
 		
-		PackableTable table = new PackableTableImpl();
-		PackableValueExpression ve = new PackableValueExpressionImpl("logins");
+		PackableTable table = new PackableTable();
+		PackableValueExpression ve = new PackableValueExpression("logins");
 
 		PackableNumber number = table.getNumber(ve);
 		if (number == null) {
-			number = new PackableNumberImpl(0l);
+			number = new PackableNumber(0l);
 		}
-		number = number.add(new PackableNumberImpl(1));
+		number = number.add(new PackableNumber(1));
 		
 		table.put(ve, number);
 		
@@ -207,14 +204,14 @@ public class PackableValueExpressionTest {
 	@Test
 	public void testDecrement() {
 		
-		PackableTable table = new PackableTableImpl();
-		PackableValueExpression ve = new PackableValueExpressionImpl("logins");
+		PackableTable table = new PackableTable();
+		PackableValueExpression ve = new PackableValueExpression("logins");
 
 		PackableNumber number = table.getNumber(ve);
 		if (number == null) {
-			number = new PackableNumberImpl(0l);
+			number = new PackableNumber(0l);
 		}
-		number = number.subtract(new PackableNumberImpl(1.0));
+		number = number.subtract(new PackableNumber(1.0));
 		
 		table.put(ve, number);
 		

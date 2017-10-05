@@ -13,6 +13,15 @@
  */
 package io.datty.msgpack.table;
 
+import java.io.IOException;
+
+import org.msgpack.core.MessagePacker;
+import org.msgpack.value.Value;
+import org.msgpack.value.impl.ImmutableBooleanValueImpl;
+
+import io.datty.msgpack.core.writer.BooleanWriter;
+import io.netty.buffer.ByteBuf;
+
 /**
  * Immutable boolean type 
  * 
@@ -20,15 +29,72 @@ package io.datty.msgpack.table;
  *
  */
 
-public interface PackableBoolean extends PackableValue<PackableBoolean> {
+public final class PackableBoolean extends PackableValue<PackableBoolean> {
+
+	private final boolean booleanValue;
+	
+	public PackableBoolean(boolean value) {
+		this.booleanValue = value;
+	}
+	
+	public PackableBoolean(String value) {
+		this.booleanValue = Boolean.parseBoolean(value);
+	}
+	
+	@Override
+	public String asString() {
+		return Boolean.toString(booleanValue);
+	}
 
 	/**
 	 * Gets boolean value
 	 * 
 	 * @return bool value
 	 */
-	
-	boolean asBoolean();
+	public boolean asBoolean() {
+		return booleanValue;
+	}
 
+	@Override
+  public Value toValue() {
+    return booleanValue ? ImmutableBooleanValueImpl.TRUE : ImmutableBooleanValueImpl.FALSE;
+  }
+	
+  @Override
+	public void writeTo(MessagePacker packer) throws IOException {
+  	packer.packBoolean(booleanValue);
+	}
+
+	@Override
+	public ByteBuf pack(ByteBuf buffer) throws IOException {
+		return BooleanWriter.INSTANCE.writeBoolean(booleanValue, buffer);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (booleanValue ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PackableBoolean other = (PackableBoolean) obj;
+		if (booleanValue != other.booleanValue)
+			return false;
+		return true;
+	}
+
+	@Override
+	public void print(StringBuilder str, int initialSpaces, int tabSpaces) {
+		str.append("PackableBoolean [booleanValue=").append(booleanValue).append("]");
+	}
 	
 }

@@ -22,8 +22,6 @@ import io.datty.msgpack.table.PackableString;
 import io.datty.msgpack.table.PackableTable;
 import io.datty.msgpack.table.PackableValue;
 import io.datty.msgpack.table.PackableValueFactory;
-import io.datty.msgpack.table.impl.PackableNumberImpl;
-import io.datty.msgpack.table.impl.PackableStringImpl;
 
 /**
  * PackableFactoryTest
@@ -138,14 +136,14 @@ public class PackableFactoryTest {
 		PackableTable table = (PackableTable) value;
 		
 		Assert.assertEquals("123", table.get("acc").asString());
-		Assert.assertEquals(new PackableStringImpl("123"), table.getString("acc"));
-		Assert.assertEquals(new PackableNumberImpl(123), table.getNumber("acc"));
+		Assert.assertEquals(new PackableString("123"), table.getString("acc"));
+		Assert.assertEquals(new PackableNumber(123), table.getNumber("acc"));
 		
 		Assert.assertEquals("Alex", table.get("name").asString());
-		Assert.assertEquals(new PackableStringImpl("Alex"), table.getString("name"));
+		Assert.assertEquals(new PackableString("Alex"), table.getString("name"));
 		
 		Assert.assertEquals("-9", table.get("logins").asString());
-		Assert.assertEquals(new PackableNumberImpl(-9), table.getNumber("logins"));
+		Assert.assertEquals(new PackableNumber(-9), table.getNumber("logins"));
 		
 		//System.out.println(table);
 		

@@ -15,9 +15,13 @@ package io.datty.msgpack.table;
 
 import java.io.IOException;
 
+import org.msgpack.core.MessagePack;
 import org.msgpack.core.MessagePacker;
+import org.msgpack.core.buffer.ArrayBufferOutput;
 import org.msgpack.value.Value;
 
+import io.datty.msgpack.table.support.PackableException;
+import io.datty.msgpack.table.util.PackableStringifyUtil;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -28,7 +32,7 @@ import io.netty.buffer.ByteBuf;
  * @param <T> - child type
  */
 
-public interface PackableValue<T> {
+public abstract class PackableValue<T> {
 
 	/**
 	 * Gets value as a string
@@ -36,7 +40,7 @@ public interface PackableValue<T> {
 	 * @return string representation of the value
 	 */
 	
-	String asString();
+	public abstract String asString();
 	
 	/**
 	 * Gets msgpack value
@@ -44,7 +48,7 @@ public interface PackableValue<T> {
 	 * @return not null msgpack value
 	 */
 	
-	Value toValue();
+	public abstract Value toValue();
 
 	/**
 	 * Gets msgpack json value
@@ -52,7 +56,9 @@ public interface PackableValue<T> {
 	 * @return not null json value
 	 */
 	
-	String toJson();
+	public String toJson() {
+		return toValue().toJson();
+	}
 	
 	/**
 	 * Writes payload to packer
@@ -64,7 +70,7 @@ public interface PackableValue<T> {
 	 * throws IOException
 	 */
 	
-	void writeTo(MessagePacker packer) throws IOException;
+	public abstract void writeTo(MessagePacker packer) throws IOException;
 	
 	/**
 	 * Writes payload to buffer
@@ -73,7 +79,7 @@ public interface PackableValue<T> {
 	 * @throws IOException
 	 */
 	
-	ByteBuf pack(ByteBuf buffer)  throws IOException;
+	public abstract ByteBuf pack(ByteBuf buffer)  throws IOException;
 	
 	/**
 	 * Gets hex string value representation
@@ -81,7 +87,9 @@ public interface PackableValue<T> {
 	 * @return not null hex string
 	 */
 	
-	String toHexString();
+	public String toHexString() {
+		return PackableStringifyUtil.toHex(toByteArray());
+	}
 	
 	/**
 	 * Gets byte array representation of the value
@@ -89,7 +97,19 @@ public interface PackableValue<T> {
 	 * @return serialized value
 	 */
 	
-	byte[] toByteArray();
+	public byte[] toByteArray() {
+
+		ArrayBufferOutput out = new ArrayBufferOutput();
+		try {
+			MessagePacker packer = MessagePack.newDefaultPacker(out);
+			writeTo(packer);
+			packer.flush();
+		} catch (IOException e) {
+			throw new PackableException("IOException happened during serialization to byte array", e);
+		}
+
+		return out.toByteArray();
+	}
 	
 	/**
 	 * Prints value to string
@@ -99,6 +119,13 @@ public interface PackableValue<T> {
 	 * @param tabSpaces - tab number of spaces
 	 */
 	
-	void print(StringBuilder out, int initialSpaces, int tabSpaces);
+	public abstract void print(StringBuilder out, int initialSpaces, int tabSpaces);
+	
+	@Override
+	public String toString() {
+		StringBuilder str = new StringBuilder();
+		print(str, 0, 2);
+		return str.toString();
+	}
 	
 }

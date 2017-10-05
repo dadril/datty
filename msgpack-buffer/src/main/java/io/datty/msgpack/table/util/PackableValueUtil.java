@@ -18,9 +18,6 @@ import io.datty.msgpack.table.PackableNumber;
 import io.datty.msgpack.table.PackableString;
 import io.datty.msgpack.table.PackableTable;
 import io.datty.msgpack.table.PackableValue;
-import io.datty.msgpack.table.impl.PackableBooleanImpl;
-import io.datty.msgpack.table.impl.PackableNumberImpl;
-import io.datty.msgpack.table.impl.PackableStringImpl;
 
 /**
  * Base util class for explicit conversion from one simple type to another
@@ -65,7 +62,7 @@ public final class PackableValueUtil {
 				return (PackableBoolean) value;
 			}
 			else {
-				return new PackableBooleanImpl(value.asString());
+				return new PackableBoolean(value.asString());
 			}
 		}
 		return null;
@@ -84,7 +81,7 @@ public final class PackableValueUtil {
 				return (PackableNumber) value;
 			}
 			else {
-				return new PackableNumberImpl(value.asString());
+				return new PackableNumber(value.asString());
 			}
 		}
 		return null;
@@ -103,7 +100,7 @@ public final class PackableValueUtil {
 				return (PackableString) value;
 			}
 			else {
-				return new PackableStringImpl(value.asString());
+				return new PackableString(value.asString());
 			}
 		}
 		return null;

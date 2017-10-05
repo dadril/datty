@@ -13,7 +13,13 @@
  */
 package io.datty.msgpack.table;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.StringTokenizer;
+
+import io.datty.msgpack.table.util.PackableStringifyUtil;
+import io.datty.msgpack.table.util.PackableStringifyUtil.NumberType;
 
 /**
  * PackableValueExpression
@@ -34,7 +40,29 @@ import java.util.List;
  *
  */
 
-public interface PackableValueExpression {
+public final class PackableValueExpression {
+
+	private final List<String> path = new ArrayList<String>();
+
+	public PackableValueExpression(String valueExpression) {
+		
+		if (valueExpression == null) {
+			throw new IllegalArgumentException("empty valueExpression");
+		}
+
+		StringTokenizer tokenizer = new StringTokenizer(valueExpression, ".[]");
+		
+		while(tokenizer.hasMoreTokens()) {
+			
+			String token = tokenizer.nextToken().trim();
+			
+			if (!token.isEmpty()) {
+				path.add(token);
+			}
+			
+		}
+		
+	}
 
 	/**
 	 * Check is the expression is empty
@@ -42,7 +70,9 @@ public interface PackableValueExpression {
 	 * @return true if empty
 	 */
 	
-	boolean isEmpty();
+	public boolean isEmpty() {
+		return path.isEmpty();
+	}
 	
 	/**
 	 * Gets size of the keys in expression
@@ -50,7 +80,9 @@ public interface PackableValueExpression {
 	 * @return size
 	 */
 	
-	int size();
+	public int size() {
+		return path.size();
+	}
 	
 	/**
 	 * Gets i-th element in expression
@@ -59,7 +91,9 @@ public interface PackableValueExpression {
 	 * @return key
 	 */
 	
-	String get(int i);
+	public String get(int i) {
+		return path.get(i);
+	}
 	
 	/**
 	 * Gets the whole path
@@ -67,6 +101,30 @@ public interface PackableValueExpression {
 	 * @return not null list
 	 */
 	
-	List<String> getPath();
+	public List<String> getPath() {
+		return Collections.unmodifiableList(path);
+	}
+
+	public String asString() {
+		StringBuilder str = new StringBuilder();
+		for (String element : path) {
+			NumberType numberType = PackableStringifyUtil.detectNumber(element);
+			if (numberType == NumberType.LONG) {
+				str.append("[").append(element).append("]");
+			}
+			else {
+				if (str.length() > 0) {
+					str.append(".");
+				}
+				str.append(element);
+			}
+		}
+		return str.toString();
+	}
+	
+	@Override
+	public String toString() {
+		return asString();
+	}
 	
 }

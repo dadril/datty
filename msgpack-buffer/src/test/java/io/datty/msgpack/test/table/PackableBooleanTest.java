@@ -16,82 +16,82 @@ package io.datty.msgpack.test.table;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.datty.msgpack.table.PackableBoolean;
 import io.datty.msgpack.table.PackableValueFactory;
-import io.datty.msgpack.table.impl.PackableBooleanImpl;
 
 
 
 /**
- * PackableBooleanImplTest
+ * PackableBooleanTest
  * 
  * @author Alex Shvid
  *
  */
 
-public class PackableBooleanImplTest extends AbstractPackableTest {
+public class PackableBooleanTest extends AbstractPackableTest {
 
 	@Test
 	public void testNull() {
 
-		PackableBooleanImpl bool = new PackableBooleanImpl(null);
+		PackableBoolean bool = new PackableBoolean(null);
 
 		Assert.assertEquals(false, bool.asBoolean());
     Assert.assertEquals("c2", bool.toHexString());
     Assert.assertEquals("c2", toHexString(bool));
     
-    PackableBooleanImpl actual = PackableValueFactory.newTypedValue(bool.toByteArray());
+    PackableBoolean actual = PackableValueFactory.newTypedValue(bool.toByteArray());
     Assert.assertEquals(bool, actual);
 	}
 	
 	@Test
 	public void testEmpty() {
 
-		PackableBooleanImpl bool = new PackableBooleanImpl("");
+		PackableBoolean bool = new PackableBoolean("");
 
 		Assert.assertEquals(false, bool.asBoolean());
     Assert.assertEquals("c2", bool.toHexString());
     Assert.assertEquals("c2", toHexString(bool));
     
-    PackableBooleanImpl actual = PackableValueFactory.newTypedValue(bool.toByteArray());
+    PackableBoolean actual = PackableValueFactory.newTypedValue(bool.toByteArray());
     Assert.assertEquals(bool, actual);
 	}
 	
 	@Test
 	public void testFalse() {
 
-		PackableBooleanImpl bool = new PackableBooleanImpl("false");
+		PackableBoolean bool = new PackableBoolean("false");
 
 		Assert.assertEquals(false, bool.asBoolean());
     Assert.assertEquals("c2", bool.toHexString());
     Assert.assertEquals("c2", toHexString(bool));
     
-    PackableBooleanImpl actual = PackableValueFactory.newTypedValue(bool.toByteArray());
+    PackableBoolean actual = PackableValueFactory.newTypedValue(bool.toByteArray());
     Assert.assertEquals(bool, actual);
 	}
 	
 	@Test
 	public void testUnknown() {
 
-		PackableBooleanImpl bool = new PackableBooleanImpl("unknown");
+		PackableBoolean bool = new PackableBoolean("unknown");
 
 		Assert.assertEquals(false, bool.asBoolean());
     Assert.assertEquals("c2", bool.toHexString());
     Assert.assertEquals("c2", toHexString(bool));
     
-    PackableBooleanImpl actual = PackableValueFactory.newTypedValue(bool.toByteArray());
+    PackableBoolean actual = PackableValueFactory.newTypedValue(bool.toByteArray());
     Assert.assertEquals(bool, actual);
 	}
 		
 	@Test
 	public void testTrue() {
 
-		PackableBooleanImpl bool = new PackableBooleanImpl("true");
+		PackableBoolean bool = new PackableBoolean("true");
 
 		Assert.assertEquals(true, bool.asBoolean());
     Assert.assertEquals("c3", bool.toHexString());
     Assert.assertEquals("c3", toHexString(bool));
 		
-    PackableBooleanImpl actual = PackableValueFactory.newTypedValue(bool.toByteArray());
+    PackableBoolean actual = PackableValueFactory.newTypedValue(bool.toByteArray());
     Assert.assertEquals(bool, actual);
 	}
 	

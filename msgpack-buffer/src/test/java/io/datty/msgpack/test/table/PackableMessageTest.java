@@ -22,7 +22,6 @@ import org.junit.Test;
 import io.datty.msgpack.table.PackableMessage;
 import io.datty.msgpack.table.PackableTable;
 import io.datty.msgpack.table.PackableValueFactory;
-import io.datty.msgpack.table.impl.PackableTableImpl;
 
 
 /**
@@ -118,7 +117,7 @@ public class PackableMessageTest {
 	@Test
 	public void testMessageValue() {
 		
-		PackableTable payload = new PackableTableImpl();
+		PackableTable payload = new PackableTable();
 		
 		payload.put("name", "Bob");
 		payload.put("age", "45");

@@ -20,11 +20,6 @@ import org.msgpack.core.MessageFormat;
 import org.msgpack.core.MessagePack;
 import org.msgpack.core.MessageUnpacker;
 
-import io.datty.msgpack.table.impl.PackableBooleanImpl;
-import io.datty.msgpack.table.impl.PackableMessageImpl;
-import io.datty.msgpack.table.impl.PackableNumberImpl;
-import io.datty.msgpack.table.impl.PackableStringImpl;
-import io.datty.msgpack.table.impl.PackableTableImpl;
 import io.datty.msgpack.table.support.PackableException;
 import io.datty.msgpack.table.support.PackableNumberFormatException;
 import io.datty.msgpack.table.support.PackableParseException;
@@ -50,7 +45,7 @@ public final class PackableValueFactory {
 	 */
 	
 	public static final PackableMessage newMessage() {
-		return new PackableMessageImpl();
+		return new PackableMessage();
 	}
 	
 	/**
@@ -62,7 +57,7 @@ public final class PackableValueFactory {
 	 */
 	
 	public static final PackableMessage parseMessage(byte[] blob) {
-		return new PackableMessageImpl(blob);
+		return new PackableMessage(blob);
 	}
 	
 	/**
@@ -76,7 +71,7 @@ public final class PackableValueFactory {
 	 */
 	
 	public static final PackableMessage parseMessage(byte[] buffer, int offset, int length) {
-		return new PackableMessageImpl(buffer, offset, length);
+		return new PackableMessage(buffer, offset, length);
 	}
 	
 	/**
@@ -88,7 +83,7 @@ public final class PackableValueFactory {
 	 */
 	
 	public static final PackableMessage parseMessage(ByteBuffer buffer) {
-		return new PackableMessageImpl(buffer);
+		return new PackableMessage(buffer);
 	}
 	
 	/**
@@ -205,7 +200,7 @@ public final class PackableValueFactory {
 
   private static PackableValue<?> newArray(MessageUnpacker unpacker) throws IOException {
 
-  	PackableTableImpl table = new PackableTableImpl();
+  	PackableTable table = new PackableTable();
   	
     int arraySize = unpacker.unpackArrayHeader();
     if (arraySize == 0) {
@@ -227,7 +222,7 @@ public final class PackableValueFactory {
 
   private static PackableValue<?> newMap(MessageUnpacker unpacker) throws IOException {
 
-  	PackableTableImpl table = new PackableTableImpl();
+  	PackableTable table = new PackableTable();
   	
     int mapSize = unpacker.unpackMapHeader();
     if (mapSize == 0) {
@@ -260,7 +255,7 @@ public final class PackableValueFactory {
 		switch (format) {
 
 		case BOOLEAN:
-			return new PackableBooleanImpl(unpacker.unpackBoolean());
+			return new PackableBoolean(unpacker.unpackBoolean());
 
 		case INT8:
 		case INT16:
@@ -272,22 +267,22 @@ public final class PackableValueFactory {
 		case UINT64:
 		case POSFIXINT:
 		case NEGFIXINT:
-			return new PackableNumberImpl(unpacker.unpackLong());
+			return new PackableNumber(unpacker.unpackLong());
 
 		case FLOAT32:
 		case FLOAT64:
-			return new PackableNumberImpl(unpacker.unpackDouble());
+			return new PackableNumber(unpacker.unpackDouble());
 
 		case STR8:
 		case STR16:
 		case STR32:
 		case FIXSTR:
-			return new PackableStringImpl(unpacker.unpackString());
+			return new PackableString(unpacker.unpackString());
 
 		case BIN8:
 		case BIN16:
 		case BIN32:
-			return new PackableStringImpl(unpacker.readPayload(unpacker.unpackBinaryHeader()), false);
+			return new PackableString(unpacker.readPayload(unpacker.unpackBinaryHeader()), false);
 
 		default:
 			unpacker.skipValue();
@@ -310,11 +305,11 @@ public final class PackableValueFactory {
 		}
 
 		if (stringifyValue.equalsIgnoreCase("true")) {
-			return new PackableBooleanImpl(true);
+			return new PackableBoolean(true);
 		}
 
 		if (stringifyValue.equalsIgnoreCase("false")) {
-			return new PackableBooleanImpl(false);
+			return new PackableBoolean(false);
 		}
 
 		NumberType type = PackableStringifyUtil.detectNumber(stringifyValue);
@@ -323,20 +318,20 @@ public final class PackableValueFactory {
 
 		case LONG:
 			try {
-				return new PackableNumberImpl(Long.parseLong(stringifyValue));
+				return new PackableNumber(Long.parseLong(stringifyValue));
 			} catch (NumberFormatException e) {
 				throw new PackableNumberFormatException(stringifyValue, e);
 			}
 
 		case DOUBLE:
 			try {
-				return new PackableNumberImpl(Double.parseDouble(stringifyValue));
+				return new PackableNumber(Double.parseDouble(stringifyValue));
 			} catch (NumberFormatException e) {
 				throw new PackableNumberFormatException(stringifyValue, e);
 			}
 
 		case NAN:
-			return new PackableStringImpl(stringifyValue);
+			return new PackableString(stringifyValue);
 
 		default:
 			throw new PackableParseException("invalid type: " + type + ", for stringfy value: " + stringifyValue);

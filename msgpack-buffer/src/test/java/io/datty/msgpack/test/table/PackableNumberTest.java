@@ -19,43 +19,42 @@ import org.junit.Test;
 import io.datty.msgpack.table.PackableNumber;
 import io.datty.msgpack.table.PackableNumberType;
 import io.datty.msgpack.table.PackableValueFactory;
-import io.datty.msgpack.table.impl.PackableNumberImpl;
 import io.datty.msgpack.table.support.PackableNumberFormatException;
 
 /**
- * PackableNumberImplTest
+ * PackableNumberTest
  * 
  * @author Alex Shvid
  *
  */
 
-public class PackableNumberImplTest extends AbstractPackableTest {
+public class PackableNumberTest extends AbstractPackableTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNull() {
 
-		new PackableNumberImpl(null);
+		new PackableNumber(null);
 
 	}
 
 	@Test(expected = PackableNumberFormatException.class)
 	public void testEmpty() {
 
-		new PackableNumberImpl("");
+		new PackableNumber("");
 
 	}
 
 	@Test(expected = PackableNumberFormatException.class)
 	public void testNAN() {
 
-		new PackableNumberImpl("abc");
+		new PackableNumber("abc");
 
 	}
 	
 	@Test
 	public void testZeroLong() {
 
-		PackableNumberImpl number = new PackableNumberImpl("0");
+		PackableNumber number = new PackableNumber("0");
 
 		Assert.assertEquals(PackableNumberType.LONG, number.getType());
 		Assert.assertEquals(0L, number.asLong());
@@ -65,14 +64,14 @@ public class PackableNumberImplTest extends AbstractPackableTest {
     Assert.assertEquals("00", number.toHexString());
     Assert.assertEquals("00", toHexString(number));
     
-    PackableNumberImpl actual = PackableValueFactory.newTypedValue(number.toByteArray());
+    PackableNumber actual = PackableValueFactory.newTypedValue(number.toByteArray());
     Assert.assertEquals(number, actual);
 	}
 	
 	@Test
 	public void testZeroDouble() {
 
-		PackableNumberImpl number = new PackableNumberImpl("0.0");
+		PackableNumber number = new PackableNumber("0.0");
 
 		Assert.assertEquals(PackableNumberType.DOUBLE, number.getType());
 		Assert.assertEquals(0L, number.asLong());
@@ -82,14 +81,14 @@ public class PackableNumberImplTest extends AbstractPackableTest {
     Assert.assertEquals("cb0000000000000000", number.toHexString());
     Assert.assertEquals("cb0000000000000000", toHexString(number));
     
-    PackableNumberImpl actual = PackableValueFactory.newTypedValue(number.toByteArray());
+    PackableNumber actual = PackableValueFactory.newTypedValue(number.toByteArray());
     Assert.assertEquals(number, actual);
 	}
 	
 	@Test
 	public void testLong() {
 
-		PackableNumberImpl number = new PackableNumberImpl("123456789");
+		PackableNumber number = new PackableNumber("123456789");
 
 		Assert.assertEquals(PackableNumberType.LONG, number.getType());
 		Assert.assertEquals(123456789L, number.asLong());
@@ -99,14 +98,14 @@ public class PackableNumberImplTest extends AbstractPackableTest {
     Assert.assertEquals("ce075bcd15", number.toHexString());
     Assert.assertEquals("ce075bcd15", toHexString(number));
     
-    PackableNumberImpl actual = PackableValueFactory.newTypedValue(number.toByteArray());
+    PackableNumber actual = PackableValueFactory.newTypedValue(number.toByteArray());
     Assert.assertEquals(number, actual);
 	}
 	
 	@Test
 	public void testDouble() {
 
-		PackableNumberImpl number = new PackableNumberImpl("123456789.0");
+		PackableNumber number = new PackableNumber("123456789.0");
 
 		Assert.assertEquals(PackableNumberType.DOUBLE, number.getType());
 		Assert.assertEquals(123456789L, number.asLong());
@@ -116,14 +115,14 @@ public class PackableNumberImplTest extends AbstractPackableTest {
     Assert.assertEquals("cb419d6f3454000000", number.toHexString());
     Assert.assertEquals("cb419d6f3454000000", toHexString(number));
     
-    PackableNumberImpl actual = PackableValueFactory.newTypedValue(number.toByteArray());
+    PackableNumber actual = PackableValueFactory.newTypedValue(number.toByteArray());
     Assert.assertEquals(number, actual);
 	}
 	
 	@Test
 	public void testMinusLong() {
 
-		PackableNumberImpl number = new PackableNumberImpl("-123456789");
+		PackableNumber number = new PackableNumber("-123456789");
 
 		Assert.assertEquals(PackableNumberType.LONG, number.getType());
 		Assert.assertEquals(-123456789L, number.asLong());
@@ -133,14 +132,14 @@ public class PackableNumberImplTest extends AbstractPackableTest {
     Assert.assertEquals("d2f8a432eb", number.toHexString());
     Assert.assertEquals("d2f8a432eb", toHexString(number));
     
-    PackableNumberImpl actual = PackableValueFactory.newTypedValue(number.toByteArray());
+    PackableNumber actual = PackableValueFactory.newTypedValue(number.toByteArray());
     Assert.assertEquals(number, actual);
 	}
 	
 	@Test
 	public void testMinusDouble() {
 
-		PackableNumberImpl number = new PackableNumberImpl("-123456789.0");
+		PackableNumber number = new PackableNumber("-123456789.0");
 
 		Assert.assertEquals(PackableNumberType.DOUBLE, number.getType());
 		Assert.assertEquals(-123456789L, number.asLong());
@@ -150,14 +149,14 @@ public class PackableNumberImplTest extends AbstractPackableTest {
     Assert.assertEquals("cbc19d6f3454000000", number.toHexString());
     Assert.assertEquals("cbc19d6f3454000000", toHexString(number));
     
-    PackableNumberImpl actual = PackableValueFactory.newTypedValue(number.toByteArray());
+    PackableNumber actual = PackableValueFactory.newTypedValue(number.toByteArray());
     Assert.assertEquals(number, actual);
 	}
 	
 	@Test
 	public void testMaxLong() {
 
-		PackableNumberImpl number = new PackableNumberImpl(Long.MAX_VALUE);
+		PackableNumber number = new PackableNumber(Long.MAX_VALUE);
 
 		Assert.assertEquals(PackableNumberType.LONG, number.getType());
 		Assert.assertEquals(Long.MAX_VALUE, number.asLong());
@@ -167,14 +166,14 @@ public class PackableNumberImplTest extends AbstractPackableTest {
     Assert.assertEquals("cf7fffffffffffffff", number.toHexString());
     Assert.assertEquals("cf7fffffffffffffff", toHexString(number));
     
-    PackableNumberImpl actual = PackableValueFactory.newTypedValue(number.toByteArray());
+    PackableNumber actual = PackableValueFactory.newTypedValue(number.toByteArray());
     Assert.assertEquals(number, actual);
 	}
 	
 	@Test
 	public void testMinLong() {
 
-		PackableNumberImpl number = new PackableNumberImpl(Long.MIN_VALUE);
+		PackableNumber number = new PackableNumber(Long.MIN_VALUE);
 
 		Assert.assertEquals(PackableNumberType.LONG, number.getType());
 		Assert.assertEquals(Long.MIN_VALUE, number.asLong());
@@ -184,43 +183,43 @@ public class PackableNumberImplTest extends AbstractPackableTest {
     Assert.assertEquals("d38000000000000000", number.toHexString());
     Assert.assertEquals("d38000000000000000", toHexString(number));
     
-    PackableNumberImpl actual = PackableValueFactory.newTypedValue(number.toByteArray());
+    PackableNumber actual = PackableValueFactory.newTypedValue(number.toByteArray());
     Assert.assertEquals(number, actual);
 	}
 
 	@Test
 	public void testAdd() {
 		
-		PackableNumber number = new PackableNumberImpl(123L);
+		PackableNumber number = new PackableNumber(123L);
 		
 		Assert.assertEquals(123L + 555L, number.add(555L).asLong());
-		Assert.assertEquals(123L + 555L, number.add(new PackableNumberImpl(555L)).asLong());
+		Assert.assertEquals(123L + 555L, number.add(new PackableNumber(555L)).asLong());
 		Assert.assertEquals(126L, number.add(3.0).asLong());
-		Assert.assertEquals(126L, number.add(new PackableNumberImpl(3.0)).asLong());
+		Assert.assertEquals(126L, number.add(new PackableNumber(3.0)).asLong());
 		
-		number = new PackableNumberImpl(123.0);
+		number = new PackableNumber(123.0);
 		
 		Assert.assertEquals(123L + 555L, number.add(555L).asLong());
-		Assert.assertEquals(123L + 555L, number.add(new PackableNumberImpl(555L)).asLong());
+		Assert.assertEquals(123L + 555L, number.add(new PackableNumber(555L)).asLong());
 		Assert.assertEquals(126L, number.add(3.0).asLong());
-		Assert.assertEquals(126L, number.add(new PackableNumberImpl(3.0)).asLong());
+		Assert.assertEquals(126L, number.add(new PackableNumber(3.0)).asLong());
 	}
 	
 	@Test
 	public void testSubtruct() {
 		
-		PackableNumber number = new PackableNumberImpl(123L);
+		PackableNumber number = new PackableNumber(123L);
 		
 		Assert.assertEquals(123L - 555L, number.subtract(555L).asLong());
-		Assert.assertEquals(123L - 555L, number.subtract(new PackableNumberImpl(555L)).asLong());
+		Assert.assertEquals(123L - 555L, number.subtract(new PackableNumber(555L)).asLong());
 		Assert.assertEquals(120L, number.subtract(3.0).asLong());
-		Assert.assertEquals(120L, number.subtract(new PackableNumberImpl(3.0)).asLong());
+		Assert.assertEquals(120L, number.subtract(new PackableNumber(3.0)).asLong());
 		
-		number = new PackableNumberImpl(123.0);
+		number = new PackableNumber(123.0);
 		
 		Assert.assertEquals(123L - 555L, number.subtract(555L).asLong());
-		Assert.assertEquals(123L - 555L, number.subtract(new PackableNumberImpl(555L)).asLong());
+		Assert.assertEquals(123L - 555L, number.subtract(new PackableNumber(555L)).asLong());
 		Assert.assertEquals(120L, number.subtract(3.0).asLong());
-		Assert.assertEquals(120L, number.subtract(new PackableNumberImpl(3.0)).asLong());
+		Assert.assertEquals(120L, number.subtract(new PackableNumber(3.0)).asLong());
 	}
 }
