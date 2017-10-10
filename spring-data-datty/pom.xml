@@ -39,7 +39,7 @@
     
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>msgpack-buffer</artifactId>
+      <artifactId>datty-msgpack</artifactId>
       <version>${project.version}</version>    
     </dependency>    
         

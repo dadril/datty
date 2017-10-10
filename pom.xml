@@ -17,7 +17,7 @@
 	</properties>
 
 	<modules>
-    <module>msgpack-buffer</module>	
+    <module>datty-msgpack</module>	
 		<module>datty-api</module>
     <module>datty-io</module>		
 		<module>datty-unit</module>
