@@ -24,7 +24,7 @@ import io.datty.aerospike.AerospikeRecord;
 import io.datty.aerospike.AerospikeSet;
 import io.datty.aerospike.support.AerospikeValueUtil;
 import io.datty.api.ByteBufValue;
-import io.datty.api.DattyRow;
+import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
 import io.datty.api.operation.ScanOperation;
 import io.datty.api.result.RecordResult;
@@ -78,8 +78,8 @@ public enum AerospikeScan implements AerospikeSetOperation<ScanOperation> {
 		Record record = aeroRecord.getRecord();
 		if (record != null) {
 			
-			DattyRow row = new DattyRow();
-			result.setRow(row);
+			DattyRecord rec = new DattyRecord();
+			result.setRecord(rec);
 			
 			result.setVersion(new LongVersion(record.generation));
 
@@ -87,10 +87,10 @@ public enum AerospikeScan implements AerospikeSetOperation<ScanOperation> {
 				Object value = e.getValue();
 				if (value != null) {
 					ByteBuf buffer = AerospikeValueUtil.toByteBuf(value);
-					row.put(e.getKey(), new ByteBufValue(buffer));
+					rec.put(e.getKey(), new ByteBufValue(buffer));
 				}
 				else {
-					row.put(e.getKey(), DattyValue.NULL);
+					rec.put(e.getKey(), DattyValue.NULL);
 				}
 			}
 		

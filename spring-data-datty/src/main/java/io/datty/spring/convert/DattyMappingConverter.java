@@ -30,7 +30,7 @@ import org.springframework.util.ClassUtils;
 
 import io.datty.api.ByteBufValue;
 import io.datty.api.DattyConstants;
-import io.datty.api.DattyRow;
+import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
 import io.datty.msgpack.MessageWriter;
 import io.datty.msgpack.core.MapMessageReader;
@@ -113,7 +113,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 	 */
 	
 	@Override
-	public void write(Object source, DattyRow sink) {
+	public void write(Object source, DattyRecord sink) {
 		write(source, sink, DattySpringConstants.USE_NUMERIC);
 	}
 	
@@ -122,7 +122,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 	 */
 	
 	@Override
-	public void write(Object source, DattyRow sink, boolean numeric) {
+	public void write(Object source, DattyRecord sink, boolean numeric) {
 		Assert.notNull(source, "source is null");
 		Assert.notNull(sink, "sink is null");
 		
@@ -262,7 +262,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 	 * @param numeric - if true use numeric keys
 	 */
 	
-	private void writeEntity(DattyPersistentEntity<?> entity, Object source, DattyRow sink, boolean numeric) {
+	private void writeEntity(DattyPersistentEntity<?> entity, Object source, DattyRecord sink, boolean numeric) {
 		entity.doWithProperties(new WriteEntityHandler(source, sink, numeric));
 	}	
 	
@@ -414,11 +414,11 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 	public final class WriteEntityHandler implements PropertyHandler<DattyPersistentProperty> {
 
 		private final BeanWrapper wrapper;
-		private final DattyRow sink;
+		private final DattyRecord sink;
 		private final boolean numeric;		
 		private int size;
 		
-		public WriteEntityHandler(Object source, DattyRow sink, boolean numeric) {
+		public WriteEntityHandler(Object source, DattyRecord sink, boolean numeric) {
 			this.wrapper = new BeanWrapperImpl(source);		
 			wrapper.setConversionService(conversionService);
 			this.sink = sink;
@@ -454,7 +454,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 	 */
 	
 	@Override
-	public <R> R read(Class<R> type, DattyRow source) {
+	public <R> R read(Class<R> type, DattyRecord source) {
 		Assert.notNull(type, "type is null");
 		Assert.notNull(source, "source is null");
 		
@@ -535,7 +535,7 @@ public class DattyMappingConverter extends AbstractDattyConverter implements Bea
 	 */
 	
 	@SuppressWarnings("unchecked")
-	private <R> R readEntity(Class<R> type, DattyPersistentEntity<R> entity, DattyRow source) {
+	private <R> R readEntity(Class<R> type, DattyPersistentEntity<R> entity, DattyRecord source) {
 		
 		BeanWrapper wrapper = new BeanWrapperImpl(type);
 

@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import io.datty.api.DattyResult;
-import io.datty.api.DattyRow;
+import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
 import io.datty.api.version.Version;
 
@@ -38,7 +38,7 @@ public class RecordResult implements DattyResult {
 	
 	private Version version;
 	
-	private DattyRow row;
+	private DattyRecord record;
 	
 	/**
 	 * Count records in result
@@ -63,24 +63,24 @@ public class RecordResult implements DattyResult {
 		return this;
 	}
 
-	public DattyRow getRow() {
-		return row;
+	public DattyRecord getRecord() {
+		return record;
 	}
 	
-	public RecordResult setRow(DattyRow row) {
-		this.row = row;
+	public RecordResult setRecord(DattyRecord rec) {
+		this.record = rec;
 		return this;
 	}
 	
-	public boolean hasRow() {
-		return row != null;
+	public boolean hasRecord() {
+		return record != null;
 	}
 	
 	public RecordResult addValue(String minorKey, DattyValue value) {
-		if (row == null) {
-			row = new DattyRow();
+		if (record == null) {
+			record = new DattyRecord();
 		}
-		row.put(minorKey, value);
+		record.put(minorKey, value);
 		return this;
 	}
 	
@@ -119,38 +119,38 @@ public class RecordResult implements DattyResult {
 
 	public boolean isEmpty() {
 		
-		if (!hasRow()) {
+		if (!hasRecord()) {
 			return true;
 		}
 		
-		return row.isEmpty();
+		return record.isEmpty();
 	}
 	
 	public Set<String> minorKeys() {
 		
-		if (!hasRow()) {
+		if (!hasRecord()) {
 			return Collections.emptySet();
 		}
 		
-		return row.minorKeys();
+		return record.minorKeys();
 	}
 	
 	public DattyValue get(String minorKey) {
 		
-		if (!hasRow()) {
+		if (!hasRecord()) {
 			return null;
 		}
 		
-		return row.get(minorKey);
+		return record.get(minorKey);
 	}
 	
 	public int size() {
 		
-		if (!hasRow()) {
+		if (!hasRecord()) {
 			return 0;
 		}
 		
-		return row.size();
+		return record.size();
 	}
 	
 	@Override
@@ -160,7 +160,7 @@ public class RecordResult implements DattyResult {
 
 	@Override
 	public String toString() {
-		return "SetResult [majorKey=" + majorKey + ", version=" + version + ", row=" + row
+		return "SetResult [majorKey=" + majorKey + ", version=" + version + ", row=" + record
 				+ ", count=" + count + "]";
 	}
 

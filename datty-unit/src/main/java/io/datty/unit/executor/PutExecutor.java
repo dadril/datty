@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 import io.datty.api.DattyError;
-import io.datty.api.DattyRow;
+import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
 import io.datty.api.operation.PutOperation;
 import io.datty.api.result.PutResult;
@@ -40,17 +40,17 @@ public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
 	@Override
 	public Single<PutResult> execute(ConcurrentMap<String, UnitRecord> recordMap, PutOperation operation) {
 		
-		DattyRow row = operation.getRow();
+		DattyRecord rec = operation.getRecord();
 		
 		UnitRecord record = recordMap.get(operation.getMajorKey());
 		
 		if (record == null) {
 			
-			if (row == null || row.isEmpty()) {
+			if (rec == null || rec.isEmpty()) {
 				return Single.just(new PutResult());
 			}
 			
-			record = new UnitRecord(row.getValues());
+			record = new UnitRecord(rec.getValues());
 			UnitRecord c = recordMap.putIfAbsent(operation.getMajorKey(), record);
 			if (c != null) {
 				return Single.error(new DattyOperationException(DattyError.ErrCode.CONCURRENT_UPDATE, operation));
@@ -61,7 +61,7 @@ public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
 		}
 		else {
 			
-			Map<String, DattyValue> values = row != null ? row.getValues() : Collections.<String, DattyValue>emptyMap();
+			Map<String, DattyValue> values = rec != null ? rec.getValues() : Collections.<String, DattyValue>emptyMap();
 			UnitRecord newRecord = new UnitRecord(record, values, operation.getUpdatePolicy());
 			
 			boolean updated = newRecord.isEmpty() ? 

@@ -16,7 +16,7 @@ package io.datty.spring.converter.code;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.datty.api.DattyRow;
+import io.datty.api.DattyRecord;
 import io.datty.spring.support.DattyConverterUtil;
 import io.netty.buffer.ByteBuf;
 
@@ -36,31 +36,31 @@ public class NumericEntityTest {
 		entity.setId(123L);
 		entity.setName("Alex");
 		
-		DattyRow row = new DattyRow();
-		DattyConverterUtil.write(entity, row, true);
+		DattyRecord rec = new DattyRecord();
+		DattyConverterUtil.write(entity, rec, true);
 
-		ByteBuf bb = row.get("1").asByteBuf();
+		ByteBuf bb = rec.get("1").asByteBuf();
 		Assert.assertNotNull(bb);
 		
-		bb = row.get("2").asByteBuf();
+		bb = rec.get("2").asByteBuf();
 		Assert.assertNotNull(bb);
 		
-		NumericMigratedEntity actual = DattyConverterUtil.read(NumericMigratedEntity.class, row);
+		NumericMigratedEntity actual = DattyConverterUtil.read(NumericMigratedEntity.class, rec);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertEquals(entity.getName(), actual.getFirst());
 		
-		row = new DattyRow();
-		DattyConverterUtil.write(actual, row, true);
+		rec = new DattyRecord();
+		DattyConverterUtil.write(actual, rec, true);
 
-		bb = row.get("1").asByteBuf();
+		bb = rec.get("1").asByteBuf();
 		Assert.assertNotNull(bb);
 				
-		bb = row.get("2").asByteBuf();
+		bb = rec.get("2").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		//System.out.println(Arrays.toString(ByteBufUtil.getBytes(bb)));
 		
-		actual = DattyConverterUtil.read(NumericMigratedEntity.class, row);
+		actual = DattyConverterUtil.read(NumericMigratedEntity.class, rec);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertEquals(entity.getName(), actual.getFirst());
 		

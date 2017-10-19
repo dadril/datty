@@ -19,7 +19,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.datty.api.DattyRow;
+import io.datty.api.DattyRecord;
 import io.datty.msgpack.MessageIO;
 import io.datty.msgpack.core.reader.LongReader;
 import io.datty.spring.support.DattyConverterUtil;
@@ -40,20 +40,20 @@ public class ArrayEntityTest {
 		ArrayEntity entity = new ArrayEntity();
 		entity.setId(123L);
 		
-		DattyRow row = new DattyRow();
+		DattyRecord rec = new DattyRecord();
 		
-		DattyConverterUtil.write(entity, row);
+		DattyConverterUtil.write(entity, rec);
 		
-		ByteBuf bb = row.get("id").asByteBuf();
+		ByteBuf bb = rec.get("id").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
 		Assert.assertNotNull(id);
 		Assert.assertEquals(123L, id.longValue());
 		
-		Assert.assertNull(row.get("embedded"));
+		Assert.assertNull(rec.get("embedded"));
 
-		ArrayEntity actual = DattyConverterUtil.read(ArrayEntity.class, row);
+		ArrayEntity actual = DattyConverterUtil.read(ArrayEntity.class, rec);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNull(actual.getEmbedded());
 		
@@ -66,18 +66,18 @@ public class ArrayEntityTest {
 		entity.setId(123L);
 		entity.setEmbedded(new EmbeddedEntity[] {});
 		
-		DattyRow row = new DattyRow();
+		DattyRecord rec = new DattyRecord();
 		
-		DattyConverterUtil.write(entity, row);
+		DattyConverterUtil.write(entity, rec);
 		
-		ByteBuf bb = row.get("id").asByteBuf();
+		ByteBuf bb = rec.get("id").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
 		Assert.assertNotNull(id);
 		Assert.assertEquals(123L, id.longValue());
 		
-		bb = row.get("embedded").asByteBuf();
+		bb = rec.get("embedded").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Object value = MessageIO.readValue(bb.duplicate(), true);
@@ -87,7 +87,7 @@ public class ArrayEntityTest {
 		List<Map> list = (List<Map>) value;
 		Assert.assertEquals(0, list.size());
 
-		ArrayEntity actual = DattyConverterUtil.read(ArrayEntity.class, row);
+		ArrayEntity actual = DattyConverterUtil.read(ArrayEntity.class, rec);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNotNull(actual.getEmbedded());
 		Assert.assertEquals(0, actual.getEmbedded().length);
@@ -103,18 +103,18 @@ public class ArrayEntityTest {
 		EmbeddedEntity embedded = new EmbeddedEntity();
 		entity.setEmbedded(new EmbeddedEntity[] {embedded});
 		
-		DattyRow row = new DattyRow();
+		DattyRecord rec = new DattyRecord();
 		
-		DattyConverterUtil.write(entity, row);
+		DattyConverterUtil.write(entity, rec);
 		
-		ByteBuf bb = row.get("id").asByteBuf();
+		ByteBuf bb = rec.get("id").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
 		Assert.assertNotNull(id);
 		Assert.assertEquals(123L, id.longValue());
 		
-		bb = row.get("embedded").asByteBuf();
+		bb = rec.get("embedded").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		//System.out.println(Arrays.toString(ByteBufUtil.getBytes(bb)));
@@ -128,7 +128,7 @@ public class ArrayEntityTest {
 		Assert.assertNotNull(list.get(0));
 		Assert.assertNull(list.get(0).get("innerField"));
 
-		ArrayEntity actual = DattyConverterUtil.read(ArrayEntity.class, row);
+		ArrayEntity actual = DattyConverterUtil.read(ArrayEntity.class, rec);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNotNull(actual.getEmbedded());
 		Assert.assertEquals(1, actual.getEmbedded().length);
@@ -146,18 +146,18 @@ public class ArrayEntityTest {
 		embedded.setInnerField("inner");
 		entity.setEmbedded(new EmbeddedEntity[] {embedded});
 		
-		DattyRow row = new DattyRow();
+		DattyRecord rec = new DattyRecord();
 		
-		DattyConverterUtil.write(entity, row);
+		DattyConverterUtil.write(entity, rec);
 		
-		ByteBuf bb = row.get("id").asByteBuf();
+		ByteBuf bb = rec.get("id").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
 		Assert.assertNotNull(id);
 		Assert.assertEquals(123L, id.longValue());
 		
-		bb = row.get("embedded").asByteBuf();
+		bb = rec.get("embedded").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		//System.out.println(Arrays.toString(ByteBufUtil.getBytes(bb)));
@@ -171,7 +171,7 @@ public class ArrayEntityTest {
 		Assert.assertNotNull(list.get(0));
 		Assert.assertEquals("inner", list.get(0).get("innerField"));
 
-		ArrayEntity actual = DattyConverterUtil.read(ArrayEntity.class, row);
+		ArrayEntity actual = DattyConverterUtil.read(ArrayEntity.class, rec);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNotNull(actual.getEmbedded());
 		Assert.assertEquals(1, actual.getEmbedded().length);

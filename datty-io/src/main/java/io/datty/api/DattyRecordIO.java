@@ -24,35 +24,35 @@ import io.datty.support.exception.DattyException;
 import io.netty.buffer.ByteBuf;
 
 /**
- * DattyRowIO
+ * DattyRecordIO
  * 
  * @author Alex Shvid
  *
  */
 
-public final class DattyRowIO {
+public final class DattyRecordIO {
 
 	private final static MessageReader reader = MapMessageReader.INSTANCE;
 	private final static MessageWriter writer = MapMessageWriter.INSTANCE;
 	
-	private DattyRowIO() {
+	private DattyRecordIO() {
 	}
 	
-	public static DattyRow readRow(ByteBuf source) {
+	public static DattyRecord readRecord(ByteBuf source) {
 		
-		DattyRow row = new DattyRow();
+		DattyRecord rec = new DattyRecord();
 		
-		Object rowMap = reader.readValue(source, false);
+		Object recMap = reader.readValue(source, false);
 		
-		if (rowMap == null) {
-			return row;
+		if (recMap == null) {
+			return rec;
 		}
 		
-		if (!(rowMap instanceof MapMessageReader)) {
-			throw new DattyException("expected MapMessageReader for DattyRow object");
+		if (!(recMap instanceof MapMessageReader)) {
+			throw new DattyException("expected MapMessageReader for DattyRecord object");
 		}
 
-		MapMessageReader mapReader = (MapMessageReader) rowMap;
+		MapMessageReader mapReader = (MapMessageReader) recMap;
 		
 		int size = mapReader.size();
 		
@@ -81,16 +81,16 @@ public final class DattyRowIO {
 				dattyValue = new ByteBufValue(value);
 			}
 			
-			row.put((String) minorKey, dattyValue);
+			rec.put((String) minorKey, dattyValue);
 		
 		}
 		
-		return row;
+		return rec;
 	}
 	
-	public static ByteBuf writeRow(DattyRow row, ByteBuf sink) {
+	public static ByteBuf writeRecord(DattyRecord rec, ByteBuf sink) {
 		
-		Map<String, DattyValue> values = row.getValues();
+		Map<String, DattyValue> values = rec.getValues();
 		
 		writer.writeHeader(values.size(), sink);
 		

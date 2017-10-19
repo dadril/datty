@@ -15,7 +15,7 @@ package io.datty.api.result;
 
 import io.datty.api.DattyField;
 import io.datty.api.DattyResultIO;
-import io.datty.api.DattyRowIO;
+import io.datty.api.DattyRecordIO;
 import io.datty.api.version.VersionIO;
 import io.datty.msgpack.MessageReader;
 import io.datty.msgpack.MessageWriter;
@@ -52,7 +52,7 @@ public enum RecordResultIO implements DattyResultIO<RecordResult> {
 			return true;
 		
 		case ROW:
-			result.setRow(DattyRowIO.readRow(source));
+			result.setRecord(DattyRecordIO.readRecord(source));
 			return true;
 			
 		case COUNT:
@@ -81,8 +81,8 @@ public enum RecordResultIO implements DattyResultIO<RecordResult> {
 			fieldWriter.writeField(DattyField.VERSION, result.getVersion());
 		}
 		
-		if (result.hasRow()) {
-			fieldWriter.writeField(DattyField.ROW, result.getRow());
+		if (result.hasRecord()) {
+			fieldWriter.writeField(DattyField.ROW, result.getRecord());
 		}
 		
 		if (result.hasCount()) {

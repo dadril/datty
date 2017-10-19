@@ -16,7 +16,7 @@ package io.datty.api.result;
 import java.util.Collections;
 import java.util.Set;
 
-import io.datty.api.DattyRow;
+import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
 import io.datty.api.operation.GetOperation;
 import io.datty.api.version.Version;
@@ -36,29 +36,29 @@ public class GetResult extends AbstractResult<GetOperation, GetResult> {
 	
 	private Version version;
 	
-	private DattyRow row;
+	private DattyRecord record;
 	
 	public GetResult() {
 	}
 	
-	public DattyRow getRow() {
-		return row;
+	public DattyRecord getRecord() {
+		return record;
 	}
 	
-	public GetResult setRow(DattyRow row) {
-		this.row = row;
+	public GetResult setRecord(DattyRecord rec) {
+		this.record = rec;
 		return this;
 	}
 	
-	public boolean hasRow() {
-		return row != null;
+	public boolean hasRecord() {
+		return record != null;
 	}
 	
 	public GetResult addValue(String minorKey, DattyValue value) {
-		if (row == null) {
-			row = new DattyRow();
+		if (record == null) {
+			record = new DattyRecord();
 		}
-		row.put(minorKey, value);
+		record.put(minorKey, value);
 		return this;
 	}
 	
@@ -81,38 +81,38 @@ public class GetResult extends AbstractResult<GetOperation, GetResult> {
 
 	public boolean isEmpty() {
 		
-		if (!hasRow()) {
+		if (!hasRecord()) {
 			return true;
 		}
 		
-		return row.isEmpty();
+		return record.isEmpty();
 	}
 	
 	public Set<String> minorKeys() {
 		
-		if (!hasRow()) {
+		if (!hasRecord()) {
 			return Collections.emptySet();
 		}
 		
-		return row.minorKeys();
+		return record.minorKeys();
 	}
 	
 	public DattyValue get(String minorKey) {
 		
-		if (!hasRow()) {
+		if (!hasRecord()) {
 			return null;
 		}
 		
-		return row.get(minorKey);
+		return record.get(minorKey);
 	}
 	
 	public int size() {
 		
-		if (!hasRow()) {
+		if (!hasRecord()) {
 			return 0;
 		}
 		
-		return row.size();
+		return record.size();
 	}
 	
 	@Override
@@ -122,7 +122,7 @@ public class GetResult extends AbstractResult<GetOperation, GetResult> {
 
 	@Override
 	public String toString() {
-		return "GetResult [version=" + version + ", row=" + row + "]";
+		return "GetResult [version=" + version + ", record=" + record + "]";
 	}
 
 }

@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.junit.Assert;
 
-import io.datty.api.DattyRow;
+import io.datty.api.DattyRecord;
 import io.datty.msgpack.MessageIO;
 import io.datty.spring.support.DattyConverterUtil;
 import io.netty.buffer.ByteBuf;
@@ -37,13 +37,13 @@ public abstract class AbstractConverterTest {
 
 	public void testEmpty(Object entity) throws Exception {
 		
-		DattyRow row = new DattyRow();
+		DattyRecord rec = new DattyRecord();
 		
-		DattyConverterUtil.write(entity, row);
+		DattyConverterUtil.write(entity, rec);
 		
-		System.out.println("row = " + row);
+		System.out.println("rec = " + rec);
 		
-		Object actual = DattyConverterUtil.read(entity.getClass(), row);
+		Object actual = DattyConverterUtil.read(entity.getClass(), rec);
 		
 		Assert.assertEquals(entity, actual);
 		
@@ -58,11 +58,11 @@ public abstract class AbstractConverterTest {
 	
 	public void testNotEmpty(Object entity) throws Exception {
 		
-		DattyRow row = new DattyRow();
+		DattyRecord rec = new DattyRecord();
 		
-		DattyConverterUtil.write(entity, row);
+		DattyConverterUtil.write(entity, rec);
 		
-		Object actual = DattyConverterUtil.read(entity.getClass(), row);
+		Object actual = DattyConverterUtil.read(entity.getClass(), rec);
 		
 		Assert.assertEquals(entity, actual);
 		

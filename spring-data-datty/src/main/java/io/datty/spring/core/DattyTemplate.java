@@ -22,7 +22,7 @@ import org.springframework.util.Assert;
 
 import io.datty.api.Datty;
 import io.datty.api.DattyResult;
-import io.datty.api.DattyRow;
+import io.datty.api.DattyRecord;
 import io.datty.api.UpdatePolicy;
 import io.datty.api.operation.ClearOperation;
 import io.datty.api.operation.GetOperation;
@@ -103,14 +103,14 @@ public class DattyTemplate implements DattyOperations {
 			throw new MappingException("id property not found for " + entityMetadata);
 		}
 		
-		DattyRow row = new DattyRow();
-		converter.write(entity, row, numeric);
+		DattyRecord rec = new DattyRecord();
+		converter.write(entity, rec, numeric);
 		
 		return new PutOperation(entityMetadata.getSetName())
 		.setSuperKey(id.getSuperKey())
 		.setMajorKey(id.getMajorKey())
 		.setTtlSeconds(entityMetadata.getTtlSeconds())
-		.setRow(row)
+		.setRecord(rec)
 		.setUpdatePolicy(UpdatePolicy.MERGE)
 		.setUpstreamContext(entity)
 		.setTimeoutMillis(entityMetadata.getTimeoutMillis());
@@ -181,9 +181,9 @@ public class DattyTemplate implements DattyOperations {
 			@Override
 			public T call(GetResult res) {
 				
-				DattyRow row = res.getRow();
-				if (row != null) {
-					return (T) converter.read(entityClass, row);
+				DattyRecord rec = res.getRecord();
+				if (rec != null) {
+					return (T) converter.read(entityClass, rec);
 					
 				}
 				
@@ -215,9 +215,9 @@ public class DattyTemplate implements DattyOperations {
 			@Override
 			public T call(GetResult res) {
 				
-				DattyRow row = res.getRow();
-				if (row != null) {
-					return (T) converter.read(entityClass, row);
+				DattyRecord rec = res.getRecord();
+				if (rec != null) {
+					return (T) converter.read(entityClass, rec);
 				}
 				
 				return null;
@@ -300,9 +300,9 @@ public class DattyTemplate implements DattyOperations {
 
 				RecordResult queryRes = (RecordResult) res;
 				
-				DattyRow row = queryRes.getRow();
-				if (row != null) {
-					return (T) converter.read(entityClass, row);
+				DattyRecord rec = queryRes.getRecord();
+				if (rec != null) {
+					return (T) converter.read(entityClass, rec);
 				}
 				
 				return null;
@@ -342,9 +342,9 @@ public class DattyTemplate implements DattyOperations {
 				
 				GetResult getRes = (GetResult) res;
 				
-				DattyRow row = getRes.getRow();
-				if (row != null) {
-					return (T) converter.read(entityClass, row);
+				DattyRecord rec = getRes.getRecord();
+				if (rec != null) {
+					return (T) converter.read(entityClass, rec);
 				}
 				
 				return null;

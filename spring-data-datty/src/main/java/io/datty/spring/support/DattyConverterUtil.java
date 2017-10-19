@@ -13,7 +13,7 @@
  */
 package io.datty.spring.support;
 
-import io.datty.api.DattyRow;
+import io.datty.api.DattyRecord;
 import io.datty.spring.convert.DattyMappingConverter;
 import io.datty.spring.core.DattyId;
 import io.datty.spring.mapping.DattyMappingContext;
@@ -49,21 +49,21 @@ public final class DattyConverterUtil {
 		
 	}
 	
-	public static <R> R read(Class<R> entityClass, DattyRow row) {
+	public static <R> R read(Class<R> entityClass, DattyRecord rec) {
 		
-		return Lazy.converter.read(entityClass, row);
-		
-	}
-	
-	public static void write(Object entity, DattyRow row) {
-		
-		Lazy.converter.write(entity, row);
+		return Lazy.converter.read(entityClass, rec);
 		
 	}
 	
-	public static void write(Object entity, DattyRow row, boolean numeric) {
+	public static void write(Object entity, DattyRecord rec) {
 		
-		Lazy.converter.write(entity, row, numeric);
+		Lazy.converter.write(entity, rec);
+		
+	}
+	
+	public static void write(Object entity, DattyRecord rec, boolean numeric) {
+		
+		Lazy.converter.write(entity, rec, numeric);
 		
 	}
 	

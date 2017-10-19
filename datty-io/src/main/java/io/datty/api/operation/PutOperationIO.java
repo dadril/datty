@@ -14,7 +14,7 @@
 package io.datty.api.operation;
 
 import io.datty.api.DattyField;
-import io.datty.api.DattyRowIO;
+import io.datty.api.DattyRecordIO;
 import io.datty.msgpack.MessageReader;
 import io.datty.util.FieldWriter;
 import io.netty.buffer.ByteBuf;
@@ -45,7 +45,7 @@ public class PutOperationIO extends AbstractUpdateOperationIO<PutOperation> {
 		switch(field) {
 		
 			case ROW:
-				operation.setRow(DattyRowIO.readRow(source));
+				operation.setRecord(DattyRecordIO.readRecord(source));
 				return true;
 
 			default:
@@ -60,8 +60,8 @@ public class PutOperationIO extends AbstractUpdateOperationIO<PutOperation> {
 		
 		super.writeFields(operation, fieldWriter);
 		
-		if (operation.hasRow()) {
-			fieldWriter.writeField(DattyField.ROW, operation.getRow());
+		if (operation.hasRecord()) {
+			fieldWriter.writeField(DattyField.ROW, operation.getRecord());
 		}
 		
 	}

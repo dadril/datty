@@ -20,24 +20,24 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 /**
- * DattyRowIOTest
+ * DattyRecordIOTest
  * 
  * @author Alex Shvid
  *
  */
 
-public class DattyRowIOTest extends AbstractDattyIOTest {
+public class DattyRecordIOTest extends AbstractDattyIOTest {
 
 	@Test
 	public void testEmpty() {
 		
-		DattyRow row = new DattyRow();
+		DattyRecord rec = new DattyRecord();
 		
 		ByteBuf sink = Unpooled.buffer();
 		
-		sink = DattyRowIO.writeRow(row, sink);
+		sink = DattyRecordIO.writeRecord(rec, sink);
 		
-		DattyRow actual = DattyRowIO.readRow(sink);
+		DattyRecord actual = DattyRecordIO.readRecord(sink);
 		
 		Assert.assertTrue(actual.isEmpty());
 	}
@@ -45,14 +45,14 @@ public class DattyRowIOTest extends AbstractDattyIOTest {
 	@Test
 	public void testNull() {
 		
-		DattyRow row = new DattyRow();
-		row.put(minorKey, NullDattyValue.NULL);
+		DattyRecord rec = new DattyRecord();
+		rec.put(minorKey, NullDattyValue.NULL);
 		
 		ByteBuf sink = Unpooled.buffer();
 		
-		sink = DattyRowIO.writeRow(row, sink);
+		sink = DattyRecordIO.writeRecord(rec, sink);
 		
-		DattyRow actual = DattyRowIO.readRow(sink);
+		DattyRecord actual = DattyRecordIO.readRecord(sink);
 		
 		Assert.assertFalse(actual.isEmpty());
 		Assert.assertEquals(1, actual.size());
@@ -69,16 +69,16 @@ public class DattyRowIOTest extends AbstractDattyIOTest {
 		
 		ByteBuf value = Unpooled.wrappedBuffer("value".getBytes());
 		
-		DattyRow row = new DattyRow();
-		row.put(minorKey, new ByteBufValue(value));
+		DattyRecord rec = new DattyRecord();
+		rec.put(minorKey, new ByteBufValue(value));
 		
 		ByteBuf sink = Unpooled.buffer();
 		
-		sink = DattyRowIO.writeRow(row, sink);
+		sink = DattyRecordIO.writeRecord(rec, sink);
 		
 		//System.out.println(Arrays.toString(ByteBufUtil.getBytes(sink)));
 		
-		DattyRow actual = DattyRowIO.readRow(sink);
+		DattyRecord actual = DattyRecordIO.readRecord(sink);
 		
 		Assert.assertFalse(actual.isEmpty());
 		Assert.assertEquals(1, actual.size());
@@ -92,17 +92,17 @@ public class DattyRowIOTest extends AbstractDattyIOTest {
 		ByteBuf value = Unpooled.wrappedBuffer("value".getBytes());
 		ByteBuf value2 = Unpooled.wrappedBuffer("value2".getBytes());
 		
-		DattyRow row = new DattyRow();
-		row.put(minorKey, new ByteBufValue(value));
-		row.put("minorKey2", new ByteBufValue(value2));
+		DattyRecord rec = new DattyRecord();
+		rec.put(minorKey, new ByteBufValue(value));
+		rec.put("minorKey2", new ByteBufValue(value2));
 		
 		ByteBuf sink = Unpooled.buffer();
 		
-		sink = DattyRowIO.writeRow(row, sink);
+		sink = DattyRecordIO.writeRecord(rec, sink);
 		
 		//System.out.println(Arrays.toString(ByteBufUtil.getBytes(sink)));
 		
-		DattyRow actual = DattyRowIO.readRow(sink);
+		DattyRecord actual = DattyRecordIO.readRecord(sink);
 		
 		Assert.assertFalse(actual.isEmpty());
 		Assert.assertEquals(2, actual.size());
@@ -112,7 +112,7 @@ public class DattyRowIOTest extends AbstractDattyIOTest {
 		
 	}
 	
-	private void assertValue(String expected, DattyRow actual, String key) {
+	private void assertValue(String expected, DattyRecord actual, String key) {
 		
 		DattyValue actualValue = actual.get(key);
 		Assert.assertNotNull(actualValue);

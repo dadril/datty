@@ -16,7 +16,7 @@ package io.datty.spring.converter;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.datty.api.DattyRow;
+import io.datty.api.DattyRecord;
 import io.datty.msgpack.core.reader.LongReader;
 import io.datty.msgpack.core.reader.StringReader;
 import io.datty.spring.core.DattyId;
@@ -86,24 +86,24 @@ public class DattyConverterTest {
 		entity.setId(777L);
 		entity.setName("Alex");
 		
-		DattyRow row = new DattyRow();
+		DattyRecord rec = new DattyRecord();
 		
-		DattyConverterUtil.write(entity, row);
+		DattyConverterUtil.write(entity, rec);
 		
-		ByteBuf bb = row.get("id").asByteBuf();
+		ByteBuf bb = rec.get("id").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
 		Assert.assertNotNull(id);
 		Assert.assertEquals(entity.getId(), id);
 		
-		bb = row.get("name").asByteBuf();
+		bb = rec.get("name").asByteBuf();
 		Assert.assertNotNull(bb);
 		String name = StringReader.INSTANCE.read(bb.duplicate(), true);
 		Assert.assertNotNull(name);
 		Assert.assertEquals(entity.getName(), name);
 
-		ExampleCrossEntity actual = DattyConverterUtil.read(ExampleCrossEntity.class, row);
+		ExampleCrossEntity actual = DattyConverterUtil.read(ExampleCrossEntity.class, rec);
 		Assert.assertEquals(entity, actual);
 		
 	}

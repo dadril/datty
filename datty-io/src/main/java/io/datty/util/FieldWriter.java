@@ -18,8 +18,8 @@ import java.util.Collection;
 import io.datty.api.DattyField;
 import io.datty.api.DattyOperation.OpCode;
 import io.datty.api.DattyResult.ResCode;
-import io.datty.api.DattyRow;
-import io.datty.api.DattyRowIO;
+import io.datty.api.DattyRecord;
+import io.datty.api.DattyRecordIO;
 import io.datty.api.version.Version;
 import io.datty.api.version.VersionIO;
 import io.datty.msgpack.MessageWriter;
@@ -111,9 +111,9 @@ public final class FieldWriter {
 		size++;
 	}
 	
-	public void writeField(DattyField field, DattyRow row) {
+	public void writeField(DattyField field, DattyRecord rec) {
 		writeKey(field);
-		sink = DattyRowIO.writeRow(row, sink);
+		sink = DattyRecordIO.writeRecord(rec, sink);
 		size++;
 	}
 	

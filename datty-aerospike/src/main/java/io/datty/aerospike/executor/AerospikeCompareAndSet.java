@@ -28,7 +28,7 @@ import io.datty.aerospike.AerospikeSet;
 import io.datty.aerospike.support.AerospikeValueUtil;
 import io.datty.api.ByteBufValue;
 import io.datty.api.DattyError;
-import io.datty.api.DattyRow;
+import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
 import io.datty.api.operation.CompareAndSetOperation;
 import io.datty.api.result.CompareAndSetResult;
@@ -52,9 +52,9 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 	@Override
 	public Single<CompareAndSetResult> execute(AerospikeSet set, CompareAndSetOperation operation) {
 
-		DattyRow row = operation.getRow();
+		DattyRecord rec = operation.getRecord();
 		
-		if (row == null) {
+		if (rec == null) {
 
 			switch (operation.getUpdatePolicy()) {
 
@@ -72,7 +72,7 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 
 		}
 
-		boolean hasNullBins = hasNullBins(row.getValues());
+		boolean hasNullBins = hasNullBins(rec.getValues());
 
 		switch (operation.getUpdatePolicy()) {
 
@@ -110,7 +110,7 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 
 	private Single<CompareAndSetResult> mergeBins(final AerospikeSet set, final CompareAndSetOperation operation) {
 
-		final DattyRow row = operation.getRow();
+		final DattyRecord rec = operation.getRecord();
 		final AerospikeDattyManager manager = set.getParent();
 		QueryPolicy queryPolicy = set.getConfig().getQueryPolicy(operation, false);
 		
@@ -133,7 +133,7 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 							return Single.just(new CompareAndSetResult(false));
 						}
 						
-						AerospikeBins mergedBins = new AerospikeBins(mergeMaps(record, row.getValues()));
+						AerospikeBins mergedBins = new AerospikeBins(mergeMaps(record, rec.getValues()));
 						return putBins(manager, set, writePolicy, recordKey, mergedBins, operation);
 					}
 
@@ -202,7 +202,7 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 
 	private Single<CompareAndSetResult> putBins(AerospikeSet set, CompareAndSetOperation operation) {
 
-		final DattyRow row = operation.getRow();
+		final DattyRecord rec = operation.getRecord();
 		AerospikeDattyManager manager = set.getParent();
 		
 		WritePolicy writePolicy = set.getConfig().getWritePolicy(operation, true);
@@ -210,7 +210,7 @@ public enum AerospikeCompareAndSet implements AerospikeOperation<CompareAndSetOp
 		
 		Key recordKey = new Key(manager.getConfig().getNamespace(), set.getName(), operation.getMajorKey());
 
-		return putBins(manager, set, writePolicy, recordKey, new AerospikeBins(row.getValues()), operation);
+		return putBins(manager, set, writePolicy, recordKey, new AerospikeBins(rec.getValues()), operation);
 
 	}
 

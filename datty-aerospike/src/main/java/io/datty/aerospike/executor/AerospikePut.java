@@ -28,7 +28,7 @@ import io.datty.aerospike.AerospikeSet;
 import io.datty.aerospike.support.AerospikeValueUtil;
 import io.datty.api.ByteBufValue;
 import io.datty.api.DattyError;
-import io.datty.api.DattyRow;
+import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
 import io.datty.api.operation.PutOperation;
 import io.datty.api.result.PutResult;
@@ -50,9 +50,9 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 	@Override
 	public Single<PutResult> execute(AerospikeSet set, PutOperation operation) {
 
-		DattyRow row = operation.getRow();
+		DattyRecord rec = operation.getRecord();
 		
-		if (row == null) {
+		if (rec == null) {
 
 			switch(operation.getUpdatePolicy()) {
 			
@@ -69,7 +69,7 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 			
 		}
 		
-		boolean hasNullBins = hasNullBins(row.getValues());
+		boolean hasNullBins = hasNullBins(rec.getValues());
 		
 		switch(operation.getUpdatePolicy()) {
 		
@@ -93,7 +93,7 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 		
 	private Single<PutResult> mergeBins(final AerospikeSet set, final PutOperation operation) {
 		
-		final DattyRow row = operation.getRow();
+		final DattyRecord rec = operation.getRecord();
 		final AerospikeDattyManager manager = set.getParent();
 		QueryPolicy queryPolicy = set.getConfig().getQueryPolicy(operation, false);
 
@@ -109,7 +109,7 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 
 			@Override
 			public Single<PutResult> call(Record record) {
-				AerospikeBins mergedBins = new AerospikeBins(mergeMaps(record, row.getValues()));
+				AerospikeBins mergedBins = new AerospikeBins(mergeMaps(record, rec.getValues()));
 				return putBins(manager, set, writePolicy, recordKey, mergedBins, operation);
 			}
 			
@@ -177,12 +177,12 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 	
 	private Single<PutResult> putBins(AerospikeSet set, PutOperation operation) {
 		
-		final DattyRow row = operation.getRow();
+		final DattyRecord rec = operation.getRecord();
 		AerospikeDattyManager manager = set.getParent();
 		WritePolicy writePolicy = set.getConfig().getWritePolicy(operation, false);
 		Key recordKey = new Key(manager.getConfig().getNamespace(), set.getName(), operation.getMajorKey());
 		
-		return putBins(manager, set, writePolicy, recordKey, new AerospikeBins(row.getValues()), operation);
+		return putBins(manager, set, writePolicy, recordKey, new AerospikeBins(rec.getValues()), operation);
 		
 	}
 	

@@ -16,7 +16,7 @@ package io.datty.spring.convert;
 import org.springframework.data.convert.EntityConverter;
 import org.springframework.data.convert.EntityReader;
 
-import io.datty.api.DattyRow;
+import io.datty.api.DattyRecord;
 import io.datty.spring.core.DattyId;
 import io.datty.spring.mapping.DattyPersistentEntity;
 import io.datty.spring.mapping.DattyPersistentProperty;
@@ -29,8 +29,8 @@ import io.datty.spring.mapping.DattyPersistentProperty;
  */
 
 public interface DattyConverter
-		extends EntityConverter<DattyPersistentEntity<?>, DattyPersistentProperty, Object, DattyRow>, DattyWriter<Object>,
-		EntityReader<Object, DattyRow> {
+		extends EntityConverter<DattyPersistentEntity<?>, DattyPersistentProperty, Object, DattyRecord>, DattyWriter<Object>,
+		EntityReader<Object, DattyRecord> {
 
 	/**
 	 * Converts Java id object to DattyId data structure
@@ -49,6 +49,6 @@ public interface DattyConverter
 	 * @param numeric - numeric keys
 	 */
 	
-	void write(Object source, DattyRow sink, boolean numeric); 
+	void write(Object source, DattyRecord sink, boolean numeric); 
 
 }

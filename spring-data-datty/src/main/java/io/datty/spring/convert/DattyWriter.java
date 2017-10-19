@@ -15,7 +15,7 @@ package io.datty.spring.convert;
 
 import org.springframework.data.convert.EntityWriter;
 
-import io.datty.api.DattyRow;
+import io.datty.api.DattyRecord;
 
 /**
  * DattyWriter
@@ -24,6 +24,6 @@ import io.datty.api.DattyRow;
  *
  */
 
-public interface DattyWriter<T> extends EntityWriter<T, DattyRow> {
+public interface DattyWriter<T> extends EntityWriter<T, DattyRecord> {
 
 }

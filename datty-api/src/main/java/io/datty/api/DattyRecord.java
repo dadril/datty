@@ -18,13 +18,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * DattyRow
+ * DattyRecord
  * 
  * @author Alex Shvid
  *
  */
 
-public final class DattyRow {
+public final class DattyRecord {
 
 	/**
 	 * Own values or not
@@ -38,11 +38,11 @@ public final class DattyRow {
 	
 	private final Map<String, DattyValue> values = new HashMap<String, DattyValue>();
 	
-	public DattyRow() {
+	public DattyRecord() {
 		this.ownValues = false;
 	}
 
-	public DattyRow(boolean ownValues) {
+	public DattyRecord(boolean ownValues) {
 		this.ownValues = ownValues;
 	}
 
@@ -59,7 +59,7 @@ public final class DattyRow {
 		return values.size();
 	}
 	
-	public DattyRow put(String minorKey, DattyValue value) {
+	public DattyRecord put(String minorKey, DattyValue value) {
 		
 		if (minorKey == null) {
 			throw new IllegalArgumentException("null minorKey");
@@ -76,7 +76,7 @@ public final class DattyRow {
 		return this;
 	}
 	
-	public DattyRow remove(String minorKey) {
+	public DattyRecord remove(String minorKey) {
 		
 		if (minorKey == null) {
 			throw new IllegalArgumentException("null minorKey");
@@ -112,7 +112,7 @@ public final class DattyRow {
 
 	@Override
 	public String toString() {
-		return "DattyRow [values=" + values + "]";
+		return "DattyRecord [values=" + values + "]";
 	}
 	
 }

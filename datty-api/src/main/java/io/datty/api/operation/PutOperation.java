@@ -13,7 +13,7 @@
  */
 package io.datty.api.operation;
 
-import io.datty.api.DattyRow;
+import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
 import io.datty.api.result.PutResult;
 
@@ -26,7 +26,7 @@ import io.datty.api.result.PutResult;
 
 public class PutOperation extends AbstractUpdateOperation<PutOperation, PutResult> {
 
-	private DattyRow row;
+	private DattyRecord record;
 	
 	public PutOperation() {
 	}
@@ -39,25 +39,25 @@ public class PutOperation extends AbstractUpdateOperation<PutOperation, PutResul
 		setSetName(setName).setMajorKey(majorKey);
 	}
 	
-	public DattyRow getRow() {
-		return row;
+	public DattyRecord getRecord() {
+		return record;
 	}
 	
-	public PutOperation setRow(DattyRow row) {
-		this.row = row;
+	public PutOperation setRecord(DattyRecord rec) {
+		this.record = rec;
 		return this;
 	}
 	
 	public PutOperation addValue(String minorKey, DattyValue value) {
-		if (row == null) {
-			row = new DattyRow();
+		if (record == null) {
+			record = new DattyRecord();
 		}
-		row.put(minorKey, value);
+		record.put(minorKey, value);
 		return this;
 	}
 	
-	public boolean hasRow() {
-		return row != null;
+	public boolean hasRecord() {
+		return record != null;
 	}
 	
 	@Override
@@ -67,7 +67,7 @@ public class PutOperation extends AbstractUpdateOperation<PutOperation, PutResul
 
 	@Override
 	public String toString() {
-		return "PutOperation [row=" + row + ", updatePolicy=" + updatePolicy + ", setName=" + setName
+		return "PutOperation [record=" + record + ", updatePolicy=" + updatePolicy + ", setName=" + setName
 				+ ", superKey=" + superKey + ", majorKey=" + majorKey + ", timeoutMillis=" + timeoutMillis + "]";
 	}
 

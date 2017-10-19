@@ -35,8 +35,8 @@ public class GetResultIOTest extends AbstractDattyResultIOTest<GetResult> {
 	@Override
 	void assertEmptyFields(GetResult result) {
 		Assert.assertFalse(result.exists());
-		Assert.assertFalse(result.hasRow());
-		Assert.assertNull(result.getRow());
+		Assert.assertFalse(result.hasRecord());
+		Assert.assertNull(result.getRecord());
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class GetResultIOTest extends AbstractDattyResultIOTest<GetResult> {
 	@Override
 	void assertFields(GetResult expected, GetResult actual) {
 		Assert.assertTrue(actual.exists());
-		Assert.assertTrue(actual.hasRow());
+		Assert.assertTrue(actual.hasRecord());
 		Assert.assertEquals(new LongVersion(1), actual.getVersion());
 		Assert.assertEquals(NullDattyValue.NULL, actual.get(minorKey));
 	}

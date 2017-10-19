@@ -24,7 +24,7 @@ import io.datty.aerospike.AerospikeDattyManager;
 import io.datty.aerospike.AerospikeSet;
 import io.datty.aerospike.support.AerospikeValueUtil;
 import io.datty.api.ByteBufValue;
-import io.datty.api.DattyRow;
+import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
 import io.datty.api.operation.GetOperation;
 import io.datty.api.result.GetResult;
@@ -81,8 +81,8 @@ public enum AerospikeGet implements AerospikeOperation<GetOperation, GetResult> 
 		
 		if (record != null) {
 			
-			DattyRow row = new DattyRow();
-			result.setRow(row);
+			DattyRecord rec = new DattyRecord();
+			result.setRecord(rec);
 			
 			result.setVersion(new LongVersion(record.generation));
 
@@ -92,10 +92,10 @@ public enum AerospikeGet implements AerospikeOperation<GetOperation, GetResult> 
 					Object value = e.getValue();
 					if (value != null) {
 						ByteBuf buffer = AerospikeValueUtil.toByteBuf(value);
-						row.put(e.getKey(), new ByteBufValue(buffer));
+						rec.put(e.getKey(), new ByteBufValue(buffer));
 					}
 					else {
-						row.put(e.getKey(), DattyValue.NULL);
+						rec.put(e.getKey(), DattyValue.NULL);
 					}
 				}
 				
@@ -106,10 +106,10 @@ public enum AerospikeGet implements AerospikeOperation<GetOperation, GetResult> 
 					Object value = record.bins.get(minorKey);
 					if (value != null) {
 						ByteBuf buffer = AerospikeValueUtil.toByteBuf(value);
-						row.put(minorKey, new ByteBufValue(buffer));
+						rec.put(minorKey, new ByteBufValue(buffer));
 					}
 					else {
-						row.put(minorKey, DattyValue.NULL);
+						rec.put(minorKey, DattyValue.NULL);
 					}
 				}
 				

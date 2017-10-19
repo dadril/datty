@@ -13,7 +13,7 @@
  */
 package io.datty.api.operation;
 
-import io.datty.api.DattyRow;
+import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
 import io.datty.api.result.CompareAndSetResult;
 import io.datty.api.version.Version;
@@ -33,7 +33,7 @@ public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSe
 	
 	private Version version;
 	
-	private DattyRow row;
+	private DattyRecord record;
 
 	public CompareAndSetOperation() {
 	}
@@ -59,24 +59,24 @@ public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSe
 		return this;
 	}
 	
-	public DattyRow getRow() {
-		return row;
+	public DattyRecord getRecord() {
+		return record;
 	}
 
-	public CompareAndSetOperation setRow(DattyRow row) {
-		this.row = row;
+	public CompareAndSetOperation setRecord(DattyRecord rec) {
+		this.record = rec;
 		return this;
 	}
 	
 	public boolean hasRow() {
-		return row != null;
+		return record != null;
 	}
 
 	public CompareAndSetOperation addValue(String minorKey, DattyValue value) {
-		if (row == null) {
-			row = new DattyRow();
+		if (record == null) {
+			record = new DattyRecord();
 		}
-		row.put(minorKey, value);
+		record.put(minorKey, value);
 		return this;
 	}
 	
@@ -87,7 +87,7 @@ public class CompareAndSetOperation extends AbstractUpdateOperation<CompareAndSe
 
 	@Override
 	public String toString() {
-		return "CompareAndSetOperation [oldVersion=" + version + ", row=" + row + ", updatePolicy="
+		return "CompareAndSetOperation [oldVersion=" + version + ", record=" + record + ", updatePolicy="
 				+ updatePolicy + ", setName=" + setName + ", superKey=" + superKey + ", majorKey=" + majorKey
 				+ ", timeoutMillis=" + timeoutMillis + "]";
 	}

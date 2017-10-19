@@ -14,7 +14,7 @@
 package io.datty.api.operation;
 
 import io.datty.api.DattyField;
-import io.datty.api.DattyRowIO;
+import io.datty.api.DattyRecordIO;
 import io.datty.api.version.VersionIO;
 import io.datty.msgpack.MessageReader;
 import io.datty.util.FieldWriter;
@@ -50,7 +50,7 @@ public class CompareAndSetOperationIO extends AbstractUpdateOperationIO<CompareA
 				return true;
 			
 			case ROW:
-				operation.setRow(DattyRowIO.readRow(source));
+				operation.setRecord(DattyRecordIO.readRecord(source));
 				return true;
 
 			default:
@@ -69,7 +69,7 @@ public class CompareAndSetOperationIO extends AbstractUpdateOperationIO<CompareA
 		}
 		
 		if (operation.hasRow()) {
-			fieldWriter.writeField(DattyField.ROW, operation.getRow());
+			fieldWriter.writeField(DattyField.ROW, operation.getRecord());
 		}
 		
 	}

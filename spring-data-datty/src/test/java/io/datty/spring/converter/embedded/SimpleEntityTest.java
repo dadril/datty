@@ -18,7 +18,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.datty.api.DattyRow;
+import io.datty.api.DattyRecord;
 import io.datty.msgpack.MessageIO;
 import io.datty.msgpack.core.reader.LongReader;
 import io.datty.spring.mapping.Embedded;
@@ -51,20 +51,20 @@ public class SimpleEntityTest {
 		SimpleEntity entity = new SimpleEntity();
 		entity.setId(123L);
 		
-		DattyRow row = new DattyRow();
+		DattyRecord rec = new DattyRecord();
 		
-		DattyConverterUtil.write(entity, row);
+		DattyConverterUtil.write(entity, rec);
 		
-		ByteBuf bb = row.get("id").asByteBuf();
+		ByteBuf bb = rec.get("id").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
 		Assert.assertNotNull(id);
 		Assert.assertEquals(123L, id.longValue());
 		
-		Assert.assertNull(row.get("embedded"));
+		Assert.assertNull(rec.get("embedded"));
 		
-		SimpleEntity actual = DattyConverterUtil.read(SimpleEntity.class, row);
+		SimpleEntity actual = DattyConverterUtil.read(SimpleEntity.class, rec);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNull(actual.getEmbedded());
 	}
@@ -78,18 +78,18 @@ public class SimpleEntityTest {
 		EmbeddedEntity embedded = new EmbeddedEntity();
 		entity.setEmbedded(embedded);		
 		
-		DattyRow row = new DattyRow();
+		DattyRecord rec = new DattyRecord();
 		
-		DattyConverterUtil.write(entity, row);
+		DattyConverterUtil.write(entity, rec);
 		
-		ByteBuf bb = row.get("id").asByteBuf();
+		ByteBuf bb = rec.get("id").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
 		Assert.assertNotNull(id);
 		Assert.assertEquals(123L, id.longValue());
 		
-		bb = row.get("embedded").asByteBuf();
+		bb = rec.get("embedded").asByteBuf();
 		Assert.assertNotNull(bb);
 
 		Object embeddedObj = MessageIO.readValue(bb.duplicate(), true);
@@ -99,7 +99,7 @@ public class SimpleEntityTest {
 		Map embeddedMap = (Map) embeddedObj;
 		Assert.assertTrue(embeddedMap.isEmpty());
 		
-		SimpleEntity actual = DattyConverterUtil.read(SimpleEntity.class, row);
+		SimpleEntity actual = DattyConverterUtil.read(SimpleEntity.class, rec);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNotNull(actual.getEmbedded());
 		Assert.assertNull(actual.getEmbedded().getInnerField());
@@ -116,18 +116,18 @@ public class SimpleEntityTest {
 		embedded.setInnerField("inner");
 		entity.setEmbedded(embedded);
 		
-		DattyRow row = new DattyRow();
+		DattyRecord rec = new DattyRecord();
 		
-		DattyConverterUtil.write(entity, row);
+		DattyConverterUtil.write(entity, rec);
 		
-		ByteBuf bb = row.get("id").asByteBuf();
+		ByteBuf bb = rec.get("id").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Long id = LongReader.INSTANCE.read(bb.duplicate(), true);
 		Assert.assertNotNull(id);
 		Assert.assertEquals(123L, id.longValue());
 		
-		bb = row.get("embedded").asByteBuf();
+		bb = rec.get("embedded").asByteBuf();
 		Assert.assertNotNull(bb);
 		
 		Object embeddedObj = MessageIO.readValue(bb.duplicate(), true);
@@ -142,7 +142,7 @@ public class SimpleEntityTest {
 		Assert.assertTrue(innerField instanceof String);
 		Assert.assertEquals("inner", innerField);
 		
-		SimpleEntity actual = DattyConverterUtil.read(SimpleEntity.class, row);
+		SimpleEntity actual = DattyConverterUtil.read(SimpleEntity.class, rec);
 		Assert.assertEquals(entity.getId(), actual.getId());
 		Assert.assertNotNull(actual.getEmbedded());
 		Assert.assertEquals(embedded.getInnerField(), actual.getEmbedded().getInnerField());
