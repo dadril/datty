@@ -18,17 +18,17 @@ import java.util.Set;
 
 import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
-import io.datty.api.operation.GetOperation;
+import io.datty.api.operation.FetchOperation;
 import io.datty.api.version.Version;
 
 /**
- * GetResult
+ * FetchResult
  * 
  * @author Alex Shvid
  *
  */
 
-public class GetResult extends AbstractResult<GetOperation, GetResult> {
+public class FetchResult extends AbstractResult<FetchOperation, FetchResult> {
 
 	/**
 	 * Record version if exists
@@ -38,14 +38,14 @@ public class GetResult extends AbstractResult<GetOperation, GetResult> {
 	
 	private DattyRecord record;
 	
-	public GetResult() {
+	public FetchResult() {
 	}
 	
 	public DattyRecord getRecord() {
 		return record;
 	}
 	
-	public GetResult setRecord(DattyRecord rec) {
+	public FetchResult setRecord(DattyRecord rec) {
 		this.record = rec;
 		return this;
 	}
@@ -54,7 +54,7 @@ public class GetResult extends AbstractResult<GetOperation, GetResult> {
 		return record != null;
 	}
 	
-	public GetResult addValue(String minorKey, DattyValue value) {
+	public FetchResult addValue(String minorKey, DattyValue value) {
 		if (record == null) {
 			record = new DattyRecord();
 		}
@@ -70,7 +70,7 @@ public class GetResult extends AbstractResult<GetOperation, GetResult> {
 		return version;
 	}
 	
-	public GetResult setVersion(Version version) {
+	public FetchResult setVersion(Version version) {
 		this.version = version;
 		return this;
 	}
@@ -117,12 +117,12 @@ public class GetResult extends AbstractResult<GetOperation, GetResult> {
 	
 	@Override
 	public ResCode getCode() {
-		return ResCode.GET;
+		return ResCode.FETCH;
 	}
 
 	@Override
 	public String toString() {
-		return "GetResult [version=" + version + ", record=" + record + "]";
+		return "FetchResult [version=" + version + ", record=" + record + "]";
 	}
 
 }

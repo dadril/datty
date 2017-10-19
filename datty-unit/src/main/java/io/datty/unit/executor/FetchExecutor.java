@@ -16,29 +16,29 @@ package io.datty.unit.executor;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
-import io.datty.api.operation.GetOperation;
-import io.datty.api.result.GetResult;
+import io.datty.api.operation.FetchOperation;
+import io.datty.api.result.FetchResult;
 import io.datty.unit.UnitRecord;
 import io.datty.unit.UnitValue;
 import rx.Single;
 
 /**
- * GetExecutor
+ * FetchExecutor
  * 
  * @author Alex Shvid
  *
  */
 
-public enum GetExecutor implements OperationExecutor<GetOperation, GetResult> {
+public enum FetchExecutor implements OperationExecutor<FetchOperation, FetchResult> {
 
 	INSTANCE;
 	
 	@Override
-	public Single<GetResult> execute(ConcurrentMap<String, UnitRecord> recordMap, GetOperation operation) {
+	public Single<FetchResult> execute(ConcurrentMap<String, UnitRecord> recordMap, FetchOperation operation) {
 		
 		UnitRecord record = recordMap.get(operation.getMajorKey());
 		
-		GetResult result = new GetResult();
+		FetchResult result = new FetchResult();
 		
 		if (record != null) {
 			

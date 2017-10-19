@@ -22,10 +22,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.datty.api.DattyResult;
-import io.datty.api.operation.GetOperation;
+import io.datty.api.operation.FetchOperation;
 import io.datty.api.operation.PutOperation;
 import io.datty.api.operation.RecordOperation;
-import io.datty.api.result.GetResult;
+import io.datty.api.result.FetchResult;
 import io.datty.api.result.PutResult;
 
 /**
@@ -52,14 +52,14 @@ public class DattyBatchTest extends AbstractDattyUnitTest {
 		String majorKey = UUID.randomUUID().toString();
 		
 		List<RecordOperation> batch = new ArrayList<RecordOperation>();
-		batch.add(new GetOperation(SET_NAME, majorKey).allMinorKeys());
+		batch.add(new FetchOperation(SET_NAME, majorKey).allMinorKeys());
 		
 		List<DattyResult> results = dattyManager.getDatty().executeBatch(batch).toBlocking().value();
 		
 		Assert.assertFalse(results.isEmpty());
 		Assert.assertEquals(1, results.size());
 		
-		GetResult result = (GetResult) results.get(0);
+		FetchResult result = (FetchResult) results.get(0);
 		Assert.assertNotNull(result);
 		Assert.assertFalse(result.exists());
 		
@@ -95,20 +95,20 @@ public class DattyBatchTest extends AbstractDattyUnitTest {
 		 */
 		
 		batch = new ArrayList<RecordOperation>();
-		batch.add(new GetOperation(SET_NAME, majorKey).addMinorKey(minorKey));
-		batch.add(new GetOperation(SET_NAME, majorKeyOther).addMinorKey(minorKey));
+		batch.add(new FetchOperation(SET_NAME, majorKey).addMinorKey(minorKey));
+		batch.add(new FetchOperation(SET_NAME, majorKeyOther).addMinorKey(minorKey));
 		
 		results = dattyManager.getDatty().executeBatch(batch).toBlocking().value();
 		
 		Assert.assertFalse(results.isEmpty());
 		Assert.assertEquals(2, results.size());
 		
-		GetResult result = (GetResult) results.get(0);
+		FetchResult result = (FetchResult) results.get(0);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result.exists());
 		assertEquals(value(), result.get(minorKey));
 		
-		result = (GetResult) results.get(1);
+		result = (FetchResult) results.get(1);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result.exists());
 		assertEquals(value(), result.get(minorKey));

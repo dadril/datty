@@ -44,7 +44,7 @@ public class PutOperationIO extends AbstractUpdateOperationIO<PutOperation> {
 		
 		switch(field) {
 		
-			case ROW:
+			case RECORD:
 				operation.setRecord(DattyRecordIO.readRecord(source));
 				return true;
 
@@ -61,7 +61,7 @@ public class PutOperationIO extends AbstractUpdateOperationIO<PutOperation> {
 		super.writeFields(operation, fieldWriter);
 		
 		if (operation.hasRecord()) {
-			fieldWriter.writeField(DattyField.ROW, operation.getRecord());
+			fieldWriter.writeField(DattyField.RECORD, operation.getRecord());
 		}
 		
 	}

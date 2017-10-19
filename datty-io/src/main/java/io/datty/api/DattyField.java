@@ -38,7 +38,7 @@ public enum DattyField {
 	TIMEOUT_MLS(15, "timeoutMillis"), // Integer
 	TTL_SEC(16, "ttlSecods"), // Integer
 	UPDATE_POLICY(17, "updatePolicy"), // Integer
-	ROW(18, "row"), // DattyRow
+	RECORD(18, "record"), // DattyRecord
 	VERSION(19, "version"), // Version
 	COUNT(20, "count"), // Long
 	PACKAGE_NAME(21, "packageName"), // String

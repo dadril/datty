@@ -25,14 +25,14 @@ import io.datty.api.DattyResult;
 import io.datty.api.DattyRecord;
 import io.datty.api.UpdatePolicy;
 import io.datty.api.operation.ClearOperation;
-import io.datty.api.operation.GetOperation;
+import io.datty.api.operation.FetchOperation;
 import io.datty.api.operation.HeadOperation;
 import io.datty.api.operation.PutOperation;
 import io.datty.api.operation.RecordOperation;
 import io.datty.api.operation.RemoveOperation;
 import io.datty.api.operation.ScanOperation;
 import io.datty.api.operation.SizeOperation;
-import io.datty.api.result.GetResult;
+import io.datty.api.result.FetchResult;
 import io.datty.api.result.HeadResult;
 import io.datty.api.result.PutResult;
 import io.datty.api.result.RecordResult;
@@ -158,9 +158,9 @@ public class DattyTemplate implements DattyOperations {
 	}
 
 	
-	protected GetOperation toGetOperation(DattyPersistentEntity<?> entityMetadata, DattyId id) {
+	protected FetchOperation toFetchOperation(DattyPersistentEntity<?> entityMetadata, DattyId id) {
 		
-		return new GetOperation(entityMetadata.getSetName())
+		return new FetchOperation(entityMetadata.getSetName())
 		.setSuperKey(id.getSuperKey())
 		.setMajorKey(id.getMajorKey())
 		.setTimeoutMillis(entityMetadata.getTimeoutMillis());
@@ -174,12 +174,12 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		GetOperation getOp = toGetOperation(entityMetadata, id);
+		FetchOperation fetch = toFetchOperation(entityMetadata, id);
 		
-		return datty.execute(getOp).map(new Func1<GetResult, T>() {
+		return datty.execute(fetch).map(new Func1<FetchResult, T>() {
 
 			@Override
-			public T call(GetResult res) {
+			public T call(FetchResult res) {
 				
 				DattyRecord rec = res.getRecord();
 				if (rec != null) {
@@ -201,19 +201,19 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		Single<GetOperation> getOp = id.map(new Func1<DattyId, GetOperation>() {
+		Single<FetchOperation> fetch = id.map(new Func1<DattyId, FetchOperation>() {
 
 			@Override
-			public GetOperation call(DattyId dattyId) {
-				return toGetOperation(entityMetadata, dattyId);
+			public FetchOperation call(DattyId dattyId) {
+				return toFetchOperation(entityMetadata, dattyId);
 			}
 			
 		});
 		
-		return datty.execute(getOp).map(new Func1<GetResult, T>() {
+		return datty.execute(fetch).map(new Func1<FetchResult, T>() {
 
 			@Override
-			public T call(GetResult res) {
+			public T call(FetchResult res) {
 				
 				DattyRecord rec = res.getRecord();
 				if (rec != null) {
@@ -330,7 +330,7 @@ public class DattyTemplate implements DattyOperations {
 
 			@Override
 			public RecordOperation call(DattyId dattyId) {
-				return toGetOperation(entityMetadata, dattyId);
+				return toFetchOperation(entityMetadata, dattyId);
 			}
 			
 		});
@@ -340,7 +340,7 @@ public class DattyTemplate implements DattyOperations {
 			@Override
 			public T call(DattyResult res) {
 				
-				GetResult getRes = (GetResult) res;
+				FetchResult getRes = (FetchResult) res;
 				
 				DattyRecord rec = getRes.getRecord();
 				if (rec != null) {

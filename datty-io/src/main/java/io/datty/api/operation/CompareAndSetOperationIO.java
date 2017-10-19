@@ -49,7 +49,7 @@ public class CompareAndSetOperationIO extends AbstractUpdateOperationIO<CompareA
 				operation.setVersion(VersionIO.readVersion(source));
 				return true;
 			
-			case ROW:
+			case RECORD:
 				operation.setRecord(DattyRecordIO.readRecord(source));
 				return true;
 
@@ -69,7 +69,7 @@ public class CompareAndSetOperationIO extends AbstractUpdateOperationIO<CompareA
 		}
 		
 		if (operation.hasRow()) {
-			fieldWriter.writeField(DattyField.ROW, operation.getRecord());
+			fieldWriter.writeField(DattyField.RECORD, operation.getRecord());
 		}
 		
 	}

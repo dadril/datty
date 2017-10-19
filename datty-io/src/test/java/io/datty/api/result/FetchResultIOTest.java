@@ -19,34 +19,34 @@ import io.datty.api.NullDattyValue;
 import io.datty.api.version.LongVersion;
 
 /**
- * GetResultIOTest
+ * FetchResultIOTest
  * 
  * @author Alex Shvid
  *
  */
 
-public class GetResultIOTest extends AbstractDattyResultIOTest<GetResult> {
+public class FetchResultIOTest extends AbstractDattyResultIOTest<FetchResult> {
 
 	@Override
-	GetResult newResult() {
-		return new GetResult();
+	FetchResult newResult() {
+		return new FetchResult();
 	}
 
 	@Override
-	void assertEmptyFields(GetResult result) {
+	void assertEmptyFields(FetchResult result) {
 		Assert.assertFalse(result.exists());
 		Assert.assertFalse(result.hasRecord());
 		Assert.assertNull(result.getRecord());
 	}
 
 	@Override
-	void addFields(GetResult result) {
+	void addFields(FetchResult result) {
 		result.setVersion(new LongVersion(1));
 		result.addValue(minorKey, NullDattyValue.NULL);
 	}
 
 	@Override
-	void assertFields(GetResult expected, GetResult actual) {
+	void assertFields(FetchResult expected, FetchResult actual) {
 		Assert.assertTrue(actual.exists());
 		Assert.assertTrue(actual.hasRecord());
 		Assert.assertEquals(new LongVersion(1), actual.getVersion());

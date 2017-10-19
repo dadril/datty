@@ -23,23 +23,23 @@ import io.datty.util.FieldWriter;
 import io.netty.buffer.ByteBuf;
 
 /**
- * GetResultIO
+ * FetchResultIO
  * 
  * @author Alex Shvid
  *
  */
 
-public enum GetResultIO implements DattyResultIO<GetResult> {
+public enum FetchResultIO implements DattyResultIO<FetchResult> {
 
 	INSTANCE;
 
 	@Override
-	public GetResult newResult() {
-		return new GetResult();
+	public FetchResult newResult() {
+		return new FetchResult();
 	}
 
 	@Override
-	public boolean readField(GetResult result, DattyField field, MessageReader reader, ByteBuf source) {
+	public boolean readField(FetchResult result, DattyField field, MessageReader reader, ByteBuf source) {
 		
 		switch(field) {
 		
@@ -47,7 +47,7 @@ public enum GetResultIO implements DattyResultIO<GetResult> {
 			result.setVersion(VersionIO.readVersion(source));
 			return true;
 		
-		case ROW:
+		case RECORD:
 			result.setRecord(DattyRecordIO.readRecord(source));
 			return true;
 			
@@ -59,7 +59,7 @@ public enum GetResultIO implements DattyResultIO<GetResult> {
 	}
 
 	@Override
-	public ByteBuf write(GetResult result, MessageWriter writer, ByteBuf sink, boolean numeric) {
+	public ByteBuf write(FetchResult result, MessageWriter writer, ByteBuf sink, boolean numeric) {
 		
 		FieldWriter fieldWriter = new FieldWriter(writer, sink, numeric);
 		
@@ -70,7 +70,7 @@ public enum GetResultIO implements DattyResultIO<GetResult> {
 		}
 		
 		if (result.hasRecord()) {
-			fieldWriter.writeField(DattyField.ROW, result.getRecord());
+			fieldWriter.writeField(DattyField.RECORD, result.getRecord());
 		}
 		
 		return fieldWriter.writeEnd();

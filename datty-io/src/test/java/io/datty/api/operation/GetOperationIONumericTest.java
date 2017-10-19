@@ -20,7 +20,7 @@ package io.datty.api.operation;
  *
  */
 
-public class GetOperationIONumericTest extends GetOperationIOTest {
+public class GetOperationIONumericTest extends FetchOperationIOTest {
 
 	public GetOperationIONumericTest() {
 		numeric = true;

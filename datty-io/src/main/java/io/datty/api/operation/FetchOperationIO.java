@@ -13,38 +13,18 @@
  */
 package io.datty.api.operation;
 
-import io.datty.api.result.GetResult;
-
 /**
- * Get operation
+ * FetchOperationIO
  * 
  * @author Alex Shvid
  *
  */
 
-public class GetOperation extends AbstractRecordOperation<GetOperation, GetResult> {
-	
-	public GetOperation() {
-	}
-	
-	public GetOperation(String setName) {
-		setSetName(setName);
-	}
-
-	public GetOperation(String setName, String majorKey) {
-		setSetName(setName).setMajorKey(majorKey);
-	}
+public class FetchOperationIO extends AbstractRecordOperationIO<FetchOperation> {
 
 	@Override
-	public OpCode getCode() {
-		return OpCode.GET;
+	public FetchOperation newOperation() {
+		return new FetchOperation();
 	}
-
-	@Override
-	public String toString() {
-		return "GetOperation [minorKeys=" + minorKeys + ", allMinorKeys=" + allMinorKeys + ", setName=" + setName
-				+ ", superKey=" + superKey + ", majorKey=" + majorKey + ", timeoutMillis=" + timeoutMillis + "]";
-	}
-
 
 }

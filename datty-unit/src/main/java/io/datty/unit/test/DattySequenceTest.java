@@ -23,10 +23,10 @@ import com.google.common.collect.Lists;
 
 import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
-import io.datty.api.operation.GetOperation;
+import io.datty.api.operation.FetchOperation;
 import io.datty.api.operation.PutOperation;
 import io.datty.api.operation.RecordOperation;
-import io.datty.api.result.GetResult;
+import io.datty.api.result.FetchResult;
 import io.datty.api.result.PutResult;
 import rx.Observable;
 
@@ -57,9 +57,9 @@ public class DattySequenceTest extends AbstractDattyUnitTest {
 		
 		String majorKey = UUID.randomUUID().toString();
 		
-		RecordOperation getOp = new GetOperation(SET_NAME, majorKey).allMinorKeys();
+		RecordOperation fetchOp = new FetchOperation(SET_NAME, majorKey).allMinorKeys();
 		
-		Observable<RecordOperation> input = Observable.just(getOp);
+		Observable<RecordOperation> input = Observable.just(fetchOp);
 		
 		Iterable<DattyResult> results = dattyManager.getDatty().executeSequence(input).toBlocking().toIterable();
 		List<DattyResult> list = Lists.newArrayList(results);
@@ -67,7 +67,7 @@ public class DattySequenceTest extends AbstractDattyUnitTest {
 		Assert.assertFalse(list.isEmpty());
 		Assert.assertEquals(1, list.size());
 		
-		GetResult result = (GetResult) list.get(0);
+		FetchResult result = (FetchResult) list.get(0);
 		Assert.assertNotNull(result);
 		Assert.assertFalse(result.exists());
 		
@@ -104,10 +104,10 @@ public class DattySequenceTest extends AbstractDattyUnitTest {
 		 * Get
 		 */
 		
-		RecordOperation get1 = new GetOperation(SET_NAME, majorKey).addMinorKey(minorKey);
-		RecordOperation get2 = new GetOperation(SET_NAME, majorKeyOther).addMinorKey(minorKey);
+		RecordOperation fetch1 = new FetchOperation(SET_NAME, majorKey).addMinorKey(minorKey);
+		RecordOperation fetch2 = new FetchOperation(SET_NAME, majorKeyOther).addMinorKey(minorKey);
 		
-		input = Observable.just(get1, get2);
+		input = Observable.just(fetch1, fetch2);
 		
 		iterable = dattyManager.getDatty().executeSequence(input).toBlocking().toIterable();
 		results = Lists.newArrayList(iterable);
@@ -115,12 +115,12 @@ public class DattySequenceTest extends AbstractDattyUnitTest {
 		Assert.assertFalse(results.isEmpty());
 		Assert.assertEquals(2, results.size());
 		
-		GetResult result = (GetResult) results.get(0);
+		FetchResult result = (FetchResult) results.get(0);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result.exists());
 		assertEquals(value(), result.get(minorKey));
 		
-		result = (GetResult) results.get(1);
+		result = (FetchResult) results.get(1);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result.exists());
 		assertEquals(value(), result.get(minorKey));

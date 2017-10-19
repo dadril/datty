@@ -41,7 +41,7 @@ public final class AerospikeOperations {
 		setCodeList[OpCode.SCAN.getCode()] = AerospikeScan.INSTANCE;
 		
 		codeList[OpCode.HEAD.getCode()] = AerospikeHead.INSTANCE;
-		codeList[OpCode.GET.getCode()] = AerospikeGet.INSTANCE;
+		codeList[OpCode.FETCH.getCode()] = AerospikeGet.INSTANCE;
 		codeList[OpCode.PUT.getCode()] = AerospikePut.INSTANCE;
 		codeList[OpCode.COMPARE_AND_SET.getCode()] = AerospikeCompareAndSet.INSTANCE;
 		codeList[OpCode.EXECUTE.getCode()] = AerospikeExecute.INSTANCE;

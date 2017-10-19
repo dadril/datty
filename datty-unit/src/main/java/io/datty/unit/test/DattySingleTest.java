@@ -20,8 +20,8 @@ import org.junit.Test;
 
 import io.datty.api.DattyValue;
 import io.datty.api.UpdatePolicy;
-import io.datty.api.operation.GetOperation;
-import io.datty.api.result.GetResult;
+import io.datty.api.operation.FetchOperation;
+import io.datty.api.result.FetchResult;
 import io.datty.api.result.HeadResult;
 import io.datty.support.exception.DattyOperationException;
 
@@ -44,16 +44,16 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 	@Test(expected=DattyOperationException.class)
 	public void testCacheNotFound() {
 		
-		dattyManager.getDatty().execute(new GetOperation("unknownSet", "majorKey")).toBlocking().value();
+		dattyManager.getDatty().execute(new FetchOperation("unknownSet", "majorKey")).toBlocking().value();
 		
 	}
 	
 	@Test
 	public void testFallback() {
 		
-		GetResult fallback = new GetResult();
+		FetchResult fallback = new FetchResult();
 		
-		GetResult actual = dattyManager.getDatty().execute(new GetOperation("unknownSet", "majorKey").setFallback(fallback)).toBlocking().value();
+		FetchResult actual = dattyManager.getDatty().execute(new FetchOperation("unknownSet", "majorKey").setFallback(fallback)).toBlocking().value();
 		
 		Assert.assertFalse(actual.exists());
 		
@@ -71,7 +71,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		exists = dattySet.head(majorKey).execute().toBlocking().value().exists();
 		Assert.assertFalse(exists);
 		
-		GetResult result = dattySet.get(majorKey).allMinorKeys().execute().toBlocking().value();
+		FetchResult result = dattySet.fetch(majorKey).allMinorKeys().execute().toBlocking().value();
 		Assert.assertFalse(result.exists());
 		Assert.assertFalse(result.hasVersion());
 		Assert.assertNull(result.getVersion());
@@ -101,7 +101,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		Assert.assertTrue(exists.exists(minorKey));
 		
 	  // record
-		GetResult get = dattySet.get(majorKey).allMinorKeys().execute().toBlocking().value();
+		FetchResult get = dattySet.fetch(majorKey).allMinorKeys().execute().toBlocking().value();
 		Assert.assertTrue(get.exists());
 		Assert.assertTrue(get.hasVersion());
 		Assert.assertNotNull(get.getVersion());
@@ -109,7 +109,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		assertEquals(value(), get.get(minorKey));
 		
 		// column
-		get = dattySet.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
+		get = dattySet.fetch(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
 		Assert.assertTrue(get.exists());
 		Assert.assertTrue(get.hasVersion());
 		Assert.assertNotNull(get.getVersion());
@@ -125,7 +125,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 		dattySet.put(majorKey).addValue(minorKey, value()).execute().toBlocking().value();
 		
-		GetResult result = dattySet.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
+		FetchResult result = dattySet.fetch(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
 		assertEquals(value(), result.get(minorKey));
 		
 		dattySet.put(majorKey).setUpdatePolicy(UpdatePolicy.REPLACE).execute().toBlocking().value();
@@ -133,7 +133,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		boolean exists = dattySet.head(majorKey).allMinorKeys().execute().toBlocking().value().exists();
 		Assert.assertFalse(exists);
 		
-		result = dattySet.get(majorKey).allMinorKeys().execute().toBlocking().value();
+		result = dattySet.fetch(majorKey).allMinorKeys().execute().toBlocking().value();
 		Assert.assertFalse(result.exists());
 		Assert.assertEquals(0, result.size());
 		
@@ -146,7 +146,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 		dattySet.put(majorKey).addValue(minorKey, value()).execute().toBlocking().value();
 		
-		GetResult result = dattySet.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
+		FetchResult result = dattySet.fetch(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
 		assertEquals(value(), result.get(minorKey));
 		
 		dattySet.put(majorKey).addValue(minorKey, DattyValue.NULL).setUpdatePolicy(UpdatePolicy.REPLACE).execute().toBlocking().value();
@@ -154,7 +154,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		boolean exists = dattySet.head(majorKey).execute().toBlocking().value().exists();
 		Assert.assertFalse(exists);
 		
-		result = dattySet.get(majorKey).execute().toBlocking().value();
+		result = dattySet.fetch(majorKey).execute().toBlocking().value();
 		Assert.assertFalse(result.exists());
 		Assert.assertEquals(0, result.size());
 		
@@ -167,7 +167,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 		dattySet.put(majorKey).addValue(minorKey, value()).execute().toBlocking().value();
 		
-		GetResult result = dattySet.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
+		FetchResult result = dattySet.fetch(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
 		assertEquals(value(), result.get(minorKey));
 		
 		dattySet.put(majorKey).setUpdatePolicy(UpdatePolicy.MERGE).execute().toBlocking().value();
@@ -175,7 +175,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		boolean exists = dattySet.head(majorKey).allMinorKeys().execute().toBlocking().value().exists();
 		Assert.assertTrue(exists);
 		
-		result = dattySet.get(majorKey).allMinorKeys().execute().toBlocking().value();
+		result = dattySet.fetch(majorKey).allMinorKeys().execute().toBlocking().value();
 		Assert.assertTrue(result.exists());
 		Assert.assertEquals(1, result.size());
 		assertEquals(value(), result.get(minorKey));
@@ -189,7 +189,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 		dattySet.put(majorKey).addValue(minorKey, value()).execute().toBlocking().value();
 
-		GetResult result = dattySet.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
+		FetchResult result = dattySet.fetch(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
 		assertEquals(value(), result.get(minorKey));
 
 		dattySet.put(majorKey).addValue(minorKey, DattyValue.NULL).setUpdatePolicy(UpdatePolicy.MERGE).execute().toBlocking().value();
@@ -197,7 +197,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		boolean exists = dattySet.head(majorKey).allMinorKeys().execute().toBlocking().value().exists();
 		Assert.assertFalse(exists);
 		
-		result = dattySet.get(majorKey).allMinorKeys().execute().toBlocking().value();
+		result = dattySet.fetch(majorKey).allMinorKeys().execute().toBlocking().value();
 		Assert.assertFalse(result.exists());
 		Assert.assertEquals(0, result.size());
 		
@@ -223,12 +223,12 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 
 		dattySet.put(majorKey).addValue(minorKey, value()).execute().toBlocking().value();
 		
-		GetResult result = dattySet.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
+		FetchResult result = dattySet.fetch(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
 		
 		boolean updated = dattySet.compareAndSet(majorKey).addValue(minorKey, newValue()).setVersion(result.getVersion()).execute().toBlocking().value().get();
 		Assert.assertTrue(updated);
 
-		result = dattySet.get(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
+		result = dattySet.fetch(majorKey).addMinorKey(minorKey).execute().toBlocking().value();
 		assertEquals(newValue(), result.get(minorKey));
 
 	}

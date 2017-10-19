@@ -51,7 +51,7 @@ public enum RecordResultIO implements DattyResultIO<RecordResult> {
 			result.setVersion(VersionIO.readVersion(source));
 			return true;
 		
-		case ROW:
+		case RECORD:
 			result.setRecord(DattyRecordIO.readRecord(source));
 			return true;
 			
@@ -82,7 +82,7 @@ public enum RecordResultIO implements DattyResultIO<RecordResult> {
 		}
 		
 		if (result.hasRecord()) {
-			fieldWriter.writeField(DattyField.ROW, result.getRecord());
+			fieldWriter.writeField(DattyField.RECORD, result.getRecord());
 		}
 		
 		if (result.hasCount()) {

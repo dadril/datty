@@ -84,7 +84,7 @@ public interface DattyOperation {
 	public enum OpCode {
 		
 		HEAD(1),
-		GET(2),
+		FETCH(2),
 		PUT(3),
 		REMOVE(4),
 		COMPARE_AND_SET(5),

@@ -26,8 +26,8 @@ import io.datty.aerospike.support.AerospikeValueUtil;
 import io.datty.api.ByteBufValue;
 import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
-import io.datty.api.operation.GetOperation;
-import io.datty.api.result.GetResult;
+import io.datty.api.operation.FetchOperation;
+import io.datty.api.result.FetchResult;
 import io.datty.api.version.LongVersion;
 import io.netty.buffer.ByteBuf;
 import rx.Single;
@@ -40,12 +40,12 @@ import rx.functions.Func1;
  *
  */
 
-public enum AerospikeGet implements AerospikeOperation<GetOperation, GetResult> {
+public enum AerospikeGet implements AerospikeOperation<FetchOperation, FetchResult> {
 
 	INSTANCE;
 	
 	@Override
-	public Single<GetResult> execute(AerospikeSet set, final GetOperation operation) {
+	public Single<FetchResult> execute(AerospikeSet set, final FetchOperation operation) {
 		
 		AerospikeDattyManager manager = set.getParent();
 		QueryPolicy queryPolicy = set.getConfig().getQueryPolicy(operation, false);
@@ -64,10 +64,10 @@ public enum AerospikeGet implements AerospikeOperation<GetOperation, GetResult> 
 			 result = manager.getClient().get(queryPolicy, recordKey, binNames, set.singleExceptionTransformer(operation, false));
 		}
 		
-		return result.map(new Func1<Record, GetResult>() {
+		return result.map(new Func1<Record, FetchResult>() {
 
 			@Override
-			public GetResult call(Record rec) {
+			public FetchResult call(Record rec) {
 				return toGetResult(rec, operation);
 			}
 			
@@ -75,9 +75,9 @@ public enum AerospikeGet implements AerospikeOperation<GetOperation, GetResult> 
 		
 	}
 	
-	private GetResult toGetResult(Record record, GetOperation operation) {
+	private FetchResult toGetResult(Record record, FetchOperation operation) {
 		
-		GetResult result = new GetResult();
+		FetchResult result = new FetchResult();
 		
 		if (record != null) {
 			

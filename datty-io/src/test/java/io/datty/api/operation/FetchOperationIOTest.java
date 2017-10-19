@@ -14,17 +14,17 @@
 package io.datty.api.operation;
 
 /**
- * GetOperationIOTest
+ * FetchOperationIOTest
  * 
  * @author Alex Shvid
  *
  */
 
-public class GetOperationIOTest extends AbstractRecordOperationIOTest<GetOperation> {
+public class FetchOperationIOTest extends AbstractRecordOperationIOTest<FetchOperation> {
 
 	@Override
-	GetOperation newOperation() {
-		return new GetOperation();
+	FetchOperation newOperation() {
+		return new FetchOperation();
 	}
 	
 }

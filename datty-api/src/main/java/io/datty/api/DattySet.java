@@ -19,7 +19,7 @@ import java.util.Properties;
 import io.datty.api.operation.CompareAndSetOperation;
 import io.datty.api.operation.ExecuteOperation;
 import io.datty.api.operation.HeadOperation;
-import io.datty.api.operation.GetOperation;
+import io.datty.api.operation.FetchOperation;
 import io.datty.api.operation.PutOperation;
 
 /**
@@ -87,7 +87,7 @@ public interface DattySet {
 	 * @return not null get operation
 	 */
 	
-	GetOperation get(String majorKey);
+	FetchOperation fetch(String majorKey);
 	
 	/**
 	 * Creates set operation

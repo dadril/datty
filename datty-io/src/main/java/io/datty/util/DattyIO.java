@@ -21,7 +21,7 @@ import io.datty.api.DattyResultIO;
 import io.datty.api.operation.ClearOperationIO;
 import io.datty.api.operation.CompareAndSetOperationIO;
 import io.datty.api.operation.ExecuteOperationIO;
-import io.datty.api.operation.GetOperationIO;
+import io.datty.api.operation.FetchOperationIO;
 import io.datty.api.operation.HeadOperationIO;
 import io.datty.api.operation.PutOperationIO;
 import io.datty.api.operation.RemoveOperationIO;
@@ -29,7 +29,7 @@ import io.datty.api.operation.ScanOperationIO;
 import io.datty.api.operation.SizeOperationIO;
 import io.datty.api.result.CompareAndSetResultIO;
 import io.datty.api.result.ExecuteResultIO;
-import io.datty.api.result.GetResultIO;
+import io.datty.api.result.FetchResultIO;
 import io.datty.api.result.HeadResultIO;
 import io.datty.api.result.PutResultIO;
 import io.datty.api.result.RecordResultIO;
@@ -63,7 +63,7 @@ public final class DattyIO {
 	static {
 		
 		codeOperations[DattyOperation.OpCode.HEAD.getCode()] = new HeadOperationIO();
-		codeOperations[DattyOperation.OpCode.GET.getCode()] = new GetOperationIO();
+		codeOperations[DattyOperation.OpCode.FETCH.getCode()] = new FetchOperationIO();
 		codeOperations[DattyOperation.OpCode.PUT.getCode()] = new PutOperationIO();
 		codeOperations[DattyOperation.OpCode.REMOVE.getCode()] = new RemoveOperationIO();
 		codeOperations[DattyOperation.OpCode.COMPARE_AND_SET.getCode()] = new CompareAndSetOperationIO();
@@ -74,7 +74,7 @@ public final class DattyIO {
 		codeOperations[DattyOperation.OpCode.SCAN.getCode()] = new ScanOperationIO();
 		
 		codeResults[DattyResult.ResCode.HEAD.getCode()] = HeadResultIO.INSTANCE;
-		codeResults[DattyResult.ResCode.GET.getCode()] = GetResultIO.INSTANCE;
+		codeResults[DattyResult.ResCode.FETCH.getCode()] = FetchResultIO.INSTANCE;
 		codeResults[DattyResult.ResCode.PUT.getCode()] = PutResultIO.INSTANCE;
 		codeResults[DattyResult.ResCode.REMOVE.getCode()] = RemoveResultIO.INSTANCE;
 		codeResults[DattyResult.ResCode.COMPARE_AND_SET.getCode()] = CompareAndSetResultIO.INSTANCE;
