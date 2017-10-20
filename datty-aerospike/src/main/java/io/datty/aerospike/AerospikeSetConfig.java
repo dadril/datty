@@ -20,6 +20,7 @@ import com.aerospike.client.policy.RecordExistsAction;
 import com.aerospike.client.policy.WritePolicy;
 
 import io.datty.api.DattyOperation;
+import io.datty.api.operation.ExecuteOperation;
 import io.datty.api.operation.UpdateOperation;
 
 /**
@@ -79,6 +80,21 @@ public final class AerospikeSetConfig {
 				writePolicy.recordExistsAction = RecordExistsAction.REPLACE;
 				break;
 	  }
+		
+		if (operation.hasTtlSeconds()) {
+			newWritePolicy.expiration = operation.getTtlSeconds();
+		}
+		
+		if (operation.hasTimeoutMillis()) {
+			newWritePolicy.timeout = operation.getTimeoutMillis();
+		}
+		
+		return newWritePolicy;
+	}
+	
+	public WritePolicy getWritePolicy(ExecuteOperation operation, boolean copy) {
+		
+		WritePolicy newWritePolicy = new WritePolicy(writePolicy);
 		
 		if (operation.hasTtlSeconds()) {
 			newWritePolicy.expiration = operation.getTtlSeconds();

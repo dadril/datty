@@ -25,7 +25,7 @@ import io.netty.buffer.ByteBuf;
  *
  */
 
-public class ExecuteOperationIO extends AbstractUpdateOperationIO<ExecuteOperation> {
+public class ExecuteOperationIO extends AbstractOperationIO<ExecuteOperation> {
 
 	@Override
 	public ExecuteOperation newOperation() {
@@ -54,6 +54,10 @@ public class ExecuteOperationIO extends AbstractUpdateOperationIO<ExecuteOperati
 			case ARGUMENTS:
 				operation.setArguments((ByteBuf) reader.readValue(source, false));
 				return true;
+				
+			case TTL_SEC:
+				operation.setTtlSeconds(((Long) reader.readValue(source, true)).intValue());
+				return true;				
 			
 			default:
 				return false;
@@ -77,6 +81,10 @@ public class ExecuteOperationIO extends AbstractUpdateOperationIO<ExecuteOperati
 		
 		if (operation.hasArguments()) {
 			fieldWriter.writeField(DattyField.ARGUMENTS, operation.getArguments());
+		}
+		
+		if (operation.hasTtlSeconds()) {
+			fieldWriter.writeField(DattyField.TTL_SEC, operation.getTtlSeconds());
 		}
 		
 	}

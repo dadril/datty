@@ -13,6 +13,11 @@
  */
 package io.datty.api.operation;
 
+import io.datty.api.DattyField;
+import io.datty.msgpack.MessageReader;
+import io.datty.util.FieldWriter;
+import io.netty.buffer.ByteBuf;
+
 /**
  * FetchOperationIO
  * 
@@ -26,5 +31,36 @@ public class FetchOperationIO extends AbstractRecordOperationIO<FetchOperation> 
 	public FetchOperation newOperation() {
 		return new FetchOperation();
 	}
+	
+	@Override
+	public boolean readField(FetchOperation operation, DattyField field, MessageReader reader, ByteBuf source) {
+		
+		boolean read = super.readField(operation, field, reader, source);
+		
+		if (read) {
+			return true;
+		}
+		
+		switch(field) {
+		
+			case WITH_VALUES:
+				operation.withValues(((Boolean) reader.readValue(source, true)));
+				return true;
+
+			default:
+				return false;
+		}
+		
+	}
+	
+	@Override
+	protected void writeFields(FetchOperation operation, FieldWriter fieldWriter) {
+		
+		super.writeFields(operation, fieldWriter);
+
+		fieldWriter.writeField(DattyField.WITH_VALUES, operation.isFetchValues());
+		
+	}
+
 
 }

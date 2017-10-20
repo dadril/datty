@@ -13,6 +13,7 @@
  */
 package io.datty.api.operation;
 
+import io.datty.api.DattyConstants;
 import io.datty.api.result.ExecuteResult;
 import io.netty.buffer.ByteBuf;
 
@@ -23,11 +24,13 @@ import io.netty.buffer.ByteBuf;
  *
  */
 
-public class ExecuteOperation extends AbstractUpdateOperation<ExecuteOperation, ExecuteResult> {
+public class ExecuteOperation extends AbstractOperation<ExecuteOperation, ExecuteResult> {
 
 	private String packageName;
 	private String functionName;
 	private ByteBuf arguments;
+	
+	private int ttlSeconds = DattyConstants.UNSET_TTL;
 	
 	public ExecuteOperation() {
 	}
@@ -79,6 +82,19 @@ public class ExecuteOperation extends AbstractUpdateOperation<ExecuteOperation, 
 		return this;
 	}
 	
+	public boolean hasTtlSeconds() {
+		return ttlSeconds != DattyConstants.UNSET_TTL;
+	}
+
+	public int getTtlSeconds() {
+		return ttlSeconds;
+	}
+	
+	public ExecuteOperation setTtlSeconds(int ttlSeconds) {
+		this.ttlSeconds = ttlSeconds;
+		return this;
+	}
+	
 	@Override
 	public OpCode getCode() {
 		return OpCode.EXECUTE;
@@ -88,6 +104,7 @@ public class ExecuteOperation extends AbstractUpdateOperation<ExecuteOperation, 
 	public String toString() {
 		return "ExecuteOperation [packageName=" + packageName + ", functionName=" + functionName + ", arguments="
 				+ arguments + ", setName=" + setName + ", superKey=" + superKey + ", majorKey=" + majorKey
+				+ ", ttlSeconds=" + ttlSeconds
 				+ ", timeoutMillis=" + timeoutMillis + "]";
 	}	
 	

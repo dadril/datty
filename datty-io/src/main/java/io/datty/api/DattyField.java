@@ -34,23 +34,25 @@ public enum DattyField {
 	SUPER_KEY(11, "superKey"), // String
 	MAJOR_KEY(12, "majorKey"), // String
 	ALL_MINOR_KEYS(13, "allMinorKeys"), // Boolean
-	MINOR_KEYS(14, "minorKeys"), // Collection of Strings
-	TIMEOUT_MLS(15, "timeoutMillis"), // Integer
-	TTL_SEC(16, "ttlSecods"), // Integer
-	UPDATE_POLICY(17, "updatePolicy"), // Integer
-	RECORD(18, "record"), // DattyRecord
-	VERSION(19, "version"), // Version
-	COUNT(20, "count"), // Long
-	PACKAGE_NAME(21, "packageName"), // String
-	FUNCTION_NAME(22, "functionName"), // String
-	ARGUMENTS(23, "arguments"), // String
+	WITH_VALUES(14, "withValues"), // Boolean
+	MINOR_KEYS(15, "minorKeys"), // Collection of Strings
+	TIMEOUT_MLS(16, "timeoutMillis"), // Integer
+	TTL_SEC(17, "ttlSecods"), // Integer
+	UPDATE_POLICY(18, "updatePolicy"), // Integer
+	RECORD(19, "record"), // DattyRecord
+	VERSION(20, "version"), // Version
+	
+	COUNT(30, "count"), // Long
+	PACKAGE_NAME(31, "packageName"), // String
+	FUNCTION_NAME(32, "functionName"), // String
+	ARGUMENTS(33, "arguments"), // String
 
-	VERSION_TYPE(24, "type"), // Integer
+	VERSION_TYPE(40, "type"), // Integer
 
-	BOOL_VALUE(25, "bool"), // Boolean
-	LONG_VALUE(26, "long"), // Long
-	STRING_VALUE(27, "string"), // String
-	BYTES_VALUE(28, "bytes"); // ByteBuf
+	BOOL_VALUE(51, "bool"), // Boolean
+	LONG_VALUE(52, "long"), // Long
+	STRING_VALUE(53, "string"), // String
+	BYTES_VALUE(54, "bytes"); // ByteBuf
 
 	private final int code;
 	private final String name;
