@@ -20,11 +20,11 @@ package io.datty.api.operation;
  *
  */
 
-public class ScanOperationIO extends AbstractSetOperationIO<ScanOperation> {
+public class ScanOperationIO extends AbstractSetOperationIO<Scan> {
 
 	@Override
-	public ScanOperation newOperation() {
-		return new ScanOperation();
+	public Scan newOperation() {
+		return new Scan();
 	}
 
 }

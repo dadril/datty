@@ -18,13 +18,13 @@ import io.datty.api.result.ExecuteResult;
 import io.netty.buffer.ByteBuf;
 
 /**
- * ExecuteOperation
+ * Execute Operation
  * 
  * @author Alex Shvid
  *
  */
 
-public class ExecuteOperation extends AbstractOperation<ExecuteOperation, ExecuteResult> {
+public final class Execute extends AbstractOperation<Execute, ExecuteResult> {
 
 	private String packageName;
 	private String functionName;
@@ -32,14 +32,14 @@ public class ExecuteOperation extends AbstractOperation<ExecuteOperation, Execut
 	
 	private int ttlSeconds = DattyConstants.UNSET_TTL;
 	
-	public ExecuteOperation() {
+	public Execute() {
 	}
 	
-	public ExecuteOperation(String setName) {
+	public Execute(String setName) {
 		setSetName(setName);
 	}
 
-	public ExecuteOperation(String setName, String majorKey) {
+	public Execute(String setName, String majorKey) {
 		setSetName(setName).setMajorKey(majorKey);
 	}
 	
@@ -51,7 +51,7 @@ public class ExecuteOperation extends AbstractOperation<ExecuteOperation, Execut
 		return packageName;
 	}
 
-	public ExecuteOperation setPackageName(String packageName) {
+	public Execute setPackageName(String packageName) {
 		this.packageName = packageName;
 		return this;
 	}
@@ -64,7 +64,7 @@ public class ExecuteOperation extends AbstractOperation<ExecuteOperation, Execut
 		return functionName;
 	}
 
-	public ExecuteOperation setFunctionName(String functionName) {
+	public Execute setFunctionName(String functionName) {
 		this.functionName = functionName;
 		return this;
 	}
@@ -77,7 +77,7 @@ public class ExecuteOperation extends AbstractOperation<ExecuteOperation, Execut
 		return arguments;
 	}
 
-	public ExecuteOperation setArguments(ByteBuf arguments) {
+	public Execute setArguments(ByteBuf arguments) {
 		this.arguments = arguments;
 		return this;
 	}
@@ -90,7 +90,7 @@ public class ExecuteOperation extends AbstractOperation<ExecuteOperation, Execut
 		return ttlSeconds;
 	}
 	
-	public ExecuteOperation setTtlSeconds(int ttlSeconds) {
+	public Execute setTtlSeconds(int ttlSeconds) {
 		this.ttlSeconds = ttlSeconds;
 		return this;
 	}
@@ -102,7 +102,7 @@ public class ExecuteOperation extends AbstractOperation<ExecuteOperation, Execut
 
 	@Override
 	public String toString() {
-		return "ExecuteOperation [packageName=" + packageName + ", functionName=" + functionName + ", arguments="
+		return "Execute [packageName=" + packageName + ", functionName=" + functionName + ", arguments="
 				+ arguments + ", setName=" + setName + ", superKey=" + superKey + ", majorKey=" + majorKey
 				+ ", ttlSeconds=" + ttlSeconds
 				+ ", timeoutMillis=" + timeoutMillis + "]";

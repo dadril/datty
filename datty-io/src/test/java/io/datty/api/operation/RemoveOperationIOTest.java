@@ -20,11 +20,11 @@ package io.datty.api.operation;
  *
  */
 
-public class RemoveOperationIOTest extends AbstractRecordOperationIOTest<RemoveOperation> {
+public class RemoveOperationIOTest extends AbstractRecordOperationIOTest<Remove> {
 
 	@Override
-	RemoveOperation newOperation() {
-		return new RemoveOperation();
+	Remove newOperation() {
+		return new Remove();
 	}
 	
 }

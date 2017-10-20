@@ -15,7 +15,7 @@ package io.datty.unit.executor;
 
 import java.util.concurrent.ConcurrentMap;
 
-import io.datty.api.operation.ClearOperation;
+import io.datty.api.operation.Clear;
 import io.datty.api.result.RecordResult;
 import io.datty.unit.UnitRecord;
 import rx.Observable;
@@ -27,12 +27,12 @@ import rx.Observable;
  *
  */
 
-public enum ClearExecutor implements SetOperationExecutor<ClearOperation> {
+public enum ClearExecutor implements SetOperationExecutor<Clear> {
 
 	INSTANCE;
 
 	@Override
-	public Observable<RecordResult> execute(ConcurrentMap<String, UnitRecord> recordMap, ClearOperation operation) {
+	public Observable<RecordResult> execute(ConcurrentMap<String, UnitRecord> recordMap, Clear operation) {
 		
 		RecordResult result = new RecordResult();
 		

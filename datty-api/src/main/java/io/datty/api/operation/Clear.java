@@ -13,37 +13,32 @@
  */
 package io.datty.api.operation;
 
-import io.datty.api.result.RemoveResult;
-
 /**
- * Remove Operation
+ * Clear Operation
  * 
  * @author Alex Shvid
  *
  */
 
-public class RemoveOperation extends AbstractRecordOperation<RemoveOperation, RemoveResult> {
+public final class Clear extends AbstractSetOperation<Clear> {
 
-	public RemoveOperation() {
+	public Clear() {
 	}
 	
-	public RemoveOperation(String setName) {
+	public Clear(String setName) {
 		setSetName(setName);
-	}
-
-	public RemoveOperation(String setName, String majorKey) {
-		setSetName(setName).setMajorKey(majorKey);
 	}
 	
 	@Override
 	public OpCode getCode() {
-		return OpCode.REMOVE;
+		return OpCode.CLEAR;
 	}
 
 	@Override
 	public String toString() {
-		return "RemoveOperation [allMinorKeys=" + allMinorKeys + ", minorKeys=" + minorKeys + ", setName=" + setName
-				+ ", superKey=" + superKey + ", majorKey=" + majorKey + "]";
+		return "Clear [setName=" + setName + ", superKey=" + superKey + ", timeoutMillis=" + timeoutMillis
+				+ ", fallback=" + fallback + ", getCode()=" + getCode() + "]";
 	}
-
+	
+	
 }

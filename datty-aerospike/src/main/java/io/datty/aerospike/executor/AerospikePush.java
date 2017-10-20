@@ -30,7 +30,7 @@ import io.datty.api.ByteBufValue;
 import io.datty.api.DattyError;
 import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
-import io.datty.api.operation.PushOperation;
+import io.datty.api.operation.Push;
 import io.datty.api.result.PushResult;
 import io.datty.api.version.LongVersion;
 import io.datty.api.version.Version;
@@ -45,12 +45,12 @@ import rx.functions.Func1;
  *
  */
 
-public enum AerospikePush implements AerospikeOperation<PushOperation, PushResult> {
+public enum AerospikePush implements AerospikeOperation<Push, PushResult> {
 
 	INSTANCE;
 	
 	@Override
-	public Single<PushResult> execute(AerospikeSet set, PushOperation operation) {
+	public Single<PushResult> execute(AerospikeSet set, Push operation) {
 
 		DattyRecord rec = operation.getRecord();
 		
@@ -93,7 +93,7 @@ public enum AerospikePush implements AerospikeOperation<PushOperation, PushResul
 		
 	}
 		
-	private int getGenerationNumber(PushOperation operation) {
+	private int getGenerationNumber(Push operation) {
 		
 		Version version = operation.getVersion();
 		if (version != null && version instanceof LongVersion) {
@@ -108,7 +108,7 @@ public enum AerospikePush implements AerospikeOperation<PushOperation, PushResul
 	}
 	
 	
-	private Single<PushResult> mergeBins(final AerospikeSet set, final PushOperation operation) {
+	private Single<PushResult> mergeBins(final AerospikeSet set, final Push operation) {
 		
 		final DattyRecord rec = operation.getRecord();
 		final AerospikeDattyManager manager = set.getParent();
@@ -142,7 +142,7 @@ public enum AerospikePush implements AerospikeOperation<PushOperation, PushResul
 		
 	}
 	
-	private Single<PushResult> putBins(AerospikeDattyManager manager, AerospikeSet set, WritePolicy writePolicy, final Key recordKey, final AerospikeBins bins, final PushOperation operation) {
+	private Single<PushResult> putBins(AerospikeDattyManager manager, AerospikeSet set, WritePolicy writePolicy, final Key recordKey, final AerospikeBins bins, final Push operation) {
 		
 		Single<Long> result;
 		
@@ -204,7 +204,7 @@ public enum AerospikePush implements AerospikeOperation<PushOperation, PushResul
 		
 	}
 	
-	private Single<PushResult> putBins(AerospikeSet set, PushOperation operation) {
+	private Single<PushResult> putBins(AerospikeSet set, Push operation) {
 		
 		final DattyRecord rec = operation.getRecord();
 		AerospikeDattyManager manager = set.getParent();
@@ -220,7 +220,7 @@ public enum AerospikePush implements AerospikeOperation<PushOperation, PushResul
 		
 	}
 	
-	private Single<PushResult> removeRecord(AerospikeSet set, PushOperation operation) {
+	private Single<PushResult> removeRecord(AerospikeSet set, Push operation) {
 		
 		AerospikeDattyManager manager = set.getParent();
 		WritePolicy writePolicy = set.getConfig().getWritePolicy(operation.hasTimeoutMillis());

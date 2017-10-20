@@ -18,7 +18,7 @@ import io.datty.aerospike.AerospikeSet;
 import io.datty.aerospike.info.AerospikeInfoCallable;
 import io.datty.aerospike.info.AerospikeInfoRequest;
 import io.datty.aerospike.info.AerospikeInfoResponse;
-import io.datty.api.operation.SizeOperation;
+import io.datty.api.operation.Size;
 import io.datty.api.result.RecordResult;
 import rx.Observable;
 import rx.functions.Func1;
@@ -30,12 +30,12 @@ import rx.functions.Func1;
  *
  */
 
-public enum AerospikeSize implements AerospikeSetOperation<SizeOperation> {
+public enum AerospikeSize implements AerospikeSetOperation<Size> {
 
 	INSTANCE;
 
 	@Override
-	public Observable<RecordResult> execute(AerospikeSet set, SizeOperation operation) {
+	public Observable<RecordResult> execute(AerospikeSet set, Size operation) {
 		
 		AerospikeDattyManager manager = set.getParent();
 		AerospikeInfoRequest request = new AerospikeInfoRequest(manager.getConfig().getNamespace(), set.getName());

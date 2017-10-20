@@ -16,9 +16,9 @@ package io.datty.api;
 import java.util.Map;
 import java.util.Properties;
 
-import io.datty.api.operation.ExecuteOperation;
-import io.datty.api.operation.FetchOperation;
-import io.datty.api.operation.PushOperation;
+import io.datty.api.operation.Execute;
+import io.datty.api.operation.Fetch;
+import io.datty.api.operation.Push;
 
 /**
  * Set interface
@@ -76,7 +76,7 @@ public interface DattySet {
 	 * @return not null get operation
 	 */
 	
-	FetchOperation fetch(String majorKey);
+	Fetch fetch(String majorKey);
 	
 	/**
 	 * Creates push operation
@@ -84,7 +84,7 @@ public interface DattySet {
 	 * @return not null set operation
 	 */
 	
-	PushOperation push(String majorKey);
+	Push push(String majorKey);
 	
 	/**
 	 * Creates execute operation
@@ -92,6 +92,6 @@ public interface DattySet {
 	 * @return not null execute operation
 	 */
 	
-	ExecuteOperation execute(String majorKey);
+	Execute execute(String majorKey);
 	
 }

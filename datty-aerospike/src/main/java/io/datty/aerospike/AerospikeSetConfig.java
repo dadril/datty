@@ -20,8 +20,8 @@ import com.aerospike.client.policy.RecordExistsAction;
 import com.aerospike.client.policy.WritePolicy;
 
 import io.datty.api.DattyOperation;
-import io.datty.api.operation.ExecuteOperation;
-import io.datty.api.operation.PushOperation;
+import io.datty.api.operation.Execute;
+import io.datty.api.operation.Push;
 
 /**
  * AerospikeSetConfig
@@ -66,7 +66,7 @@ public final class AerospikeSetConfig {
 		return copy ? new WritePolicy() : writePolicy;
 	}
 	
-	public WritePolicy getWritePolicy(PushOperation operation, boolean copy) {
+	public WritePolicy getWritePolicy(Push operation, boolean copy) {
 		
 		WritePolicy newWritePolicy = new WritePolicy(writePolicy);
 		
@@ -92,7 +92,7 @@ public final class AerospikeSetConfig {
 		return newWritePolicy;
 	}
 	
-	public WritePolicy getWritePolicy(ExecuteOperation operation, boolean copy) {
+	public WritePolicy getWritePolicy(Execute operation, boolean copy) {
 		
 		WritePolicy newWritePolicy = new WritePolicy(writePolicy);
 		

@@ -18,7 +18,7 @@ import java.util.Set;
 
 import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
-import io.datty.api.operation.FetchOperation;
+import io.datty.api.operation.Fetch;
 import io.datty.api.version.Version;
 
 /**
@@ -28,7 +28,7 @@ import io.datty.api.version.Version;
  *
  */
 
-public class FetchResult extends AbstractResult<FetchOperation, FetchResult> {
+public class FetchResult extends AbstractResult<Fetch, FetchResult> {
 
 	/**
 	 * Record version if exists

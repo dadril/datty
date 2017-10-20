@@ -26,7 +26,7 @@ import io.datty.aerospike.support.AerospikeValueUtil;
 import io.datty.api.ByteBufValue;
 import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
-import io.datty.api.operation.FetchOperation;
+import io.datty.api.operation.Fetch;
 import io.datty.api.result.FetchResult;
 import io.datty.api.version.LongVersion;
 import io.netty.buffer.ByteBuf;
@@ -40,12 +40,12 @@ import rx.functions.Func1;
  *
  */
 
-public enum AerospikeFetch implements AerospikeOperation<FetchOperation, FetchResult> {
+public enum AerospikeFetch implements AerospikeOperation<Fetch, FetchResult> {
 
 	INSTANCE;
 	
 	@Override
-	public Single<FetchResult> execute(AerospikeSet set, final FetchOperation operation) {
+	public Single<FetchResult> execute(AerospikeSet set, final Fetch operation) {
 		
 		AerospikeDattyManager manager = set.getParent();
 		QueryPolicy queryPolicy = set.getConfig().getQueryPolicy(operation, false);
@@ -75,7 +75,7 @@ public enum AerospikeFetch implements AerospikeOperation<FetchOperation, FetchRe
 		
 	}
 	
-	private FetchResult toFetchResult(Record record, FetchOperation operation) {
+	private FetchResult toFetchResult(Record record, Fetch operation) {
 		
 		boolean fetchValues = operation.isFetchValues();
 		

@@ -13,7 +13,7 @@
  */
 package io.datty.api.result;
 
-import io.datty.api.operation.PushOperation;
+import io.datty.api.operation.Push;
 
 /**
  * PushResult
@@ -22,7 +22,7 @@ import io.datty.api.operation.PushOperation;
  *
  */
 
-public class PushResult extends AbstractResult<PushOperation, PushResult> {
+public class PushResult extends AbstractResult<Push, PushResult> {
 
 	private boolean updated;
 	

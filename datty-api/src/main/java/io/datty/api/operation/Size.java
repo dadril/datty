@@ -1,18 +1,18 @@
 package io.datty.api.operation;
 
 /**
- * SizeOperation
+ * Size Operation
  * 
  * @author Alex Shvid
  *
  */
 
-public class SizeOperation extends AbstractSetOperation<SizeOperation> {
+public final class Size extends AbstractSetOperation<Size> {
 
-	public SizeOperation() {
+	public Size() {
 	}
 	
-	public SizeOperation(String setName) {
+	public Size(String setName) {
 		setSetName(setName);
 	}
 	
@@ -23,7 +23,7 @@ public class SizeOperation extends AbstractSetOperation<SizeOperation> {
 
 	@Override
 	public String toString() {
-		return "SizeOperation [setName=" + setName + ", superKey=" + superKey + ", timeoutMillis=" + timeoutMillis
+		return "Size [setName=" + setName + ", superKey=" + superKey + ", timeoutMillis=" + timeoutMillis
 				+ ", fallback=" + fallback + ", getCode()=" + getCode() + "]";
 	}
 	

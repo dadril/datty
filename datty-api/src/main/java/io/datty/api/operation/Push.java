@@ -27,7 +27,7 @@ import io.datty.api.version.Version;
  *
  */
 
-public class PushOperation extends AbstractOperation<PushOperation, PushResult> {
+public final class Push extends AbstractOperation<Push, PushResult> {
 
 	/**
 	 * Old version of the record
@@ -42,14 +42,14 @@ public class PushOperation extends AbstractOperation<PushOperation, PushResult> 
 	
 	protected UpdatePolicy updatePolicy = UpdatePolicy.MERGE;
 	
-	public PushOperation() {
+	public Push() {
 	}
 	
-	public PushOperation(String setName) {
+	public Push(String setName) {
 		setSetName(setName);
 	}
 
-	public PushOperation(String setName, String majorKey) {
+	public Push(String setName, String majorKey) {
 		setSetName(setName).setMajorKey(majorKey);
 	}
 	
@@ -65,18 +65,18 @@ public class PushOperation extends AbstractOperation<PushOperation, PushResult> 
 		return version;
 	}
 
-	public PushOperation withVersion(Version oldVersion) {
+	public Push withVersion(Version oldVersion) {
 		this.version = oldVersion;
 		this.useVersion = true;
 		return this;
 	}
 	
-	public PushOperation useVersion(Version oldVersion) {
+	public Push useVersion(Version oldVersion) {
 		this.version = oldVersion;
 		return this;
 	}
 	
-	public PushOperation setUseVersion(boolean flag) {
+	public Push setUseVersion(boolean flag) {
 		this.useVersion = flag;
 		return this;
 	}
@@ -85,12 +85,12 @@ public class PushOperation extends AbstractOperation<PushOperation, PushResult> 
 		return record;
 	}
 	
-	public PushOperation setRecord(DattyRecord rec) {
+	public Push setRecord(DattyRecord rec) {
 		this.record = rec;
 		return this;
 	}
 	
-	public PushOperation addValue(String minorKey, DattyValue value) {
+	public Push addValue(String minorKey, DattyValue value) {
 		if (record == null) {
 			record = new DattyRecord();
 		}
@@ -110,7 +110,7 @@ public class PushOperation extends AbstractOperation<PushOperation, PushResult> 
 		return ttlSeconds;
 	}
 
-	public PushOperation setTtlSeconds(int ttlSeconds) {
+	public Push setTtlSeconds(int ttlSeconds) {
 		this.ttlSeconds = ttlSeconds;
 		return this;
 	}
@@ -119,7 +119,7 @@ public class PushOperation extends AbstractOperation<PushOperation, PushResult> 
 		return updatePolicy;
 	}
 
-	public PushOperation setUpdatePolicy(UpdatePolicy updatePolicy) {
+	public Push setUpdatePolicy(UpdatePolicy updatePolicy) {
 		this.updatePolicy = updatePolicy;
 		return this;
 	}
@@ -131,7 +131,7 @@ public class PushOperation extends AbstractOperation<PushOperation, PushResult> 
 
 	@Override
 	public String toString() {
-		return "PushOperation [record=" + record + ", updatePolicy=" + updatePolicy + ", setName=" + setName
+		return "Push [record=" + record + ", updatePolicy=" + updatePolicy + ", setName=" + setName
 				+ ", superKey=" + superKey + ", majorKey=" + majorKey 
 				+ ", useVersion=" + useVersion + ", version=" + version 
 				+ ", ttlSeconds=" + ttlSeconds 

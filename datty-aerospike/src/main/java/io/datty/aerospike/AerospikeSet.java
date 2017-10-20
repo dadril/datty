@@ -27,9 +27,9 @@ import io.datty.api.DattyKey;
 import io.datty.api.DattyManager;
 import io.datty.api.DattyOperation;
 import io.datty.api.DattySet;
-import io.datty.api.operation.ExecuteOperation;
-import io.datty.api.operation.FetchOperation;
-import io.datty.api.operation.PushOperation;
+import io.datty.api.operation.Execute;
+import io.datty.api.operation.Fetch;
+import io.datty.api.operation.Push;
 import io.datty.support.exception.DattyOperationException;
 import io.datty.support.exception.DattyStreamException;
 
@@ -89,18 +89,18 @@ public class AerospikeSet implements DattySet {
 	}
 
 	@Override
-	public FetchOperation fetch(String majorKey) {
-		return new FetchOperation(name, majorKey).setDatty(parent.getDatty());
+	public Fetch fetch(String majorKey) {
+		return new Fetch(name, majorKey).setDatty(parent.getDatty());
 	}
 
 	@Override
-	public PushOperation push(String majorKey) {
-		return new PushOperation(name, majorKey).setDatty(parent.getDatty());
+	public Push push(String majorKey) {
+		return new Push(name, majorKey).setDatty(parent.getDatty());
 	}
 
 	@Override
-	public ExecuteOperation execute(String majorKey) {
-		return new ExecuteOperation(name, majorKey).setDatty(parent.getDatty());
+	public Execute execute(String majorKey) {
+		return new Execute(name, majorKey).setDatty(parent.getDatty());
 	}
 	
 	@Override

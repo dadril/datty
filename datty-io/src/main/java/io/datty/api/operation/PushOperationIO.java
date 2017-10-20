@@ -28,15 +28,15 @@ import io.netty.buffer.ByteBuf;
  *
  */
 
-public class PushOperationIO extends AbstractOperationIO<PushOperation> {
+public class PushOperationIO extends AbstractOperationIO<Push> {
 
 	@Override
-	public PushOperation newOperation() {
-		return new PushOperation();
+	public Push newOperation() {
+		return new Push();
 	}
 	
 	@Override
-	public boolean readField(PushOperation operation, DattyField field, MessageReader reader, ByteBuf source) {
+	public boolean readField(Push operation, DattyField field, MessageReader reader, ByteBuf source) {
 		
 		boolean read = super.readField(operation, field, reader, source);
 		
@@ -75,7 +75,7 @@ public class PushOperationIO extends AbstractOperationIO<PushOperation> {
 	}
 	
 	@Override
-	protected void writeFields(PushOperation operation, FieldWriter fieldWriter) {
+	protected void writeFields(Push operation, FieldWriter fieldWriter) {
 		
 		super.writeFields(operation, fieldWriter);
 		

@@ -15,7 +15,7 @@ package io.datty.unit.executor;
 
 import java.util.concurrent.ConcurrentMap;
 
-import io.datty.api.operation.ExecuteOperation;
+import io.datty.api.operation.Execute;
 import io.datty.api.result.ExecuteResult;
 import io.datty.unit.UnitRecord;
 import rx.Single;
@@ -27,12 +27,12 @@ import rx.Single;
  *
  */
 
-public enum ExecuteExecutor implements OperationExecutor<ExecuteOperation, ExecuteResult> {
+public enum ExecuteExecutor implements OperationExecutor<Execute, ExecuteResult> {
 
 	INSTANCE;
 
 	@Override
-	public Single<ExecuteResult> execute(ConcurrentMap<String, UnitRecord> recordMap, ExecuteOperation operation) {
+	public Single<ExecuteResult> execute(ConcurrentMap<String, UnitRecord> recordMap, Execute operation) {
 		
 		return Single.just(new ExecuteResult().set(operation.getArguments()));
 		

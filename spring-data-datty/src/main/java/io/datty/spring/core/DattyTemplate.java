@@ -24,13 +24,13 @@ import io.datty.api.Datty;
 import io.datty.api.DattyRecord;
 import io.datty.api.DattyResult;
 import io.datty.api.UpdatePolicy;
-import io.datty.api.operation.ClearOperation;
-import io.datty.api.operation.FetchOperation;
-import io.datty.api.operation.PushOperation;
+import io.datty.api.operation.Clear;
+import io.datty.api.operation.Fetch;
+import io.datty.api.operation.Push;
 import io.datty.api.operation.RecordOperation;
-import io.datty.api.operation.RemoveOperation;
-import io.datty.api.operation.ScanOperation;
-import io.datty.api.operation.SizeOperation;
+import io.datty.api.operation.Remove;
+import io.datty.api.operation.Scan;
+import io.datty.api.operation.Size;
 import io.datty.api.result.FetchResult;
 import io.datty.api.result.PushResult;
 import io.datty.api.result.RecordResult;
@@ -93,7 +93,7 @@ public class DattyTemplate implements DattyOperations {
 		
 	}
 
-	protected PushOperation toPutOperation(DattyPersistentEntity<?> entityMetadata, Object entity, boolean numeric) {
+	protected Push toPutOperation(DattyPersistentEntity<?> entityMetadata, Object entity, boolean numeric) {
 		
 		DattyId id = getId(entityMetadata, entity).orElse(null);
 		
@@ -104,7 +104,7 @@ public class DattyTemplate implements DattyOperations {
 		DattyRecord rec = new DattyRecord();
 		converter.write(entity, rec, numeric);
 		
-		return new PushOperation(entityMetadata.getSetName())
+		return new Push(entityMetadata.getSetName())
 		.setSuperKey(id.getSuperKey())
 		.setMajorKey(id.getMajorKey())
 		.setTtlSeconds(entityMetadata.getTtlSeconds())
@@ -156,9 +156,9 @@ public class DattyTemplate implements DattyOperations {
 	}
 
 	
-	protected FetchOperation toFetchOperation(DattyPersistentEntity<?> entityMetadata, DattyId id) {
+	protected Fetch toFetchOperation(DattyPersistentEntity<?> entityMetadata, DattyId id) {
 		
-		return new FetchOperation(entityMetadata.getSetName())
+		return new Fetch(entityMetadata.getSetName())
 		.setSuperKey(id.getSuperKey())
 		.setMajorKey(id.getMajorKey())
 		.setTimeoutMillis(entityMetadata.getTimeoutMillis());
@@ -172,7 +172,7 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		FetchOperation fetch = toFetchOperation(entityMetadata, id);
+		Fetch fetch = toFetchOperation(entityMetadata, id);
 		
 		return datty.execute(fetch).map(new Func1<FetchResult, T>() {
 
@@ -199,10 +199,10 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		Single<FetchOperation> fetch = id.map(new Func1<DattyId, FetchOperation>() {
+		Single<Fetch> fetch = id.map(new Func1<DattyId, Fetch>() {
 
 			@Override
-			public FetchOperation call(DattyId dattyId) {
+			public Fetch call(DattyId dattyId) {
 				return toFetchOperation(entityMetadata, dattyId);
 			}
 			
@@ -225,9 +225,9 @@ public class DattyTemplate implements DattyOperations {
 		
 	}
 
-	protected FetchOperation toExistsOperation(DattyPersistentEntity<?> entityMetadata, DattyId id) {
+	protected Fetch toExistsOperation(DattyPersistentEntity<?> entityMetadata, DattyId id) {
 		
-		FetchOperation op = new FetchOperation(entityMetadata.getSetName())
+		Fetch op = new Fetch(entityMetadata.getSetName())
 		.withValues(false)
 		.setSuperKey(id.getSuperKey())
 		.setMajorKey(id.getMajorKey())
@@ -243,7 +243,7 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		FetchOperation existsOp = toExistsOperation(entityMetadata, id);
+		Fetch existsOp = toExistsOperation(entityMetadata, id);
 		
 		return datty.execute(existsOp).map(new Func1<FetchResult, Boolean>() {
 
@@ -263,10 +263,10 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		Single<FetchOperation> existsOp = id.map(new Func1<DattyId, FetchOperation>() {
+		Single<Fetch> existsOp = id.map(new Func1<DattyId, Fetch>() {
 
 			@Override
-			public FetchOperation call(DattyId dattyId) {
+			public Fetch call(DattyId dattyId) {
 				return toExistsOperation(entityMetadata, dattyId);
 			}
 			
@@ -288,7 +288,7 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		ScanOperation scanOp = new ScanOperation(entityMetadata.getSetName());
+		Scan scanOp = new Scan(entityMetadata.getSetName());
 		scanOp.setTimeoutMillis(entityMetadata.getTimeoutMillis());
 		
 		return datty.execute(scanOp).map(new Func1<DattyResult, T>() {
@@ -358,7 +358,7 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		SizeOperation countOp = new SizeOperation(entityMetadata.getSetName());
+		Size countOp = new Size(entityMetadata.getSetName());
 		countOp.setTimeoutMillis(entityMetadata.getTimeoutMillis());
 
 		return datty.execute(countOp).map(new Func1<RecordResult, Long>() {
@@ -372,9 +372,9 @@ public class DattyTemplate implements DattyOperations {
 		
 	}
 	
-	protected RemoveOperation toRemoveOperation(DattyPersistentEntity<?> entityMetadata, DattyId id) {
+	protected Remove toRemoveOperation(DattyPersistentEntity<?> entityMetadata, DattyId id) {
 		
-		RemoveOperation removeOp = new RemoveOperation(entityMetadata.getSetName())
+		Remove removeOp = new Remove(entityMetadata.getSetName())
 		.setSuperKey(id.getSuperKey())
 		.setMajorKey(id.getMajorKey())
 		.allMinorKeys()
@@ -391,7 +391,7 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		RemoveOperation removeOp = toRemoveOperation(entityMetadata, id);
+		Remove removeOp = toRemoveOperation(entityMetadata, id);
 		
 		return datty.execute(removeOp).toCompletable();
 	}
@@ -409,7 +409,7 @@ public class DattyTemplate implements DattyOperations {
 			throw new MappingException("id property not found for " + entityMetadata);
 		}
 		
-		RemoveOperation removeOp = toRemoveOperation(entityMetadata, id);
+		Remove removeOp = toRemoveOperation(entityMetadata, id);
 		
 		return datty.execute(removeOp).toCompletable();
 	}
@@ -452,7 +452,7 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		ClearOperation deleteOp = new ClearOperation(entityMetadata.getSetName())
+		Clear deleteOp = new Clear(entityMetadata.getSetName())
 			.setTimeoutMillis(entityMetadata.getTimeoutMillis());
 
 		return datty.execute(deleteOp).toCompletable();

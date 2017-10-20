@@ -22,7 +22,7 @@ import io.datty.aerospike.AerospikeVersion;
 import io.datty.aerospike.info.AerospikeCommandCallable;
 import io.datty.aerospike.info.AerospikeDeleteSetRequest;
 import io.datty.aerospike.info.AerospikeTruncateRequest;
-import io.datty.api.operation.ClearOperation;
+import io.datty.api.operation.Clear;
 import io.datty.api.result.RecordResult;
 import rx.Observable;
 import rx.functions.Func1;
@@ -34,12 +34,12 @@ import rx.functions.Func1;
  *
  */
 
-public enum AerospikeClear implements AerospikeSetOperation<ClearOperation> {
+public enum AerospikeClear implements AerospikeSetOperation<Clear> {
 
 	INSTANCE;
 
 	@Override
-	public Observable<RecordResult> execute(AerospikeSet set, ClearOperation operation) {
+	public Observable<RecordResult> execute(AerospikeSet set, Clear operation) {
 		
 		AerospikeDattyManager manager = set.getParent();
 		
@@ -93,7 +93,7 @@ public enum AerospikeClear implements AerospikeSetOperation<ClearOperation> {
 		
 	}
 	
-	protected Observable<RecordResult> doScanAndDelete(AerospikeSet set, ClearOperation operation) {
+	protected Observable<RecordResult> doScanAndDelete(AerospikeSet set, Clear operation) {
 				
 		AerospikeDattyManager manager = set.getParent();
 		

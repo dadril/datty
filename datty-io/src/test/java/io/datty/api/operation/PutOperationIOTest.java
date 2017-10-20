@@ -32,17 +32,17 @@ import io.netty.buffer.Unpooled;
 
 public class PutOperationIOTest extends AbstractDattyIOTest {
 
-	PushOperation newOperation() {
-		return new PushOperation();
+	Push newOperation() {
+		return new Push();
 	}
 	
-	void assertEmptyFields(PushOperation operation) {
+	void assertEmptyFields(Push operation) {
 	}
 	
-	void addOtherFields(PushOperation operation) {
+	void addOtherFields(Push operation) {
 	}
 	
-	void assertOtherFields(PushOperation expected, PushOperation actual) {
+	void assertOtherFields(Push expected, Push actual) {
 	}
 	
 	@Test
@@ -50,7 +50,7 @@ public class PutOperationIOTest extends AbstractDattyIOTest {
 		
 		ByteBuf sink = Unpooled.buffer();
 		
-		PushOperation empty = newOperation();
+		Push empty = newOperation();
 		
 		DattyIO.writeOperation(empty, sink, numeric);
 		
@@ -60,7 +60,7 @@ public class PutOperationIOTest extends AbstractDattyIOTest {
 		Assert.assertEquals(empty.getCode(), read.getCode());
 		
 		@SuppressWarnings("unchecked")
-		PushOperation actual = (PushOperation) read;
+		Push actual = (Push) read;
 		
 		Assert.assertNull(actual.getSetName());
 		Assert.assertNull(actual.getSuperKey());
@@ -80,7 +80,7 @@ public class PutOperationIOTest extends AbstractDattyIOTest {
 		
 		ByteBuf sink = Unpooled.buffer();
 		
-		PushOperation operation = newOperation();
+		Push operation = newOperation();
 		
 		operation.setSetName(setName);
 		operation.setSuperKey(superKey);
@@ -101,7 +101,7 @@ public class PutOperationIOTest extends AbstractDattyIOTest {
 		Assert.assertEquals(operation.getCode(), read.getCode());
 		
 		@SuppressWarnings("unchecked")
-		PushOperation actual = (PushOperation) read;
+		Push actual = (Push) read;
 		
 		Assert.assertEquals(setName, actual.getSetName());
 		Assert.assertEquals(superKey, actual.getSuperKey());

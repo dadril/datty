@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
-import io.datty.api.operation.ScanOperation;
+import io.datty.api.operation.Scan;
 import io.datty.api.result.RecordResult;
 import io.datty.unit.UnitRecord;
 import io.datty.unit.UnitValue;
@@ -31,12 +31,12 @@ import rx.Observable;
  *
  */
 
-public enum ScanExecutor implements SetOperationExecutor<ScanOperation> {
+public enum ScanExecutor implements SetOperationExecutor<Scan> {
 
 	INSTANCE;
 
 	@Override
-	public Observable<RecordResult> execute(ConcurrentMap<String, UnitRecord> recordMap, ScanOperation operation) {
+	public Observable<RecordResult> execute(ConcurrentMap<String, UnitRecord> recordMap, Scan operation) {
 		
 		List<RecordResult> list = new ArrayList<>(recordMap.size());
 		

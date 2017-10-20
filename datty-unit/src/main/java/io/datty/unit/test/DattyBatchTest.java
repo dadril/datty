@@ -22,8 +22,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.datty.api.DattyResult;
-import io.datty.api.operation.FetchOperation;
-import io.datty.api.operation.PushOperation;
+import io.datty.api.operation.Fetch;
+import io.datty.api.operation.Push;
 import io.datty.api.operation.RecordOperation;
 import io.datty.api.result.FetchResult;
 import io.datty.api.result.PushResult;
@@ -52,7 +52,7 @@ public class DattyBatchTest extends AbstractDattyUnitTest {
 		String majorKey = UUID.randomUUID().toString();
 		
 		List<RecordOperation> batch = new ArrayList<RecordOperation>();
-		batch.add(new FetchOperation(SET_NAME, majorKey).allMinorKeys());
+		batch.add(new Fetch(SET_NAME, majorKey).allMinorKeys());
 		
 		List<DattyResult> results = dattyManager.getDatty().executeBatch(batch).toBlocking().value();
 		
@@ -76,8 +76,8 @@ public class DattyBatchTest extends AbstractDattyUnitTest {
 		 */
 		
 		List<RecordOperation> batch = new ArrayList<RecordOperation>();
-		batch.add(new PushOperation(SET_NAME, majorKey).addValue(minorKey, value()));
-		batch.add(new PushOperation(SET_NAME, majorKeyOther).addValue(minorKey, value()));
+		batch.add(new Push(SET_NAME, majorKey).addValue(minorKey, value()));
+		batch.add(new Push(SET_NAME, majorKeyOther).addValue(minorKey, value()));
 		
 		List<DattyResult> results = dattyManager.getDatty().executeBatch(batch).toBlocking().value();
 		
@@ -95,8 +95,8 @@ public class DattyBatchTest extends AbstractDattyUnitTest {
 		 */
 		
 		batch = new ArrayList<RecordOperation>();
-		batch.add(new FetchOperation(SET_NAME, majorKey).addMinorKey(minorKey));
-		batch.add(new FetchOperation(SET_NAME, majorKeyOther).addMinorKey(minorKey));
+		batch.add(new Fetch(SET_NAME, majorKey).addMinorKey(minorKey));
+		batch.add(new Fetch(SET_NAME, majorKeyOther).addMinorKey(minorKey));
 		
 		results = dattyManager.getDatty().executeBatch(batch).toBlocking().value();
 		

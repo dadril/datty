@@ -13,7 +13,7 @@
  */
 package io.datty.api.result;
 
-import io.datty.api.operation.ExecuteOperation;
+import io.datty.api.operation.Execute;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -23,7 +23,7 @@ import io.netty.buffer.ByteBuf;
  *
  */
 
-public class ExecuteResult extends AbstractResult<ExecuteOperation, ExecuteResult> {
+public class ExecuteResult extends AbstractResult<Execute, ExecuteResult> {
 
 	private ByteBuf value;
 	

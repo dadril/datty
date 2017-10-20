@@ -26,7 +26,7 @@ import io.datty.aerospike.support.AerospikeValueUtil;
 import io.datty.api.ByteBufValue;
 import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
-import io.datty.api.operation.ScanOperation;
+import io.datty.api.operation.Scan;
 import io.datty.api.result.RecordResult;
 import io.datty.api.version.LongVersion;
 import io.netty.buffer.ByteBuf;
@@ -40,12 +40,12 @@ import rx.functions.Func1;
  *
  */
 
-public enum AerospikeScan implements AerospikeSetOperation<ScanOperation> {
+public enum AerospikeScan implements AerospikeSetOperation<Scan> {
 
 	INSTANCE;
 
 	@Override
-	public Observable<RecordResult> execute(AerospikeSet set, ScanOperation operation) {
+	public Observable<RecordResult> execute(AerospikeSet set, Scan operation) {
 		
 		AerospikeDattyManager manager = set.getParent();
 		

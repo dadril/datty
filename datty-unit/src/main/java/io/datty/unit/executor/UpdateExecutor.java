@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentMap;
 import io.datty.api.DattyError;
 import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
-import io.datty.api.operation.PushOperation;
+import io.datty.api.operation.Push;
 import io.datty.api.result.PushResult;
 import io.datty.api.version.Version;
 import io.datty.api.version.VersionType;
@@ -35,12 +35,12 @@ import rx.Single;
  *
  */
 
-public enum UpdateExecutor implements OperationExecutor<PushOperation, PushResult> {
+public enum UpdateExecutor implements OperationExecutor<Push, PushResult> {
 
 	INSTANCE;
 	
 	@Override
-	public Single<PushResult> execute(ConcurrentMap<String, UnitRecord> recordMap, PushOperation operation) {
+	public Single<PushResult> execute(ConcurrentMap<String, UnitRecord> recordMap, Push operation) {
 		
 		DattyRecord rec = operation.getRecord();
 		
@@ -86,7 +86,7 @@ public enum UpdateExecutor implements OperationExecutor<PushOperation, PushResul
 		}
 	}
 	
-	private boolean isVersionMatch(PushOperation operation, UnitRecord record) {
+	private boolean isVersionMatch(Push operation, UnitRecord record) {
 		return operation.hasVersion() && operation.getVersion().equals(record.getVersion());
 	}
 	

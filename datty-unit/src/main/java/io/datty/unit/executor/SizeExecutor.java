@@ -15,7 +15,7 @@ package io.datty.unit.executor;
 
 import java.util.concurrent.ConcurrentMap;
 
-import io.datty.api.operation.SizeOperation;
+import io.datty.api.operation.Size;
 import io.datty.api.result.RecordResult;
 import io.datty.unit.UnitRecord;
 import rx.Observable;
@@ -27,12 +27,12 @@ import rx.Observable;
  *
  */
 
-public enum SizeExecutor implements SetOperationExecutor<SizeOperation> {
+public enum SizeExecutor implements SetOperationExecutor<Size> {
 
 	INSTANCE;
 
 	@Override
-	public Observable<RecordResult> execute(ConcurrentMap<String, UnitRecord> recordMap, SizeOperation operation) {
+	public Observable<RecordResult> execute(ConcurrentMap<String, UnitRecord> recordMap, Size operation) {
 		
 		RecordResult result = new RecordResult();
 		result.setCount(recordMap.size());

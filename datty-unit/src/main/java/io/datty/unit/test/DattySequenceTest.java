@@ -23,8 +23,8 @@ import com.google.common.collect.Lists;
 
 import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
-import io.datty.api.operation.FetchOperation;
-import io.datty.api.operation.PushOperation;
+import io.datty.api.operation.Fetch;
+import io.datty.api.operation.Push;
 import io.datty.api.operation.RecordOperation;
 import io.datty.api.result.FetchResult;
 import io.datty.api.result.PushResult;
@@ -57,7 +57,7 @@ public class DattySequenceTest extends AbstractDattyUnitTest {
 		
 		String majorKey = UUID.randomUUID().toString();
 		
-		RecordOperation fetchOp = new FetchOperation(SET_NAME, majorKey).allMinorKeys();
+		RecordOperation fetchOp = new Fetch(SET_NAME, majorKey).allMinorKeys();
 		
 		Observable<RecordOperation> input = Observable.just(fetchOp);
 		
@@ -83,8 +83,8 @@ public class DattySequenceTest extends AbstractDattyUnitTest {
 		 * Put
 		 */
 		
-		RecordOperation put1 = new PushOperation(SET_NAME, majorKey).addValue(minorKey, value());
-		RecordOperation put2 = new PushOperation(SET_NAME, majorKeyOther).addValue(minorKey, value());
+		RecordOperation put1 = new Push(SET_NAME, majorKey).addValue(minorKey, value());
+		RecordOperation put2 = new Push(SET_NAME, majorKeyOther).addValue(minorKey, value());
 		
 		Observable<RecordOperation> input = Observable.just(put1, put2);
 		
@@ -104,8 +104,8 @@ public class DattySequenceTest extends AbstractDattyUnitTest {
 		 * Get
 		 */
 		
-		RecordOperation fetch1 = new FetchOperation(SET_NAME, majorKey).addMinorKey(minorKey);
-		RecordOperation fetch2 = new FetchOperation(SET_NAME, majorKeyOther).addMinorKey(minorKey);
+		RecordOperation fetch1 = new Fetch(SET_NAME, majorKey).addMinorKey(minorKey);
+		RecordOperation fetch2 = new Fetch(SET_NAME, majorKeyOther).addMinorKey(minorKey);
 		
 		input = Observable.just(fetch1, fetch2);
 		

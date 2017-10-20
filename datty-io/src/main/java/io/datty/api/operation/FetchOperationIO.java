@@ -25,15 +25,15 @@ import io.netty.buffer.ByteBuf;
  *
  */
 
-public class FetchOperationIO extends AbstractRecordOperationIO<FetchOperation> {
+public class FetchOperationIO extends AbstractRecordOperationIO<Fetch> {
 
 	@Override
-	public FetchOperation newOperation() {
-		return new FetchOperation();
+	public Fetch newOperation() {
+		return new Fetch();
 	}
 	
 	@Override
-	public boolean readField(FetchOperation operation, DattyField field, MessageReader reader, ByteBuf source) {
+	public boolean readField(Fetch operation, DattyField field, MessageReader reader, ByteBuf source) {
 		
 		boolean read = super.readField(operation, field, reader, source);
 		
@@ -54,7 +54,7 @@ public class FetchOperationIO extends AbstractRecordOperationIO<FetchOperation> 
 	}
 	
 	@Override
-	protected void writeFields(FetchOperation operation, FieldWriter fieldWriter) {
+	protected void writeFields(Fetch operation, FieldWriter fieldWriter) {
 		
 		super.writeFields(operation, fieldWriter);
 

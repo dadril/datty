@@ -20,11 +20,11 @@ package io.datty.api.operation;
  *
  */
 
-public class SizeOperationIO extends AbstractSetOperationIO<SizeOperation> {
+public class SizeOperationIO extends AbstractSetOperationIO<Size> {
 
 	@Override
-	public SizeOperation newOperation() {
-		return new SizeOperation();
+	public Size newOperation() {
+		return new Size();
 	}
 
 }

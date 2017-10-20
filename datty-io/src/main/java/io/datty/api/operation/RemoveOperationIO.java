@@ -20,11 +20,11 @@ package io.datty.api.operation;
  *
  */
 
-public class RemoveOperationIO extends AbstractRecordOperationIO<RemoveOperation> {
+public class RemoveOperationIO extends AbstractRecordOperationIO<Remove> {
 
 	@Override
-	public RemoveOperation newOperation() {
-		return new RemoveOperation();
+	public Remove newOperation() {
+		return new Remove();
 	}
 
 }

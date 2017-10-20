@@ -21,7 +21,7 @@ import io.datty.aerospike.AerospikeSet;
 import io.datty.aerospike.AerospikeDattyManager;
 import io.datty.aerospike.AerospikeConstants;
 import io.datty.aerospike.support.AerospikeValueUtil;
-import io.datty.api.operation.ExecuteOperation;
+import io.datty.api.operation.Execute;
 import io.datty.api.result.ExecuteResult;
 import rx.Single;
 import rx.functions.Func1;
@@ -33,12 +33,12 @@ import rx.functions.Func1;
  *
  */
 
-public enum AerospikeExecute implements AerospikeOperation<ExecuteOperation, ExecuteResult> {
+public enum AerospikeExecute implements AerospikeOperation<Execute, ExecuteResult> {
 
 	INSTANCE;
 
 	@Override
-	public Single<ExecuteResult> execute(AerospikeSet set, ExecuteOperation operation) {
+	public Single<ExecuteResult> execute(AerospikeSet set, Execute operation) {
 		
 		if (set.getParent().isUnitEmulation() && 
 				AerospikeConstants.UDF_UNIT_LOOPBACK.equals(operation.getFunctionName())) {

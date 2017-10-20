@@ -20,7 +20,7 @@ import org.junit.Test;
 
 import io.datty.api.DattyValue;
 import io.datty.api.UpdatePolicy;
-import io.datty.api.operation.FetchOperation;
+import io.datty.api.operation.Fetch;
 import io.datty.api.result.FetchResult;
 import io.datty.support.exception.DattyOperationException;
 
@@ -43,7 +43,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 	@Test(expected=DattyOperationException.class)
 	public void testCacheNotFound() {
 		
-		dattyManager.getDatty().execute(new FetchOperation("unknownSet", "majorKey")).toBlocking().value();
+		dattyManager.getDatty().execute(new Fetch("unknownSet", "majorKey")).toBlocking().value();
 		
 	}
 	
@@ -52,7 +52,7 @@ public class DattySingleTest extends AbstractDattyUnitTest {
 		
 		FetchResult fallback = new FetchResult();
 		
-		FetchResult actual = dattyManager.getDatty().execute(new FetchOperation("unknownSet", "majorKey").setFallback(fallback)).toBlocking().value();
+		FetchResult actual = dattyManager.getDatty().execute(new Fetch("unknownSet", "majorKey").setFallback(fallback)).toBlocking().value();
 		
 		Assert.assertFalse(actual.exists());
 		

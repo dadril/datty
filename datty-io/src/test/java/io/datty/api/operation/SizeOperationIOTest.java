@@ -20,11 +20,11 @@ package io.datty.api.operation;
  *
  */
 
-public class SizeOperationIOTest extends AbstractSetOperationIOTest<SizeOperation>{
+public class SizeOperationIOTest extends AbstractSetOperationIOTest<Size>{
 
 	@Override
-	SizeOperation newOperation() {
-		return new SizeOperation();
+	Size newOperation() {
+		return new Size();
 	}
 	
 }

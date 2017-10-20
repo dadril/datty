@@ -20,11 +20,11 @@ package io.datty.api.operation;
  *
  */
 
-public class ClearOperationIO extends AbstractSetOperationIO<ClearOperation> {
+public class ClearOperationIO extends AbstractSetOperationIO<Clear> {
 
 	@Override
-	public ClearOperation newOperation() {
-		return new ClearOperation();
+	public Clear newOperation() {
+		return new Clear();
 	}
 
 }

@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import io.datty.api.operation.RemoveOperation;
+import io.datty.api.operation.Remove;
 
 /**
  * RemoveResult
@@ -27,7 +27,7 @@ import io.datty.api.operation.RemoveOperation;
  *
  */
 
-public class RemoveResult extends AbstractResult<RemoveOperation, RemoveResult> {
+public class RemoveResult extends AbstractResult<Remove, RemoveResult> {
 	
 	/**
 	 * Removed minorKeys from the record (all or selected)

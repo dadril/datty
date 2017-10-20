@@ -20,11 +20,11 @@ package io.datty.api.operation;
  *
  */
 
-public class FetchOperationIOTest extends AbstractRecordOperationIOTest<FetchOperation> {
+public class FetchOperationIOTest extends AbstractRecordOperationIOTest<Fetch> {
 
 	@Override
-	FetchOperation newOperation() {
-		return new FetchOperation();
+	Fetch newOperation() {
+		return new Fetch();
 	}
 	
 }

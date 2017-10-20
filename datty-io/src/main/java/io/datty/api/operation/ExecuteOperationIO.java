@@ -25,15 +25,15 @@ import io.netty.buffer.ByteBuf;
  *
  */
 
-public class ExecuteOperationIO extends AbstractOperationIO<ExecuteOperation> {
+public class ExecuteOperationIO extends AbstractOperationIO<Execute> {
 
 	@Override
-	public ExecuteOperation newOperation() {
-		return new ExecuteOperation();
+	public Execute newOperation() {
+		return new Execute();
 	}
 	
 	@Override
-	public boolean readField(ExecuteOperation operation, DattyField field, MessageReader reader, ByteBuf source) {
+	public boolean readField(Execute operation, DattyField field, MessageReader reader, ByteBuf source) {
 		
 		boolean read = super.readField(operation, field, reader, source);
 		
@@ -67,7 +67,7 @@ public class ExecuteOperationIO extends AbstractOperationIO<ExecuteOperation> {
 	}
 	
 	@Override
-	protected void writeFields(ExecuteOperation operation, FieldWriter fieldWriter) {
+	protected void writeFields(Execute operation, FieldWriter fieldWriter) {
 		
 		super.writeFields(operation, fieldWriter);
 		

@@ -16,7 +16,7 @@ package io.datty.unit.executor;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
-import io.datty.api.operation.FetchOperation;
+import io.datty.api.operation.Fetch;
 import io.datty.api.result.FetchResult;
 import io.datty.support.NullDattyValue;
 import io.datty.unit.UnitRecord;
@@ -30,12 +30,12 @@ import rx.Single;
  *
  */
 
-public enum FetchExecutor implements OperationExecutor<FetchOperation, FetchResult> {
+public enum FetchExecutor implements OperationExecutor<Fetch, FetchResult> {
 
 	INSTANCE;
 	
 	@Override
-	public Single<FetchResult> execute(ConcurrentMap<String, UnitRecord> recordMap, FetchOperation operation) {
+	public Single<FetchResult> execute(ConcurrentMap<String, UnitRecord> recordMap, Fetch operation) {
 		
 		boolean fetchValues = operation.isFetchValues();
 		

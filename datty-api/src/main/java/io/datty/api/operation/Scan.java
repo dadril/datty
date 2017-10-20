@@ -20,12 +20,12 @@ package io.datty.api.operation;
  *
  */
 
-public class ScanOperation extends AbstractSetOperation<ScanOperation> {
+public final class Scan extends AbstractSetOperation<Scan> {
 
-	public ScanOperation() {
+	public Scan() {
 	}
 	
-	public ScanOperation(String setName) {
+	public Scan(String setName) {
 		setSetName(setName);
 	}
 	
@@ -36,7 +36,7 @@ public class ScanOperation extends AbstractSetOperation<ScanOperation> {
 
 	@Override
 	public String toString() {
-		return "ScanOperation [setName=" + setName + ", superKey=" + superKey + ", timeoutMillis=" + timeoutMillis
+		return "Scan [setName=" + setName + ", superKey=" + superKey + ", timeoutMillis=" + timeoutMillis
 				+ ", fallback=" + fallback + ", getCode()=" + getCode() + "]";
 	}
 
