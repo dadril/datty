@@ -16,9 +16,9 @@ package io.datty.unit.executor;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
-import io.datty.api.NullDattyValue;
 import io.datty.api.operation.FetchOperation;
 import io.datty.api.result.FetchResult;
+import io.datty.support.NullDattyValue;
 import io.datty.unit.UnitRecord;
 import io.datty.unit.UnitValue;
 import rx.Single;

@@ -15,8 +15,8 @@ package io.datty.api.result;
 
 import org.junit.Assert;
 
-import io.datty.api.NullDattyValue;
 import io.datty.api.version.LongVersion;
+import io.datty.support.NullDattyValue;
 
 /**
  * FetchResultIOTest

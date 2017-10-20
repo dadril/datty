@@ -20,6 +20,7 @@ import io.datty.msgpack.MessageWriter;
 import io.datty.msgpack.core.MapMessageReader;
 import io.datty.msgpack.core.MapMessageWriter;
 import io.datty.msgpack.core.ValueMessageReader;
+import io.datty.support.NullDattyValue;
 import io.datty.support.exception.DattyException;
 import io.netty.buffer.ByteBuf;
 

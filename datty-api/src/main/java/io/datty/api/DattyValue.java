@@ -13,6 +13,7 @@
  */
 package io.datty.api;
 
+import io.datty.support.NullDattyValue;
 import io.netty.buffer.ByteBuf;
 
 /**
