@@ -21,7 +21,7 @@ import com.aerospike.client.policy.WritePolicy;
 
 import io.datty.api.DattyOperation;
 import io.datty.api.operation.ExecuteOperation;
-import io.datty.api.operation.UpdateOperation;
+import io.datty.api.operation.PutOperation;
 
 /**
  * AerospikeSetConfig
@@ -66,7 +66,7 @@ public final class AerospikeSetConfig {
 		return copy ? new WritePolicy() : writePolicy;
 	}
 	
-	public WritePolicy getWritePolicy(UpdateOperation<?, ?> operation, boolean copy) {
+	public WritePolicy getWritePolicy(PutOperation operation, boolean copy) {
 		
 		WritePolicy newWritePolicy = new WritePolicy(writePolicy);
 		

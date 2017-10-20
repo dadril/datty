@@ -13,6 +13,16 @@
  */
 package io.datty.api.operation;
 
+import org.junit.Assert;
+import org.junit.Test;
+
+import io.datty.api.AbstractDattyIOTest;
+import io.datty.api.DattyOperation;
+import io.datty.api.UpdatePolicy;
+import io.datty.util.DattyIO;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 /**
  * PutOperationIOTest
  * 
@@ -20,11 +30,89 @@ package io.datty.api.operation;
  *
  */
 
-public class PutOperationIOTest extends AbstractUpdateOperationIOTest<PutOperation> {
+public class PutOperationIOTest extends AbstractDattyIOTest {
 
-	@Override
 	PutOperation newOperation() {
 		return new PutOperation();
+	}
+	
+	void assertEmptyFields(PutOperation operation) {
+	}
+	
+	void addOtherFields(PutOperation operation) {
+	}
+	
+	void assertOtherFields(PutOperation expected, PutOperation actual) {
+	}
+	
+	@Test
+	public void testEmpty() {
+		
+		ByteBuf sink = Unpooled.buffer();
+		
+		PutOperation empty = newOperation();
+		
+		DattyIO.writeOperation(empty, sink, numeric);
+		
+		DattyOperation read = DattyIO.readOperation(sink);
+		
+		Assert.assertNotNull(read);
+		Assert.assertEquals(empty.getCode(), read.getCode());
+		
+		@SuppressWarnings("unchecked")
+		PutOperation actual = (PutOperation) read;
+		
+		Assert.assertNull(actual.getSetName());
+		Assert.assertNull(actual.getSuperKey());
+		Assert.assertNull(actual.getMajorKey());
+		Assert.assertFalse(actual.hasTtlSeconds());
+		Assert.assertEquals(UpdatePolicy.MERGE, actual.getUpdatePolicy());
+		Assert.assertFalse(actual.hasTimeoutMillis());
+		Assert.assertFalse(actual.hasFallback());
+		Assert.assertFalse(actual.hasUpstreamContext());
+		
+		assertEmptyFields(actual);
+		
+	}
+	
+	@Test
+	public void testNonEmpty() {
+		
+		ByteBuf sink = Unpooled.buffer();
+		
+		PutOperation operation = newOperation();
+		
+		operation.setSetName(setName);
+		operation.setSuperKey(superKey);
+		operation.setMajorKey(majorKey);
+		operation.setTtlSeconds(ttlSeconds);
+		operation.setUpdatePolicy(updatePolicy);
+		operation.setTimeoutMillis(timeoutMillis);
+		
+		addOtherFields(operation);
+		
+		DattyIO.writeOperation(operation, sink, numeric);
+		
+		// System.out.println("bytes = " + Arrays.toString(ByteBufUtil.getBytes(sink)));
+		
+		DattyOperation read = DattyIO.readOperation(sink);
+		
+		Assert.assertNotNull(read);
+		Assert.assertEquals(operation.getCode(), read.getCode());
+		
+		@SuppressWarnings("unchecked")
+		PutOperation actual = (PutOperation) read;
+		
+		Assert.assertEquals(setName, actual.getSetName());
+		Assert.assertEquals(superKey, actual.getSuperKey());
+		Assert.assertEquals(ttlSeconds, actual.getTtlSeconds());
+		Assert.assertEquals(updatePolicy, actual.getUpdatePolicy());
+		Assert.assertEquals(timeoutMillis, actual.getTimeoutMillis());
+		Assert.assertFalse(actual.hasFallback());
+		Assert.assertFalse(actual.hasUpstreamContext());
+		
+		assertOtherFields(operation, actual);
+		
 	}
 	
 }
