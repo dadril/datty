@@ -15,6 +15,8 @@ package io.datty.api.operation;
 
 import io.datty.api.DattyField;
 import io.datty.api.DattyRecordIO;
+import io.datty.api.UpdatePolicy;
+import io.datty.api.version.VersionIO;
 import io.datty.msgpack.MessageReader;
 import io.datty.util.FieldWriter;
 import io.netty.buffer.ByteBuf;
@@ -26,7 +28,7 @@ import io.netty.buffer.ByteBuf;
  *
  */
 
-public class PutOperationIO extends AbstractUpdateOperationIO<PutOperation> {
+public class PutOperationIO extends AbstractOperationIO<PutOperation> {
 
 	@Override
 	public PutOperation newOperation() {
@@ -44,10 +46,27 @@ public class PutOperationIO extends AbstractUpdateOperationIO<PutOperation> {
 		
 		switch(field) {
 		
+			case USE_VERSION:
+				operation.setUseVersion(((Boolean) reader.readValue(source, true)));
+				return true;
+			
+			case VERSION:
+				operation.useVersion(VersionIO.readVersion(source));
+				return true;
+			
 			case RECORD:
 				operation.setRecord(DattyRecordIO.readRecord(source));
 				return true;
 
+			case TTL_SEC:
+				operation.setTtlSeconds(((Long) reader.readValue(source, true)).intValue());
+				return true;
+	
+			case UPDATE_POLICY:
+				int code = ((Long) reader.readValue(source, true)).intValue();
+				operation.setUpdatePolicy(UpdatePolicy.findByCode(code));
+				return true;				
+				
 			default:
 				return false;
 				
@@ -60,9 +79,23 @@ public class PutOperationIO extends AbstractUpdateOperationIO<PutOperation> {
 		
 		super.writeFields(operation, fieldWriter);
 		
+		if (operation.useVersion()) {
+			fieldWriter.writeField(DattyField.USE_VERSION, operation.useVersion());
+		}
+		
+		if (operation.hasVersion()) {
+			fieldWriter.writeField(DattyField.VERSION, operation.getVersion());
+		}
+		
 		if (operation.hasRecord()) {
 			fieldWriter.writeField(DattyField.RECORD, operation.getRecord());
 		}
+		
+		if (operation.hasTtlSeconds()) {
+			fieldWriter.writeField(DattyField.TTL_SEC, operation.getTtlSeconds());
+		}
+		
+		fieldWriter.writeField(DattyField.UPDATE_POLICY, operation.getUpdatePolicy().getCode());
 		
 	}
 	

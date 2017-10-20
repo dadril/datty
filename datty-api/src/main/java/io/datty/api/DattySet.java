@@ -16,7 +16,6 @@ package io.datty.api;
 import java.util.Map;
 import java.util.Properties;
 
-import io.datty.api.operation.CompareAndSetOperation;
 import io.datty.api.operation.ExecuteOperation;
 import io.datty.api.operation.FetchOperation;
 import io.datty.api.operation.PutOperation;
@@ -86,14 +85,6 @@ public interface DattySet {
 	 */
 	
 	PutOperation put(String majorKey);
-	
-	/**
-	 * Creates compare and set operation
-	 * @param majorKey - major key
-	 * @return not null compare and set operation
-	 */
-	
-	CompareAndSetOperation compareAndSet(String majorKey);
 	
 	/**
 	 * Creates execute operation

@@ -41,6 +41,10 @@ public enum PutResultIO implements DattyResultIO<PutResult> {
 		
 		switch(field) {
 		
+		case BOOL_VALUE:
+			result.setUpdated((Boolean) reader.readValue(source, true));
+			return true;
+			
 		case LONG_VALUE:
 			result.setWrittenBytes((Long) reader.readValue(source, true));
 			return true;
@@ -58,6 +62,10 @@ public enum PutResultIO implements DattyResultIO<PutResult> {
 		FieldWriter fieldWriter = new FieldWriter(writer, sink, numeric);
 		
 		fieldWriter.writeField(DattyField.RESCODE, result.getCode());
+		
+		if (result.isUpdated()) {
+			fieldWriter.writeField(DattyField.BOOL_VALUE, result.isUpdated());
+		}
 		
 		if (result.hasWrittenBytes()) {
 			fieldWriter.writeField(DattyField.LONG_VALUE, result.getWrittenBytes());

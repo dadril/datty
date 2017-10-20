@@ -40,7 +40,8 @@ public enum DattyField {
 	TTL_SEC(17, "ttlSecods"), // Integer
 	UPDATE_POLICY(18, "updatePolicy"), // Integer
 	RECORD(19, "record"), // DattyRecord
-	VERSION(20, "version"), // Version
+	USE_VERSION(20, "useVersion"), // Boolean	
+	VERSION(21, "version"), // Version
 	
 	COUNT(30, "count"), // Long
 	PACKAGE_NAME(31, "packageName"), // String

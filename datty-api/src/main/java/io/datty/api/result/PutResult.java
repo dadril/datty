@@ -24,6 +24,8 @@ import io.datty.api.operation.PutOperation;
 
 public class PutResult extends AbstractResult<PutOperation, PutResult> {
 
+	private boolean updated;
+	
 	private long writtenBytes;
 	
 	public PutResult() {
@@ -31,6 +33,15 @@ public class PutResult extends AbstractResult<PutOperation, PutResult> {
 	
 	public PutResult(long writtenBytes) {
 		this.writtenBytes = writtenBytes;
+	}
+	
+	public boolean isUpdated() {
+		return updated;
+	}
+
+	public PutResult setUpdated(boolean flag) {
+		this.updated = flag;
+		return this;
 	}
 	
 	public boolean hasWrittenBytes() {
@@ -53,7 +64,7 @@ public class PutResult extends AbstractResult<PutOperation, PutResult> {
 
 	@Override
 	public String toString() {
-		return "PutResult [writtenBytes=" + writtenBytes + "]";
+		return "PutResult [updated=" + updated + ", writtenBytes=" + writtenBytes + "]";
 	}
 
 }

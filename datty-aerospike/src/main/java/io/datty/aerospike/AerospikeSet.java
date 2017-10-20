@@ -27,7 +27,6 @@ import io.datty.api.DattyKey;
 import io.datty.api.DattyManager;
 import io.datty.api.DattyOperation;
 import io.datty.api.DattySet;
-import io.datty.api.operation.CompareAndSetOperation;
 import io.datty.api.operation.ExecuteOperation;
 import io.datty.api.operation.FetchOperation;
 import io.datty.api.operation.PutOperation;
@@ -97,11 +96,6 @@ public class AerospikeSet implements DattySet {
 	@Override
 	public PutOperation put(String majorKey) {
 		return new PutOperation(name, majorKey).setDatty(parent.getDatty());
-	}
-
-	@Override
-	public CompareAndSetOperation compareAndSet(String majorKey) {
-		return new CompareAndSetOperation(name, majorKey).setDatty(parent.getDatty());
 	}
 
 	@Override

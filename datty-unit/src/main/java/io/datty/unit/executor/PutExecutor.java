@@ -22,6 +22,8 @@ import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
 import io.datty.api.operation.PutOperation;
 import io.datty.api.result.PutResult;
+import io.datty.api.version.Version;
+import io.datty.api.version.VersionType;
 import io.datty.support.exception.DattyOperationException;
 import io.datty.unit.UnitRecord;
 import rx.Single;
@@ -46,8 +48,12 @@ public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
 		
 		if (record == null) {
 			
+			if (operation.useVersion() && !isZeroVersion(operation.getVersion())) {
+				return Single.just(new PutResult().setUpdated(false));
+			}
+			
 			if (rec == null || rec.isEmpty()) {
-				return Single.just(new PutResult());
+				return Single.just(new PutResult().setUpdated(true));
 			}
 			
 			record = new UnitRecord(rec.getValues());
@@ -56,10 +62,14 @@ public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
 				return Single.error(new DattyOperationException(DattyError.ErrCode.CONCURRENT_UPDATE, operation));
 			}
 			else {
-				return Single.just(new PutResult());
+				return Single.just(new PutResult().setUpdated(true));
 			}
 		}
 		else {
+			
+			if (operation.useVersion() && !isVersionMatch(operation, record)) {
+				return Single.just(new PutResult().setUpdated(false));
+			}
 			
 			Map<String, DattyValue> values = rec != null ? rec.getValues() : Collections.<String, DattyValue>emptyMap();
 			UnitRecord newRecord = new UnitRecord(record, values, operation.getUpdatePolicy());
@@ -72,8 +82,26 @@ public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
 				return Single.error(new DattyOperationException(DattyError.ErrCode.CONCURRENT_UPDATE, operation));
 			}
 			
-			return Single.just(new PutResult());
+			return Single.just(new PutResult().setUpdated(true));
 		}
 	}
+	
+	private boolean isVersionMatch(PutOperation operation, UnitRecord record) {
+		return operation.hasVersion() && operation.getVersion().equals(record.getVersion());
+	}
+	
+	private boolean isZeroVersion(Version version) {
+		
+		if (version == null) {
+			return true;
+		}
+		
+		if (version.getType() == VersionType.LONG && version.asLong() == 0L) {
+			return true;
+		}
+		
+		return false;
+	}
+	
 	
 }

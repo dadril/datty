@@ -16,6 +16,7 @@ package io.datty.api.operation;
 import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
 import io.datty.api.result.PutResult;
+import io.datty.api.version.Version;
 
 /**
  * Put operation
@@ -26,6 +27,13 @@ import io.datty.api.result.PutResult;
 
 public class PutOperation extends AbstractUpdateOperation<PutOperation, PutResult> {
 
+	/**
+	 * Old version of the record
+	 */
+	
+	private boolean useVersion = false;
+	private Version version;
+	
 	private DattyRecord record;
 	
 	public PutOperation() {
@@ -37,6 +45,34 @@ public class PutOperation extends AbstractUpdateOperation<PutOperation, PutResul
 
 	public PutOperation(String setName, String majorKey) {
 		setSetName(setName).setMajorKey(majorKey);
+	}
+	
+	public boolean useVersion() {
+		return useVersion;
+	}
+	
+	public boolean hasVersion() {
+		return version != null;
+	}
+	
+	public Version getVersion() {
+		return version;
+	}
+
+	public PutOperation withVersion(Version oldVersion) {
+		this.version = oldVersion;
+		this.useVersion = true;
+		return this;
+	}
+	
+	public PutOperation useVersion(Version oldVersion) {
+		this.version = oldVersion;
+		return this;
+	}
+	
+	public PutOperation setUseVersion(boolean flag) {
+		this.useVersion = flag;
+		return this;
 	}
 	
 	public DattyRecord getRecord() {
@@ -68,7 +104,9 @@ public class PutOperation extends AbstractUpdateOperation<PutOperation, PutResul
 	@Override
 	public String toString() {
 		return "PutOperation [record=" + record + ", updatePolicy=" + updatePolicy + ", setName=" + setName
-				+ ", superKey=" + superKey + ", majorKey=" + majorKey + ", timeoutMillis=" + timeoutMillis + "]";
+				+ ", superKey=" + superKey + ", majorKey=" + majorKey 
+				+ ", useVersion=" + useVersion + ", version=" + version 
+				+ ", timeoutMillis=" + timeoutMillis + "]";
 	}
 
 }

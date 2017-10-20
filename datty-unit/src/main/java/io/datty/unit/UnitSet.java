@@ -25,7 +25,6 @@ import com.google.common.cache.CacheBuilder;
 
 import io.datty.api.DattyManager;
 import io.datty.api.DattySet;
-import io.datty.api.operation.CompareAndSetOperation;
 import io.datty.api.operation.ExecuteOperation;
 import io.datty.api.operation.FetchOperation;
 import io.datty.api.operation.PutOperation;
@@ -117,11 +116,6 @@ public class UnitSet implements DattySet {
 	@Override
 	public PutOperation put(String majorKey) {
 		return new PutOperation().setSetName(name).setMajorKey(majorKey).setDatty(parent.getDatty());
-	}
-
-	@Override
-	public CompareAndSetOperation compareAndSet(String majorKey) {
-		return new CompareAndSetOperation().setSetName(name).setMajorKey(majorKey).setDatty(parent.getDatty());
 	}
 
 	@Override

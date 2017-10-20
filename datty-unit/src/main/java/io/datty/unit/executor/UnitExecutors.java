@@ -39,7 +39,6 @@ public final class UnitExecutors {
 		
 		codeList[OpCode.FETCH.getCode()] = FetchExecutor.INSTANCE;
 		codeList[OpCode.PUT.getCode()] = PutExecutor.INSTANCE;
-		codeList[OpCode.COMPARE_AND_SET.getCode()] = CompareAndSetExecutor.INSTANCE;
 		codeList[OpCode.EXECUTE.getCode()] = ExecuteExecutor.INSTANCE;
 		
 	}

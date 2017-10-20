@@ -86,7 +86,6 @@ public interface DattyOperation {
 		FETCH(2),
 		PUT(3),
 		REMOVE(4),
-		COMPARE_AND_SET(5),
 		EXECUTE(6),
 		
 		SCAN(7),
