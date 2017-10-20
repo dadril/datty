@@ -106,6 +106,21 @@ public class FetchResult extends AbstractResult<FetchOperation, FetchResult> {
 		return record.get(minorKey);
 	}
 	
+	public boolean exists(String minorKey) {
+		
+		if (!hasRecord()) {
+			return false;
+		}
+		
+		DattyValue value = record.get(minorKey);
+		
+		if (value == null) {
+			return false;
+		}
+		
+		return true;
+	}
+	
 	public int size() {
 		
 		if (!hasRecord()) {

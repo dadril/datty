@@ -21,19 +21,17 @@ import org.springframework.data.mapping.model.MappingException;
 import org.springframework.util.Assert;
 
 import io.datty.api.Datty;
-import io.datty.api.DattyResult;
 import io.datty.api.DattyRecord;
+import io.datty.api.DattyResult;
 import io.datty.api.UpdatePolicy;
 import io.datty.api.operation.ClearOperation;
 import io.datty.api.operation.FetchOperation;
-import io.datty.api.operation.HeadOperation;
 import io.datty.api.operation.PutOperation;
 import io.datty.api.operation.RecordOperation;
 import io.datty.api.operation.RemoveOperation;
 import io.datty.api.operation.ScanOperation;
 import io.datty.api.operation.SizeOperation;
 import io.datty.api.result.FetchResult;
-import io.datty.api.result.HeadResult;
 import io.datty.api.result.PutResult;
 import io.datty.api.result.RecordResult;
 import io.datty.spring.convert.DattyConverter;
@@ -227,12 +225,12 @@ public class DattyTemplate implements DattyOperations {
 		
 	}
 
-	protected HeadOperation toExistsOperation(DattyPersistentEntity<?> entityMetadata, DattyId id) {
+	protected FetchOperation toExistsOperation(DattyPersistentEntity<?> entityMetadata, DattyId id) {
 		
-		HeadOperation op = new HeadOperation(entityMetadata.getSetName())
+		FetchOperation op = new FetchOperation(entityMetadata.getSetName())
+		.withValues(false)
 		.setSuperKey(id.getSuperKey())
 		.setMajorKey(id.getMajorKey())
-		.anyMinorKey()
 		.setTimeoutMillis(entityMetadata.getTimeoutMillis());
 		
 		return op;
@@ -245,12 +243,12 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		HeadOperation existsOp = toExistsOperation(entityMetadata, id);
+		FetchOperation existsOp = toExistsOperation(entityMetadata, id);
 		
-		return datty.execute(existsOp).map(new Func1<HeadResult, Boolean>() {
+		return datty.execute(existsOp).map(new Func1<FetchResult, Boolean>() {
 
 			@Override
-			public Boolean call(HeadResult res) {
+			public Boolean call(FetchResult res) {
 				return res.exists();
 			}
 			
@@ -265,19 +263,19 @@ public class DattyTemplate implements DattyOperations {
 		
 		final DattyPersistentEntity<?> entityMetadata = getPersistentEntity(entityClass);
 		
-		Single<HeadOperation> existsOp = id.map(new Func1<DattyId, HeadOperation>() {
+		Single<FetchOperation> existsOp = id.map(new Func1<DattyId, FetchOperation>() {
 
 			@Override
-			public HeadOperation call(DattyId dattyId) {
+			public FetchOperation call(DattyId dattyId) {
 				return toExistsOperation(entityMetadata, dattyId);
 			}
 			
 		});
 		
-		return datty.execute(existsOp).map(new Func1<HeadResult, Boolean>() {
+		return datty.execute(existsOp).map(new Func1<FetchResult, Boolean>() {
 
 			@Override
-			public Boolean call(HeadResult res) {
+			public Boolean call(FetchResult res) {
 				return res.exists();
 			}
 			

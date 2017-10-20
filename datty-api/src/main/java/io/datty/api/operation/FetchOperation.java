@@ -24,6 +24,12 @@ import io.datty.api.result.FetchResult;
 
 public class FetchOperation extends AbstractRecordOperation<FetchOperation, FetchResult> {
 	
+	/**
+	 * Fetch values also
+	 */
+	
+	private boolean withValues = true;
+	
 	public FetchOperation() {
 	}
 	
@@ -39,10 +45,19 @@ public class FetchOperation extends AbstractRecordOperation<FetchOperation, Fetc
 	public OpCode getCode() {
 		return OpCode.FETCH;
 	}
+	
+	public boolean isFetchValues() {
+		return withValues;
+	}
+
+	public FetchOperation withValues(boolean flag) {
+		this.withValues = flag;
+		return this;
+	}
 
 	@Override
 	public String toString() {
-		return "FetchOperation [minorKeys=" + minorKeys + ", allMinorKeys=" + allMinorKeys + ", setName=" + setName
+		return "FetchOperation [minorKeys=" + minorKeys + ", allMinorKeys=" + allMinorKeys + ", withValues=" + withValues + ", setName=" + setName
 				+ ", superKey=" + superKey + ", majorKey=" + majorKey + ", timeoutMillis=" + timeoutMillis + "]";
 	}
 

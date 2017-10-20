@@ -34,13 +34,13 @@ import rx.Single;
 import rx.functions.Func1;
 
 /**
- * AerospikeGet
+ * AerospikeFetch
  * 
  * @author Alex Shvid
  *
  */
 
-public enum AerospikeGet implements AerospikeOperation<FetchOperation, FetchResult> {
+public enum AerospikeFetch implements AerospikeOperation<FetchOperation, FetchResult> {
 
 	INSTANCE;
 	
@@ -68,14 +68,16 @@ public enum AerospikeGet implements AerospikeOperation<FetchOperation, FetchResu
 
 			@Override
 			public FetchResult call(Record rec) {
-				return toGetResult(rec, operation);
+				return toFetchResult(rec, operation);
 			}
 			
 		});
 		
 	}
 	
-	private FetchResult toGetResult(Record record, FetchOperation operation) {
+	private FetchResult toFetchResult(Record record, FetchOperation operation) {
+		
+		boolean fetchValues = operation.isFetchValues();
 		
 		FetchResult result = new FetchResult();
 		
@@ -90,7 +92,7 @@ public enum AerospikeGet implements AerospikeOperation<FetchOperation, FetchResu
 				
 				for (Map.Entry<String, Object> e : record.bins.entrySet()) {
 					Object value = e.getValue();
-					if (value != null) {
+					if (value != null && fetchValues) {
 						ByteBuf buffer = AerospikeValueUtil.toByteBuf(value);
 						rec.put(e.getKey(), new ByteBufValue(buffer));
 					}
@@ -104,7 +106,7 @@ public enum AerospikeGet implements AerospikeOperation<FetchOperation, FetchResu
 				
 				for (String minorKey : operation.getMinorKeys()) {
 					Object value = record.bins.get(minorKey);
-					if (value != null) {
+					if (value != null && fetchValues) {
 						ByteBuf buffer = AerospikeValueUtil.toByteBuf(value);
 						rec.put(minorKey, new ByteBufValue(buffer));
 					}

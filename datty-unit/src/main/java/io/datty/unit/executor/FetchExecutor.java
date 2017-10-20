@@ -16,6 +16,7 @@ package io.datty.unit.executor;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
+import io.datty.api.NullDattyValue;
 import io.datty.api.operation.FetchOperation;
 import io.datty.api.result.FetchResult;
 import io.datty.unit.UnitRecord;
@@ -36,6 +37,8 @@ public enum FetchExecutor implements OperationExecutor<FetchOperation, FetchResu
 	@Override
 	public Single<FetchResult> execute(ConcurrentMap<String, UnitRecord> recordMap, FetchOperation operation) {
 		
+		boolean fetchValues = operation.isFetchValues();
+		
 		UnitRecord record = recordMap.get(operation.getMajorKey());
 		
 		FetchResult result = new FetchResult();
@@ -47,7 +50,7 @@ public enum FetchExecutor implements OperationExecutor<FetchOperation, FetchResu
 			if (operation.isAllMinorKeys()) {
 				
 				for (Map.Entry<String, UnitValue> e : record.getColumnMap().entrySet()) {
-					result.addValue(e.getKey(), e.getValue().dublicate());
+					result.addValue(e.getKey(), fetchValues ? e.getValue().dublicate() : NullDattyValue.NULL);
 				}
 				
 			}
@@ -56,7 +59,7 @@ public enum FetchExecutor implements OperationExecutor<FetchOperation, FetchResu
 				for (String minorKey : operation.getMinorKeys()) {
 					UnitValue value = record.getColumn(minorKey);
 					if (value != null) {
-						result.addValue(minorKey, value.dublicate());
+						result.addValue(minorKey, fetchValues ? value.dublicate() : NullDattyValue.NULL);
 					}
 				}
 				

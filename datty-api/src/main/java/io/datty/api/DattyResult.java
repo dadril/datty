@@ -39,7 +39,6 @@ public interface DattyResult {
 	
 	public enum ResCode {
 		
-		HEAD(1),
 		FETCH(2),
 		PUT(3),
 		REMOVE(4),

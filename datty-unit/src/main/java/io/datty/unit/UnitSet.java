@@ -23,11 +23,10 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 import com.google.common.cache.CacheBuilder;
 
-import io.datty.api.DattySet;
 import io.datty.api.DattyManager;
+import io.datty.api.DattySet;
 import io.datty.api.operation.CompareAndSetOperation;
 import io.datty.api.operation.ExecuteOperation;
-import io.datty.api.operation.HeadOperation;
 import io.datty.api.operation.FetchOperation;
 import io.datty.api.operation.PutOperation;
 import io.datty.support.exception.DattyException;
@@ -108,11 +107,6 @@ public class UnitSet implements DattySet {
 	@Override
 	public Map<String, String> getStatistics() {
 		return Collections.emptyMap();
-	}
-
-	@Override
-	public HeadOperation head(String majorKey) {
-		return new HeadOperation().setSetName(name).setMajorKey(majorKey).setDatty(parent.getDatty());
 	}
 	
 	@Override

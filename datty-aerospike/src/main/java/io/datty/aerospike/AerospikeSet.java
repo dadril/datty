@@ -22,14 +22,13 @@ import com.aerospike.client.AerospikeException;
 import com.aerospike.client.ResultCode;
 
 import io.datty.aerospike.support.ExceptionTransformer;
-import io.datty.api.DattySet;
-import io.datty.api.DattyManager;
 import io.datty.api.DattyError;
 import io.datty.api.DattyKey;
+import io.datty.api.DattyManager;
 import io.datty.api.DattyOperation;
+import io.datty.api.DattySet;
 import io.datty.api.operation.CompareAndSetOperation;
 import io.datty.api.operation.ExecuteOperation;
-import io.datty.api.operation.HeadOperation;
 import io.datty.api.operation.FetchOperation;
 import io.datty.api.operation.PutOperation;
 import io.datty.support.exception.DattyOperationException;
@@ -90,11 +89,6 @@ public class AerospikeSet implements DattySet {
 		return Collections.emptyMap();
 	}
 
-	@Override
-	public HeadOperation head(String majorKey) {
-		return new HeadOperation(name, majorKey).setDatty(parent.getDatty());
-	}
-	
 	@Override
 	public FetchOperation fetch(String majorKey) {
 		return new FetchOperation(name, majorKey).setDatty(parent.getDatty());

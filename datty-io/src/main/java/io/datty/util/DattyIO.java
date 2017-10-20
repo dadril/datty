@@ -22,7 +22,6 @@ import io.datty.api.operation.ClearOperationIO;
 import io.datty.api.operation.CompareAndSetOperationIO;
 import io.datty.api.operation.ExecuteOperationIO;
 import io.datty.api.operation.FetchOperationIO;
-import io.datty.api.operation.HeadOperationIO;
 import io.datty.api.operation.PutOperationIO;
 import io.datty.api.operation.RemoveOperationIO;
 import io.datty.api.operation.ScanOperationIO;
@@ -30,7 +29,6 @@ import io.datty.api.operation.SizeOperationIO;
 import io.datty.api.result.CompareAndSetResultIO;
 import io.datty.api.result.ExecuteResultIO;
 import io.datty.api.result.FetchResultIO;
-import io.datty.api.result.HeadResultIO;
 import io.datty.api.result.PutResultIO;
 import io.datty.api.result.RecordResultIO;
 import io.datty.api.result.RemoveResultIO;
@@ -62,7 +60,6 @@ public final class DattyIO {
 	
 	static {
 		
-		codeOperations[DattyOperation.OpCode.HEAD.getCode()] = new HeadOperationIO();
 		codeOperations[DattyOperation.OpCode.FETCH.getCode()] = new FetchOperationIO();
 		codeOperations[DattyOperation.OpCode.PUT.getCode()] = new PutOperationIO();
 		codeOperations[DattyOperation.OpCode.REMOVE.getCode()] = new RemoveOperationIO();
@@ -73,7 +70,6 @@ public final class DattyIO {
 		codeOperations[DattyOperation.OpCode.SIZE.getCode()] = new SizeOperationIO();
 		codeOperations[DattyOperation.OpCode.SCAN.getCode()] = new ScanOperationIO();
 		
-		codeResults[DattyResult.ResCode.HEAD.getCode()] = HeadResultIO.INSTANCE;
 		codeResults[DattyResult.ResCode.FETCH.getCode()] = FetchResultIO.INSTANCE;
 		codeResults[DattyResult.ResCode.PUT.getCode()] = PutResultIO.INSTANCE;
 		codeResults[DattyResult.ResCode.REMOVE.getCode()] = RemoveResultIO.INSTANCE;
