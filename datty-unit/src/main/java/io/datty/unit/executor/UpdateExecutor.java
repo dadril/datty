@@ -20,8 +20,8 @@ import java.util.concurrent.ConcurrentMap;
 import io.datty.api.DattyError;
 import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
-import io.datty.api.operation.PutOperation;
-import io.datty.api.result.PutResult;
+import io.datty.api.operation.PushOperation;
+import io.datty.api.result.PushResult;
 import io.datty.api.version.Version;
 import io.datty.api.version.VersionType;
 import io.datty.support.exception.DattyOperationException;
@@ -29,18 +29,18 @@ import io.datty.unit.UnitRecord;
 import rx.Single;
 
 /**
- * PutExecutor
+ * UpdateExecutor
  * 
  * @author Alex Shvid
  *
  */
 
-public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
+public enum UpdateExecutor implements OperationExecutor<PushOperation, PushResult> {
 
 	INSTANCE;
 	
 	@Override
-	public Single<PutResult> execute(ConcurrentMap<String, UnitRecord> recordMap, PutOperation operation) {
+	public Single<PushResult> execute(ConcurrentMap<String, UnitRecord> recordMap, PushOperation operation) {
 		
 		DattyRecord rec = operation.getRecord();
 		
@@ -49,11 +49,11 @@ public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
 		if (record == null) {
 			
 			if (operation.useVersion() && !isZeroVersion(operation.getVersion())) {
-				return Single.just(new PutResult().setUpdated(false));
+				return Single.just(new PushResult().setUpdated(false));
 			}
 			
 			if (rec == null || rec.isEmpty()) {
-				return Single.just(new PutResult().setUpdated(true));
+				return Single.just(new PushResult().setUpdated(true));
 			}
 			
 			record = new UnitRecord(rec.getValues());
@@ -62,13 +62,13 @@ public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
 				return Single.error(new DattyOperationException(DattyError.ErrCode.CONCURRENT_UPDATE, operation));
 			}
 			else {
-				return Single.just(new PutResult().setUpdated(true));
+				return Single.just(new PushResult().setUpdated(true));
 			}
 		}
 		else {
 			
 			if (operation.useVersion() && !isVersionMatch(operation, record)) {
-				return Single.just(new PutResult().setUpdated(false));
+				return Single.just(new PushResult().setUpdated(false));
 			}
 			
 			Map<String, DattyValue> values = rec != null ? rec.getValues() : Collections.<String, DattyValue>emptyMap();
@@ -82,11 +82,11 @@ public enum PutExecutor implements OperationExecutor<PutOperation, PutResult> {
 				return Single.error(new DattyOperationException(DattyError.ErrCode.CONCURRENT_UPDATE, operation));
 			}
 			
-			return Single.just(new PutResult().setUpdated(true));
+			return Single.just(new PushResult().setUpdated(true));
 		}
 	}
 	
-	private boolean isVersionMatch(PutOperation operation, UnitRecord record) {
+	private boolean isVersionMatch(PushOperation operation, UnitRecord record) {
 		return operation.hasVersion() && operation.getVersion().equals(record.getVersion());
 	}
 	

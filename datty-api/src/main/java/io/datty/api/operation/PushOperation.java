@@ -17,17 +17,17 @@ import io.datty.api.DattyConstants;
 import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
 import io.datty.api.UpdatePolicy;
-import io.datty.api.result.PutResult;
+import io.datty.api.result.PushResult;
 import io.datty.api.version.Version;
 
 /**
- * Put operation
+ * Push operation
  * 
  * @author Alex Shvid
  *
  */
 
-public class PutOperation extends AbstractOperation<PutOperation, PutResult> {
+public class PushOperation extends AbstractOperation<PushOperation, PushResult> {
 
 	/**
 	 * Old version of the record
@@ -42,14 +42,14 @@ public class PutOperation extends AbstractOperation<PutOperation, PutResult> {
 	
 	protected UpdatePolicy updatePolicy = UpdatePolicy.MERGE;
 	
-	public PutOperation() {
+	public PushOperation() {
 	}
 	
-	public PutOperation(String setName) {
+	public PushOperation(String setName) {
 		setSetName(setName);
 	}
 
-	public PutOperation(String setName, String majorKey) {
+	public PushOperation(String setName, String majorKey) {
 		setSetName(setName).setMajorKey(majorKey);
 	}
 	
@@ -65,18 +65,18 @@ public class PutOperation extends AbstractOperation<PutOperation, PutResult> {
 		return version;
 	}
 
-	public PutOperation withVersion(Version oldVersion) {
+	public PushOperation withVersion(Version oldVersion) {
 		this.version = oldVersion;
 		this.useVersion = true;
 		return this;
 	}
 	
-	public PutOperation useVersion(Version oldVersion) {
+	public PushOperation useVersion(Version oldVersion) {
 		this.version = oldVersion;
 		return this;
 	}
 	
-	public PutOperation setUseVersion(boolean flag) {
+	public PushOperation setUseVersion(boolean flag) {
 		this.useVersion = flag;
 		return this;
 	}
@@ -85,12 +85,12 @@ public class PutOperation extends AbstractOperation<PutOperation, PutResult> {
 		return record;
 	}
 	
-	public PutOperation setRecord(DattyRecord rec) {
+	public PushOperation setRecord(DattyRecord rec) {
 		this.record = rec;
 		return this;
 	}
 	
-	public PutOperation addValue(String minorKey, DattyValue value) {
+	public PushOperation addValue(String minorKey, DattyValue value) {
 		if (record == null) {
 			record = new DattyRecord();
 		}
@@ -110,7 +110,7 @@ public class PutOperation extends AbstractOperation<PutOperation, PutResult> {
 		return ttlSeconds;
 	}
 
-	public PutOperation setTtlSeconds(int ttlSeconds) {
+	public PushOperation setTtlSeconds(int ttlSeconds) {
 		this.ttlSeconds = ttlSeconds;
 		return this;
 	}
@@ -119,19 +119,19 @@ public class PutOperation extends AbstractOperation<PutOperation, PutResult> {
 		return updatePolicy;
 	}
 
-	public PutOperation setUpdatePolicy(UpdatePolicy updatePolicy) {
+	public PushOperation setUpdatePolicy(UpdatePolicy updatePolicy) {
 		this.updatePolicy = updatePolicy;
 		return this;
 	}
 	
 	@Override
 	public OpCode getCode() {
-		return OpCode.PUT;
+		return OpCode.PUSH;
 	}
 
 	@Override
 	public String toString() {
-		return "PutOperation [record=" + record + ", updatePolicy=" + updatePolicy + ", setName=" + setName
+		return "PushOperation [record=" + record + ", updatePolicy=" + updatePolicy + ", setName=" + setName
 				+ ", superKey=" + superKey + ", majorKey=" + majorKey 
 				+ ", useVersion=" + useVersion + ", version=" + version 
 				+ ", ttlSeconds=" + ttlSeconds 

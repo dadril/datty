@@ -27,7 +27,7 @@ import io.datty.api.DattyManager;
 import io.datty.api.DattySet;
 import io.datty.api.operation.ExecuteOperation;
 import io.datty.api.operation.FetchOperation;
-import io.datty.api.operation.PutOperation;
+import io.datty.api.operation.PushOperation;
 import io.datty.support.exception.DattyException;
 
 /**
@@ -114,8 +114,8 @@ public class UnitSet implements DattySet {
 	}
 
 	@Override
-	public PutOperation put(String majorKey) {
-		return new PutOperation().setSetName(name).setMajorKey(majorKey).setDatty(parent.getDatty());
+	public PushOperation push(String majorKey) {
+		return new PushOperation().setSetName(name).setMajorKey(majorKey).setDatty(parent.getDatty());
 	}
 
 	@Override

@@ -22,21 +22,21 @@ import io.datty.util.FieldWriter;
 import io.netty.buffer.ByteBuf;
 
 /**
- * PutOperationIO
+ * PushOperationIO
  * 
  * @author Alex Shvid
  *
  */
 
-public class PutOperationIO extends AbstractOperationIO<PutOperation> {
+public class PushOperationIO extends AbstractOperationIO<PushOperation> {
 
 	@Override
-	public PutOperation newOperation() {
-		return new PutOperation();
+	public PushOperation newOperation() {
+		return new PushOperation();
 	}
 	
 	@Override
-	public boolean readField(PutOperation operation, DattyField field, MessageReader reader, ByteBuf source) {
+	public boolean readField(PushOperation operation, DattyField field, MessageReader reader, ByteBuf source) {
 		
 		boolean read = super.readField(operation, field, reader, source);
 		
@@ -75,7 +75,7 @@ public class PutOperationIO extends AbstractOperationIO<PutOperation> {
 	}
 	
 	@Override
-	protected void writeFields(PutOperation operation, FieldWriter fieldWriter) {
+	protected void writeFields(PushOperation operation, FieldWriter fieldWriter) {
 		
 		super.writeFields(operation, fieldWriter);
 		

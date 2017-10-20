@@ -23,10 +23,10 @@ import org.junit.Test;
 
 import io.datty.api.DattyResult;
 import io.datty.api.operation.FetchOperation;
-import io.datty.api.operation.PutOperation;
+import io.datty.api.operation.PushOperation;
 import io.datty.api.operation.RecordOperation;
 import io.datty.api.result.FetchResult;
-import io.datty.api.result.PutResult;
+import io.datty.api.result.PushResult;
 
 /**
  * DattyBatchTest
@@ -76,8 +76,8 @@ public class DattyBatchTest extends AbstractDattyUnitTest {
 		 */
 		
 		List<RecordOperation> batch = new ArrayList<RecordOperation>();
-		batch.add(new PutOperation(SET_NAME, majorKey).addValue(minorKey, value()));
-		batch.add(new PutOperation(SET_NAME, majorKeyOther).addValue(minorKey, value()));
+		batch.add(new PushOperation(SET_NAME, majorKey).addValue(minorKey, value()));
+		batch.add(new PushOperation(SET_NAME, majorKeyOther).addValue(minorKey, value()));
 		
 		List<DattyResult> results = dattyManager.getDatty().executeBatch(batch).toBlocking().value();
 		
@@ -85,10 +85,10 @@ public class DattyBatchTest extends AbstractDattyUnitTest {
 		Assert.assertEquals(2, results.size());
 		
 		Assert.assertNotNull(results.get(0));
-		Assert.assertTrue(results.get(0) instanceof PutResult);
+		Assert.assertTrue(results.get(0) instanceof PushResult);
 		
 		Assert.assertNotNull(results.get(1));
-		Assert.assertTrue(results.get(1) instanceof PutResult);
+		Assert.assertTrue(results.get(1) instanceof PushResult);
 		
 		/*
 		 * Get

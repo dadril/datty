@@ -24,10 +24,10 @@ import com.google.common.collect.Lists;
 import io.datty.api.DattyOperation;
 import io.datty.api.DattyResult;
 import io.datty.api.operation.FetchOperation;
-import io.datty.api.operation.PutOperation;
+import io.datty.api.operation.PushOperation;
 import io.datty.api.operation.RecordOperation;
 import io.datty.api.result.FetchResult;
-import io.datty.api.result.PutResult;
+import io.datty.api.result.PushResult;
 import rx.Observable;
 
 /**
@@ -83,8 +83,8 @@ public class DattySequenceTest extends AbstractDattyUnitTest {
 		 * Put
 		 */
 		
-		RecordOperation put1 = new PutOperation(SET_NAME, majorKey).addValue(minorKey, value());
-		RecordOperation put2 = new PutOperation(SET_NAME, majorKeyOther).addValue(minorKey, value());
+		RecordOperation put1 = new PushOperation(SET_NAME, majorKey).addValue(minorKey, value());
+		RecordOperation put2 = new PushOperation(SET_NAME, majorKeyOther).addValue(minorKey, value());
 		
 		Observable<RecordOperation> input = Observable.just(put1, put2);
 		
@@ -95,10 +95,10 @@ public class DattySequenceTest extends AbstractDattyUnitTest {
 		Assert.assertEquals(2, results.size());
 		
 		Assert.assertNotNull(results.get(0));
-		Assert.assertTrue(results.get(0) instanceof PutResult);
+		Assert.assertTrue(results.get(0) instanceof PushResult);
 		
 		Assert.assertNotNull(results.get(1));
-		Assert.assertTrue(results.get(1) instanceof PutResult);
+		Assert.assertTrue(results.get(1) instanceof PushResult);
 		
 		/*
 		 * Get

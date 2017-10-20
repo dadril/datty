@@ -21,23 +21,23 @@ import io.datty.util.FieldWriter;
 import io.netty.buffer.ByteBuf;
 
 /**
- * PutResultIO
+ * PushResultIO
  * 
  * @author Alex Shvid
  *
  */
 
-public enum PutResultIO implements DattyResultIO<PutResult> {
+public enum PushResultIO implements DattyResultIO<PushResult> {
 
 	INSTANCE;
 
 	@Override
-	public PutResult newResult() {
-		return new PutResult();
+	public PushResult newResult() {
+		return new PushResult();
 	}
 
 	@Override
-	public boolean readField(PutResult result, DattyField field, MessageReader reader, ByteBuf source) {
+	public boolean readField(PushResult result, DattyField field, MessageReader reader, ByteBuf source) {
 		
 		switch(field) {
 		
@@ -57,7 +57,7 @@ public enum PutResultIO implements DattyResultIO<PutResult> {
 	}
 
 	@Override
-	public ByteBuf write(PutResult result, MessageWriter writer, ByteBuf sink, boolean numeric) {
+	public ByteBuf write(PushResult result, MessageWriter writer, ByteBuf sink, boolean numeric) {
 		
 		FieldWriter fieldWriter = new FieldWriter(writer, sink, numeric);
 		

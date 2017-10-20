@@ -26,13 +26,13 @@ import io.datty.api.DattyResult;
 import io.datty.api.UpdatePolicy;
 import io.datty.api.operation.ClearOperation;
 import io.datty.api.operation.FetchOperation;
-import io.datty.api.operation.PutOperation;
+import io.datty.api.operation.PushOperation;
 import io.datty.api.operation.RecordOperation;
 import io.datty.api.operation.RemoveOperation;
 import io.datty.api.operation.ScanOperation;
 import io.datty.api.operation.SizeOperation;
 import io.datty.api.result.FetchResult;
-import io.datty.api.result.PutResult;
+import io.datty.api.result.PushResult;
 import io.datty.api.result.RecordResult;
 import io.datty.spring.convert.DattyConverter;
 import io.datty.spring.mapping.DattyPersistentEntity;
@@ -82,10 +82,10 @@ public class DattyTemplate implements DattyOperations {
 
 		return datty.execute(toPutOperation(entityMetadata, entity, numeric))
 		
-		.map(new Func1<PutResult, S>() {
+		.map(new Func1<PushResult, S>() {
 
 			@Override
-			public S call(PutResult t) {
+			public S call(PushResult t) {
 				return entity;
 			}
 			
@@ -93,7 +93,7 @@ public class DattyTemplate implements DattyOperations {
 		
 	}
 
-	protected PutOperation toPutOperation(DattyPersistentEntity<?> entityMetadata, Object entity, boolean numeric) {
+	protected PushOperation toPutOperation(DattyPersistentEntity<?> entityMetadata, Object entity, boolean numeric) {
 		
 		DattyId id = getId(entityMetadata, entity).orElse(null);
 		
@@ -104,7 +104,7 @@ public class DattyTemplate implements DattyOperations {
 		DattyRecord rec = new DattyRecord();
 		converter.write(entity, rec, numeric);
 		
-		return new PutOperation(entityMetadata.getSetName())
+		return new PushOperation(entityMetadata.getSetName())
 		.setSuperKey(id.getSuperKey())
 		.setMajorKey(id.getMajorKey())
 		.setTtlSeconds(entityMetadata.getTtlSeconds())
@@ -146,8 +146,8 @@ public class DattyTemplate implements DattyOperations {
 			@Override
 			public S call(DattyResult res) {
 				
-				PutResult putResult = (PutResult) res;
-				return (S) putResult.getOperation().getUpstreamContext();
+				PushResult pushResult = (PushResult) res;
+				return (S) pushResult.getOperation().getUpstreamContext();
 			}
 
 			

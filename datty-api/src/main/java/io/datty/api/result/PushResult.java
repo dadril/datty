@@ -13,25 +13,25 @@
  */
 package io.datty.api.result;
 
-import io.datty.api.operation.PutOperation;
+import io.datty.api.operation.PushOperation;
 
 /**
- * PutResult
+ * PushResult
  * 
  * @author Alex Shvid
  *
  */
 
-public class PutResult extends AbstractResult<PutOperation, PutResult> {
+public class PushResult extends AbstractResult<PushOperation, PushResult> {
 
 	private boolean updated;
 	
 	private long writtenBytes;
 	
-	public PutResult() {
+	public PushResult() {
 	}
 	
-	public PutResult(long writtenBytes) {
+	public PushResult(long writtenBytes) {
 		this.writtenBytes = writtenBytes;
 	}
 	
@@ -39,7 +39,7 @@ public class PutResult extends AbstractResult<PutOperation, PutResult> {
 		return updated;
 	}
 
-	public PutResult setUpdated(boolean flag) {
+	public PushResult setUpdated(boolean flag) {
 		this.updated = flag;
 		return this;
 	}
@@ -52,19 +52,19 @@ public class PutResult extends AbstractResult<PutOperation, PutResult> {
 		return writtenBytes;
 	}
 
-	public PutResult setWrittenBytes(long writtenBytes) {
+	public PushResult setWrittenBytes(long writtenBytes) {
 		this.writtenBytes = writtenBytes;
 		return this;
 	}
 
 	@Override
 	public ResCode getCode() {
-		return ResCode.PUT;
+		return ResCode.PUSH;
 	}
 
 	@Override
 	public String toString() {
-		return "PutResult [updated=" + updated + ", writtenBytes=" + writtenBytes + "]";
+		return "PushResult [updated=" + updated + ", writtenBytes=" + writtenBytes + "]";
 	}
 
 }

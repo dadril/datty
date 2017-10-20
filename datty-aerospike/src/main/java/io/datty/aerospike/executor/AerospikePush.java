@@ -30,8 +30,8 @@ import io.datty.api.ByteBufValue;
 import io.datty.api.DattyError;
 import io.datty.api.DattyRecord;
 import io.datty.api.DattyValue;
-import io.datty.api.operation.PutOperation;
-import io.datty.api.result.PutResult;
+import io.datty.api.operation.PushOperation;
+import io.datty.api.result.PushResult;
 import io.datty.api.version.LongVersion;
 import io.datty.api.version.Version;
 import io.datty.support.exception.DattyOperationException;
@@ -45,12 +45,12 @@ import rx.functions.Func1;
  *
  */
 
-public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> {
+public enum AerospikePush implements AerospikeOperation<PushOperation, PushResult> {
 
 	INSTANCE;
 	
 	@Override
-	public Single<PutResult> execute(AerospikeSet set, PutOperation operation) {
+	public Single<PushResult> execute(AerospikeSet set, PushOperation operation) {
 
 		DattyRecord rec = operation.getRecord();
 		
@@ -59,7 +59,7 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 			switch(operation.getUpdatePolicy()) {
 			
 			case MERGE:
-				return Single.just(new PutResult().setUpdated(true));
+				return Single.just(new PushResult().setUpdated(true));
 				
 			case REPLACE:
 				return removeRecord(set, operation);
@@ -93,7 +93,7 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 		
 	}
 		
-	private int getGenerationNumber(PutOperation operation) {
+	private int getGenerationNumber(PushOperation operation) {
 		
 		Version version = operation.getVersion();
 		if (version != null && version instanceof LongVersion) {
@@ -108,7 +108,7 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 	}
 	
 	
-	private Single<PutResult> mergeBins(final AerospikeSet set, final PutOperation operation) {
+	private Single<PushResult> mergeBins(final AerospikeSet set, final PushOperation operation) {
 		
 		final DattyRecord rec = operation.getRecord();
 		final AerospikeDattyManager manager = set.getParent();
@@ -125,13 +125,13 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 
 		return manager.getClient().get(queryPolicy, recordKey, set.singleExceptionTransformer(operation, false))
 		
-		.flatMap(new Func1<Record, Single<PutResult>>() {
+		.flatMap(new Func1<Record, Single<PushResult>>() {
 
 			@Override
-			public Single<PutResult> call(Record record) {
+			public Single<PushResult> call(Record record) {
 				
 				if (operation.useVersion() && record.generation != writePolicy.generation) {
-					return Single.just(new PutResult().setUpdated(false));
+					return Single.just(new PushResult().setUpdated(false));
 				}
 				
 				AerospikeBins mergedBins = new AerospikeBins(mergeMaps(record, rec.getValues()));
@@ -142,7 +142,7 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 		
 	}
 	
-	private Single<PutResult> putBins(AerospikeDattyManager manager, AerospikeSet set, WritePolicy writePolicy, final Key recordKey, final AerospikeBins bins, final PutOperation operation) {
+	private Single<PushResult> putBins(AerospikeDattyManager manager, AerospikeSet set, WritePolicy writePolicy, final Key recordKey, final AerospikeBins bins, final PushOperation operation) {
 		
 		Single<Long> result;
 		
@@ -161,11 +161,11 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 					});
 		}
 		
-		return result.map(new Func1<Long, PutResult>() {
+		return result.map(new Func1<Long, PushResult>() {
 
 			@Override
-			public PutResult call(Long writtenBytes) {
-				PutResult res = new PutResult().setUpdated(writtenBytes != null);
+			public PushResult call(Long writtenBytes) {
+				PushResult res = new PushResult().setUpdated(writtenBytes != null);
 				if (writtenBytes != null) {
 					res.setWrittenBytes(writtenBytes.longValue());
 				}
@@ -204,7 +204,7 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 		
 	}
 	
-	private Single<PutResult> putBins(AerospikeSet set, PutOperation operation) {
+	private Single<PushResult> putBins(AerospikeSet set, PushOperation operation) {
 		
 		final DattyRecord rec = operation.getRecord();
 		AerospikeDattyManager manager = set.getParent();
@@ -220,7 +220,7 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 		
 	}
 	
-	private Single<PutResult> removeRecord(AerospikeSet set, PutOperation operation) {
+	private Single<PushResult> removeRecord(AerospikeSet set, PushOperation operation) {
 		
 		AerospikeDattyManager manager = set.getParent();
 		WritePolicy writePolicy = set.getConfig().getWritePolicy(operation.hasTimeoutMillis());
@@ -236,11 +236,11 @@ public enum AerospikePut implements AerospikeOperation<PutOperation, PutResult> 
 
 		Single<Boolean> result = manager.getClient().remove(writePolicy, recordKey, set.singleExceptionTransformer(operation, false));
 		
-		return result.map(new Func1<Boolean, PutResult>() {
+		return result.map(new Func1<Boolean, PushResult>() {
 
 			@Override
-			public PutResult call(Boolean updated) {
-				return new PutResult().setUpdated(updated);
+			public PushResult call(Boolean updated) {
+				return new PushResult().setUpdated(updated);
 			}
 			
 		});

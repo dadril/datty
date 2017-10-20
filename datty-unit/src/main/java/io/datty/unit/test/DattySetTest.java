@@ -20,7 +20,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.datty.api.operation.ClearOperation;
-import io.datty.api.operation.PutOperation;
+import io.datty.api.operation.PushOperation;
 import io.datty.api.operation.ScanOperation;
 import io.datty.api.operation.SizeOperation;
 import io.datty.api.result.RecordResult;
@@ -62,7 +62,7 @@ public class DattySetTest extends AbstractDattyUnitTest {
 		
 		String majorKey = UUID.randomUUID().toString();
 		
-		dattyManager.getDatty().execute(new PutOperation(SET_NAME, majorKey).addValue(minorKey, value())).toBlocking().value();
+		dattyManager.getDatty().execute(new PushOperation(SET_NAME, majorKey).addValue(minorKey, value())).toBlocking().value();
 		
 		List<RecordResult> all = toList(dattyManager.getDatty().execute(new ScanOperation(SET_NAME)).toBlocking().toIterable());
 		Assert.assertEquals(1, all.size());
@@ -87,8 +87,8 @@ public class DattySetTest extends AbstractDattyUnitTest {
 		String majorKey1 = UUID.randomUUID().toString();
 		String majorKey2 = UUID.randomUUID().toString();
 		
-		dattyManager.getDatty().execute(new PutOperation(SET_NAME, majorKey1).addValue(minorKey, value())).toBlocking().value();
-		dattyManager.getDatty().execute(new PutOperation(SET_NAME, majorKey2).addValue(minorKey, value())).toBlocking().value();
+		dattyManager.getDatty().execute(new PushOperation(SET_NAME, majorKey1).addValue(minorKey, value())).toBlocking().value();
+		dattyManager.getDatty().execute(new PushOperation(SET_NAME, majorKey2).addValue(minorKey, value())).toBlocking().value();
 		
 		long count = dattyManager.getDatty().execute(new SizeOperation(SET_NAME)).toBlocking().single().count();
 		

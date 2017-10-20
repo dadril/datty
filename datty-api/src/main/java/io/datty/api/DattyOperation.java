@@ -84,7 +84,8 @@ public interface DattyOperation {
 	public enum OpCode {
 		
 		FETCH(2),
-		PUT(3),
+		PUSH(3),
+		
 		REMOVE(4),
 		EXECUTE(6),
 		
@@ -93,7 +94,6 @@ public interface DattyOperation {
 		CLEAR(9),
 		
 		SELECT(10),
-		UPDATE(11),
 		DELETE(12);
 		
 		private final int opcode;
